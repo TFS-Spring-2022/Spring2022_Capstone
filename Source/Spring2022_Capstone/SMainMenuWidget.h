@@ -19,6 +19,9 @@ public:
 
 	void Construct(const FArguments &InArgs);
 
+	FReply OnPlayClicked() const;
+	FReply OnQuitClicked() const;
+
 	TWeakObjectPtr<class AMenuHUD> MenuHUD;
 
 	virtual bool SupportsKeyboardFocus() const override { return true; };
