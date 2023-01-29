@@ -2,8 +2,6 @@
 
 #include "SMainMenuWidget.h"
 #include "MenuHUD.h"
-#include "Blueprint/UserWidget.h"
-#include "Kismet/GameplayStatics.h"
 
 
 #define LOCTEXT_NAMESPACE "MainMenu"
@@ -36,7 +34,7 @@ void SMainMenuWidget::Construct(const FArguments &InArgs)
         .VAlign(VAlign_Fill)
         [
             SNew(SImage)
-            .ColorAndOpacity(FColor::Black)
+            .ColorAndOpacity(FColor::Blue)
         ]
         + SOverlay::Slot()
         .HAlign(HAlign_Fill)
@@ -101,12 +99,16 @@ void SMainMenuWidget::Construct(const FArguments &InArgs)
 FReply SMainMenuWidget::OnPlayClicked() const
 {
     UE_LOG(LogTemp, Log, TEXT("Play Clicked"));
+    if (MenuHUD.IsValid()) {
+        MenuHUD->RemoveMenu();
+    }
     return FReply::Handled();
 }
 
 FReply SMainMenuWidget::OnQuitClicked() const
 {
     UE_LOG(LogTemp, Log, TEXT("Quit Clicked"));
+    // TODO: Implement quit
     return FReply::Handled();
 }
 

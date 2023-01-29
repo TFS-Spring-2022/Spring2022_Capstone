@@ -8,11 +8,27 @@
 void AMenuHUD::BeginPlay()
 {
     Super::BeginPlay();
-    UE_LOG(LogTemp, Display, TEXT("HERE"));
+    ShowMenu();
+}
+
+void AMenuHUD::ShowMenu()
+{
     if (GEngine && GEngine->GameViewport)
     {
-        UE_LOG(LogTemp, Display, TEXT("HERE1"));
         MenuWidget = SNew(SMainMenuWidget).MenuHUD(this);
         GEngine->GameViewport->AddViewportWidgetContent(SAssignNew(MenuWidgetContainer, SWeakWidget).PossiblyNullContent(MenuWidget.ToSharedRef()));
+        if (PlayerOwner)
+        {
+            PlayerOwner->bShowMouseCursor = true;
+            PlayerOwner->SetInputMode(FInputModeUIOnly());
+        }
+    }
+}
+
+void AMenuHUD::RemoveMenu()
+{
+    if (GEngine && GEngine->GameViewport && MenuWidgetContainer.IsValid())
+    {
+        GEngine->GameViewport->RemoveViewportWidgetContent(MenuWidgetContainer.ToSharedRef());
     }
 }
