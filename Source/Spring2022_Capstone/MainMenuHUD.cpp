@@ -1,17 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "MenuHUD.h"
+#include "MainMenuHUD.h"
 #include "SMainMenuWidget.h"
 #include "Widgets/SWeakWidget.h"
 #include "Engine/Engine.h"
 
-void AMenuHUD::BeginPlay()
+void AMainMenuHUD::BeginPlay()
 {
     Super::BeginPlay();
     ShowMenu();
 }
 
-void AMenuHUD::ShowMenu()
+void AMainMenuHUD::ShowMenu()
 {
     if (GEngine && GEngine->GameViewport)
     {
@@ -25,7 +25,7 @@ void AMenuHUD::ShowMenu()
     }
 }
 
-void AMenuHUD::RemoveMenu()
+void AMainMenuHUD::RemoveMenu()
 {
     if (GEngine && GEngine->GameViewport && MenuWidgetContainer.IsValid())
     {

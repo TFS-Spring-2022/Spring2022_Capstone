@@ -13,7 +13,7 @@ class SMainMenuWidget : public SCompoundWidget
 public:
 	SLATE_BEGIN_ARGS(SMainMenuWidget) {}
 
-	SLATE_ARGUMENT(TWeakObjectPtr<class AMenuHUD>, MenuHUD)
+	SLATE_ARGUMENT(TWeakObjectPtr<class AMainMenuHUD>, MenuHUD)
 
 	SLATE_END_ARGS()
 
@@ -22,7 +22,7 @@ public:
 	FReply OnPlayClicked() const;
 	FReply OnQuitClicked() const;
 
-	TWeakObjectPtr<class AMenuHUD> MenuHUD;
+	TWeakObjectPtr<class AMainMenuHUD> MenuHUD;
 
 	virtual bool SupportsKeyboardFocus() const override { return true; };
 };

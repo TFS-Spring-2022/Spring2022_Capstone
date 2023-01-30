@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SMainMenuWidget.h"
-#include "MenuHUD.h"
+#include "MainMenuHUD.h"
 
 
 #define LOCTEXT_NAMESPACE "MainMenu"
@@ -99,9 +99,7 @@ void SMainMenuWidget::Construct(const FArguments &InArgs)
 FReply SMainMenuWidget::OnPlayClicked() const
 {
     UE_LOG(LogTemp, Log, TEXT("Play Clicked"));
-    if (MenuHUD.IsValid()) {
-        MenuHUD->RemoveMenu();
-    }
+    // TODO: Open new level
     return FReply::Handled();
 }
 

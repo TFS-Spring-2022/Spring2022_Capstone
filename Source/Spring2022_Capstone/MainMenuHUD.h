@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "MenuHUD.generated.h"
+#include "MainMenuHUD.generated.h"
 
 /**
  *
  */
 UCLASS()
-class SPRING2022_CAPSTONE_API AMenuHUD : public AHUD
+class SPRING2022_CAPSTONE_API AMainMenuHUD : public AHUD
 {
 	GENERATED_BODY()
 	// virtual void PostInitializeComponents() override;
