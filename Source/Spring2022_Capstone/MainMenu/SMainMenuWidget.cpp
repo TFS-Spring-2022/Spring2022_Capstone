@@ -3,7 +3,6 @@
 #include "SMainMenuWidget.h"
 #include "MainMenuHUD.h"
 
-
 #define LOCTEXT_NAMESPACE "MainMenu"
 
 void SMainMenuWidget::Construct(const FArguments &InArgs)
@@ -25,8 +24,7 @@ void SMainMenuWidget::Construct(const FArguments &InArgs)
 
     FSlateFontInfo TitleTextStyle = FCoreStyle::Get().GetFontStyle("EmbossedText");
     TitleTextStyle.Size = 60.f;
-
-
+    
     ChildSlot [
         SNew(SOverlay)
         + SOverlay::Slot()
@@ -60,7 +58,7 @@ void SMainMenuWidget::Construct(const FArguments &InArgs)
                 .OnClicked(this, &SMainMenuWidget::OnPlayClicked)
                 [
                     SNew(STextBlock)
-                    .Font(TitleTextStyle)
+                    .Font(ButtonTextStyle)
                     .Text(PlayText)
                     .Justification(ETextJustify::Center)
                 ]
@@ -73,7 +71,7 @@ void SMainMenuWidget::Construct(const FArguments &InArgs)
                 SNew(SButton)
                 [
                     SNew(STextBlock)
-                    .Font(TitleTextStyle)
+                    .Font(ButtonTextStyle)
                     .Text(SettingsText)
                     .Justification(ETextJustify::Center)
                 ]
@@ -87,7 +85,7 @@ void SMainMenuWidget::Construct(const FArguments &InArgs)
                 .OnClicked(this, &SMainMenuWidget::OnQuitClicked)
                 [
                     SNew(STextBlock)
-                    .Font(TitleTextStyle)
+                    .Font(ButtonTextStyle)
                     .Text(QuitText)
                     .Justification(ETextJustify::Center)
                 ]
@@ -106,7 +104,7 @@ FReply SMainMenuWidget::OnPlayClicked() const
 FReply SMainMenuWidget::OnQuitClicked() const
 {
     UE_LOG(LogTemp, Log, TEXT("Quit Clicked"));
-    // TODO: Implement quit
+    MenuHUD->ShowQuitConfirmation();
     return FReply::Handled();
 }
 

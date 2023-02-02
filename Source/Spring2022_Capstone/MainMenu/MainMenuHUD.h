@@ -13,11 +13,12 @@ UCLASS()
 class SPRING2022_CAPSTONE_API AMainMenuHUD : public AHUD
 {
 	GENERATED_BODY()
-	// virtual void PostInitializeComponents() override;
 
 protected:
 	TSharedPtr<class SMainMenuWidget> MenuWidget;
+	TSharedPtr<class SConfirmationWidget> ConfirmationWidget;
 	TSharedPtr<class SWidget> MenuWidgetContainer;
+	TSharedPtr<class SWidget> ConfirmationWidgetContainer;
 
 	virtual void BeginPlay() override;
 
@@ -25,4 +26,7 @@ public:
 
 	void ShowMenu();
 	void RemoveMenu();
+	void ShowQuitConfirmation();
+	void RemoveQuitConfirmation();
+	void ExitGame();
 };

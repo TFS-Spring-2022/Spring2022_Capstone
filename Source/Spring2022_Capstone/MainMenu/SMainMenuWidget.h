@@ -8,7 +8,7 @@
 /**
  *
  */
-class SMainMenuWidget : public SCompoundWidget
+class SPRING2022_CAPSTONE_API SMainMenuWidget : public SCompoundWidget
 {
 public:
 	SLATE_BEGIN_ARGS(SMainMenuWidget) {}
