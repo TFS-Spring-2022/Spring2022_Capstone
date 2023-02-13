@@ -5,15 +5,14 @@
 #include "SlateBasics.h"
 #include "SlateExtras.h"
 
-/**
- *
- */
+class AMainMenuHUD;
+
 class SPRING2022_CAPSTONE_API SMainMenuWidget : public SCompoundWidget
 {
 public:
 	SLATE_BEGIN_ARGS(SMainMenuWidget) {}
 
-	SLATE_ARGUMENT(TWeakObjectPtr<class AMainMenuHUD>, MenuHUD)
+	SLATE_ARGUMENT(TWeakObjectPtr<AMainMenuHUD>, MenuHUD)
 
 	SLATE_END_ARGS()
 
@@ -24,7 +23,7 @@ public:
 	FReply OnCreditsClicked() const;
 	FReply OnQuitClicked() const;
 
-	TWeakObjectPtr<class AMainMenuHUD> MenuHUD;
+	TWeakObjectPtr<AMainMenuHUD> MenuHUD;
 
 	virtual bool SupportsKeyboardFocus() const override { return true; };
 };
