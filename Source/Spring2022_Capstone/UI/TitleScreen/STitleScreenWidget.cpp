@@ -14,6 +14,11 @@ void STitleScreenWidget::Construct(const FArguments &InArgs)
     const FMargin ContentPadding = FMargin(500.f, 300.f);
     const FMargin ButtonPadding = FMargin(10.f);
 
+    const FText PressKeyText = LOCTEXT("PressKeyText", "Press any key to continue...");
+
+    FSlateFontInfo PressKeyTextStyle = FCoreStyle::Get().GetFontStyle("EmbossedText");
+    PressKeyTextStyle.Size = 60.f;
+
     ChildSlot [
         SNew(SOverlay)
         + SOverlay::Slot()
@@ -21,7 +26,24 @@ void STitleScreenWidget::Construct(const FArguments &InArgs)
         .VAlign(VAlign_Fill)
         [
             SNew(SImage)
-            .ColorAndOpacity(FColor::Blue)
+            .ColorAndOpacity(FColor::Emerald)
+        ]
+        + SOverlay::Slot()
+        .HAlign(HAlign_Fill)
+        .VAlign(VAlign_Fill)
+        .Padding(ContentPadding)
+        [
+            SNew(SVerticalBox)
+
+            // Title text
+            + SVerticalBox::Slot()
+            [
+                SNew(STextBlock)
+                .Font(PressKeyTextStyle)
+                .Text(PressKeyText)
+                .Justification(ETextJustify::Center)
+                .ColorAndOpacity(FColor::Black)
+            ]
         ]
     ];
 }

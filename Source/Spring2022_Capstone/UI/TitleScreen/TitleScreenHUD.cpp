@@ -19,7 +19,6 @@ void ATitleScreenHUD::ShowMenu()
         if (PlayerOwner)
         {
             PlayerOwner->bShowMouseCursor = true;
-            PlayerOwner->SetInputMode(FInputModeUIOnly());
         }
     }
 }
