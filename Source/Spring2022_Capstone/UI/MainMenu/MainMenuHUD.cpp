@@ -2,7 +2,7 @@
 
 #include "MainMenuHUD.h"
 #include "SMainMenuWidget.h"
-#include "Spring2022_Capstone/Misc/SConfirmationWidget.h"
+#include "Spring2022_Capstone/UI/Misc/SConfirmationWidget.h"
 #include "Widgets/SWeakWidget.h"
 #include "Engine/Engine.h"
 #include "Kismet/KismetSystemLibrary.h"

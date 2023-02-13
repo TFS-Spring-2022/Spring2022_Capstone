@@ -20,6 +20,8 @@ public:
 	void Construct(const FArguments &InArgs);
 
 	FReply OnPlayClicked() const;
+	FReply OnSettingsClicked() const;
+	FReply OnCreditsClicked() const;
 	FReply OnQuitClicked() const;
 
 	TWeakObjectPtr<class AMainMenuHUD> MenuHUD;

@@ -1,7 +1,7 @@
 // Created by Spring2022_Capstone team
 
 #include "SConfirmationWidget.h"
-#include "Spring2022_Capstone/MainMenu/MainMenuHUD.h"
+#include "Spring2022_Capstone/UI/MainMenu/MainMenuHUD.h"
 
 #define LOCTEXT_NAMESPACE "Confirmation"
 

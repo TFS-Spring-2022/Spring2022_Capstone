@@ -17,6 +17,7 @@ void SMainMenuWidget::Construct(const FArguments &InArgs)
     const FText TitleText = LOCTEXT("GameTitle", "SkyPirates");
     const FText PlayText = LOCTEXT("PlayGame", "Play");
     const FText SettingsText = LOCTEXT("Settings", "Settings");
+    const FText CreditsText = LOCTEXT("Credits", "Credits");
     const FText QuitText = LOCTEXT("QuitGame", "Quit Game");
 
     FSlateFontInfo ButtonTextStyle = FCoreStyle::Get().GetFontStyle("EmbossedText");
@@ -69,10 +70,25 @@ void SMainMenuWidget::Construct(const FArguments &InArgs)
             .Padding(ButtonPadding)
             [
                 SNew(SButton)
+                .OnClicked(this, &SMainMenuWidget::OnSettingsClicked)
                 [
                     SNew(STextBlock)
                     .Font(ButtonTextStyle)
                     .Text(SettingsText)
+                    .Justification(ETextJustify::Center)
+                ]
+            ]
+
+            // Credits Button
+            +SVerticalBox::Slot()
+            .Padding(ButtonPadding)
+            [
+                SNew(SButton)
+                .OnClicked(this, &SMainMenuWidget::OnCreditsClicked)
+                [
+                    SNew(STextBlock)
+                    .Font(ButtonTextStyle)
+                    .Text(CreditsText)
                     .Justification(ETextJustify::Center)
                 ]
             ]
@@ -98,6 +114,20 @@ FReply SMainMenuWidget::OnPlayClicked() const
 {
     UE_LOG(LogTemp, Log, TEXT("Play Clicked"));
     // TODO: Open new level
+    return FReply::Handled();
+}
+
+FReply SMainMenuWidget::OnSettingsClicked() const
+{
+    UE_LOG(LogTemp, Log, TEXT("Settings Clicked"));
+    // TODO: Open Settings Menu
+    return FReply::Handled();
+}
+
+FReply SMainMenuWidget::OnCreditsClicked() const
+{
+    UE_LOG(LogTemp, Log, TEXT("Credits Clicked"));
+    // TODO: Open Credits
     return FReply::Handled();
 }
 
