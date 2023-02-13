@@ -5,6 +5,7 @@
 #include "Spring2022_Capstone/Misc/SConfirmationWidget.h"
 #include "Widgets/SWeakWidget.h"
 #include "Engine/Engine.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void AMainMenuHUD::BeginPlay()
 {
@@ -53,6 +54,5 @@ void AMainMenuHUD::RemoveQuitConfirmation()
 
 void AMainMenuHUD::ExitGame()
 {
-    UE_LOG(LogTemp, Log, TEXT("Exit Game Clicked"));
-    // TODO: Implement exit game
+    UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
 }
