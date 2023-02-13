@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Created by Spring2022_Capstone team
 
 #include "MainMenuHUD.h"
 #include "SMainMenuWidget.h"
