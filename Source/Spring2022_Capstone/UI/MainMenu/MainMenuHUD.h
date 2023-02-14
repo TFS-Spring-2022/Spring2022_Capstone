@@ -6,19 +6,19 @@
 #include "GameFramework/HUD.h"
 #include "MainMenuHUD.generated.h"
 
-/**
- *
- */
+class SConfirmationWidget;
+class SMainMenuWidget;
+
 UCLASS()
 class SPRING2022_CAPSTONE_API AMainMenuHUD : public AHUD
 {
 	GENERATED_BODY()
 
 protected:
-	TSharedPtr<class SMainMenuWidget> MenuWidget;
-	TSharedPtr<class SConfirmationWidget> ConfirmationWidget;
-	TSharedPtr<class SWidget> MenuWidgetContainer;
-	TSharedPtr<class SWidget> ConfirmationWidgetContainer;
+	TSharedPtr<SMainMenuWidget> MenuWidget;
+	TSharedPtr<SConfirmationWidget> ConfirmationWidget;
+	TSharedPtr<SWidget> MenuWidgetContainer;
+	TSharedPtr<SWidget> ConfirmationWidgetContainer;
 
 	virtual void BeginPlay() override;
 

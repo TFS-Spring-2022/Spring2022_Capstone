@@ -12,7 +12,6 @@ void STitleScreenWidget::Construct(const FArguments &InArgs)
     TitleScreenHUD = InArgs._TitleScreenHUD;
 
     const FMargin ContentPadding = FMargin(500.f, 300.f);
-    const FMargin ButtonPadding = FMargin(10.f);
 
     const FText PressKeyText = LOCTEXT("PressKeyText", "Press any key to continue...");
 
