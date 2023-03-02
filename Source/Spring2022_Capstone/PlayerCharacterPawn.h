@@ -10,6 +10,7 @@
 class UInputMappingContext;
 class UInputAction;
 class UInputComponent;
+class USpringArmComponent;
 class UCameraComponent;
 
 UCLASS()
