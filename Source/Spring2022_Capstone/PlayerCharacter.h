@@ -3,18 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseCharacterPawn.h"
+#include "GameFramework/Character.h"
 #include "InputActionValue.h"
-#include "PlayerCharacterPawn.generated.h"
+#include "PlayerCharacter.generated.h"
 
 class UInputMappingContext;
 class UInputAction;
 class UInputComponent;
 class USpringArmComponent;
 class UCameraComponent;
+class UCharacterMovementComponent;
 
 UCLASS()
-class SPRING2022_CAPSTONE_API APlayerCharacterPawn : public ABaseCharacterPawn
+class SPRING2022_CAPSTONE_API APlayerCharacterPawn : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -32,9 +33,6 @@ protected:
 	UInputAction *MoveAction;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputAction *LookAction;
-
-	UPROPERTY(Category = Pawn, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UPawnMovementComponent> MovementComponent;
 
 	void Move(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);

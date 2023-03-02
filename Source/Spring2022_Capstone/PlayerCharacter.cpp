@@ -1,10 +1,10 @@
 // Created by Spring2022_Capstone team
 
 
-#include "PlayerCharacterPawn.h"
+#include "PlayerCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "GameFramework/PawnMovementComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -14,10 +14,8 @@ APlayerCharacterPawn::APlayerCharacterPawn()
 {
     Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     Camera->SetupAttachment(RootComponent);
+    Camera->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
     Camera->bUsePawnControlRotation = true;
-
-    MovementComponent = CreateDefaultSubobject<UPawnMovementComponent, UFloatingPawnMovement>(TEXT("PawnMovement"));
-    MovementComponent->UpdatedComponent = RootComponent;
 }
 
 void APlayerCharacterPawn::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
@@ -51,10 +49,8 @@ void APlayerCharacterPawn::Move(const FInputActionValue &Value)
 
     if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
     {
-        FVector Forward = GetActorForwardVector();
-        AddMovementInput(Forward, DirectionalValue.Y * Speed * UGameplayStatics::GetWorldDeltaSeconds(this));
-        FVector Right = GetActorRightVector();
-        AddMovementInput(Right, DirectionalValue.X * Speed * UGameplayStatics::GetWorldDeltaSeconds(this));
+        AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * Speed * UGameplayStatics::GetWorldDeltaSeconds(this));
+        AddMovementInput(GetActorRightVector(), DirectionalValue.X * Speed * UGameplayStatics::GetWorldDeltaSeconds(this));
     }
 }
 
