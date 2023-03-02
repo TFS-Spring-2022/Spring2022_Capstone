@@ -15,12 +15,12 @@ class UCameraComponent;
 class UCharacterMovementComponent;
 
 UCLASS()
-class SPRING2022_CAPSTONE_API APlayerCharacterPawn : public ACharacter
+class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	APlayerCharacterPawn();
+	APlayerCharacter();
 
 	virtual void SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) override;
 
@@ -31,8 +31,8 @@ protected:
 	UInputMappingContext *CharacterMappingContext;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputAction *MoveAction;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
-	UInputAction *LookAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction *JumpAction;
 
 	void Move(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
@@ -45,4 +45,8 @@ private:
 	float Speed = 200.f;
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnRate = 200.f;
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
+	UInputAction *LookAction;
 };

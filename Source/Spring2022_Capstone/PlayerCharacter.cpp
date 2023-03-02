@@ -1,6 +1,5 @@
 // Created by Spring2022_Capstone team
 
-
 #include "PlayerCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -10,7 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 
-APlayerCharacterPawn::APlayerCharacterPawn()
+APlayerCharacter::APlayerCharacter()
 {
     Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     Camera->SetupAttachment(RootComponent);
@@ -18,18 +17,21 @@ APlayerCharacterPawn::APlayerCharacterPawn()
     Camera->bUsePawnControlRotation = true;
 }
 
-void APlayerCharacterPawn::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
+void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
     if (UEnhancedInputComponent *EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
     {
-        EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterPawn::Move);
-        EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacterPawn::Look);
+        EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+        EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+
+        EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+        EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
     }
 }
 
-void APlayerCharacterPawn::BeginPlay()
+void APlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
@@ -37,13 +39,12 @@ void APlayerCharacterPawn::BeginPlay()
     {
         if (UEnhancedInputLocalPlayerSubsystem *Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
         {
-            Subsystem->ClearAllMappings();
             Subsystem->AddMappingContext(CharacterMappingContext, 0);
         }
     }
 }
 
-void APlayerCharacterPawn::Move(const FInputActionValue &Value)
+void APlayerCharacter::Move(const FInputActionValue &Value)
 {
     const FVector2D DirectionalValue = Value.Get<FVector2D>();
 
@@ -54,7 +55,7 @@ void APlayerCharacterPawn::Move(const FInputActionValue &Value)
     }
 }
 
-void APlayerCharacterPawn::Look(const FInputActionValue &Value)
+void APlayerCharacter::Look(const FInputActionValue &Value)
 {
     const FVector2D LookAxisValue = Value.Get<FVector2D>();
     if (GetController())
