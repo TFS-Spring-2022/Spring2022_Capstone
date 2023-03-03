@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "WeaponBase.h"
 
 // Sets default values
@@ -45,6 +47,11 @@ void AWeaponBase::Tick(float DeltaTime)
 // ToDo: Change shot location start from camera to barrel.
 void AWeaponBase::RaycastFire()
 {
+
+	if(Character == nullptr)
+	{
+		return;
+	}
 	
 	if(!bIsOverheating && CurWeaponCharge > 100 )
 	{
@@ -101,3 +108,38 @@ void AWeaponBase::WeaponCooldown()
 	bIsOverheating = false;
 	bCanFire = true;
 }
+
+void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
+{
+	Character = TargetCharacter; // Curious why assigning character here? ToDo: Look
+
+	if(Character == nullptr)
+	{
+		return;
+	}
+
+	// Attach the weapon to the Player Character
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true); 
+	// ToDo: Connect to skeletal mesh when it is added.
+	//AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
+	AttachToComponent(Character->GetRootComponent(), AttachmentRules, FName(TEXT("GripPoint")));
+
+	// Set up action bindings
+	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			// Set the priority of the mapping to 1, so that it overrides the Jump action with the Fire action when using touch input
+			Subsystem->AddMappingContext(CharacterMappingContext, 1);
+		}
+
+		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
+		{
+			// ToDo: Handle multiple fire types (when added)
+			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AWeaponBase::RaycastFire);
+		}
+	}
+
+	
+}
+
