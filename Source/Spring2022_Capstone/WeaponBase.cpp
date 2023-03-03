@@ -74,7 +74,7 @@ void AWeaponBase::RaycastFire()
 
 			if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Black, TEXT("PEW))"));
+				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Black, TEXT("PEW"));
 				DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor(255,0,0), true);
 			}
 
