@@ -90,7 +90,7 @@ void AWeaponBase::ClearFireTimerHandle()
 
 void AWeaponBase::ChargeCooldown()
 {
-	if(CurWeaponCharge < 100 && CurWeaponCharge > 0)
+	if(CurWeaponCharge > 0 && bIsOverheating == false)
 	{
 		CurWeaponCharge -= ChargeCooldownRate;
 	}
