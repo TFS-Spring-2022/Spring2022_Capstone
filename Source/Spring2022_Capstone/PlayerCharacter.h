@@ -33,23 +33,22 @@ protected:
 	UInputMappingContext *CharacterMappingContext;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputAction *MoveAction;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
+	UInputAction *LookAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *JumpAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction *GrapleAction;
 
 	void Move(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UCameraComponent *Camera;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float Speed = 200.f;
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnRate = 200.f;
-
-public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
-	UInputAction *LookAction;
-	
 };
