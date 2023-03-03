@@ -7,6 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "WeaponBase.generated.h"
 
+
+
 UCLASS()
 class SPRING2022_CAPSTONE_API AWeaponBase : public AActor
 {
@@ -102,6 +104,7 @@ protected:
 	/**
 	 * @brief The character holding the weapon
 	 */
+	UPROPERTY()
 	APlayerCharacter* Character;
 
 public:

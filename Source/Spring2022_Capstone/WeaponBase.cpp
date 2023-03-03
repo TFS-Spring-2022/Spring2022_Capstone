@@ -5,6 +5,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "WeaponBase.h"
 
+#include "GameFramework/GameModeBase.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 AWeaponBase::AWeaponBase()
 {
@@ -27,8 +30,14 @@ void AWeaponBase::BeginPlay()
 	// call CrystalCooldown() every second to recharge crystalCharge
 	GetWorldTimerManager().SetTimer(ChargeCooldownTimerHandle, this,&AWeaponBase::ChargeCooldown, 1.0f, true, 2.0f);
 
-	GetWorldTimerManager().ClearTimer(FireTimerHandle); 
+	GetWorldTimerManager().ClearTimer(FireTimerHandle);
+
+	// Debug - Attaching to character on BeginPlay
+	Character = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+	AttachWeapon(Character);
+
 	
+
 }
 
 // QUESTION: Trust Garbage Collection or manually clear timers in destructor?
@@ -47,6 +56,8 @@ void AWeaponBase::Tick(float DeltaTime)
 // ToDo: Change shot location start from camera to barrel.
 void AWeaponBase::RaycastFire()
 {
+
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Emerald, TEXT("RaycastFire"));
 
 	if(Character == nullptr)
 	{
@@ -119,7 +130,7 @@ void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 	}
 
 	// Attach the weapon to the Player Character
-	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true); 
+	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true); 
 	// ToDo: Connect to skeletal mesh when it is added.
 	//AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
 	AttachToComponent(Character->GetRootComponent(), AttachmentRules, FName(TEXT("GripPoint")));

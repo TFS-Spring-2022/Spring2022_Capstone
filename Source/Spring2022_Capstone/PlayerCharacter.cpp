@@ -3,11 +3,13 @@
 #include "PlayerCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
+
 
 APlayerCharacter::APlayerCharacter()
 {
