@@ -35,12 +35,9 @@ void AWeaponBase::BeginPlay()
 	// Debug - Attaching to character on BeginPlay
 	Character = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
 	AttachWeapon(Character);
-
 	
-
 }
 
-// QUESTION: Trust Garbage Collection or manually clear timers in destructor?
 void AWeaponBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
@@ -77,6 +74,7 @@ void AWeaponBase::RaycastFire()
 
 			if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
+				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Black, TEXT("PEW))"));
 				DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor(255,0,0), true);
 			}
 
@@ -111,6 +109,7 @@ void AWeaponBase::WeaponCooldown()
 	GetWorldTimerManager().ClearTimer(OverheatTimerHandle); 
 	bIsOverheating = false;
 	bCanFire = true;
+	CurWeaponCharge = 0;
 }
 
 void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
@@ -143,7 +142,4 @@ void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AWeaponBase::RaycastFire);
 		}
 	}
-
-	
 }
-

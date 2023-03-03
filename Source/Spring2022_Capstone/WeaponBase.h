@@ -102,7 +102,7 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	/**
-	 * @brief The character holding the weapon
+	 * @brief The character holding the weapon.
 	 */
 	UPROPERTY()
 	APlayerCharacter* Character;
@@ -116,14 +116,14 @@ public:
 	 * @brief Attaches the actor to a PlayerCharacter.
 	 * @param TargetCharacter APlayerCharacter instance holding the actor.
 	 */
-	UFUNCTION(BlueprintCallable, Category="Weapon")
+	UFUNCTION(BlueprintCallable, Category="Equip")
 	void AttachWeapon(APlayerCharacter* TargetCharacter);
 
 	// Fire Input Action
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
 	class UInputAction* FireAction;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 	UInputMappingContext *CharacterMappingContext;
 
 };
