@@ -57,11 +57,6 @@ void AWeaponBase::Tick(float DeltaTime)
 void AWeaponBase::RaycastFire()
 {
 	
-	if(Character == nullptr)
-	{
-		return;
-	}
-	
 	if(!bIsOverheating && CurWeaponCharge > 100 )
 	{
 		Overheat();
@@ -97,7 +92,7 @@ void AWeaponBase::ClearFireTimerHandle()
 
 void AWeaponBase::ChargeCooldown()
 {
-	if(CurWeaponCharge < 100)
+	if(CurWeaponCharge < 100 && CurWeaponCharge > 0)
 	{
 		CurWeaponCharge -= ChargeCooldownRate;
 	}
