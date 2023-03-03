@@ -7,6 +7,8 @@
 #include "InputActionValue.h"
 #include "PlayerCharacter.generated.h"
 
+
+class AWeaponBase;
 class UInputMappingContext;
 class UInputAction;
 class UInputComponent;
@@ -49,4 +51,5 @@ private:
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputAction *LookAction;
+	
 };
