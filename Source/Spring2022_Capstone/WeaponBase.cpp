@@ -56,9 +56,7 @@ void AWeaponBase::Tick(float DeltaTime)
 // ToDo: Change shot location start from camera to barrel.
 void AWeaponBase::RaycastFire()
 {
-
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Emerald, TEXT("RaycastFire"));
-
+	
 	if(Character == nullptr)
 	{
 		return;
@@ -122,7 +120,7 @@ void AWeaponBase::WeaponCooldown()
 
 void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 {
-	Character = TargetCharacter; // Curious why assigning character here? ToDo: Look
+	Character = TargetCharacter; 
 
 	if(Character == nullptr)
 	{
