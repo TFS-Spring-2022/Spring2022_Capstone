@@ -3,8 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PlayerCharacter.h"
 #include "GameFramework/Actor.h"
 #include "WeaponBase.generated.h"
+
+
 
 UCLASS()
 class SPRING2022_CAPSTONE_API AWeaponBase : public AActor
@@ -97,10 +100,30 @@ protected:
 		USkeletalMeshComponent* SkeletalMesh;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
+	/**
+	 * @brief The character holding the weapon.
+	 */
+	UPROPERTY()
+	APlayerCharacter* Character;
 
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
+	/**
+	 * @brief Attaches the actor to a PlayerCharacter.
+	 * @param TargetCharacter APlayerCharacter instance holding the actor.
+	 */
+	UFUNCTION(BlueprintCallable, Category="Equip")
+	void AttachWeapon(APlayerCharacter* TargetCharacter);
+
+	// Fire Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
+	class UInputAction* FireAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	UInputMappingContext *CharacterMappingContext;
+
 };
