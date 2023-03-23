@@ -36,18 +36,15 @@ void UMainMenuWidget::OnPlayButtonPressed()
 
 void UMainMenuWidget::OnExitButtonPressed()
 {
-	UE_LOG(LogTemp, Display, TEXT("TEST"));
 	ExitConfirmationPanel->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UMainMenuWidget::OnYesButtonPressed()
 {
-	UE_LOG(LogTemp, Display, TEXT("YES"));
 	UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
 }
 
 void UMainMenuWidget::OnNoButtonPressed()
 {
-	UE_LOG(LogTemp, Display, TEXT("NO"));
 	ExitConfirmationPanel->SetVisibility(ESlateVisibility::Hidden);
 }
