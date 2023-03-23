@@ -59,5 +59,5 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnRate = 200.f;
 	UPROPERTY(EditAnywhere, Category = "Movement")
-	bool IsSprinting;
+	bool bIsSprinting;
 };

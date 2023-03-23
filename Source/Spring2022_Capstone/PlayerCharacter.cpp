@@ -53,7 +53,7 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
     const FVector2D DirectionalValue = Value.Get<FVector2D>();
     if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
     {
-        GetCharacterMovement()->MaxWalkSpeed = IsSprinting ? Speed * SprintMultiplier : Speed;;
+        GetCharacterMovement()->MaxWalkSpeed = bIsSprinting ? Speed * SprintMultiplier : Speed;;
         AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * 100);
         AddMovementInput(GetActorRightVector(), DirectionalValue.X * 100);
     }
@@ -71,5 +71,5 @@ void APlayerCharacter::Look(const FInputActionValue &Value)
 
 void APlayerCharacter::Sprint(const FInputActionValue &Value)
 {
-    IsSprinting = Value.Get<bool>();
+    bIsSprinting = Value.Get<bool>();
 }
