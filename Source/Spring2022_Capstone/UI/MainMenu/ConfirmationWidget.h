@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "MainMenuWidget.generated.h"
+#include "ConfirmationWidget.generated.h"
 
 class UPanelWidget;
 class UImage;
 class UTextBlock;
 class UButton;
 
-UCLASS(Abstract)
-class SPRING2022_CAPSTONE_API UMainMenuWidget : public UUserWidget
+UCLASS()
+class SPRING2022_CAPSTONE_API UConfirmationWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -23,6 +23,7 @@ public:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *RootWidget;
+
 	//BackgroundImage
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UImage* BackgroundImage;
@@ -39,9 +40,5 @@ public:
 	UButton* ExitButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ExitButtonText;
-
-private:
-
-	UFUNCTION()
-	void PlayButtonPressed();
+	
 };
