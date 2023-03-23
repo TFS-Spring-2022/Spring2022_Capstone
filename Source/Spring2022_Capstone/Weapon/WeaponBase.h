@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PlayerCharacter.h"
+#include "../PlayerCharacter.h"
 #include "GameFramework/Actor.h"
 #include "WeaponBase.generated.h"
 
