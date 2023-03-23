@@ -22,8 +22,8 @@ void ABaseUIManager::Tick(float DeltaTime)
 void ABaseUIManager::DisplayWidget()
 {
 	if (RootWidget) {
-		widget = CreateWidget(GetWorld(), RootWidget);
-		widget->AddToViewport(1);
+		_RootWidget = CreateWidget(GetWorld(), RootWidget);
+		_RootWidget->AddToViewport(1);
 	} else {
 		UE_LOG(LogTemp, Error, TEXT("Type not specizfied for Root Widget"));
 	}
@@ -31,5 +31,5 @@ void ABaseUIManager::DisplayWidget()
 
 void ABaseUIManager::DismissWidget()
 {
-	widget->RemoveFromParent();
+	_RootWidget->RemoveFromParent();
 }

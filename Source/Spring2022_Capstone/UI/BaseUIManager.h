@@ -31,6 +31,6 @@ public:
 	void DismissWidget();
 
 private:
-	UUserWidget *widget;
+	UUserWidget *_RootWidget;
 
 };

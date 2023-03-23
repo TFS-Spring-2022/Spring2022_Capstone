@@ -10,6 +10,7 @@ class UPanelWidget;
 class UImage;
 class UTextBlock;
 class UButton;
+class UExitConfirmationWidget;
 
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API UMainMenuWidget : public UUserWidget
@@ -22,7 +23,7 @@ protected:
 public:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UPanelWidget *RootWidget;
+	UPanelWidget *RootPanel;
 	//BackgroundImage
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UImage* BackgroundImage;
@@ -40,8 +41,35 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ExitButtonText;
 
+	// Exit Confirmation
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UPanelWidget *ExitConfirmationPanel;
+	//BackgroundImage
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UImage* ExitConfirmationBackgroundImage;
+	// Title
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ExitConfirmationTitleText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	// Play Button
+	UButton* YesButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* YesButtonText;
+	// Exit Button
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UButton* NoButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* NoButtonText;
+
 private:
+	UFUNCTION()
+	void OnPlayButtonPressed();
+	UFUNCTION()
+	void OnExitButtonPressed();
 
 	UFUNCTION()
-	void PlayButtonPressed();
+	void OnYesButtonPressed();
+	UFUNCTION()
+	void OnNoButtonPressed();
 };
