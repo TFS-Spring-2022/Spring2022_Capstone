@@ -48,38 +48,6 @@ void AWeaponBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-// ToDo: Change shot location start from camera to barrel.
-void AWeaponBase::RaycastFire()
-{
-	
-	if(!bIsOverheating && CurWeaponCharge > 100 )
-	{
-		Overheat();
-	}
-	
-	if(bCanFire)
-	{
-		if(!GetWorldTimerManager().IsTimerActive(FireTimerHandle))							
-		{	
-			GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AWeaponBase::ClearFireTimerHandle, FireRate, false);		// Start timer the fire rate timer (after it runs for FireRate (time between shots in seconds) it will be cleared
-
-			FHitResult HitResult;
-
-			FVector StartTrace = PlayerCamera->GetCameraLocation();
-			FVector ForwardVector = PlayerCamera->GetActorForwardVector();
-			FVector EndTrace = ((ForwardVector * 1000.0f) + StartTrace); // ToDo: Turn 1000.0f into a variable shot distance. Set it once we figure out level sizes.
-			FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
-
-			if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Black, TEXT("PEW"));
-				DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor(255,0,0), true);
-			}
-
-			CurWeaponCharge += ShotCost;
-		}
-	}
-}
 
 void AWeaponBase::ClearFireTimerHandle()
 {
@@ -137,7 +105,7 @@ void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 		{
 			// ToDo: Handle multiple fire types (when added)
-			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AWeaponBase::RaycastFire);
+			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AWeaponBase::Shoot); // QUESTOIN: Now do I need to go into every single derived (semi, shotgun) and set this to &ASemiAutommatic::Shoot??
 		}
 	}
 }
