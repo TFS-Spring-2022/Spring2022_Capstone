@@ -2,15 +2,12 @@
 
 
 #include "MainMenuWidget.h"
-#include "Components/TextBlock.h"
+#include "Components/Image.h"
 #include "Components/PanelWidget.h"
+#include "Components/TextBlock.h"
+#include "Components/Button.h"
 
 void UMainMenuWidget::NativeConstruct()
 {
     Super::NativeConstruct();
-
-    if (TitleText)
-	{
-		TitleText->SetText(FText::FromString(TEXT("Hello world!")));
-	}
 }

@@ -31,5 +31,5 @@ void ABaseUIManager::DisplayWidget()
 
 void ABaseUIManager::DismissWidget()
 {
-	widget->RemoveFromViewport();
+	widget->RemoveFromParent();
 }
