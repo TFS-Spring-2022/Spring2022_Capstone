@@ -105,7 +105,7 @@ void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 		{
 			// ToDo: Handle multiple fire types (when added)
-			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AWeaponBase::Shoot); // QUESTOIN: Now do I need to go into every single derived (semi, shotgun) and set this to &ASemiAutommatic::Shoot??
+			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AWeaponBase::Shoot); 
 		}
 	}
 }

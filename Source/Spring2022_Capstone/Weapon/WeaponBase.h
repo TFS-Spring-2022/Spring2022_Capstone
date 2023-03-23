@@ -9,7 +9,7 @@
 
 
 
-UCLASS(Abstract) // UClass prevents from being placed but derived can. Unreal engine is weird with abstract
+UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API AWeaponBase : public AActor
 {
 	GENERATED_BODY()
