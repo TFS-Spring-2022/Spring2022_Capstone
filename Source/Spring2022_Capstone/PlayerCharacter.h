@@ -44,6 +44,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *JumpAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction *SprintAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *GrapleAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *AttackAction;
@@ -52,9 +54,13 @@ protected:
 	
 	void Move(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
+
 	void Attack(const FInputActionValue &Value);
 	// Switches ActiveWeapon between Weapon1 and Weapon2
 	void SwitchWeapon(const FInputActionValue &Value);
+
+
+	void Sprint(const FInputActionValue &Value);
 
 
 private:
@@ -62,9 +68,14 @@ private:
 	UCameraComponent *Camera;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
+	float Acceleration = 200.f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
 	float Speed = 200.f;
 	UPROPERTY(EditAnywhere, Category = "Movement")
+	float SprintMultiplier = 1.2f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnRate = 200.f;
+
 
 	// ToDo: Currently assigned inside WeaponBase::BeginPlay() from weapons in level.
 	UPROPERTY(EditAnywhere, Category="Player Inventory")
@@ -77,4 +88,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="Player Inventory")
 	AWeaponBase* ActiveWeapon;
 	
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	bool bIsSprinting;
+
 };

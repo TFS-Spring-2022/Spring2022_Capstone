@@ -34,8 +34,12 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
         EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
         EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 
+
         EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
         EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Completed, this, &APlayerCharacter::SwitchWeapon);
+
+        EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
+
     }
 }
 
@@ -51,6 +55,7 @@ void APlayerCharacter::BeginPlay()
             Subsystem->AddMappingContext(CharacterMappingContext, 0);
         }
     }
+    Speed = GetCharacterMovement()->MaxWalkSpeed;
 }
 
 void APlayerCharacter::Move(const FInputActionValue &Value)
@@ -58,8 +63,9 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
     const FVector2D DirectionalValue = Value.Get<FVector2D>();
     if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
     {
-        AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * Speed * UGameplayStatics::GetWorldDeltaSeconds(this));
-        AddMovementInput(GetActorRightVector(), DirectionalValue.X * Speed * UGameplayStatics::GetWorldDeltaSeconds(this));
+        GetCharacterMovement()->MaxWalkSpeed = bIsSprinting ? Speed * SprintMultiplier : Speed;;
+        AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * 100);
+        AddMovementInput(GetActorRightVector(), DirectionalValue.X * 100);
     }
 }
 
@@ -72,6 +78,7 @@ void APlayerCharacter::Look(const FInputActionValue &Value)
         AddControllerPitchInput(LookAxisValue.Y * TurnRate * UGameplayStatics::GetWorldDeltaSeconds(this));
     }
 }
+
 
 void APlayerCharacter::Attack(const FInputActionValue& Value)
 {
@@ -105,4 +112,10 @@ AWeaponBase* APlayerCharacter::GetWeapon2() const
     return Weapon2;
 }
 
+
+
+void APlayerCharacter::Sprint(const FInputActionValue &Value)
+{
+    bIsSprinting = Value.Get<bool>();
+}
 
