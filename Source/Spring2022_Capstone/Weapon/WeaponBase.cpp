@@ -30,6 +30,19 @@ void AWeaponBase::BeginPlay()
 
 	GetWorldTimerManager().ClearTimer(FireTimerHandle);
 
+	Character = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0)); 
+
+	// DEBUG - attach weapon on spawn. Note - Requires weapons placed in level. - ToDo: Need creator/factory/manager to create and handle weapon instances.
+	if(!Character->GetWeapon1())
+	{
+		Character->SetWeapon1(this);
+		AttachWeapon(Character);
+	}
+	else if(!Character->GetWeapon2())
+	{
+		Character->SetWeapon2(this);
+		AttachWeapon(Character);
+	}
 	
 }
 
