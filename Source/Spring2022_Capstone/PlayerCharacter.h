@@ -26,6 +26,12 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) override;
 
+	// Sets Weapon references and sets to ActiveWeapon
+	void SetWeapon1(AWeaponBase* Weapon);
+	void SetWeapon2(AWeaponBase* Weapon);
+	AWeaponBase* GetWeapon1() const;
+	AWeaponBase* GetWeapon2() const;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -51,4 +57,16 @@ private:
 	float Speed = 200.f;
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnRate = 200.f;
+
+	// ToDo: Currently assigned inside WeaponBase::BeginPlay() from weapons in level.
+	UPROPERTY(EditAnywhere, Category="Player Inventory")
+	AWeaponBase* Weapon1; 
+
+	UPROPERTY(EditAnywhere, Category="Player Inventory")
+	AWeaponBase* Weapon2;
+
+	// Player's current weapon. Will be used on Attack()
+	UPROPERTY(VisibleAnywhere, Category="Player Inventory")
+	AWeaponBase* ActiveWeapon;
+	
 };
