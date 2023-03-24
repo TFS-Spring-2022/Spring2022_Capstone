@@ -9,7 +9,7 @@
 class UPanelWidget;
 class UProgressBar;
 
-UCLASS()
+UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API UHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
@@ -25,6 +25,6 @@ public:
 	UProgressBar *HealthBar;
 
 private:
-	UPROPERTY()
-	void OnHeathChanged();
+	UFUNCTION()
+	void OnHealthChanged();
 };

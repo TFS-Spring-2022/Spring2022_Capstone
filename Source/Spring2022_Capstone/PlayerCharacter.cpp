@@ -12,6 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "HealthComponent.h"
 
 
 APlayerCharacter::APlayerCharacter()
@@ -20,6 +21,8 @@ APlayerCharacter::APlayerCharacter()
     Camera->SetupAttachment(RootComponent);
     Camera->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
     Camera->bUsePawnControlRotation = true;
+
+    PlayerHealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("PlayerHealthComponent"));
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)

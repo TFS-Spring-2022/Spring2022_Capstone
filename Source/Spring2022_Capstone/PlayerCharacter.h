@@ -15,6 +15,7 @@ class UInputComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UCharacterMovementComponent;
+class UHealthComponent;
 
 DECLARE_DELEGATE_OneParam(FOnHealthChanged, bool);
 UCLASS()
@@ -55,6 +56,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *SwitchWeaponAction;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UHealthComponent *PlayerHealthComponent;
+
 	void Move(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
 

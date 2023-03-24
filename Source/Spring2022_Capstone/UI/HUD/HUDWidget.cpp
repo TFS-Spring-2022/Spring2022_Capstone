@@ -8,7 +8,7 @@ void UHUDWidget::NativeConstruct()
     Super::NativeConstruct();
 }
 
-void UHUDWidget::OnHeathChanged()
+void UHUDWidget::OnHealthChanged()
 {
-    
+
 }
