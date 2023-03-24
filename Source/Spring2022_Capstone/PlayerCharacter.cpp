@@ -1,6 +1,9 @@
 // Created by Spring2022_Capstone team
 
 #include "PlayerCharacter.h"
+
+#include <string>
+
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Weapon/WeaponBase.h"
@@ -30,9 +33,16 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 
         EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
         EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
+
+
+        EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
+        EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Completed, this, &APlayerCharacter::SwitchWeapon);
+
         EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
+
     }
 }
+
 
 void APlayerCharacter::BeginPlay()
 {
@@ -69,7 +79,43 @@ void APlayerCharacter::Look(const FInputActionValue &Value)
     }
 }
 
+
+void APlayerCharacter::Attack(const FInputActionValue& Value)
+{
+    ActiveWeapon->Shoot();
+}
+
+void APlayerCharacter::SwitchWeapon(const FInputActionValue& Value)
+{
+    ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+}
+    
+void APlayerCharacter::SetWeapon1(AWeaponBase* Weapon)
+{
+    Weapon1 = Weapon;
+    ActiveWeapon = Weapon1;
+}
+
+void APlayerCharacter::SetWeapon2(AWeaponBase* Weapon)
+{
+    Weapon2 = Weapon;
+    ActiveWeapon = Weapon2;
+}
+
+AWeaponBase* APlayerCharacter::GetWeapon1() const
+{
+    return Weapon1;
+}
+
+AWeaponBase* APlayerCharacter::GetWeapon2() const
+{
+    return Weapon2;
+}
+
+
+
 void APlayerCharacter::Sprint(const FInputActionValue &Value)
 {
     bIsSprinting = Value.Get<bool>();
 }
+

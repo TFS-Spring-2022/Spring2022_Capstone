@@ -26,6 +26,12 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) override;
 
+	// Sets Weapon references and sets to ActiveWeapon
+	void SetWeapon1(AWeaponBase* Weapon);
+	void SetWeapon2(AWeaponBase* Weapon);
+	AWeaponBase* GetWeapon1() const;
+	AWeaponBase* GetWeapon2() const;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -41,10 +47,21 @@ protected:
 	UInputAction *SprintAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *GrapleAction;
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction *AttackAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction *SwitchWeaponAction;
+	
 	void Move(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
+
+	void Attack(const FInputActionValue &Value);
+	// Switches ActiveWeapon between Weapon1 and Weapon2
+	void SwitchWeapon(const FInputActionValue &Value);
+
+
 	void Sprint(const FInputActionValue &Value);
+
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
@@ -58,6 +75,21 @@ private:
 	float SprintMultiplier = 1.2f;
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnRate = 200.f;
+
+
+	// ToDo: Currently assigned inside WeaponBase::BeginPlay() from weapons in level.
+	UPROPERTY(EditAnywhere, Category="Player Inventory")
+	AWeaponBase* Weapon1; 
+
+	UPROPERTY(EditAnywhere, Category="Player Inventory")
+	AWeaponBase* Weapon2;
+
+	// Player's current weapon. Will be used on Attack()
+	UPROPERTY(VisibleAnywhere, Category="Player Inventory")
+	AWeaponBase* ActiveWeapon;
+	
+
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	bool bIsSprinting;
+
 };

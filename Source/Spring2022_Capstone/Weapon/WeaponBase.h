@@ -18,14 +18,6 @@ public:
 	// Sets default values for this actor's properties
 	AWeaponBase();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	
-	virtual void Shoot() PURE_VIRTUAL(AWeaponBase::Shoot());
-
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
 	/**
 	* @brief Attaches the actor to a PlayerCharacter.
 	* @param TargetCharacter APlayerCharacter instance holding the actor.
@@ -33,6 +25,15 @@ protected:
 	UFUNCTION(BlueprintCallable, Category="Equip")
 	void AttachWeapon(APlayerCharacter* TargetCharacter);
 
+	virtual void Shoot() PURE_VIRTUAL(AWeaponBase::Shoot());
+	
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	
+	
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	//// Weapon Stats
 
@@ -117,12 +118,5 @@ public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
-	// Fire Input Action
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
-	class UInputAction* FireAction;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-	UInputMappingContext *CharacterMappingContext;
 	
 };
