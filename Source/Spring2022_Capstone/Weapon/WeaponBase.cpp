@@ -30,9 +30,6 @@ void AWeaponBase::BeginPlay()
 
 	GetWorldTimerManager().ClearTimer(FireTimerHandle);
 
-	// Debug - Attaching to character on BeginPlay
-	Character = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
-	AttachWeapon(Character);
 	
 }
 
@@ -82,6 +79,7 @@ void AWeaponBase::WeaponCooldown()
 
 void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 {
+	
 	Character = TargetCharacter; 
 
 	if(Character == nullptr)
@@ -94,19 +92,5 @@ void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 	// ToDo: Connect to skeletal mesh when it is added.
 	//AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
 	AttachToComponent(Character->GetRootComponent(), AttachmentRules, FName(TEXT("GripPoint"))); // ToDo: SkeletonMesh and Socket
-
-	// Set up action bindings
-	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			// Set the priority of the mapping to 1, so that it overrides the Jump action with the Fire action when using touch input
-			Subsystem->AddMappingContext(CharacterMappingContext, 1);
-		}
-
-		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
-		{
-			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AWeaponBase::Shoot); 
-		}
-	}
+	
 }
