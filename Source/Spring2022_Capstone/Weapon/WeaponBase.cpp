@@ -64,6 +64,7 @@ void AWeaponBase::ChargeCooldown()
 
 void AWeaponBase::Overheat()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("OVERHEATING"));
 	bIsOverheating = true;
 	bCanFire = false;
 	
@@ -76,6 +77,7 @@ void AWeaponBase::WeaponCooldown()
 	bIsOverheating = false;
 	bCanFire = true;
 	CurWeaponCharge = 0;
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("WEAPON COOLED"));
 }
 
 void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
@@ -91,7 +93,7 @@ void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true); 
 	// ToDo: Connect to skeletal mesh when it is added.
 	//AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
-	AttachToComponent(Character->GetRootComponent(), AttachmentRules, FName(TEXT("GripPoint")));
+	AttachToComponent(Character->GetRootComponent(), AttachmentRules, FName(TEXT("GripPoint"))); // ToDo: SkeletonMesh and Socket
 
 	// Set up action bindings
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
@@ -104,7 +106,6 @@ void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 
 		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 		{
-			// ToDo: Handle multiple fire types (when added)
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AWeaponBase::Shoot); 
 		}
 	}
