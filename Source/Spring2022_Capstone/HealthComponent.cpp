@@ -32,12 +32,12 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
-void UHealthComponent::SetHealth(int NewHealth)
+void UHealthComponent::SetHealth(float NewHealth)
 {
 	HealthPoints = NewHealth;
 }
 
-int UHealthComponent::GetHealth()
+float UHealthComponent::GetHealth()
 {
-    return 0;
+    return HealthPoints;
 }

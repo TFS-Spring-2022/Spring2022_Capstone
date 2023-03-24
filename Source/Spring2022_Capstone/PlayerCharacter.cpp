@@ -14,7 +14,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "HealthComponent.h"
 
-
 APlayerCharacter::APlayerCharacter()
 {
     Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -37,15 +36,12 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
         EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
         EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 
-
         EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
         EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Completed, this, &APlayerCharacter::SwitchWeapon);
 
         EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
-
     }
 }
-
 
 void APlayerCharacter::BeginPlay()
 {
@@ -66,7 +62,8 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
     const FVector2D DirectionalValue = Value.Get<FVector2D>();
     if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
     {
-        GetCharacterMovement()->MaxWalkSpeed = bIsSprinting ? Speed * SprintMultiplier : Speed;;
+        GetCharacterMovement()->MaxWalkSpeed = bIsSprinting ? Speed * SprintMultiplier : Speed;
+        ;
         AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * 100);
         AddMovementInput(GetActorRightVector(), DirectionalValue.X * 100);
     }
@@ -82,43 +79,51 @@ void APlayerCharacter::Look(const FInputActionValue &Value)
     }
 }
 
-
-void APlayerCharacter::Attack(const FInputActionValue& Value)
+void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
     ActiveWeapon->Shoot();
 }
 
-void APlayerCharacter::SwitchWeapon(const FInputActionValue& Value)
+void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
     ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 }
-    
-void APlayerCharacter::SetWeapon1(AWeaponBase* Weapon)
+
+void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)
 {
     Weapon1 = Weapon;
     ActiveWeapon = Weapon1;
 }
 
-void APlayerCharacter::SetWeapon2(AWeaponBase* Weapon)
+void APlayerCharacter::SetWeapon2(AWeaponBase *Weapon)
 {
     Weapon2 = Weapon;
     ActiveWeapon = Weapon2;
 }
 
-AWeaponBase* APlayerCharacter::GetWeapon1() const
+AWeaponBase *APlayerCharacter::GetWeapon1() const
 {
     return Weapon1;
 }
 
-AWeaponBase* APlayerCharacter::GetWeapon2() const
+AWeaponBase *APlayerCharacter::GetWeapon2() const
 {
     return Weapon2;
 }
-
-
 
 void APlayerCharacter::Sprint(const FInputActionValue &Value)
 {
     bIsSprinting = Value.Get<bool>();
 }
 
+void APlayerCharacter::TakeHit()
+{
+    if (PlayerHealthComponent)
+    {
+        PlayerHealthComponent->SetHealth(PlayerHealthComponent->GetHealth() - 5.0f);
+        if (OnHealthChangedDelegate.IsBound())
+        {
+            OnHealthChangedDelegate.Execute(PlayerHealthComponent->GetHealth());
+        }
+    }
+}

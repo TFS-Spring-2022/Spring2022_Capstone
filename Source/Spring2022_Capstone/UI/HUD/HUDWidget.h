@@ -26,5 +26,5 @@ public:
 
 private:
 	UFUNCTION()
-	void OnHealthChanged();
+	void OnHealthChanged(float HealthValue);
 };

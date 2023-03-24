@@ -24,11 +24,11 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
 	UFUNCTION()
-	void SetHealth(int NewHealth);
+	void SetHealth(float NewHealth);
 	UFUNCTION()
-	int GetHealth();
+	float GetHealth();
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Health")
-	int HealthPoints;
+	float HealthPoints;
 };

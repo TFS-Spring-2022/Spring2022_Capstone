@@ -7,7 +7,6 @@
 #include "InputActionValue.h"
 #include "PlayerCharacter.generated.h"
 
-
 class AWeaponBase;
 class UInputMappingContext;
 class UInputAction;
@@ -17,7 +16,7 @@ class UCameraComponent;
 class UCharacterMovementComponent;
 class UHealthComponent;
 
-DECLARE_DELEGATE_OneParam(FOnHealthChanged, bool);
+DECLARE_DELEGATE_OneParam(FOnHealthChanged, float);
 UCLASS()
 class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 {
@@ -31,10 +30,10 @@ public:
 	FOnHealthChanged OnHealthChangedDelegate;
 
 	// Sets Weapon references and sets to ActiveWeapon
-	void SetWeapon1(AWeaponBase* Weapon);
-	void SetWeapon2(AWeaponBase* Weapon);
-	AWeaponBase* GetWeapon1() const;
-	AWeaponBase* GetWeapon2() const;
+	void SetWeapon1(AWeaponBase *Weapon);
+	void SetWeapon2(AWeaponBase *Weapon);
+	AWeaponBase *GetWeapon1() const;
+	AWeaponBase *GetWeapon2() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -55,7 +54,7 @@ protected:
 	UInputAction *AttackAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *SwitchWeaponAction;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UHealthComponent *PlayerHealthComponent;
 
@@ -65,10 +64,10 @@ protected:
 	void Attack(const FInputActionValue &Value);
 	// Switches ActiveWeapon between Weapon1 and Weapon2
 	void SwitchWeapon(const FInputActionValue &Value);
-
-
 	void Sprint(const FInputActionValue &Value);
 
+	UFUNCTION(BlueprintCallable)
+	void TakeHit();
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
@@ -83,20 +82,17 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnRate = 200.f;
 
-
 	// ToDo: Currently assigned inside WeaponBase::BeginPlay() from weapons in level.
-	UPROPERTY(EditAnywhere, Category="Player Inventory")
-	AWeaponBase* Weapon1; 
+	UPROPERTY(EditAnywhere, Category = "Player Inventory")
+	AWeaponBase *Weapon1;
 
-	UPROPERTY(EditAnywhere, Category="Player Inventory")
-	AWeaponBase* Weapon2;
+	UPROPERTY(EditAnywhere, Category = "Player Inventory")
+	AWeaponBase *Weapon2;
 
 	// Player's current weapon. Will be used on Attack()
-	UPROPERTY(VisibleAnywhere, Category="Player Inventory")
-	AWeaponBase* ActiveWeapon;
-	
+	UPROPERTY(VisibleAnywhere, Category = "Player Inventory")
+	AWeaponBase *ActiveWeapon;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	bool bIsSprinting;
-
 };
