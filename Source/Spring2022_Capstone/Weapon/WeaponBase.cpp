@@ -30,9 +30,19 @@ void AWeaponBase::BeginPlay()
 
 	GetWorldTimerManager().ClearTimer(FireTimerHandle);
 
-	// Debug - Attaching to character on BeginPlay
-	Character = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
-	AttachWeapon(Character);
+	Character = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0)); 
+
+	// DEBUG - attach weapon on spawn. Note - Requires weapons placed in level. - ToDo: Need creator/factory/manager to create and handle weapon instances.
+	if(!Character->GetWeapon1())
+	{
+		Character->SetWeapon1(this);
+		AttachWeapon(Character);
+	}
+	else if(!Character->GetWeapon2())
+	{
+		Character->SetWeapon2(this);
+		AttachWeapon(Character);
+	}
 	
 }
 
@@ -64,6 +74,7 @@ void AWeaponBase::ChargeCooldown()
 
 void AWeaponBase::Overheat()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("OVERHEATING"));
 	bIsOverheating = true;
 	bCanFire = false;
 	
@@ -76,10 +87,12 @@ void AWeaponBase::WeaponCooldown()
 	bIsOverheating = false;
 	bCanFire = true;
 	CurWeaponCharge = 0;
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("WEAPON COOLED"));
 }
 
 void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 {
+	
 	Character = TargetCharacter; 
 
 	if(Character == nullptr)
@@ -91,21 +104,6 @@ void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true); 
 	// ToDo: Connect to skeletal mesh when it is added.
 	//AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
-	AttachToComponent(Character->GetRootComponent(), AttachmentRules, FName(TEXT("GripPoint")));
-
-	// Set up action bindings
-	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			// Set the priority of the mapping to 1, so that it overrides the Jump action with the Fire action when using touch input
-			Subsystem->AddMappingContext(CharacterMappingContext, 1);
-		}
-
-		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
-		{
-			// ToDo: Handle multiple fire types (when added)
-			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AWeaponBase::Shoot); 
-		}
-	}
+	AttachToComponent(Character->GetRootComponent(), AttachmentRules, FName(TEXT("GripPoint"))); // ToDo: SkeletonMesh and Socket
+	
 }
