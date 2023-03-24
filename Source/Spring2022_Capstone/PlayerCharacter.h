@@ -45,9 +45,17 @@ protected:
 	UInputAction *JumpAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *GrapleAction;
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction *AttackAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction *SwitchWeaponAction;
+	
 	void Move(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
+	void Attack(const FInputActionValue &Value);
+	// Switches ActiveWeapon between Weapon1 and Weapon2
+	void SwitchWeapon(const FInputActionValue &Value);
+
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
