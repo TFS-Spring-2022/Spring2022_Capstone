@@ -3,6 +3,8 @@
 
 #include "SemiAutomaticWeapon.h"
 
+#include "DevTargets.h"
+
 
 void ASemiAutomaticWeapon::Shoot()
 {
@@ -30,6 +32,11 @@ void ASemiAutomaticWeapon::Shoot()
 
 			if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
+				if(HitResult.GetActor()->IsA(ADevTargets::StaticClass()))
+				{
+					ADevTargets* CurrentHit = Cast<ADevTargets>(HitResult.GetActor());
+					CurrentHit->ToggleMaterial();
+				}
 				DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 			}
 

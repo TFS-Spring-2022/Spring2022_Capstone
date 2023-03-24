@@ -2,9 +2,7 @@
 
 
 #include "ShotgunWeapon.h"
-
-#include <string>
-
+#include "DevTargets.h"
 #include "Kismet/KismetMathLibrary.h"
 
 void AShotgunWeapon::Shoot()
@@ -44,6 +42,12 @@ void AShotgunWeapon::Shoot()
 
 				if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 				{
+					if(HitResult.GetActor()->IsA(ADevTargets::StaticClass()))
+					{
+						ADevTargets* CurrentHit = Cast<ADevTargets>(HitResult.GetActor());
+						CurrentHit->ToggleMaterial();
+					}
+					
 					DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 				}	
 			}
