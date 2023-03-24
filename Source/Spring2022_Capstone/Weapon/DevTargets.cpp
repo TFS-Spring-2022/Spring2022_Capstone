@@ -10,8 +10,7 @@ ADevTargets::ADevTargets()
 	PrimaryActorTick.bCanEverTick = true;
 
 	TargetStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>("Static Mesh Comp");
-	//TargetSkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Skeletal Mesh Component");
-
+	
 	RootComponent = TargetStaticMesh;
 	
 }

@@ -20,15 +20,11 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UMaterial* DefaultMaterial;
-
+	
 	UPROPERTY(EditAnywhere)
 	UMaterial* HitMaterial;
 
 	void ToggleMaterial();
-	
-	
-	//UPROPERTY(EditAnywhere)
-	//USkeletalMeshComponent* TargetSkeletalMesh;
 
 protected:
 	// Called when the game starts or when spawned
