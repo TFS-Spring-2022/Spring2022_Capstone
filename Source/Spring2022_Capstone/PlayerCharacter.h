@@ -16,6 +16,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UCharacterMovementComponent;
 
+DECLARE_DELEGATE_OneParam(FOnHealthChanged, bool);
 UCLASS()
 class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 {
@@ -25,6 +26,8 @@ public:
 	APlayerCharacter();
 
 	virtual void SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) override;
+
+	FOnHealthChanged OnHealthChangedDelegate;
 
 	// Sets Weapon references and sets to ActiveWeapon
 	void SetWeapon1(AWeaponBase* Weapon);
