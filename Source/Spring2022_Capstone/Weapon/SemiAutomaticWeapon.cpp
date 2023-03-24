@@ -16,20 +16,21 @@ void ASemiAutomaticWeapon::Shoot()
 	if(bCanFire)
 	{
 		if(!GetWorldTimerManager().IsTimerActive(FireTimerHandle))							
-		{	
-			GetWorldTimerManager().SetTimer(FireTimerHandle, this, &ASemiAutomaticWeapon::ClearFireTimerHandle, FireRate, false);		// Start timer the fire rate timer (after it runs for FireRate (time between shots in seconds) it will be cleared
+		{
+			// Start timer the fire rate timer (after it runs for FireRate (time between shots in seconds) it will be cleared
+			GetWorldTimerManager().SetTimer(FireTimerHandle, this, &ASemiAutomaticWeapon::ClearFireTimerHandle, FireRate, false);		
 
 			FHitResult HitResult;
 
 			FVector StartTrace = PlayerCamera->GetCameraLocation();
+			StartTrace.Z -= 10; // TEMP: Offset to make debug draw lines visible without moving. 
 			FVector ForwardVector = PlayerCamera->GetActorForwardVector();
-			FVector EndTrace = ((ForwardVector * 1000.0f) + StartTrace); // ToDo: Turn 1000.0f into a variable shot distance. Set it once we figure out level sizes.
+			FVector EndTrace = ((ForwardVector * ShotDistance) + StartTrace); 
 			FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 
 			if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Black, TEXT("PEW"));
-				DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor(255,0,0), true);
+				DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 			}
 
 			CurWeaponCharge += ShotCost;
