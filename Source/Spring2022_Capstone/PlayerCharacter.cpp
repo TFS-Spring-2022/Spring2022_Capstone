@@ -33,6 +33,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
         EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
         EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
+        EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Crouch);
+
         EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
         EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 
@@ -114,6 +116,10 @@ AWeaponBase *APlayerCharacter::GetWeapon2() const
 void APlayerCharacter::Sprint(const FInputActionValue &Value)
 {
     bIsSprinting = Value.Get<bool>();
+}
+
+void APlayerCharacter::Crouch(const FInputActionValue &Value)
+{
 }
 
 void APlayerCharacter::TakeHit()
