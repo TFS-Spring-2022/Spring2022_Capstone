@@ -25,21 +25,19 @@ class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 public:
 	APlayerCharacter();
 
+	virtual void Tick(float DeltaTime) override;
+
 	virtual void SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) override;
-
-	FOnHealthChanged OnHealthChangedDelegate;
-
-	// Sets Weapon references and sets to ActiveWeapon
-	void SetWeapon1(AWeaponBase *Weapon);
-	void SetWeapon2(AWeaponBase *Weapon);
-	AWeaponBase *GetWeapon1() const;
-	AWeaponBase *GetWeapon2() const;
+	void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+	void OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+	void CalcCamera(float DeltaTime, struct FMinimalViewInfo& OutResult) override;
 
 protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputMappingContext *CharacterMappingContext;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputAction *MoveAction;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
@@ -50,8 +48,9 @@ protected:
 	UInputAction *SprintAction;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *CrouchAction;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction *GrapleAction;
+	UInputAction *GrappleAction;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *AttackAction;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -62,12 +61,12 @@ protected:
 
 	void Move(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
+	void Sprint(const FInputActionValue &Value);
+	void Crouch(const FInputActionValue &Value);
 
 	void Attack(const FInputActionValue &Value);
 	// Switches ActiveWeapon between Weapon1 and Weapon2
 	void SwitchWeapon(const FInputActionValue &Value);
-	void Sprint(const FInputActionValue &Value);
-	void Crouch(const FInputActionValue &Value);
 
 	UFUNCTION(BlueprintCallable)
 	void TakeHit();
@@ -98,4 +97,19 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	bool bIsSprinting;
+
+public:
+
+	FOnHealthChanged OnHealthChangedDelegate;
+
+	// Sets Weapon references and sets to ActiveWeapon
+	void SetWeapon1(AWeaponBase *Weapon);
+	void SetWeapon2(AWeaponBase *Weapon);
+	AWeaponBase *GetWeapon1() const;
+	AWeaponBase *GetWeapon2() const;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
+	FVector CrouchEyeOffset;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
+	float CrouchSpeed;
 };
