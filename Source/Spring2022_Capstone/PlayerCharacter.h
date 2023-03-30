@@ -26,14 +26,10 @@ class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 public:
 	APlayerCharacter();
 
-<<<<<<< HEAD
-	virtual void SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) override;
-
 	FOnHealthChanged OnHealthChangedDelegate;
 	FOnGrappleTriggered OnGrappleTriggeredDelegate;
-=======
+
 	virtual void Tick(float DeltaTime) override;
->>>>>>> develop
 
 	virtual void SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) override;
 	void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
@@ -108,8 +104,6 @@ private:
 	bool bIsSprinting;
 
 public:
-
-	FOnHealthChanged OnHealthChangedDelegate;
 
 	// Sets Weapon references and sets to ActiveWeapon
 	void SetWeapon1(AWeaponBase *Weapon);
