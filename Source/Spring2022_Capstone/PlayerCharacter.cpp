@@ -149,10 +149,14 @@ void APlayerCharacter::Attack(const FInputActionValue &Value)
 
 void APlayerCharacter::Grapple(const FInputActionValue &Value)
 {
-    if (OnGrappleTriggeredDelegate.IsBound())
+	if (OnGrappleActivatedDelegate.IsBound())
     {
-		GetWorld()->GetTimerManager().SetTimer(handle, this, &APlayerCharacter::GrappleDone, 5, false);
-		OnGrappleTriggeredDelegate.Execute(handle);
+		OnGrappleActivatedDelegate.Execute();
+    }
+	GetWorld()->GetTimerManager().SetTimer(handle, this, &APlayerCharacter::GrappleDone, 5, false);
+    if (OnGrappleCooldownStartDelegate.IsBound())
+    {
+		OnGrappleCooldownStartDelegate.Execute(handle);
     }
 }
 
@@ -164,6 +168,10 @@ void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 void APlayerCharacter::GrappleDone()
 {
 	handle.Invalidate();
+	if (OnGrappleCooldownEndDelegate.IsBound())
+    {
+		OnGrappleCooldownEndDelegate.Execute();
+    }
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)

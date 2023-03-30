@@ -38,7 +38,11 @@ private:
 	UFUNCTION()
 	void OnHealthChanged(float HealthValue);
 	UFUNCTION()
-	void OnGrappleTriggered(FTimerHandle &TimerHandle);
+	void OnGrappleActivated();
+	UFUNCTION()
+	void OnGrappleCooldownStart(FTimerHandle &TimerHandle);
+	UFUNCTION()
+	void OnGrappleCooldownEnd();
 	float GrappleCooldown;
 
 	FTimerHandle *GrappleTimerHandle;

@@ -17,7 +17,9 @@ class UCharacterMovementComponent;
 class UHealthComponent;
 
 DECLARE_DELEGATE_OneParam(FOnHealthChanged, float);
-DECLARE_DELEGATE_OneParam(FOnGrappleTriggered, FTimerHandle&);
+DECLARE_DELEGATE(FOnGrappleActivated);
+DECLARE_DELEGATE_OneParam(FOnGrappleCooldownStart, FTimerHandle&);
+DECLARE_DELEGATE(FOnGrappleCooldownEnd);
 UCLASS()
 class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 {
@@ -27,7 +29,9 @@ public:
 	APlayerCharacter();
 
 	FOnHealthChanged OnHealthChangedDelegate;
-	FOnGrappleTriggered OnGrappleTriggeredDelegate;
+	FOnGrappleActivated OnGrappleActivatedDelegate;
+	FOnGrappleCooldownStart OnGrappleCooldownStartDelegate;
+	FOnGrappleCooldownEnd OnGrappleCooldownEndDelegate;
 
 	virtual void Tick(float DeltaTime) override;
 
