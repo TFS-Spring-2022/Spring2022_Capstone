@@ -79,7 +79,6 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
 	if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
 	{
 		GetCharacterMovement()->MaxWalkSpeed = bIsSprinting ? Speed * SprintMultiplier : Speed;
-		;
 		AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * 100);
 		AddMovementInput(GetActorRightVector(), DirectionalValue.X * 100);
 	}
