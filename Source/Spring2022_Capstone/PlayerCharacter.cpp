@@ -35,6 +35,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 
         EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
         EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
+        EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Grapple);
 
         EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
         EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Completed, this, &APlayerCharacter::SwitchWeapon);
@@ -82,6 +83,14 @@ void APlayerCharacter::Look(const FInputActionValue &Value)
 void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
     ActiveWeapon->Shoot();
+}
+
+void APlayerCharacter::Grapple(const FInputActionValue &Value)
+{
+    if (OnGrappleTriggeredDelegate.IsBound())
+    {
+        OnGrappleTriggeredDelegate.Execute(5);
+    }
 }
 
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)

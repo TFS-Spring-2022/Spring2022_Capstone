@@ -37,4 +37,6 @@ public:
 private:
 	UFUNCTION()
 	void OnHealthChanged(float HealthValue);
+	UFUNCTION()
+	void OnGrappleTriggered(float Cooldown);
 };
