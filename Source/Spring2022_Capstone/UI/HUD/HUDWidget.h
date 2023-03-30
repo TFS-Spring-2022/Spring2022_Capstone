@@ -27,6 +27,11 @@ public:
 	// Crosshair
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UImage *Crosshair;
+	// Grapple
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage *GrappleIcon;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UProgressBar *GrappleCooldownBar;
 
 
 private:
