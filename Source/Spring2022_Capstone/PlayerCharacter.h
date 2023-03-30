@@ -17,7 +17,7 @@ class UCharacterMovementComponent;
 class UHealthComponent;
 
 DECLARE_DELEGATE_OneParam(FOnHealthChanged, float);
-DECLARE_DELEGATE_OneParam(FOnGrappleTriggered, float);
+DECLARE_DELEGATE_OneParam(FOnGrappleTriggered, FTimerHandle&);
 UCLASS()
 class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 {
@@ -102,6 +102,11 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	bool bIsSprinting;
+
+	UFUNCTION()
+	void GrappleDone();
+
+	FTimerHandle handle;
 
 public:
 

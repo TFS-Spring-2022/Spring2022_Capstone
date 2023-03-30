@@ -12,6 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "HealthComponent.h"
 
 APlayerCharacter::APlayerCharacter()
@@ -150,13 +151,19 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 {
     if (OnGrappleTriggeredDelegate.IsBound())
     {
-        OnGrappleTriggeredDelegate.Execute(5);
+		GetWorld()->GetTimerManager().SetTimer(handle, this, &APlayerCharacter::GrappleDone, 5, false);
+		OnGrappleTriggeredDelegate.Execute(handle);
     }
 }
 
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
 	ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+}
+
+void APlayerCharacter::GrappleDone()
+{
+	handle.Invalidate();
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)

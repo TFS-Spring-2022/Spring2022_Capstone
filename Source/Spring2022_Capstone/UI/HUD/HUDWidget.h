@@ -17,7 +17,8 @@ class SPRING2022_CAPSTONE_API UHUDWidget : public UUserWidget
 
 protected:
 	virtual void NativeConstruct() override;
-	
+	virtual void NativeTick(const FGeometry &MyGeometry, float DeltaTime) override;
+
 public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *RootPanel;
@@ -33,10 +34,12 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UProgressBar *GrappleCooldownBar;
 
-
 private:
 	UFUNCTION()
 	void OnHealthChanged(float HealthValue);
 	UFUNCTION()
-	void OnGrappleTriggered(float Cooldown);
+	void OnGrappleTriggered(FTimerHandle &TimerHandle);
+	float GrappleCooldown;
+
+	FTimerHandle *GrappleTimerHandle;
 };
