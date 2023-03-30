@@ -8,6 +8,7 @@
 
 class UPanelWidget;
 class UProgressBar;
+class UImage;
 
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API UHUDWidget : public UUserWidget
@@ -23,6 +24,10 @@ public:
 	// Health bar
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UProgressBar *HealthBar;
+	// Crosshair
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage *Crosshair;
+
 
 private:
 	UFUNCTION()
