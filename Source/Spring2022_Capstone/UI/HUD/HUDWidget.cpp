@@ -20,7 +20,6 @@ void UHUDWidget::NativeConstruct()
     }
 
     GrappleCooldownText->SetText(FText::GetEmpty());
-    GrappleCooldown = 0.f;
 }
 
 void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
@@ -29,7 +28,7 @@ void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
     if (GrappleTimerHandle && GrappleTimerHandle->IsValid())
     {
         float timerRemainingTime = UKismetSystemLibrary::K2_GetTimerRemainingTimeHandle(GetWorld(), *GrappleTimerHandle);
-        float grappleCooldownPercent = timerRemainingTime / 5.f;
+        float grappleCooldownPercent = timerRemainingTime / GrappleCooldown;
         GrappleCooldownBar->SetPercent(grappleCooldownPercent);
         GrappleCooldownText->SetText(FText::FromString(FString::FromInt(FMath::CeilToInt(timerRemainingTime))));
     }

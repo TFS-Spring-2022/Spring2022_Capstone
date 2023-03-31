@@ -38,6 +38,9 @@ public:
 	UTextBlock *GrappleCooldownText;
 
 private:
+	UPROPERTY(EditDefaultsOnly, Category = "Grapple")
+	float GrappleCooldown;
+
 	UFUNCTION()
 	void OnHealthChanged(float HealthValue);
 	UFUNCTION()
@@ -46,7 +49,6 @@ private:
 	void OnGrappleCooldownStart(FTimerHandle &TimerHandle);
 	UFUNCTION()
 	void OnGrappleCooldownEnd();
-	float GrappleCooldown;
 
 	FTimerHandle *GrappleTimerHandle;
 };
