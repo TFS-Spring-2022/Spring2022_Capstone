@@ -9,6 +9,7 @@
 class UPanelWidget;
 class UProgressBar;
 class UImage;
+class UTextBlock;
 
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API UHUDWidget : public UUserWidget
@@ -33,6 +34,8 @@ public:
 	UImage *GrappleIcon;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UProgressBar *GrappleCooldownBar;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UTextBlock *GrappleCooldownText;
 
 private:
 	UFUNCTION()

@@ -2,7 +2,9 @@
 
 #include "HUDWidget.h"
 #include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Spring2022_Capstone/PlayerCharacter.h"
 
 void UHUDWidget::NativeConstruct()
@@ -17,6 +19,7 @@ void UHUDWidget::NativeConstruct()
         playerCharacter->OnGrappleCooldownEndDelegate.BindUObject(this, &UHUDWidget::OnGrappleCooldownEnd);
     }
 
+    GrappleCooldownText->SetText(FText::GetEmpty());
     GrappleCooldown = 0.f;
 }
 
@@ -25,8 +28,10 @@ void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
     Super::NativeTick(MyGeometry, DeltaTime);
     if (GrappleTimerHandle && GrappleTimerHandle->IsValid())
     {
-        float grappleCooldownPercent = UKismetSystemLibrary::K2_GetTimerRemainingTimeHandle(GetWorld(), *GrappleTimerHandle) / 5.f;
+        float timerRemainingTime = UKismetSystemLibrary::K2_GetTimerRemainingTimeHandle(GetWorld(), *GrappleTimerHandle);
+        float grappleCooldownPercent = timerRemainingTime / 5.f;
         GrappleCooldownBar->SetPercent(grappleCooldownPercent);
+        GrappleCooldownText->SetText(FText::FromString(FString::FromInt(FMath::CeilToInt(timerRemainingTime))));
     }
 }
 
@@ -49,4 +54,5 @@ void UHUDWidget::OnGrappleCooldownEnd()
 {
     GrappleTimerHandle = nullptr;
     GrappleCooldownBar->SetPercent(0);
+    GrappleCooldownText->SetText(FText::GetEmpty());
 }
