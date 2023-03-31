@@ -34,4 +34,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Pickup")
 	TEnumAsByte<EPickupType> PickupType;
+
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent *Comp, AActor *otherActor, UPrimitiveComponent *otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
 };
