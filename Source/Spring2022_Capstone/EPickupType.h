@@ -10,5 +10,7 @@
 UENUM(BlueprintType)
 enum EPickupType
 {
-    HealthPickup UMETA(DisplayName = "HealthPickup"),
+    HealthPickupSmall UMETA(DisplayName = "HealthPickupSmall"),
+    HealthPickupMedium UMETA(DisplayName = "HealthPickupMedium"),
+    HealthPickupLarge UMETA(DisplayName = "HealthPickupLarge"),
 };

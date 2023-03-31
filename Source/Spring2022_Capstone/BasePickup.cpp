@@ -32,9 +32,26 @@ void ABasePickup::Tick(float DeltaTime)
 
 void ABasePickup::OnOverlapBegin(UPrimitiveComponent *Comp, AActor *otherActor, UPrimitiveComponent *otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
 {
-	if (!otherActor->IsA(APlayerCharacter::StaticClass()))
+	APlayerCharacter *player = Cast<APlayerCharacter>(otherActor);
+	if (!player)
 	{
 		return;
 	}
+
+	switch (PickupType)
+	{
+	case EPickupType::HealthPickupSmall:
+		player->HealByPercentage(30);
+		break;
+	case EPickupType::HealthPickupMedium:
+		player->HealByPercentage(60);
+		break;
+	case EPickupType::HealthPickupLarge:
+		player->HealByPercentage(100);
+		break;
+	default:
+		break;
+	}
+
 	Destroy();
 }

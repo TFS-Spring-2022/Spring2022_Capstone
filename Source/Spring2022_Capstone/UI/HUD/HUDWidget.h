@@ -27,4 +27,6 @@ public:
 private:
 	UFUNCTION()
 	void OnHealthChanged(float HealthValue);
+
+	int MaxHealth;
 };

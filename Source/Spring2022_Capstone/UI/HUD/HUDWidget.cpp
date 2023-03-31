@@ -8,14 +8,14 @@
 void UHUDWidget::NativeConstruct()
 {
     Super::NativeConstruct();
-    UE_LOG(LogTemp, Display, TEXT("TEST"));
     if (APlayerCharacter *playerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
     {
         playerCharacter->OnHealthChangedDelegate.BindUObject(this, &UHUDWidget::OnHealthChanged);
+        MaxHealth = playerCharacter->GetMaxHealth();
     }
 }
 
 void UHUDWidget::OnHealthChanged(float HealthValue)
 {
-    HealthBar->SetPercent(HealthValue / 100);
+    HealthBar->SetPercent(HealthValue / MaxHealth);
 }
