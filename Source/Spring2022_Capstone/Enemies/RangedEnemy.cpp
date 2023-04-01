@@ -6,3 +6,13 @@ ARangedEnemy::ARangedEnemy()
 {
     
 }
+
+void ARangedEnemy::Attack()
+{
+    
+}
+
+void ARangedEnemy::Reload()
+{
+
+}
