@@ -27,8 +27,14 @@ public:
 	void SetHealth(float NewHealth);
 	UFUNCTION()
 	float GetHealth();
+	UFUNCTION()
+	float GetMaxHealth();
+	UFUNCTION()
+	void SetMaxHealth(float value);
 
 private:
+	UPROPERTY(EditAnywhere, Category = "Health")
+	float MaxHealth;
 	UPROPERTY(EditAnywhere, Category = "Health")
 	float HealthPoints;
 };

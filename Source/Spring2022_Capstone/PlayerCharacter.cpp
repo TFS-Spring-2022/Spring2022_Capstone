@@ -23,7 +23,7 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
 	Camera->bUsePawnControlRotation = true;
 
-	PlayerHealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("PlayerHealthComponent"));
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
@@ -64,6 +64,7 @@ void APlayerCharacter::BeginPlay()
 		}
 	}
 	Speed = GetCharacterMovement()->MaxWalkSpeed;
+	UpdateHealthBar();
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -197,12 +198,31 @@ AWeaponBase *APlayerCharacter::GetWeapon2() const
 
 void APlayerCharacter::TakeHit()
 {
-	if (PlayerHealthComponent)
+	if (HealthComponent)
 	{
-		PlayerHealthComponent->SetHealth(PlayerHealthComponent->GetHealth() - 5.0f);
-		if (OnHealthChangedDelegate.IsBound())
-		{
-			OnHealthChangedDelegate.Execute(PlayerHealthComponent->GetHealth());
-		}
+		HealthComponent->SetHealth(HealthComponent->GetHealth() - 5.0f);
+		UpdateHealthBar();
+	}
+}
+
+void APlayerCharacter::HealByPercentage(int percentage)
+{
+	if (HealthComponent)
+	{
+	HealthComponent->SetHealth(HealthComponent->GetHealth() + HealthComponent->GetMaxHealth() * percentage / 100);
+	UpdateHealthBar();
+	}
+}
+
+float APlayerCharacter::GetMaxHealth() const
+{
+    return HealthComponent->GetMaxHealth();
+}
+
+void APlayerCharacter::UpdateHealthBar()
+{
+	if (OnHealthChangedDelegate.IsBound())
+	{
+		OnHealthChangedDelegate.Execute(HealthComponent->GetHealth());
 	}
 }

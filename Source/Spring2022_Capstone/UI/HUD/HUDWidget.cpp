@@ -17,6 +17,8 @@ void UHUDWidget::NativeConstruct()
         playerCharacter->OnGrappleActivatedDelegate.BindUObject(this, &UHUDWidget::OnGrappleActivated);
         playerCharacter->OnGrappleCooldownStartDelegate.BindUObject(this, &UHUDWidget::OnGrappleCooldownStart);
         playerCharacter->OnGrappleCooldownEndDelegate.BindUObject(this, &UHUDWidget::OnGrappleCooldownEnd);
+        
+        MaxHealth = playerCharacter->GetMaxHealth();
     }
 
     GrappleCooldownText->SetText(FText::GetEmpty());
@@ -36,7 +38,7 @@ void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
 
 void UHUDWidget::OnHealthChanged(float HealthValue)
 {
-    HealthBar->SetPercent(HealthValue / 100);
+    HealthBar->SetPercent(HealthValue / MaxHealth);
 }
 
 void UHUDWidget::OnGrappleActivated()
