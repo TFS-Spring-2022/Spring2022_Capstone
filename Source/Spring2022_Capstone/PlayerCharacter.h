@@ -17,6 +17,9 @@ class UCharacterMovementComponent;
 class UHealthComponent;
 
 DECLARE_DELEGATE_OneParam(FOnHealthChanged, float);
+DECLARE_DELEGATE(FOnGrappleActivated);
+DECLARE_DELEGATE_OneParam(FOnGrappleCooldownStart, FTimerHandle&);
+DECLARE_DELEGATE(FOnGrappleCooldownEnd);
 UCLASS()
 class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 {
@@ -24,6 +27,11 @@ class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 
 public:
 	APlayerCharacter();
+
+	FOnHealthChanged OnHealthChangedDelegate;
+	FOnGrappleActivated OnGrappleActivatedDelegate;
+	FOnGrappleCooldownStart OnGrappleCooldownStartDelegate;
+	FOnGrappleCooldownEnd OnGrappleCooldownEndDelegate;
 
 	virtual void Tick(float DeltaTime) override;
 
@@ -65,6 +73,7 @@ protected:
 	void Crouch(const FInputActionValue &Value);
 
 	void Attack(const FInputActionValue &Value);
+	void Grapple(const FInputActionValue &Value);
 	// Switches ActiveWeapon between Weapon1 and Weapon2
 	void SwitchWeapon(const FInputActionValue &Value);
 
@@ -98,9 +107,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	bool bIsSprinting;
 
-public:
+	UFUNCTION()
+	void GrappleDone();
 
-	FOnHealthChanged OnHealthChangedDelegate;
+	FTimerHandle handle;
+
+public:
 
 	// Sets Weapon references and sets to ActiveWeapon
 	void SetWeapon1(AWeaponBase *Weapon);

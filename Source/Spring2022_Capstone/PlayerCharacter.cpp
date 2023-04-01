@@ -38,10 +38,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
+        EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+        EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
+        EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Grapple);
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Crouch);
-
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
 		EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Completed, this,
@@ -146,9 +146,31 @@ void APlayerCharacter::Attack(const FInputActionValue &Value)
 	ActiveWeapon->Shoot();
 }
 
+void APlayerCharacter::Grapple(const FInputActionValue &Value)
+{
+	if (OnGrappleActivatedDelegate.IsBound())
+    {
+		OnGrappleActivatedDelegate.Execute();
+    }
+	GetWorld()->GetTimerManager().SetTimer(handle, this, &APlayerCharacter::GrappleDone, 5, false);
+    if (OnGrappleCooldownStartDelegate.IsBound())
+    {
+		OnGrappleCooldownStartDelegate.Execute(handle);
+    }
+}
+
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
 	ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+}
+
+void APlayerCharacter::GrappleDone()
+{
+	handle.Invalidate();
+	if (OnGrappleCooldownEndDelegate.IsBound())
+    {
+		OnGrappleCooldownEndDelegate.Execute();
+    }
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)
