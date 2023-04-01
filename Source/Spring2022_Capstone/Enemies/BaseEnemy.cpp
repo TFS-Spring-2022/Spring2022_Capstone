@@ -11,6 +11,9 @@ ABaseEnemy::ABaseEnemy()
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
+	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
+	WeaponMesh->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
@@ -18,6 +21,10 @@ void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ABaseEnemy::Attack()
+{
 }
 
 // Called every frame

@@ -6,7 +6,6 @@
 #include "BaseEnemy.h"
 #include "RangedEnemy.generated.h"
 
-class URangedWeapon;
 
 /**
  *
@@ -19,8 +18,4 @@ class SPRING2022_CAPSTONE_API ARangedEnemy : public ABaseEnemy
 public:
 	// Sets default values for this character's properties
 	ARangedEnemy();
-
-private:
-	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
-	URangedWeapon *Weapon;
 };
