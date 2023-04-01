@@ -1,7 +1,7 @@
 // Created by Spring2022_Capstone team
 
 #include "BaseEnemy.h"
-#include "HealthComponent.h"
+#include "Spring2022_Capstone/HealthComponent.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
