@@ -1,12 +1,7 @@
 {
 	"folders": [
 		{
-			"name": "Spring2022_Capstone",
-			"path": "."
-		},
-		{
-			"name": "UE5",
-			"path": "C:\\Program Files\\Epic Games\\UE_5.1"
+			"path": "Source/Spring2022_Capstone/UI"
 		}
 	],
 	"settings": {

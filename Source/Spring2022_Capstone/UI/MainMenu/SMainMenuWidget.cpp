@@ -2,6 +2,8 @@
 
 #include "SMainMenuWidget.h"
 #include "MainMenuHUD.h"
+#include "Engine/LevelStreamingDynamic.h"
+
 
 #define LOCTEXT_NAMESPACE "MainMenu"
 
@@ -120,7 +122,7 @@ FReply SMainMenuWidget::OnPlayClicked() const
 FReply SMainMenuWidget::OnSettingsClicked() const
 {
     UE_LOG(LogTemp, Log, TEXT("Settings Clicked"));
-    // TODO: Open Settings Menu
+    // ULevelStreamingDynamic::
     return FReply::Handled();
 }
 
