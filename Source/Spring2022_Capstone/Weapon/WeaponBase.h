@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PlayerCharacter.h"
+#include "../PlayerCharacter.h"
 #include "GameFramework/Actor.h"
 #include "WeaponBase.generated.h"
 
 
 
-UCLASS()
+UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API AWeaponBase : public AActor
 {
 	GENERATED_BODY()
@@ -18,32 +18,47 @@ public:
 	// Sets default values for this actor's properties
 	AWeaponBase();
 
+	/**
+	* @brief Attaches the actor to a PlayerCharacter.
+	* @param TargetCharacter APlayerCharacter instance holding the actor.
+	*/
+	UFUNCTION(BlueprintCallable, Category="Equip")
+	void AttachWeapon(APlayerCharacter* TargetCharacter);
+
+	virtual void Shoot() PURE_VIRTUAL(AWeaponBase::Shoot());
+	
 protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	
+	
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	//// Weapon Stats
 
 	// Current weapon charge (ammo) percentage.
-	UPROPERTY(EditAnywhere, Category="Weapon Stats")
+	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
 		float CurWeaponCharge = 0;
 
 	// Weapon charge cost per shot.
-	UPROPERTY(EditAnywhere, Category="Weapon Stats")
+	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
 		float ShotCost = 10;
 
 	// Weapon Cooldown rate (-charge per second).
-	UPROPERTY(EditAnywhere, Category="Weapon Stats")
+	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
 		float ChargeCooldownRate = 5;
 
 	// Time it takes for the weapon to finish overheating.
-	UPROPERTY(EditAnywhere, Category="Weapon Stats")
+	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
 		float OverheatTime = 5.0f;
 
 	// ToDo: Damage not implemented 
-	UPROPERTY(EditAnywhere, Category="Weapon Stats")
+	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
 		float ShotDamage = 35;
 
 	// Time between shots (seconds).
-	UPROPERTY(EditAnywhere, Category="Weapon Stats")
+	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
 		float FireRate = .5;
 
 	// ToDo: Pick a general size when we get a better idea of level size
@@ -56,17 +71,8 @@ protected:
 	bool bIsOverheating = false;
 	bool bCanFire = true;
 	
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 	/**
-	 * @brief Fires a single raycast shot forwards from the camera.
-	 */
-	UFUNCTION(BlueprintCallable)
-		void RaycastFire();
-	
-	/**
-	 * @brief Subtract 'ChargeCooldownRate' from 'CurWeaponCharge' once every second (Uses 'MemberTimeHandle' set in BeginPlay()).
+	 * @brief Subtracts 'ChargeCooldownRate' from 'CurWeaponCharge' once every second (Uses 'MemberTimeHandle' set in BeginPlay()).
 	 */
 	void ChargeCooldown();
 
@@ -81,9 +87,7 @@ protected:
 	 * @note Called from ChargeCooldown() after 'OverheatTime' has elapsed.
 	 */
 	void WeaponCooldown();
-
-	void ClearFireTimerHandle();
-
+	
 	// Timer used to handle seconds between shots.
 	FTimerHandle FireTimerHandle;
 
@@ -93,13 +97,10 @@ protected:
 	// Timer to handle the charge cooldown per second.
 	FTimerHandle ChargeCooldownTimerHandle;
 
-	UPROPERTY()
-		APlayerCameraManager* PlayerCamera; 
+	void ClearFireTimerHandle();
 
-	UPROPERTY(EditAnywhere)
-		USkeletalMeshComponent* SkeletalMesh;
-
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
+	//// Components
 	
 	/**
 	 * @brief The character holding the weapon.
@@ -107,23 +108,15 @@ protected:
 	UPROPERTY()
 	APlayerCharacter* Character;
 
+	UPROPERTY()
+	APlayerCameraManager* PlayerCamera; 
+
+	UPROPERTY(EditAnywhere)
+	USkeletalMeshComponent* SkeletalMesh;
+
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	/**
-	 * @brief Attaches the actor to a PlayerCharacter.
-	 * @param TargetCharacter APlayerCharacter instance holding the actor.
-	 */
-	UFUNCTION(BlueprintCallable, Category="Equip")
-	void AttachWeapon(APlayerCharacter* TargetCharacter);
-
-	// Fire Input Action
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
-	class UInputAction* FireAction;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-	UInputMappingContext *CharacterMappingContext;
-
 };
