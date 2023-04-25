@@ -24,17 +24,32 @@ public:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *RootPanel;
+
 	//BackgroundImage
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UImage* BackgroundImage;
+
 	// Title
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* TitleText;
+	
+
+	//Settings
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UPanelWidget *SettingsPanel;
+
+	//Settings Button
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UButton* SettingsButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* SettingsButtonText;
+
 	// Play Button
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UButton* PlayButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* PlayButtonText;
+
 	// Exit Button
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UButton* ExitButton;
@@ -42,20 +57,23 @@ public:
 	UTextBlock* ExitButtonText;
 
 	// Exit Confirmation
-
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *ExitConfirmationPanel;
+
 	//BackgroundImage
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UImage* ExitConfirmationBackgroundImage;
+
 	// Title
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ExitConfirmationTitleText;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	// Play Button
+
+	// Yes Button
 	UButton* YesButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* YesButtonText;
+
 	// Exit Button
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UButton* NoButton;
@@ -67,7 +85,8 @@ private:
 	void OnPlayButtonPressed();
 	UFUNCTION()
 	void OnExitButtonPressed();
-
+	UFUNCTION()
+	void OnSettingButtonPressed();
 	UFUNCTION()
 	void OnYesButtonPressed();
 	UFUNCTION()
