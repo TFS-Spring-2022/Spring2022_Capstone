@@ -21,7 +21,7 @@ protected:
 	virtual void NativeConstruct() override;
 
 public:
-
+	//Root Panel
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *RootPanel;
 
@@ -29,12 +29,16 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UImage* BackgroundImage;
 
+	//MainMenu Panel
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UPanelWidget *MainMenuPanel;
+
 	// Title
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* TitleText;
 	
 
-	//Settings
+	//Settings Panel
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *SettingsPanel;
 
@@ -43,6 +47,12 @@ public:
 	UButton* SettingsButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* SettingsButtonText;
+
+	//BackToMenu Button
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UButton* BackToMenuButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* BackToMenuButtonText;
 
 	// Play Button
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -67,9 +77,10 @@ public:
 	// Title
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ExitConfirmationTitleText;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	
 
 	// Yes Button
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UButton* YesButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* YesButtonText;
@@ -83,12 +94,19 @@ public:
 private:
 	UFUNCTION()
 	void OnPlayButtonPressed();
+
 	UFUNCTION()
 	void OnExitButtonPressed();
+
 	UFUNCTION()
 	void OnSettingButtonPressed();
+
+	UFUNCTION()
+	void OnBackToMenuButtonPressed();
+
 	UFUNCTION()
 	void OnYesButtonPressed();
+	
 	UFUNCTION()
 	void OnNoButtonPressed();
 };
