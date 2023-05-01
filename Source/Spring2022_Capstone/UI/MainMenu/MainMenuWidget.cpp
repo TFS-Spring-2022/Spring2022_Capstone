@@ -9,7 +9,6 @@ void UMainMenuWidget::NativeConstruct()
 	Super::NativeConstruct();
 	PlayButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::OnPlayButtonPressed);
 	SettingsButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::OnSettingButtonPressed);
-	BackToMenuButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::OnBackToMenuButtonPressed);
 	ExitButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::OnExitButtonPressed);
 	YesButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::OnYesButtonPressed);
 	NoButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::OnNoButtonPressed);
@@ -38,15 +37,9 @@ void UMainMenuWidget::OnPlayButtonPressed()
 
 void UMainMenuWidget::OnSettingButtonPressed()
 {
-	MainMenuPanel->SetVisibility(ESlateVisibility::Hidden);
-	SettingsPanel->SetVisibility(ESlateVisibility::Visible);
+	//Show settings widget
 }
 
-void UMainMenuWidget::OnBackToMenuButtonPressed()
-{
-	MainMenuPanel->SetVisibility(ESlateVisibility::Visible);
-	SettingsPanel->SetVisibility(ESlateVisibility::Hidden);
-}
 
 void UMainMenuWidget::OnExitButtonPressed()
 {

@@ -38,21 +38,11 @@ public:
 	UTextBlock* TitleText;
 	
 
-	//Settings Panel
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UPanelWidget *SettingsPanel;
-
 	//Settings Button
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UButton* SettingsButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* SettingsButtonText;
-
-	//BackToMenu Button
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UButton* BackToMenuButton;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* BackToMenuButtonText;
 
 	// Play Button
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -78,7 +68,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ExitConfirmationTitleText;
 	
-
 	// Yes Button
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UButton* YesButton;
@@ -100,9 +89,6 @@ private:
 
 	UFUNCTION()
 	void OnSettingButtonPressed();
-
-	UFUNCTION()
-	void OnBackToMenuButtonPressed();
 
 	UFUNCTION()
 	void OnYesButtonPressed();
