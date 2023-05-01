@@ -144,6 +144,11 @@ public:
 
 	FTimerHandle handle;
 
+	UFUNCTION(BlueprintCallable)
+	void IncreaseMaxHealth(int MaxHealthIncrease);
+	UFUNCTION(BlueprintCallable)
+	void IncreaseMaxHealthPercentage(int Percentage);
+	
 	void HealByPercentage(int percentage);
 	float GetMaxHealth() const;
 
