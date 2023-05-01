@@ -152,6 +152,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void IncreaseMovementSpeed(int Value);
 
+	UFUNCTION(BlueprintCallable)
+	void IncreaseDamagePrimary(float Value);
+	UFUNCTION(BlueprintCallable)
+	void IncreaseDamageSecondary(float Value);
+
 	void HealByPercentage(int Percentage);
 	float GetMaxHealth() const;
 

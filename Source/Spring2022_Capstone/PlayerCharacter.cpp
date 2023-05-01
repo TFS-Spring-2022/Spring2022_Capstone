@@ -226,6 +226,18 @@ void APlayerCharacter::IncreaseMovementSpeed(int Value)
 	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Movement Speed is: %f"), Speed));
 }
 
+void APlayerCharacter::IncreaseDamagePrimary(float Value)
+{
+	Weapon1->SetDamage(Weapon1->GetDamage() + Value);
+	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Primary Weapon Damage is: %f"), Weapon1->GetDamage()));
+}
+
+void APlayerCharacter::IncreaseDamageSecondary(float Value)
+{
+	Weapon2->SetDamage(Weapon2->GetDamage() + Value);
+	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Secondary Weapon Damage is: %f"), Weapon2->GetDamage()));
+}
+
 void APlayerCharacter::HealByPercentage(int Percentage)
 {
 	if (HealthComponent)
