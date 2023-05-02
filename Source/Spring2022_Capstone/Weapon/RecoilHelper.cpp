@@ -32,3 +32,19 @@ void URecoilHelper::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	
 }
 
+void URecoilHelper::RecoilKick()
+{
+	
+	PlayerDeltaRot = FRotator::ZeroRotator;
+	RecoilDeltaRot = FRotator::ZeroRotator;
+	Del = FRotator::ZeroRotator;
+	RecoilStartRot = OwnersPlayerController->GetControlRotation();
+
+	Del.Roll = 0;
+	Del.Pitch = VerticalKickAmount;
+
+	PlayerDeltaRot = OwnersPlayerController->GetControlRotation() - RecoilStartRot - RecoilDeltaRot;
+	OwnersPlayerController->SetControlRotation(RecoilStartRot + PlayerDeltaRot + Del);
+	RecoilDeltaRot = Del;
+	
+}

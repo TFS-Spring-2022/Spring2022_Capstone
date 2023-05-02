@@ -34,6 +34,25 @@ private:
 	APlayerController* OwnersPlayerController;
 
 	UPROPERTY(EditAnywhere)
-	float VerticalKick;
+	float VerticalKickAmount;
+	
+	// Control rotation at the start of the recoil
+	UPROPERTY() 
+	FRotator RecoilStartRot;
+	
+	// Control rotation change due to recoil
+	UPROPERTY() 
+	FRotator RecoilDeltaRot;
+
+	// Control rotation change due to player moving the mouse
+	UPROPERTY() 
+	FRotator PlayerDeltaRot;
+	
+	UPROPERTY() 
+	FRotator Del;
+
+public:
+
+	void RecoilKick();
 	
 };
