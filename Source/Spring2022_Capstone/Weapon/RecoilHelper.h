@@ -50,16 +50,24 @@ private:
 	float VerticalKickAmount;
 
 	/**
-	* @brief The time before aim recovery begins.
+	* @brief Time before aim recovery begins.
 	* @note 0.5 feels nice.
 	*/
-	UPROPERTY(EditAnywhere, Category = "Properties")
+	UPROPERTY(EditAnywhere, Category = "Properties") 
 	float TimeBeforeRecovery = 0.5;
 
-	// Question - Cannot Recall what the deal RecoveryTime vs TimeBeforeRecovery. Possibly UCurves.
+	/**
+	 * @brief Time before recovery begins
+	 */
 	UPROPERTY(EditAnywhere)
 	float RecoveryTime = 1.0f; // ToDo: Make large timer just to test and see what it does
 
+	/**
+	* @brief The speed the recoil recovers at
+	* @note 25 as a default feels good.
+	*/
+	UPROPERTY(EditAnywhere)
+	float RecoverySpeed = 25.0f;
 	
 // Aim Rotators //
 	// Control rotation at the start of the recoil

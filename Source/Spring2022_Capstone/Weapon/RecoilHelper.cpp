@@ -30,7 +30,7 @@ void URecoilHelper::BeginPlay()
 void URecoilHelper::RecoilStart()
 {
 	
-	GetWorld()->GetTimerManager().SetTimer(TimeSinceLastShotTimerHandle, this, &URecoilHelper::RecoilStop, TimeBeforeRecovery);
+	GetWorld()->GetTimerManager().SetTimer(TimeSinceLastShotTimerHandle, this, &URecoilHelper::RecoilStop, TimeBeforeRecovery); // Set timer to check if player has stopped firing.
 	
 	PlayerDeltaRot = FRotator::ZeroRotator;
 	RecoilDeltaRot = FRotator::ZeroRotator;
@@ -43,7 +43,7 @@ void URecoilHelper::RecoilStart()
 	
 	bIsFiring = true;
 	
-	GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &URecoilHelper::RecoilTimerFunction, 10.0f, false); // Note: I forgot what the deal with 10.0f is. But changing it causes problems. This might have been RecoverySpeed float before.
+	GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &URecoilHelper::RecoilTimerFunction, RecoverySpeed, false);
 	
 	bRecoil = true;
 	bRecoilRecovery = false;
@@ -60,9 +60,9 @@ void URecoilHelper::RecoveryStart()
 	if(OwnersPlayerController->GetControlRotation().Pitch > RecoilStartRot.Pitch)
 	{
 		bRecoilRecovery = true;
-		GetWorld()->GetTimerManager().SetTimer(RecoveryTimerHandle, this, &URecoilHelper::RecoveryTimerFunction, RecoveryTime, false);
+		GetWorld()->GetTimerManager().SetTimer(RecoveryTimerHandle, this, &URecoilHelper::RecoveryTimerFunction, RecoveryTime, false); 
 	}
-
+	
 }
 
 void URecoilHelper::RecoveryTimerFunction()
@@ -71,6 +71,7 @@ void URecoilHelper::RecoveryTimerFunction()
 	
 	// This is the last called method in Recoil execution. After recoil finishes we want to have to OriginalAimRot reset on next fire.
 	bOriginalAimRotSet = false; // Reset aim point after recoil recovery has finished
+	
 }
 
 void URecoilHelper::RecoilTimerFunction()
@@ -113,7 +114,8 @@ void URecoilHelper::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 			// We want to reset the vertical recoil, but maintain horizontal change.
 			FRotator AimResetRotation = FRotator(RecoilStartRot.Pitch, OwnersPlayerController->GetControlRotation().Yaw, OwnersPlayerController->GetControlRotation().Roll);
 
-			OwnersPlayerController->SetControlRotation(UKismetMathLibrary::RInterpTo(OwnersPlayerController->GetControlRotation(), AimResetRotation, DeltaTime, 10.0f)); // ToDo: I think the InterpSpeed(10) would be something like RecoilRecoveryRate or something along those lines.
+			OwnersPlayerController->SetControlRotation(UKismetMathLibrary::RInterpTo(OwnersPlayerController->GetControlRotation(), AimResetRotation, DeltaTime, RecoverySpeed));
+
 		}
 		else
 		{
