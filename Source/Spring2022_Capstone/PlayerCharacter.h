@@ -160,6 +160,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ToggleDoubleJump();
 
+	UFUNCTION(BlueprintCallable)
+	void Heal(int Value);
+
 	void HealByPercentage(int Percentage);
 	float GetMaxHealth() const;
 
