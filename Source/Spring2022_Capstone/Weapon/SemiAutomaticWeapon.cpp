@@ -48,12 +48,13 @@ void ASemiAutomaticWeapon::Shoot()
 			}
 			
 			CurWeaponCharge += ShotCost;
-			
+
+			// Call recoil
 			if(RecoilHelperAComponent)
 			{
 				RecoilHelperAComponent->RecoilStart();
 			}
-			
+				
 		}
 	}
 }
