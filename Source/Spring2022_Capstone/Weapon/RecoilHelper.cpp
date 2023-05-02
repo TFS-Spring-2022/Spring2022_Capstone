@@ -60,7 +60,7 @@ void URecoilHelper::RecoveryStart()
 	if(OwnersPlayerController->GetControlRotation().Pitch > RecoilStartRot.Pitch)
 	{
 		bRecoilRecovery = true;
-		GetWorld()->GetTimerManager().SetTimer(RecoveryTimerHandle, this, &URecoilHelper::RecoveryTimerFunction, RecoveryTime, false); 
+		GetWorld()->GetTimerManager().SetTimer(RecoveryTimerHandle, this, &URecoilHelper::RecoveryTimerFunction, 0.5, false); // Note - Leave 0.5 Issues with moving and shooting when not.
 	}
 	
 }

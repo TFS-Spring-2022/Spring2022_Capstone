@@ -55,13 +55,7 @@ private:
 	*/
 	UPROPERTY(EditAnywhere, Category = "Properties") 
 	float TimeBeforeRecovery = 0.5;
-
-	/**
-	 * @brief Time before recovery begins
-	 */
-	UPROPERTY(EditAnywhere)
-	float RecoveryTime = 1.0f; // ToDo: Make large timer just to test and see what it does
-
+	
 	/**
 	* @brief The speed the recoil recovers at
 	* @note 25 as a default feels good.
