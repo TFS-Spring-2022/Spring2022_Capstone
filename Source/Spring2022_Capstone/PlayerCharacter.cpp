@@ -38,9 +38,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
-        EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
-        EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
-        EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Grapple);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
+		EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Grapple);
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Crouch);
 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
@@ -144,20 +144,22 @@ void APlayerCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo &OutResult)
 
 void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
+	if (bIsSprinting)
+		return;
 	ActiveWeapon->Shoot();
 }
 
 void APlayerCharacter::Grapple(const FInputActionValue &Value)
 {
 	if (OnGrappleActivatedDelegate.IsBound())
-    {
+	{
 		OnGrappleActivatedDelegate.Execute();
-    }
+	}
 	GetWorld()->GetTimerManager().SetTimer(handle, this, &APlayerCharacter::GrappleDone, 5, false);
-    if (OnGrappleCooldownStartDelegate.IsBound())
-    {
+	if (OnGrappleCooldownStartDelegate.IsBound())
+	{
 		OnGrappleCooldownStartDelegate.Execute(handle);
-    }
+	}
 }
 
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
@@ -169,9 +171,9 @@ void APlayerCharacter::GrappleDone()
 {
 	handle.Invalidate();
 	if (OnGrappleCooldownEndDelegate.IsBound())
-    {
+	{
 		OnGrappleCooldownEndDelegate.Execute();
-    }
+	}
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)
@@ -228,14 +230,16 @@ void APlayerCharacter::IncreaseMovementSpeed(int Value)
 
 void APlayerCharacter::IncreaseDamagePrimary(float Value)
 {
-	if (!Weapon1) return;
+	if (!Weapon1)
+		return;
 	Weapon1->SetDamage(Weapon1->GetDamage() + Value);
 	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Primary Weapon Damage is: %f"), Weapon1->GetDamage()));
 }
 
 void APlayerCharacter::IncreaseDamageSecondary(float Value)
 {
-	if (!Weapon2) return;
+	if (!Weapon2)
+		return;
 	Weapon2->SetDamage(Weapon2->GetDamage() + Value);
 	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Secondary Weapon Damage is: %f"), Weapon2->GetDamage()));
 }
@@ -246,18 +250,25 @@ void APlayerCharacter::ToggleDoubleJump()
 	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your max jumps are: %i"), JumpMaxCount));
 }
 
+void APlayerCharacter::Heal(int Value)
+{
+	if (!HealthComponent)
+		return;
+	HealthComponent->SetHealth(HealthComponent->GetHealth() + Value);
+	UpdateHealthBar();
+}
+
 void APlayerCharacter::HealByPercentage(int Percentage)
 {
-	if (HealthComponent)
-	{
+	if (!HealthComponent)
+		return;
 	HealthComponent->SetHealth(HealthComponent->GetHealth() + HealthComponent->GetMaxHealth() * Percentage / 100);
 	UpdateHealthBar();
-	}
 }
 
 float APlayerCharacter::GetMaxHealth() const
 {
-    return HealthComponent->GetMaxHealth();
+	return HealthComponent->GetMaxHealth();
 }
 
 void APlayerCharacter::UpdateHealthBar()
