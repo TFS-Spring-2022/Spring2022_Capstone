@@ -205,10 +205,10 @@ void APlayerCharacter::TakeHit()
 	}
 }
 
-void APlayerCharacter::IncreaseMaxHealth(int MaxHealthIncrease)
+void APlayerCharacter::IncreaseMaxHealth(int Value)
 {
-	HealthComponent->SetMaxHealth(HealthComponent->GetMaxHealth() + MaxHealthIncrease);
-	HealthComponent->SetHealth(HealthComponent->GetHealth() + MaxHealthIncrease);
+	HealthComponent->SetMaxHealth(HealthComponent->GetMaxHealth() + Value);
+	HealthComponent->SetHealth(HealthComponent->GetHealth() + Value);
 	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), HealthComponent->GetMaxHealth()));
 }
 
@@ -220,11 +220,37 @@ void APlayerCharacter::IncreaseMaxHealthPercentage(int Percentage)
 	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), HealthComponent->GetMaxHealth()));
 }
 
-void APlayerCharacter::HealByPercentage(int percentage)
+void APlayerCharacter::IncreaseMovementSpeed(int Value)
+{
+	Speed += Value;
+	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Movement Speed is: %f"), Speed));
+}
+
+void APlayerCharacter::IncreaseDamagePrimary(float Value)
+{
+	if (!Weapon1) return;
+	Weapon1->SetDamage(Weapon1->GetDamage() + Value);
+	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Primary Weapon Damage is: %f"), Weapon1->GetDamage()));
+}
+
+void APlayerCharacter::IncreaseDamageSecondary(float Value)
+{
+	if (!Weapon2) return;
+	Weapon2->SetDamage(Weapon2->GetDamage() + Value);
+	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Secondary Weapon Damage is: %f"), Weapon2->GetDamage()));
+}
+
+void APlayerCharacter::ToggleDoubleJump()
+{
+	JumpMaxCount = JumpMaxCount == 1 ? 2 : 1;
+	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your max jumps are: %i"), JumpMaxCount));
+}
+
+void APlayerCharacter::HealByPercentage(int Percentage)
 {
 	if (HealthComponent)
 	{
-	HealthComponent->SetHealth(HealthComponent->GetHealth() + HealthComponent->GetMaxHealth() * percentage / 100);
+	HealthComponent->SetHealth(HealthComponent->GetHealth() + HealthComponent->GetMaxHealth() * Percentage / 100);
 	UpdateHealthBar();
 	}
 }

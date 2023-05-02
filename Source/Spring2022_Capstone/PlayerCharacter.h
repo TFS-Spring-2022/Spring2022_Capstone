@@ -145,11 +145,22 @@ public:
 	FTimerHandle handle;
 
 	UFUNCTION(BlueprintCallable)
-	void IncreaseMaxHealth(int MaxHealthIncrease);
+	void IncreaseMaxHealth(int Value);
 	UFUNCTION(BlueprintCallable)
 	void IncreaseMaxHealthPercentage(int Percentage);
-	
-	void HealByPercentage(int percentage);
+
+	UFUNCTION(BlueprintCallable)
+	void IncreaseMovementSpeed(int Value);
+
+	UFUNCTION(BlueprintCallable)
+	void IncreaseDamagePrimary(float Value);
+	UFUNCTION(BlueprintCallable)
+	void IncreaseDamageSecondary(float Value);
+
+	UFUNCTION(BlueprintCallable)
+	void ToggleDoubleJump();
+
+	void HealByPercentage(int Percentage);
 	float GetMaxHealth() const;
 
 	// Sets Weapon references and sets to ActiveWeapon
