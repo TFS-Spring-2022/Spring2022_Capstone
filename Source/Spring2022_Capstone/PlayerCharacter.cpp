@@ -241,7 +241,7 @@ void APlayerCharacter::IncreaseDamageSecondary(float Value)
 void APlayerCharacter::ToggleDoubleJump()
 {
 	JumpMaxCount = JumpMaxCount == 1 ? 2 : 1;
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your max jups are: %i"), JumpMaxCount));
+	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your max jumps are: %i"), JumpMaxCount));
 }
 
 void APlayerCharacter::HealByPercentage(int Percentage)
