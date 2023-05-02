@@ -60,7 +60,7 @@ private:
 	* @brief The speed the recoil recovers at
 	* @note 25 as a default feels good.
 	*/
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Properties")
 	float RecoverySpeed = 25.0f;
 	
 // Aim Rotators //
