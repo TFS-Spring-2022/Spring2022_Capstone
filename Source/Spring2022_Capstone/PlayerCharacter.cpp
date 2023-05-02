@@ -252,14 +252,16 @@ void APlayerCharacter::ToggleDoubleJump()
 
 void APlayerCharacter::Heal(int Value)
 {
-	if (!HealthComponent) return;
+	if (!HealthComponent)
+		return;
 	HealthComponent->SetHealth(HealthComponent->GetHealth() + Value);
 	UpdateHealthBar();
 }
 
 void APlayerCharacter::HealByPercentage(int Percentage)
 {
-	if (!HealthComponent) return;
+	if (!HealthComponent)
+		return;
 	HealthComponent->SetHealth(HealthComponent->GetHealth() + HealthComponent->GetMaxHealth() * Percentage / 100);
 	UpdateHealthBar();
 }
