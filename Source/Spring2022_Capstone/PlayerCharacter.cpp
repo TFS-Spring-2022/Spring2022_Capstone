@@ -144,6 +144,7 @@ void APlayerCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo &OutResult)
 
 void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
+	if (bIsSprinting) return;
 	ActiveWeapon->Shoot();
 }
 
