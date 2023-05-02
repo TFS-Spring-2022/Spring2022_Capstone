@@ -228,12 +228,14 @@ void APlayerCharacter::IncreaseMovementSpeed(int Value)
 
 void APlayerCharacter::IncreaseDamagePrimary(float Value)
 {
+	if (!Weapon1) return;
 	Weapon1->SetDamage(Weapon1->GetDamage() + Value);
 	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Primary Weapon Damage is: %f"), Weapon1->GetDamage()));
 }
 
 void APlayerCharacter::IncreaseDamageSecondary(float Value)
 {
+	if (!Weapon2) return;
 	Weapon2->SetDamage(Weapon2->GetDamage() + Value);
 	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Secondary Weapon Damage is: %f"), Weapon2->GetDamage()));
 }
