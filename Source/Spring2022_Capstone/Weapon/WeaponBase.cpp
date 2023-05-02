@@ -58,6 +58,15 @@ void AWeaponBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+float AWeaponBase::GetDamage()
+{
+    return ShotDamage;
+}
+
+void AWeaponBase::SetDamage(float Value)
+{
+	ShotDamage = Value;
+}
 
 void AWeaponBase::ClearFireTimerHandle()
 {
