@@ -8,7 +8,7 @@
 
 AShotgunWeapon::AShotgunWeapon()
 {
-	RecoilHelperAComponent = CreateDefaultSubobject<URecoilHelper>("Shotgun Recoil Helper");
+	RecoilComponent = CreateDefaultSubobject<URecoilComponent>("Shotgun Recoil Component");
 }
 
 void AShotgunWeapon::Shoot()
@@ -61,9 +61,9 @@ void AShotgunWeapon::Shoot()
 			CurWeaponCharge += ShotCost;
 
 			// Call recoil
-			if(RecoilHelperAComponent)
+			if(RecoilComponent)
 			{
-				RecoilHelperAComponent->RecoilStart();
+				RecoilComponent->RecoilStart();
 			}
 		}
 	}

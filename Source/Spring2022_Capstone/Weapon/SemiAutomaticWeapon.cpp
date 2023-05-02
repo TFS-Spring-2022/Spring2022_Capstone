@@ -9,7 +9,7 @@
 ASemiAutomaticWeapon::ASemiAutomaticWeapon()
 {
 
-	RecoilHelperAComponent = CreateDefaultSubobject<URecoilHelper>("SemiAuto Recoil Helper");
+	RecoilComponent = CreateDefaultSubobject<URecoilComponent>("SemiAuto Recoil Component");
 	
 }
 
@@ -50,9 +50,9 @@ void ASemiAutomaticWeapon::Shoot()
 			CurWeaponCharge += ShotCost;
 
 			// Call recoil
-			if(RecoilHelperAComponent)
+			if(RecoilComponent)
 			{
-				RecoilHelperAComponent->RecoilStart();
+				RecoilComponent->RecoilStart();
 			}
 				
 		}

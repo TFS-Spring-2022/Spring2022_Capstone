@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RecoilHelper.h"
+#include "RecoilComponent.h"
 #include "WeaponBase.h"
 #include "ShotgunWeapon.generated.h"
 
@@ -30,6 +30,6 @@ class SPRING2022_CAPSTONE_API AShotgunWeapon : public AWeaponBase
 	virtual void Shoot() override;
 
 	UPROPERTY(EditAnywhere)
-	URecoilHelper* RecoilHelperAComponent;
+	URecoilComponent* RecoilComponent;
 	
 };

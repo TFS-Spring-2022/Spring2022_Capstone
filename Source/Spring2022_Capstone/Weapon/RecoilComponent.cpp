@@ -1,12 +1,12 @@
 // Created by Spring2022_Capstone team
 
 
-#include "RecoilHelper.h"
+#include "RecoilComponent.h"
 
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values for this component's properties
-URecoilHelper::URecoilHelper()
+URecoilComponent::URecoilComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -15,7 +15,7 @@ URecoilHelper::URecoilHelper()
 }
 
 // Called when the game starts
-void URecoilHelper::BeginPlay()
+void URecoilComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -27,10 +27,10 @@ void URecoilHelper::BeginPlay()
 	
 }
 
-void URecoilHelper::RecoilStart()
+void URecoilComponent::RecoilStart()
 {
 	
-	GetWorld()->GetTimerManager().SetTimer(TimeSinceLastShotTimerHandle, this, &URecoilHelper::RecoilStop, TimeBeforeRecovery); // Set timer to check if player has stopped firing.
+	GetWorld()->GetTimerManager().SetTimer(TimeSinceLastShotTimerHandle, this, &URecoilComponent::RecoilStop, TimeBeforeRecovery); // Set timer to check if player has stopped firing.
 	
 	PlayerDeltaRot = FRotator::ZeroRotator;
 	RecoilDeltaRot = FRotator::ZeroRotator;
@@ -43,29 +43,29 @@ void URecoilHelper::RecoilStart()
 	
 	bIsFiring = true;
 	
-	GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &URecoilHelper::RecoilTimerFunction, RecoverySpeed, false);
+	GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &URecoilComponent::RecoilTimerFunction, RecoverySpeed, false);
 	
 	bRecoil = true;
 	bRecoilRecovery = false;
 	
 }
 
-void URecoilHelper::RecoilStop()
+void URecoilComponent::RecoilStop()
 {
 	bIsFiring = false;
 }
 
-void URecoilHelper::RecoveryStart()
+void URecoilComponent::RecoveryStart()
 {
 	if(OwnersPlayerController->GetControlRotation().Pitch > RecoilStartRot.Pitch)
 	{
 		bRecoilRecovery = true;
-		GetWorld()->GetTimerManager().SetTimer(RecoveryTimerHandle, this, &URecoilHelper::RecoveryTimerFunction, 0.5, false); // Note - Leave 0.5 Issues with moving and shooting when not.
+		GetWorld()->GetTimerManager().SetTimer(RecoveryTimerHandle, this, &URecoilComponent::RecoveryTimerFunction, 0.5, false); // Note - Leave 0.5 Issues with moving and shooting when not.
 	}
 	
 }
 
-void URecoilHelper::RecoveryTimerFunction()
+void URecoilComponent::RecoveryTimerFunction()
 {
 	bRecoilRecovery = false;
 	
@@ -74,14 +74,14 @@ void URecoilHelper::RecoveryTimerFunction()
 	
 }
 
-void URecoilHelper::RecoilTimerFunction()
+void URecoilComponent::RecoilTimerFunction()
 {
 	bRecoil = false;
 	GetWorld()->GetTimerManager().PauseTimer(FireTimerHandle);
 }
 
 // Called every frame
-void URecoilHelper::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void URecoilComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
