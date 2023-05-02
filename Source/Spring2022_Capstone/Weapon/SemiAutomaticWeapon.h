@@ -24,6 +24,6 @@ class SPRING2022_CAPSTONE_API ASemiAutomaticWeapon : public AWeaponBase
 	virtual void Shoot() override;
 
 	UPROPERTY(EditAnywhere)
-	URecoilHelper* RecoilHelper;
+	URecoilHelper* RecoilHelperAComponent;
 	
 };
