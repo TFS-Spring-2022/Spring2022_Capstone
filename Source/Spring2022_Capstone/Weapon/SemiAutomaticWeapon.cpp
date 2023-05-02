@@ -6,6 +6,13 @@
 #include "DevTargets.h"
 
 
+ASemiAutomaticWeapon::ASemiAutomaticWeapon()
+{
+
+	RecoilHelper = CreateDefaultSubobject<URecoilHelper>("Recoil Helper");
+	
+}
+
 void ASemiAutomaticWeapon::Shoot()
 {
 
@@ -39,8 +46,14 @@ void ASemiAutomaticWeapon::Shoot()
 				}
 				DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 			}
-
+			
 			CurWeaponCharge += ShotCost;
+			
+			if(RecoilHelper)
+			{
+				RecoilHelper->RecoilKick();
+			}
+			
 		}
 	}
 }
