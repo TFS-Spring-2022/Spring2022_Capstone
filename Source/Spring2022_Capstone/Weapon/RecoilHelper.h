@@ -37,10 +37,8 @@ private:
 	/**
 	 * @brief WeaponBase the RecoilHelper component is attached to. 
 	 */
-	UPROPERTY(VisibleAnywhere, Category = "Components")
 	AWeaponBase* OwningParentWeapon; 
-
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	
 	APlayerController* OwnersPlayerController;
 
 	/**
