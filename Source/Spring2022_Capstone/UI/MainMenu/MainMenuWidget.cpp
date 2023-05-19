@@ -3,6 +3,7 @@
 #include "MainMenuWidget.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "MainMenuManager.h"
 
 void UMainMenuWidget::NativeConstruct()
 {
@@ -37,7 +38,10 @@ void UMainMenuWidget::OnPlayButtonPressed()
 
 void UMainMenuWidget::OnSettingButtonPressed()
 {
-	//Show settings widget
+	if(Manager)
+	{
+		Manager->DisplaySettingsWidget();
+	}
 }
 
 

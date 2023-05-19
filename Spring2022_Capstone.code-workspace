@@ -1,15 +1,16 @@
 {
 	"folders": [
 		{
-			"path": "Source/Spring2022_Capstone/UI"
+			"name": "Spring2022_Capstone",
+			"path": "."
+		},
+		{
+			"name": "UE5",
+			"path": "D:\\Epic Games\\UE_5.1"
 		}
 	],
 	"settings": {
-		"typescript.tsc.autoDetect": "off",
-		"files.associations": {
-			"format": "cpp",
-			"*.ipp": "cpp"
-		}
+		"typescript.tsc.autoDetect": "off"
 	},
 	"extensions": {
 		"recommendations": [

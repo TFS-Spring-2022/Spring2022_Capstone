@@ -7,6 +7,7 @@
 #include "MainMenuWidget.generated.h"
 
 class UPanelWidget;
+class AMainMenuManager;
 class UImage;
 class UTextBlock;
 class UButton;
@@ -21,64 +22,65 @@ protected:
 	virtual void NativeConstruct() override;
 
 public:
-	//Root Panel
+	AMainMenuManager *Manager;
+
+	// Root Panel
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *RootPanel;
 
-	//BackgroundImage
+	// BackgroundImage
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UImage* BackgroundImage;
+	UImage *BackgroundImage;
 
-	//MainMenu Panel
+	// MainMenu Panel
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *MainMenuPanel;
 
 	// Title
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* TitleText;
-	
+	UTextBlock *TitleText;
 
-	//Settings Button
+	// Settings Button
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UButton* SettingsButton;
+	UButton *SettingsButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* SettingsButtonText;
+	UTextBlock *SettingsButtonText;
 
 	// Play Button
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UButton* PlayButton;
+	UButton *PlayButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* PlayButtonText;
+	UTextBlock *PlayButtonText;
 
 	// Exit Button
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UButton* ExitButton;
+	UButton *ExitButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* ExitButtonText;
+	UTextBlock *ExitButtonText;
 
 	// Exit Confirmation
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *ExitConfirmationPanel;
 
-	//BackgroundImage
+	// BackgroundImage
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UImage* ExitConfirmationBackgroundImage;
+	UImage *ExitConfirmationBackgroundImage;
 
 	// Title
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* ExitConfirmationTitleText;
-	
+	UTextBlock *ExitConfirmationTitleText;
+
 	// Yes Button
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UButton* YesButton;
+	UButton *YesButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* YesButtonText;
+	UTextBlock *YesButtonText;
 
 	// Exit Button
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UButton* NoButton;
+	UButton *NoButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* NoButtonText;
+	UTextBlock *NoButtonText;
 
 private:
 	UFUNCTION()
@@ -92,7 +94,7 @@ private:
 
 	UFUNCTION()
 	void OnYesButtonPressed();
-	
+
 	UFUNCTION()
 	void OnNoButtonPressed();
 };
