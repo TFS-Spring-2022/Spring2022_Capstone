@@ -15,6 +15,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UCharacterMovementComponent;
 class UHealthComponent;
+class UGrappleComponent;
 
 DECLARE_DELEGATE_OneParam(FOnHealthChanged, float);
 DECLARE_DELEGATE(FOnGrappleActivated);
@@ -111,6 +112,8 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UCameraComponent *Camera;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
+	UGrappleComponent *GrappleComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float Acceleration = 200.f;

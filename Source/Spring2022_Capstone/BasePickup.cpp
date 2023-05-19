@@ -1,7 +1,7 @@
 // Created by Spring2022_Capstone team
 
 #include "BasePickup.h"
-#include "PlayerCharacter.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "Components/SphereComponent.h"
 
 // Sets default values

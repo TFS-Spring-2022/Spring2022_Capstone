@@ -1,18 +1,16 @@
 // Created by Spring2022_Capstone team
 
 #include "PlayerCharacter.h"
-
-#include <string>
-
+#include "GrappleComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "Weapon/WeaponBase.h"
+#include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "HealthComponent.h"
+#include "Spring2022_Capstone/HealthComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -22,6 +20,8 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetupAttachment(RootComponent);
 	Camera->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
 	Camera->bUsePawnControlRotation = true;
+
+	GrappleComponent = CreateDefaultSubobject<UGrappleComponent>(TEXT("Grapple"));
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
@@ -155,7 +155,9 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 	{
 		OnGrappleActivatedDelegate.Execute();
 	}
+
 	GetWorld()->GetTimerManager().SetTimer(handle, this, &APlayerCharacter::GrappleDone, 5, false);
+	
 	if (OnGrappleCooldownStartDelegate.IsBound())
 	{
 		OnGrappleCooldownStartDelegate.Execute(handle);

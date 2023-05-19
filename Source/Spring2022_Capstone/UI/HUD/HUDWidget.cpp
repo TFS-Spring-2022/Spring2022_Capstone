@@ -5,7 +5,7 @@
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Spring2022_Capstone/PlayerCharacter.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 
 void UHUDWidget::NativeConstruct()
 {
