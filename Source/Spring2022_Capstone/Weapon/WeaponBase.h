@@ -118,5 +118,8 @@ public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	float GetDamage();
+	void SetDamage(float Value);
 	
 };

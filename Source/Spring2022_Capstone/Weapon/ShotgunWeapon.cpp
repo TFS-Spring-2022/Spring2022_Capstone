@@ -5,6 +5,12 @@
 #include "DevTargets.h"
 #include "Kismet/KismetMathLibrary.h"
 
+
+AShotgunWeapon::AShotgunWeapon()
+{
+	RecoilComponent = CreateDefaultSubobject<URecoilComponent>("Shotgun Recoil Component");
+}
+
 void AShotgunWeapon::Shoot()
 {
 
@@ -51,7 +57,14 @@ void AShotgunWeapon::Shoot()
 					DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 				}	
 			}
+			
 			CurWeaponCharge += ShotCost;
+
+			// Call recoil
+			if(RecoilComponent)
+			{
+				RecoilComponent->RecoilStart();
+			}
 		}
 	}
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "RecoilComponent.h"
 #include "WeaponBase.h"
 #include "ShotgunWeapon.generated.h"
 
@@ -13,6 +14,8 @@ UCLASS()
 class SPRING2022_CAPSTONE_API AShotgunWeapon : public AWeaponBase
 {
 	GENERATED_BODY()
+
+	AShotgunWeapon();
 
 	/**
 	 * @brief Amount of raycasts fired in projecting cone.
@@ -25,5 +28,8 @@ class SPRING2022_CAPSTONE_API AShotgunWeapon : public AWeaponBase
 	*/
 	UFUNCTION(BlueprintCallable)
 	virtual void Shoot() override;
+
+	UPROPERTY(EditAnywhere)
+	URecoilComponent* RecoilComponent;
 	
 };
