@@ -2,6 +2,7 @@
 
 #include "GrappleComponent.h"
 #include "GrappleCable.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values for this component's properties
 UGrappleComponent::UGrappleComponent()
@@ -35,4 +36,17 @@ void UGrappleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 void UGrappleComponent::Fire(FVector TargetLocation)
 {
 	GEngine->AddOnScreenDebugMessage(0, 2, FColor::Red, FString::Printf(TEXT("%f %f %f"), TargetLocation.X, TargetLocation.Y, TargetLocation.Z));
+
+	GrappleState = EGrappleState::Firing;
+
+	FVector StartLocation = GetStartLocation();
+	FVector VectorDirection = (TargetLocation - StartLocation);
+	VectorDirection.Normalize();
+}
+
+FVector UGrappleComponent::GetStartLocation()
+{
+	FVector TransformedDirection = UKismetMathLibrary::TransformDirection(GetOwner()->GetActorTransform(), GrappleOffset);
+	FVector StartingLocation = TransformedDirection + GetOwner()->GetActorLocation();
+	return StartingLocation;
 }
