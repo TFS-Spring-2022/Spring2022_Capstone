@@ -1,7 +1,7 @@
 // Created by Spring2022_Capstone team
 
-
 #include "GrappleComponent.h"
+#include "GrappleCable.h"
 
 // Sets default values for this component's properties
 UGrappleComponent::UGrappleComponent()
@@ -32,3 +32,7 @@ void UGrappleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	// ...
 }
 
+void UGrappleComponent::Fire(FVector TargetLocation)
+{
+	GEngine->AddOnScreenDebugMessage(0, 2, FColor::Red, FString::Printf(TEXT("%f %f %f"), TargetLocation.X, TargetLocation.Y, TargetLocation.Z));
+}

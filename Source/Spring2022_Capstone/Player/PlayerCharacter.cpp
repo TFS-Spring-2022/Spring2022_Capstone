@@ -151,13 +151,29 @@ void APlayerCharacter::Attack(const FInputActionValue &Value)
 
 void APlayerCharacter::Grapple(const FInputActionValue &Value)
 {
+
+	FHitResult HitResult;
+	FVector StartLocation = Camera->GetComponentLocation();
+	FVector EndLocation = Camera->GetForwardVector() * GrappleRange + StartLocation;
+	FCollisionQueryParams TraceParams;
+
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility);
+	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.f);
+	FVector TargetLocation = EndLocation;
+	if (AActor *HitActor = HitResult.GetActor())
+	{
+		TargetLocation = HitResult.ImpactPoint;
+	}
+
+	GrappleComponent->Fire(TargetLocation);
+
 	if (OnGrappleActivatedDelegate.IsBound())
 	{
 		OnGrappleActivatedDelegate.Execute();
 	}
 
 	GetWorld()->GetTimerManager().SetTimer(handle, this, &APlayerCharacter::GrappleDone, 5, false);
-	
+
 	if (OnGrappleCooldownStartDelegate.IsBound())
 	{
 		OnGrappleCooldownStartDelegate.Execute(handle);

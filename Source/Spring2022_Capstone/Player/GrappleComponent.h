@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "GrappleComponent.generated.h"
 
+class AGrappleCable;
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class SPRING2022_CAPSTONE_API UGrappleComponent : public UActorComponent
 {
@@ -21,9 +23,11 @@ protected:
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Grapple")
-	ACableActor *Cable;
+	AGrappleCable *Cable = nullptr;
 
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+
+	void Fire(FVector TargetLocation);
 };

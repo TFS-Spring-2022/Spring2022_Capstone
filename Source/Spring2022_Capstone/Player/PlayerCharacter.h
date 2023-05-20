@@ -98,6 +98,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UHealthComponent *HealthComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
+	UGrappleComponent *GrappleComponent;
+
 	void Move(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
 	void Sprint(const FInputActionValue &Value);
@@ -112,8 +115,6 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UCameraComponent *Camera;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
-	UGrappleComponent *GrappleComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float Acceleration = 200.f;
@@ -123,6 +124,9 @@ private:
 	float SprintMultiplier = 1.2f;
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnRate = 200.f;
+
+	UPROPERTY(EditAnywhere, Category = "Grapple")
+	float GrappleRange = 20.f;
 
 	// ToDo: Currently assigned inside WeaponBase::BeginPlay() from weapons in level.
 	UPROPERTY(EditAnywhere, Category = "Player Inventory")
