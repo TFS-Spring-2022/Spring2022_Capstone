@@ -8,6 +8,8 @@
 #include "GrappleComponent.generated.h"
 
 class AGrappleCable;
+class AGrappleHook;
+class ACableActor;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class SPRING2022_CAPSTONE_API UGrappleComponent : public UActorComponent
@@ -30,17 +32,27 @@ private:
 	FVector GrappleOffset;
 	UPROPERTY(EditAnywhere, Category = "Grapple")
 	float FireSpeed = 5000;
-	UPROPERTY(EditAnywhere, Category = "Grapple")
-	float GRappleTimer = 0.25f;
-	UPROPERTY(EditAnywhere, Category = "Grapple")
-	TEnumAsByte<EGrappleState> GrappleState;
 
 	UPROPERTY(EditAnywhere, Category = "Grapple")
-	AGrappleCable *Cable = nullptr;
+	AGrappleHook *GrappleHook = nullptr;
+	UPROPERTY(EditAnywhere, Category = "Grapple")
+	ACableActor *Cable = nullptr;
 
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+
+	UPROPERTY(EditAnywhere, Category = "Grapple")
+	TEnumAsByte<EGrappleState> GrappleState;
+	UPROPERTY(EditAnywhere, Category = "Grapple")
+	float GrappleRange = 500.f;
+
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent *Comp, AActor *otherActor, UPrimitiveComponent *otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
+	UFUNCTION()
+	void CancelGrapple();
+	UFUNCTION()
+	void ResetStatus();
 
 	void Fire(FVector TargetLocation);
 	FVector GetStartLocation();

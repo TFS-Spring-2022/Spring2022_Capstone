@@ -125,9 +125,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnRate = 200.f;
 
-	UPROPERTY(EditAnywhere, Category = "Grapple")
-	float GrappleRange = 20.f;
-
 	// ToDo: Currently assigned inside WeaponBase::BeginPlay() from weapons in level.
 	UPROPERTY(EditAnywhere, Category = "Player Inventory")
 	AWeaponBase *Weapon1;

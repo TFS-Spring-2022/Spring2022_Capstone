@@ -4,6 +4,7 @@
 #include "GrappleComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "GrappleState.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
@@ -151,10 +152,13 @@ void APlayerCharacter::Attack(const FInputActionValue &Value)
 
 void APlayerCharacter::Grapple(const FInputActionValue &Value)
 {
-
+	if (GrappleComponent->GrappleState != EGrappleState::ReadyToFire)
+	{
+		return;
+	}
 	FHitResult HitResult;
 	FVector StartLocation = Camera->GetComponentLocation();
-	FVector EndLocation = Camera->GetForwardVector() * GrappleRange + StartLocation;
+	FVector EndLocation = Camera->GetForwardVector() * GrappleComponent->GrappleRange + StartLocation;
 	FCollisionQueryParams TraceParams;
 
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility);
@@ -164,7 +168,6 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 	{
 		TargetLocation = HitResult.ImpactPoint;
 	}
-
 	GrappleComponent->Fire(TargetLocation);
 
 	if (OnGrappleActivatedDelegate.IsBound())
