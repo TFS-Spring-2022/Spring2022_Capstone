@@ -30,6 +30,8 @@ public:
 	FVector FireVelocity;
 	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	USphereComponent *SphereCollider;
+	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+	UStaticMeshComponent *HookMesh;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))

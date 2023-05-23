@@ -34,7 +34,10 @@ private:
 	float FireSpeed = 5000;
 
 	UPROPERTY(EditAnywhere, Category = "Grapple")
-	AGrappleHook *GrappleHook = nullptr;
+	TSubclassOf<AGrappleHook> GrappleHookType;
+
+	UPROPERTY(EditAnywhere, Category = "Grapple")
+	AGrappleHook *_GrappleHook = nullptr;
 	UPROPERTY(EditAnywhere, Category = "Grapple")
 	ACableActor *Cable = nullptr;
 
@@ -47,8 +50,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Grapple")
 	float GrappleRange = 500.f;
 
-	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent *Comp, AActor *otherActor, UPrimitiveComponent *otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
+	UFUNCTION()    
+    void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UFUNCTION()
 	void CancelGrapple();
 	UFUNCTION()

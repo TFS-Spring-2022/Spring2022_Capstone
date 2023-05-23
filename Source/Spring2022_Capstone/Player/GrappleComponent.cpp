@@ -32,7 +32,7 @@ void UGrappleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (GrappleState == EGrappleState::Firing && FMath::Abs(FVector::Dist(GetStartLocation(),GrappleHook->GetActorLocation())) > GrappleRange)
+	if (GrappleState == EGrappleState::Firing && FMath::Abs(FVector::Dist(GetStartLocation(),_GrappleHook->GetActorLocation())) > GrappleRange)
 	{
 		CancelGrapple();
 	}
@@ -52,18 +52,18 @@ void UGrappleComponent::Fire(FVector TargetLocation)
 
 	FActorSpawnParameters SpawnInfo;
 	FTransform ActorTransform = FTransform(StartLocation);
-	GrappleHook = GetWorld()->SpawnActorDeferred<AGrappleHook>(AGrappleHook::StaticClass(), ActorTransform);
-	GrappleHook->FireVelocity = VectorDirection * FireSpeed;
-	GrappleHook->SphereCollider->OnComponentBeginOverlap.AddDynamic(this, &UGrappleComponent::OnOverlapBegin);
-	GrappleHook->SphereCollider->SetCollisionProfileName(TEXT("OverlapAll"));
-	UGameplayStatics::FinishSpawningActor(GrappleHook, ActorTransform);
+	_GrappleHook = GetWorld()->SpawnActorDeferred<AGrappleHook>(GrappleHookType, ActorTransform);
+	_GrappleHook->FireVelocity = VectorDirection * FireSpeed;
+	_GrappleHook->SphereCollider->OnComponentHit.AddDynamic(this, &UGrappleComponent::OnHit);
+	_GrappleHook->SphereCollider->SetCollisionProfileName(TEXT("OverlapAll"));
+	UGameplayStatics::FinishSpawningActor(_GrappleHook, ActorTransform);
 
 	// Spawn and attach cable
 
 	Cable = GetWorld()->SpawnActor<ACableActor>(ACableActor::StaticClass(), StartLocation, UKismetMathLibrary::MakeRotFromX(VectorDirection));
 	Cable->AttachToActor(GetOwner(), FAttachmentTransformRules::KeepWorldTransform);
 	Cable->CableComponent->EndLocation = FVector::ZeroVector;
-	Cable->CableComponent->SetAttachEndTo(GrappleHook, TEXT(""));
+	Cable->CableComponent->SetAttachEndTo(_GrappleHook, TEXT(""));
 	Cable->CableComponent->CableWidth = 1.25f;
 	Cable->CableComponent->bEnableStiffness = true;
 	Cable->CableComponent->SubstepTime = 0.005f;
@@ -80,20 +80,22 @@ FVector UGrappleComponent::GetStartLocation()
 	return StartingLocation;
 }
 
-void UGrappleComponent::OnOverlapBegin(UPrimitiveComponent *Comp, AActor *otherActor, UPrimitiveComponent *otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
+void UGrappleComponent::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (otherActor->IsA(APlayerCharacter::StaticClass()))
+	if (OtherActor->IsA(APlayerCharacter::StaticClass()))
 	{
 		return;
 	}
+
+	GrappleState = EGrappleState::Attached;
 }
 
 void UGrappleComponent::CancelGrapple()
 {
-	if (GrappleHook && Cable)
+	if (_GrappleHook && Cable)
 	{
-		GrappleHook->Destroy();
-		GrappleHook = nullptr;
+		_GrappleHook->Destroy();
+		_GrappleHook = nullptr;
 
 		Cable->Destroy();
 		Cable = nullptr;

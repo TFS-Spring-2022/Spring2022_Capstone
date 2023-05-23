@@ -10,8 +10,11 @@ AGrappleHook::AGrappleHook()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	HookMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HookMesh"));
+	RootComponent = HookMesh;
+
 	SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("GrappleCollider"));
-	RootComponent = SphereCollider;
+	SphereCollider->SetupAttachment(RootComponent);
 	SphereCollider->SetSimulatePhysics(false);
 	SphereCollider->SetNotifyRigidBodyCollision(true);
 	SphereCollider->SetWorldScale3D(FVector(2, 2, 2));
