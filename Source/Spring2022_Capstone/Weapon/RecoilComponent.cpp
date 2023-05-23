@@ -62,6 +62,12 @@ void URecoilComponent::RecoveryStart()
 		bRecoilRecovery = true;
 		GetWorld()->GetTimerManager().SetTimer(RecoveryTimerHandle, this, &URecoilComponent::RecoveryTimerFunction, 0.5, false); // Note - Leave 0.5 Issues with moving and shooting when not.
 	}
+	else
+	{
+		bOriginalAimRotSet = false;
+		PlayerDeltaRot = FRotator::ZeroRotator;
+		RecoilDeltaRot = FRotator::ZeroRotator;
+	}
 	
 }
 
