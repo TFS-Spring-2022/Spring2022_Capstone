@@ -41,6 +41,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Grapple")
 	ACableActor *Cable = nullptr;
 
+	FVector InitialHookDirection2D;
+	FVector GetToGrappleHookDirection();
+
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
@@ -51,7 +54,7 @@ public:
 	float GrappleRange = 500.f;
 
 	UFUNCTION()    
-    void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+    void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit );
 	UFUNCTION()
 	void CancelGrapple();
 	UFUNCTION()

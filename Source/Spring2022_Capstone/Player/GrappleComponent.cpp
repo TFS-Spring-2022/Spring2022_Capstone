@@ -4,39 +4,45 @@
 #include "GrappleHook.h"
 #include "CableComponent.h"
 #include "PlayerCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "CableActor.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
-// Sets default values for this component's properties
 UGrappleComponent::UGrappleComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
-// Called when the game starts
 void UGrappleComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
 }
 
-// Called every frame
 void UGrappleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (GrappleState == EGrappleState::Firing && FMath::Abs(FVector::Dist(GetStartLocation(),_GrappleHook->GetActorLocation())) > GrappleRange)
+	if (GrappleState == EGrappleState::Firing && FMath::Abs(FVector::Dist(GetStartLocation(), _GrappleHook->GetActorLocation())) > GrappleRange)
 	{
 		CancelGrapple();
 	}
-	// ...
+	else if (GrappleState == EGrappleState::Attached)
+	{
+		if (APlayerCharacter *PlayerCharacter = Cast<APlayerCharacter>(GetOwner()))
+		{
+			UCharacterMovementComponent *MovementComponent = PlayerCharacter->GetCharacterMovement();
+			FVector ToGrappleHookDirection = GetToGrappleHookDirection();
+			MovementComponent->AddForce(ToGrappleHookDirection * 10000);
+			if (FVector::Distance(_GrappleHook->GetActorLocation(), GetOwner()->GetActorLocation()) < 250 ||
+				FVector::DotProduct(InitialHookDirection2D, FVector(ToGrappleHookDirection.X, ToGrappleHookDirection.Y, 0)) < 0)
+			{
+				UE_LOG(LogTemp, Display, TEXT("CANCELED"));
+				CancelGrapple();
+			}
+		}
+	}
 }
 
 void UGrappleComponent::Fire(FVector TargetLocation)
@@ -54,7 +60,8 @@ void UGrappleComponent::Fire(FVector TargetLocation)
 	FTransform ActorTransform = FTransform(StartLocation);
 	_GrappleHook = GetWorld()->SpawnActorDeferred<AGrappleHook>(GrappleHookType, ActorTransform);
 	_GrappleHook->FireVelocity = VectorDirection * FireSpeed;
-	_GrappleHook->SphereCollider->OnComponentHit.AddDynamic(this, &UGrappleComponent::OnHit);
+	_GrappleHook->OnActorHit.AddDynamic(this, &UGrappleComponent::OnHit);
+	// _GrappleHook->SphereCollider->OnComponentHit.AddDynamic(this, &UGrappleComponent::OnHit);
 	_GrappleHook->SphereCollider->SetCollisionProfileName(TEXT("OverlapAll"));
 	UGameplayStatics::FinishSpawningActor(_GrappleHook, ActorTransform);
 
@@ -80,14 +87,30 @@ FVector UGrappleComponent::GetStartLocation()
 	return StartingLocation;
 }
 
-void UGrappleComponent::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector NormalImpulse, const FHitResult &Hit)
 {
 	if (OtherActor->IsA(APlayerCharacter::StaticClass()))
 	{
 		return;
 	}
 
+	FTimerHandle handle;
+	// TODO: SET MAXIMUM GRAPPLE TIME HERE
+	GetWorld()->GetTimerManager().SetTimer(handle, this, &UGrappleComponent::CancelGrapple, 3, false);
+
 	GrappleState = EGrappleState::Attached;
+
+	if (APlayerCharacter *PlayerCharacter = Cast<APlayerCharacter>(GetOwner()))
+	{
+		UCharacterMovementComponent *MovementComponent = PlayerCharacter->GetCharacterMovement();
+		FVector ToGrappleHookDirection = GetToGrappleHookDirection();
+		MovementComponent->GroundFriction = 0;
+		MovementComponent->GravityScale = 0;
+		MovementComponent->AirControl = 0.2;
+		MovementComponent->Velocity = ToGrappleHookDirection * 1200;
+		InitialHookDirection2D = FVector(ToGrappleHookDirection.X, ToGrappleHookDirection.Y, 0);
+		InitialHookDirection2D.Normalize();
+	}
 }
 
 void UGrappleComponent::CancelGrapple()
@@ -100,10 +123,25 @@ void UGrappleComponent::CancelGrapple()
 		Cable->Destroy();
 		Cable = nullptr;
 
+		if (APlayerCharacter *PlayerCharacter = Cast<APlayerCharacter>(GetOwner()))
+		{
+			UCharacterMovementComponent *MovementComponent = PlayerCharacter->GetCharacterMovement();
+			MovementComponent->GroundFriction = 1;
+			MovementComponent->GravityScale = 1;
+			MovementComponent->AirControl = 0.05;
+		}
+
 		GrappleState = EGrappleState::Cooldown;
 		FTimerHandle handle;
 		GetWorld()->GetTimerManager().SetTimer(handle, this, &UGrappleComponent::ResetStatus, Cooldown, false);
 	}
+}
+
+FVector UGrappleComponent::GetToGrappleHookDirection()
+{
+	FVector Direction = _GrappleHook->GetActorLocation() - GetOwner()->GetActorLocation();
+	Direction.Normalize();
+	return Direction;
 }
 
 void UGrappleComponent::ResetStatus()
