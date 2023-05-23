@@ -110,7 +110,6 @@ protected:
 	float DoubleTapActivationDelay = 0.5f;
 
 // Dash Mechanic Runtime
-
 	bool bCanDash = true;
 	
 	// Double Tap Time Handling on Dash

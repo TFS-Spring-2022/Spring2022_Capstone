@@ -92,11 +92,20 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 
 	if(bCanDash)
 	{
+		
 		// If Player Double Taps the same direction
 		if(CurrentTime - LastDashActionTappedTime < DoubleTapActivationDelay && Value.GetMagnitude() == PreviousDashDirection)
 		{
-			
-			LaunchCharacter(GetActorForwardVector() * DashDistance, false, false);
+
+			const FVector2D DirectionalValue = Value.Get<FVector2D>();
+			if(DirectionalValue.Y == 1)
+				LaunchCharacter(GetActorForwardVector() * DashDistance, false, false);
+			else if (DirectionalValue.Y == -1)
+				LaunchCharacter(-GetActorForwardVector() * DashDistance, false, false);
+			else if (DirectionalValue.X == -1)
+				LaunchCharacter(-GetActorRightVector() * DashDistance, false, false);
+			else if(DirectionalValue.X == 1)
+				LaunchCharacter(GetActorRightVector() * DashDistance, false, false);
 			
 			// Start Dash Cooldown
 			bCanDash = false;
