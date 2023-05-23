@@ -90,13 +90,15 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 {
 	const float CurrentTime = GetWorld()->GetRealTimeSeconds();
 
-	// If Player Double Taps
-	if(CurrentTime - LastDashActionTappedTime < DoubleTapActivationDelay)
+	// If Player Double Taps the same direction
+	if(CurrentTime - LastDashActionTappedTime < DoubleTapActivationDelay && Value.GetMagnitude() == PreviousDashDirection)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::MakeRandomColor(), "Same Key Pressed");
 		LastDashActionTappedTime = 0;
 	}
 	
 	LastDashActionTappedTime = CurrentTime;
+	PreviousDashDirection = Value.GetMagnitude();
 	
 }
 

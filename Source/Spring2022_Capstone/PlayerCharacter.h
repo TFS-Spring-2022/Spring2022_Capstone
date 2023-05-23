@@ -112,6 +112,8 @@ protected:
 	// Double Tap Time Handling on Dash
 	float LastDashActionTappedTime = 0.0f;
 	
+	float PreviousDashDirection;
+	
 	/**
 	 * @brief Health Component
 	 * @note Change health points using Set funtions
