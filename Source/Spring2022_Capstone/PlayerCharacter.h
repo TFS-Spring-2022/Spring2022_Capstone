@@ -105,6 +105,13 @@ protected:
 	// Switches ActiveWeapon between Weapon1 and Weapon2
 	void SwitchWeapon(const FInputActionValue &Value);
 
+	// Time between presses of a button to indicate a double tap
+	UPROPERTY(EditAnywhere, Category = "Input")
+	float DoubleTapActivationDelay = 0.5f;
+	
+	// Double Tap Time Handling on Dash
+	float LastDashActionTappedTime = 0.0f;
+	
 	/**
 	 * @brief Health Component
 	 * @note Change health points using Set funtions

@@ -88,6 +88,16 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
 
 void APlayerCharacter::Dash(const FInputActionValue &Value)
 {
+	const float CurrentTime = GetWorld()->GetRealTimeSeconds();
+
+	// If Player Double Taps
+	if(CurrentTime - LastDashActionTappedTime < DoubleTapActivationDelay)
+	{
+		LastDashActionTappedTime = 0;
+	}
+	
+	LastDashActionTappedTime = CurrentTime;
+	
 }
 
 void APlayerCharacter::Look(const FInputActionValue &Value)
