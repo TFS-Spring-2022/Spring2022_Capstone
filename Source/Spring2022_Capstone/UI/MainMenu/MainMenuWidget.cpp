@@ -3,11 +3,13 @@
 #include "MainMenuWidget.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "MainMenuManager.h"
 
 void UMainMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	PlayButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::OnPlayButtonPressed);
+	SettingsButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::OnSettingButtonPressed);
 	ExitButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::OnExitButtonPressed);
 	YesButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::OnYesButtonPressed);
 	NoButton->OnClicked.AddUniqueDynamic(this, &UMainMenuWidget::OnNoButtonPressed);
@@ -33,6 +35,15 @@ void UMainMenuWidget::OnPlayButtonPressed()
 
 	UGameplayStatics::OpenLevel(this, "Level");
 }
+
+void UMainMenuWidget::OnSettingButtonPressed()
+{
+	if(Manager)
+	{
+		Manager->DisplaySettingsWidget();
+	}
+}
+
 
 void UMainMenuWidget::OnExitButtonPressed()
 {
