@@ -13,6 +13,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "HealthComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -39,6 +40,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Dash);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Grapple);
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Crouch);
@@ -83,6 +85,64 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
 		AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * 100);
 		AddMovementInput(GetActorRightVector(), DirectionalValue.X * 100);
 	}
+}
+
+void APlayerCharacter::Dash(const FInputActionValue &Value)
+{
+	const float CurrentTime = GetWorld()->GetRealTimeSeconds();
+
+	if(bCanDash)
+	{
+		
+		// If Player Double Taps the same direction
+		if(CurrentTime - LastDashActionTappedTime < DoubleTapActivationDelay && Value.GetMagnitude() == PreviousDashDirection)
+		{
+
+			// Knock the actor up slightly to prevent ground collision
+			LaunchCharacter(FVector(0,0, 250), false, true); // Note: I like the feel of true Overrides but we can come back later.
+
+			// Set Dash DirectionalValue to be used in DashDirectionLaunch
+			DashDirectionalValue = Value.Get<FVector2D>();
+			
+			// After a tiny delay dash in desired direction
+			GetWorld()->GetTimerManager().SetTimer(DashDirectionalMovementDelayTimerHandle, this, &APlayerCharacter::DashDirectionalLaunch, 0.065, false); // Note: This number will never change while running. 0.65 feels good.
+		}
+	}
+
+	LastDashActionTappedTime = CurrentTime;
+	PreviousDashDirection = Value.GetMagnitude();
+	
+}
+
+void APlayerCharacter::DashDirectionalLaunch()
+{
+	const float PreDashSpeed = GetVelocity().Length();
+	
+	if(DashDirectionalValue.Y == 1)
+		LaunchCharacter(GetActorForwardVector() * DashDistance, true, false);
+	else if (DashDirectionalValue.Y == -1)
+		LaunchCharacter(-GetActorForwardVector() * DashDistance, true, false);
+	else if (DashDirectionalValue.X == -1)
+		LaunchCharacter(-GetActorRightVector() * DashDistance, true, false);
+	else if(DashDirectionalValue.X == 1)
+		LaunchCharacter(GetActorRightVector() * DashDistance, true, false);
+
+	// Handle velocity after dash
+	FVector PostDashDirection = UKismetMathLibrary::Conv_RotatorToVector(GetCharacterMovement()->GetLastUpdateRotation());
+	PostDashDirection *= PreDashSpeed;
+	GetCharacterMovement()->Velocity = PostDashDirection;
+
+	// Handle Dash Cooldown
+	bCanDash = false;
+	GetWorld()->GetTimerManager().SetTimer(DashCooldownTimerHandle, this, &APlayerCharacter::ResetDashCooldown, DashCooldownTime, false);
+		
+	LastDashActionTappedTime = 0;
+
+}
+
+void APlayerCharacter::ResetDashCooldown()
+{
+	bCanDash = true;
 }
 
 void APlayerCharacter::Look(const FInputActionValue &Value)
