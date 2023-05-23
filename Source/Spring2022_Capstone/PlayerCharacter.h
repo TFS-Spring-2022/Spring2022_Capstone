@@ -89,15 +89,14 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *SwitchWeaponAction;
-
 	/**
-	 * @brief Health Component
-	 * @note Change health points using Set funtions
+	 * @brief Holds the Dash Input Action 
 	 */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UHealthComponent *HealthComponent;
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction *DashAction;
+	
 	void Move(const FInputActionValue &Value);
+	void Dash(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
 	void Sprint(const FInputActionValue &Value);
 	void Crouch(const FInputActionValue &Value);
@@ -106,6 +105,13 @@ protected:
 	// Switches ActiveWeapon between Weapon1 and Weapon2
 	void SwitchWeapon(const FInputActionValue &Value);
 
+	/**
+	 * @brief Health Component
+	 * @note Change health points using Set funtions
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UHealthComponent *HealthComponent;
+	
 	void UpdateHealthBar();
 
 private:
