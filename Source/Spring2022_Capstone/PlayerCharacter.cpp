@@ -90,10 +90,16 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 {
 	const float CurrentTime = GetWorld()->GetRealTimeSeconds();
 
+	
 	// If Player Double Taps the same direction
 	if(CurrentTime - LastDashActionTappedTime < DoubleTapActivationDelay && Value.GetMagnitude() == PreviousDashDirection)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::MakeRandomColor(), "Same Key Pressed");
+
+		// Launch actor slightly upwards to prevent ground blocking
+		LaunchCharacter(FVector(0, 0, 200), false, false);
+		// Launch actor forwards
+		LaunchCharacter(GetActorForwardVector() * DashDistance, false, false);
+		
 		LastDashActionTappedTime = 0;
 	}
 	
