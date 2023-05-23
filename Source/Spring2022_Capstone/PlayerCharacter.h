@@ -108,18 +108,39 @@ protected:
 	// Time between presses of a button to indicate a double tap
 	UPROPERTY(EditAnywhere, Category = "Input")
 	float DoubleTapActivationDelay = 0.5f;
+
+// Dash Mechanic Runtime
+
+	bool bCanDash = true;
 	
 	// Double Tap Time Handling on Dash
 	float LastDashActionTappedTime = 0.0f;
-	
+
+	// Used to check for double press of same button
 	float PreviousDashDirection;
 
 	UPROPERTY(EditAnywhere)
 	float DashDistance = 2500;
+
+	// Used with DashCoolDownTime to handle cooldown
+	FTimerHandle DashCooldownTimerHandle;
+
+	/**
+	* @brief Dash cooldown in seconds
+	*/
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float DashCooldownTime;
+	
+	/**
+	 * @brief Sets bCanDash back to true
+	 * @note Called automatically from Dash()
+	 */
+	UFUNCTION()
+	void ResetDashCooldown();
 	
 	/**
 	 * @brief Health Component
-	 * @note Change health points using Set funtions
+	 * @note Change health points using Set functions
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UHealthComponent *HealthComponent;

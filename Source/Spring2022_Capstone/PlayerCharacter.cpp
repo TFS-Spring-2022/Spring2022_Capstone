@@ -90,22 +90,30 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 {
 	const float CurrentTime = GetWorld()->GetRealTimeSeconds();
 
-	
-	// If Player Double Taps the same direction
-	if(CurrentTime - LastDashActionTappedTime < DoubleTapActivationDelay && Value.GetMagnitude() == PreviousDashDirection)
+	if(bCanDash)
 	{
-
-		// Launch actor slightly upwards to prevent ground blocking
-		LaunchCharacter(FVector(0, 0, 200), false, false);
-		// Launch actor forwards
-		LaunchCharacter(GetActorForwardVector() * DashDistance, false, false);
+		// If Player Double Taps the same direction
+		if(CurrentTime - LastDashActionTappedTime < DoubleTapActivationDelay && Value.GetMagnitude() == PreviousDashDirection)
+		{
+			
+			LaunchCharacter(GetActorForwardVector() * DashDistance, false, false);
+			
+			// Start Dash Cooldown
+			bCanDash = false;
+			GetWorld()->GetTimerManager().SetTimer(DashCooldownTimerHandle, this, &APlayerCharacter::ResetDashCooldown, DashCooldownTime, false);
 		
-		LastDashActionTappedTime = 0;
+			LastDashActionTappedTime = 0;
+		}
 	}
-	
+
 	LastDashActionTappedTime = CurrentTime;
 	PreviousDashDirection = Value.GetMagnitude();
 	
+}
+
+void APlayerCharacter::ResetDashCooldown()
+{
+	bCanDash = true;
 }
 
 void APlayerCharacter::Look(const FInputActionValue &Value)
