@@ -119,7 +119,7 @@ protected:
 	float PreviousDashDirection;
 
 	UPROPERTY(EditAnywhere)
-	float DashDistance = 2500;
+	float DashDistance = 1250;
 
 	// Used with DashCoolDownTime to handle cooldown
 	FTimerHandle DashCooldownTimerHandle;
@@ -136,6 +136,22 @@ protected:
 	 */
 	UFUNCTION()
 	void ResetDashCooldown();
+
+	// Used to handle the delay after initial knock-up in Dash()
+	FTimerHandle DashDirectionalMovementDelayTimerHandle;
+
+	/**
+	 * @brief Dashes the Actor in the desired direction
+	 * @note Called automatically from Dash() after a tiny delay.
+	 */
+	UFUNCTION()
+	void DashDirectionalLaunch();
+
+	/**
+	 * @brief The InputValue used in the dash's direction.
+	 * @note Set in Dash() and used in DashDirectionLaunch
+	 */
+	FVector2D DashDirectionalValue;
 	
 	/**
 	 * @brief Health Component

@@ -13,6 +13,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "HealthComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -97,27 +98,46 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 		if(CurrentTime - LastDashActionTappedTime < DoubleTapActivationDelay && Value.GetMagnitude() == PreviousDashDirection)
 		{
 
-			const FVector2D DirectionalValue = Value.Get<FVector2D>();
-			if(DirectionalValue.Y == 1)
-				LaunchCharacter(GetActorForwardVector() * DashDistance, false, false);
-			else if (DirectionalValue.Y == -1)
-				LaunchCharacter(-GetActorForwardVector() * DashDistance, false, false);
-			else if (DirectionalValue.X == -1)
-				LaunchCharacter(-GetActorRightVector() * DashDistance, false, false);
-			else if(DirectionalValue.X == 1)
-				LaunchCharacter(GetActorRightVector() * DashDistance, false, false);
+			// Knock the actor up slightly to prevent ground collision
+			LaunchCharacter(FVector(0,0, 250), true, true); // Note: I like the feel of true Overrides but we can come back later.
+
+			// Set Dash DirectionalValue to be used in DashDirectionLaunch
+			DashDirectionalValue = Value.Get<FVector2D>();
 			
-			// Start Dash Cooldown
-			bCanDash = false;
-			GetWorld()->GetTimerManager().SetTimer(DashCooldownTimerHandle, this, &APlayerCharacter::ResetDashCooldown, DashCooldownTime, false);
-		
-			LastDashActionTappedTime = 0;
+			// After a tiny delay dash in desired direction
+			GetWorld()->GetTimerManager().SetTimer(DashDirectionalMovementDelayTimerHandle, this, &APlayerCharacter::DashDirectionalLaunch, 0.065, false); // Note: This number will never change while running. 0.65 feels good.
 		}
 	}
 
 	LastDashActionTappedTime = CurrentTime;
 	PreviousDashDirection = Value.GetMagnitude();
 	
+}
+
+void APlayerCharacter::DashDirectionalLaunch()
+{
+	const float PreDashSpeed = GetVelocity().Length();
+	
+	if(DashDirectionalValue.Y == 1)
+		LaunchCharacter(GetActorForwardVector() * DashDistance, false, false);
+	else if (DashDirectionalValue.Y == -1)
+		LaunchCharacter(-GetActorForwardVector() * DashDistance, false, false);
+	else if (DashDirectionalValue.X == -1)
+		LaunchCharacter(-GetActorRightVector() * DashDistance, false, false);
+	else if(DashDirectionalValue.X == 1)
+		LaunchCharacter(GetActorRightVector() * DashDistance, false, false);
+
+	// Handle velocity after dash
+	FVector PostDashDirection = UKismetMathLibrary::Conv_RotatorToVector(GetCharacterMovement()->GetLastUpdateRotation());
+	PostDashDirection *= PreDashSpeed;
+	GetCharacterMovement()->Velocity = PostDashDirection;
+
+	// Handle Dash Cooldown
+	bCanDash = false;
+	GetWorld()->GetTimerManager().SetTimer(DashCooldownTimerHandle, this, &APlayerCharacter::ResetDashCooldown, DashCooldownTime, false);
+		
+	LastDashActionTappedTime = 0;
+
 }
 
 void APlayerCharacter::ResetDashCooldown()
