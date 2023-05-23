@@ -62,6 +62,12 @@ void URecoilComponent::RecoveryStart()
 		bRecoilRecovery = true;
 		GetWorld()->GetTimerManager().SetTimer(RecoveryTimerHandle, this, &URecoilComponent::RecoveryTimerFunction, 0.5, false); // Note - Leave 0.5 Issues with moving and shooting when not.
 	}
+	else
+	{
+		bOriginalAimRotSet = false;
+		PlayerDeltaRot = FRotator::ZeroRotator;
+		RecoilDeltaRot = FRotator::ZeroRotator;
+	}
 	
 }
 
@@ -112,10 +118,10 @@ void URecoilComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 		{
 
 			// We want to reset the vertical recoil, but maintain horizontal change.
-			FRotator AimResetRotation = FRotator(RecoilStartRot.Pitch, OwnersPlayerController->GetControlRotation().Yaw, OwnersPlayerController->GetControlRotation().Roll);
+			FRotator AimResetRotation = FRotator(RecoilStartRot.Pitch + PlayerDeltaRot.Pitch, OwnersPlayerController->GetControlRotation().Yaw, OwnersPlayerController->GetControlRotation().Roll);
 
-			OwnersPlayerController->SetControlRotation(UKismetMathLibrary::RInterpTo(OwnersPlayerController->GetControlRotation(), AimResetRotation, DeltaTime, RecoverySpeed));
-
+			OwnersPlayerController->SetControlRotation(UKismetMathLibrary::RInterpTo(TmpRot, AimResetRotation, DeltaTime, RecoverySpeed));
+			
 		}
 		else
 		{
