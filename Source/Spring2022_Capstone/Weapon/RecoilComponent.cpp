@@ -120,7 +120,7 @@ void URecoilComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 			// We want to reset the vertical recoil, but maintain horizontal change.
 			FRotator AimResetRotation = FRotator(RecoilStartRot.Pitch + PlayerDeltaRot.Pitch, OwnersPlayerController->GetControlRotation().Yaw, OwnersPlayerController->GetControlRotation().Roll);
 
-			OwnersPlayerController->SetControlRotation(UKismetMathLibrary::RInterpTo(OwnersPlayerController->GetControlRotation(), AimResetRotation, DeltaTime, RecoverySpeed));
+			OwnersPlayerController->SetControlRotation(UKismetMathLibrary::RInterpTo(TmpRot, AimResetRotation, DeltaTime, RecoverySpeed));
 			
 		}
 		else
