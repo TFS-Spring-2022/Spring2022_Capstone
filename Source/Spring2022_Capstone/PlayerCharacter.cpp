@@ -99,7 +99,7 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 		{
 
 			// Knock the actor up slightly to prevent ground collision
-			LaunchCharacter(FVector(0,0, 250), true, true); // Note: I like the feel of true Overrides but we can come back later.
+			LaunchCharacter(FVector(0,0, 250), false, true); // Note: I like the feel of true Overrides but we can come back later.
 
 			// Set Dash DirectionalValue to be used in DashDirectionLaunch
 			DashDirectionalValue = Value.Get<FVector2D>();
@@ -119,13 +119,13 @@ void APlayerCharacter::DashDirectionalLaunch()
 	const float PreDashSpeed = GetVelocity().Length();
 	
 	if(DashDirectionalValue.Y == 1)
-		LaunchCharacter(GetActorForwardVector() * DashDistance, false, false);
+		LaunchCharacter(GetActorForwardVector() * DashDistance, true, false);
 	else if (DashDirectionalValue.Y == -1)
-		LaunchCharacter(-GetActorForwardVector() * DashDistance, false, false);
+		LaunchCharacter(-GetActorForwardVector() * DashDistance, true, false);
 	else if (DashDirectionalValue.X == -1)
-		LaunchCharacter(-GetActorRightVector() * DashDistance, false, false);
+		LaunchCharacter(-GetActorRightVector() * DashDistance, true, false);
 	else if(DashDirectionalValue.X == 1)
-		LaunchCharacter(GetActorRightVector() * DashDistance, false, false);
+		LaunchCharacter(GetActorRightVector() * DashDistance, true, false);
 
 	// Handle velocity after dash
 	FVector PostDashDirection = UKismetMathLibrary::Conv_RotatorToVector(GetCharacterMovement()->GetLastUpdateRotation());
