@@ -113,6 +113,9 @@ protected:
 	float LastDashActionTappedTime = 0.0f;
 	
 	float PreviousDashDirection;
+
+	UPROPERTY(EditAnywhere)
+	float DashDistance = 2500;
 	
 	/**
 	 * @brief Health Component
