@@ -1,15 +1,15 @@
 // Created by Spring2022_Capstone team
 
-#include "VictoryScreenUserWidget.h"
+#include "EndScreenUserWidget.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 
-void UVictoryScreenUserWidget::NativeConstruct()
+void UEndScreenUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	ReturnToMainMenuButton->OnClicked.AddUniqueDynamic(this, &UVictoryScreenUserWidget::ReturnToMenuButtonPressed);
-	ExitButton->OnClicked.AddUniqueDynamic(this, &UVictoryScreenUserWidget::OnExitButtonPressed);
+	ReturnToMainMenuButton->OnClicked.AddUniqueDynamic(this, &UEndScreenUserWidget::ReturnToMenuButtonPressed);
+	ExitButton->OnClicked.AddUniqueDynamic(this, &UEndScreenUserWidget::OnExitButtonPressed);
 
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (PC)
@@ -20,13 +20,13 @@ void UVictoryScreenUserWidget::NativeConstruct()
 	}
 }
 
-void UVictoryScreenUserWidget::ReturnToMenuButtonPressed()
+void UEndScreenUserWidget::ReturnToMenuButtonPressed()
 {
 	UGameplayStatics::OpenLevel(this, "MainMenu");
 }
 
 
-void UVictoryScreenUserWidget::OnExitButtonPressed()
+void UEndScreenUserWidget::OnExitButtonPressed()
 {
 	UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, true);
 }

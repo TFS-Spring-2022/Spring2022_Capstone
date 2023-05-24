@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "VictoryScreenUserWidget.generated.h"
+#include "EndScreenUserWidget.generated.h"
 
 class UPanelWidget;
 class UImage;
@@ -14,7 +14,7 @@ class UButton;
  * 
  */
 UCLASS(Abstract)
-class SPRING2022_CAPSTONE_API UVictoryScreenUserWidget : public UUserWidget
+class SPRING2022_CAPSTONE_API UEndScreenUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
