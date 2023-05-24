@@ -45,6 +45,21 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* SprintAction;
 
+	/** Dash Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		class UInputAction* DashForwardAction;
+
+	/** Dash Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		class UInputAction* DashLeftAction;
+
+	/** Dash Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		class UInputAction* DashRightAction;
+
+	/** Dash Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		class UInputAction* DashBackwardAction;
 public:
 	// Sets default values for this pawn's properties
 	AMyPlayerController();
@@ -70,6 +85,10 @@ private:
 	void UnCrouch(const FInputActionValue& Value);
 	void StartSprint(const FInputActionValue& Value);
 	void StopSprint(const FInputActionValue& Value);
+	void DashForward(const FInputActionValue& Value);
+	void DashLeft(const FInputActionValue& Value);
+	void DashRight(const FInputActionValue& Value);
+	void DashBackward(const FInputActionValue& Value);
 private:
 	
 };

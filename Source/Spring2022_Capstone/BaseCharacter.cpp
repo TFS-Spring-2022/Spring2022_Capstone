@@ -18,6 +18,12 @@ ABaseCharacter::ABaseCharacter()
 	CrouchingCameraRelativeLocation = FVector(0.0f, 0.0f, 0.0f);
 	WalkingSpeed = 600;
 	SprintingSpeed = 1000;
+	bIsSprinting = false;
+	DashStrength = 1000;
+	DashTime = 0.5;
+	DashCoolDownTime = 4;
+	CurrentHealth = 100;
+	MaxHealth = 100;
 }
 
 // Called when the game starts or when spawned
@@ -44,14 +50,17 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ABaseCharacter::Move(const FInputActionValue& Value)
 {
-	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
+	if (!bIsDashing)
 	{
-		// add movement 
-		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
-		AddMovementInput(GetActorRightVector(), MovementVector.X);
+		// input is a Vector2D
+		FVector2D MovementVector = Value.Get<FVector2D>();
+
+		if (Controller != nullptr)
+		{
+			// add movement 
+			AddMovementInput(GetActorForwardVector(), MovementVector.Y);
+			AddMovementInput(GetActorRightVector(), MovementVector.X);
+		}
 	}
 }
 
@@ -70,6 +79,7 @@ void ABaseCharacter::Look(const FInputActionValue& Value)
 }
 void ABaseCharacter::StartCrouch()
 {
+	StopSprint();
 	Crouch();
 	PlayerCamera->SetRelativeLocation(CrouchingCameraRelativeLocation);
 }
@@ -80,9 +90,55 @@ void ABaseCharacter::StopCrouch()
 }
 void ABaseCharacter::StartSprint()
 {
-	GetCharacterMovement()->MaxWalkSpeed = SprintingSpeed;
+	if (!bIsCrouched)
+	{
+		bIsSprinting = true;
+		GetCharacterMovement()->MaxWalkSpeed = SprintingSpeed;
+	}
 }
 void ABaseCharacter::StopSprint()
 {
+	bIsSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = WalkingSpeed;
+}
+void ABaseCharacter::Dash(FVector Direction)
+{
+	if (!bIsDashOnCoolDown)
+	{
+		bIsDashing = true;
+		GetCharacterMovement()->GroundFriction = 0;
+		FVector LaunchVelocity = Direction * DashStrength;
+		LaunchCharacter(LaunchVelocity, true, true);
+		GetWorld()->GetTimerManager().SetTimer(DashTimerHandle, this, &ABaseCharacter::DashEnd, DashTime, false);
+	}
+	
+}
+void ABaseCharacter::DashEnd()
+{
+	bIsDashing = false;
+	bIsDashOnCoolDown = true;
+	GetCharacterMovement()->GroundFriction = 8;
+	GetWorld()->GetTimerManager().SetTimer(DashCoolDownTimerHandle, this, &ABaseCharacter::DashCoolDownEnd, DashCoolDownTime, false);
+
+}
+void ABaseCharacter::DashCoolDownEnd()
+{
+	bIsDashOnCoolDown = false;
+
+}
+void ABaseCharacter::Damage(float DamageValue)
+{
+	CurrentHealth -= DamageValue;
+	UpdateHealthBar(CurrentHealth/MaxHealth);
+
+	if (CurrentHealth <= 0)
+	{
+		Die();
+	}
+}
+void ABaseCharacter::Die()
+{
+	CurrentHealth = 0;
+	bIsDead = true ;
+	UpdateHealthBar(CurrentHealth / MaxHealth);
 }

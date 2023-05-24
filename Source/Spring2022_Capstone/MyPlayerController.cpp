@@ -64,6 +64,11 @@ void AMyPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMyPlayerController::StartSprint);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMyPlayerController::StopSprint);
 
+		//Dashing
+		EnhancedInputComponent->BindAction(DashForwardAction, ETriggerEvent::Triggered, this, &AMyPlayerController::DashForward);
+		EnhancedInputComponent->BindAction(DashLeftAction, ETriggerEvent::Triggered, this, &AMyPlayerController::DashLeft);
+		EnhancedInputComponent->BindAction(DashRightAction, ETriggerEvent::Triggered, this, &AMyPlayerController::DashRight);
+		EnhancedInputComponent->BindAction(DashBackwardAction, ETriggerEvent::Triggered, this, &AMyPlayerController::DashBackward);
 	}
 
 }
@@ -98,4 +103,20 @@ void AMyPlayerController::StartSprint(const FInputActionValue& Value)
 void AMyPlayerController::StopSprint(const FInputActionValue& Value)
 {
 	MyCharacter->StopSprint();
+}
+void AMyPlayerController::DashForward(const FInputActionValue& Value)
+{
+	MyCharacter->Dash(MyCharacter->GetActorForwardVector());
+}
+void AMyPlayerController::DashLeft(const FInputActionValue& Value)
+{
+	MyCharacter->Dash(-MyCharacter->GetActorRightVector());
+}
+void AMyPlayerController::DashRight(const FInputActionValue& Value)
+{
+	MyCharacter->Dash(MyCharacter->GetActorRightVector());
+}
+void AMyPlayerController::DashBackward(const FInputActionValue& Value)
+{
+	MyCharacter->Dash(-MyCharacter->GetActorForwardVector());
 }

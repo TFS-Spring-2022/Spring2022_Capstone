@@ -35,6 +35,14 @@ public:
 	void StopCrouch();
 	void StartSprint();
 	void StopSprint();
+	void Dash(FVector Direction);
+	void DashEnd();
+	void DashCoolDownEnd();
+	UFUNCTION(BlueprintCallable)
+	void Damage(float DamageValue);
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateHealthBar(float Percent);
+	void Die();
 
 	//Controls how fast the player can look around
 	UPROPERTY(EditDefaultsOnly)
@@ -58,4 +66,37 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 		float SprintingSpeed;
+
+	UPROPERTY()
+		bool bIsSprinting;
+
+	UPROPERTY(EditDefaultsOnly)
+		float DashStrength;
+
+	UPROPERTY()
+		FTimerHandle DashTimerHandle;
+
+	UPROPERTY()
+		FTimerHandle DashCoolDownTimerHandle;
+
+	UPROPERTY(EditDefaultsOnly)
+		float DashTime;
+
+	UPROPERTY(EditDefaultsOnly)
+		float DashCoolDownTime;
+
+	UPROPERTY()
+		bool bIsDashing;
+
+	UPROPERTY()
+		bool bIsDashOnCoolDown;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		float CurrentHealth;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		float MaxHealth;
+
+	UPROPERTY()
+		bool bIsDead;
 };
