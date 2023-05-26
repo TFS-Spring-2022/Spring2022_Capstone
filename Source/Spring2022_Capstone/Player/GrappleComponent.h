@@ -62,7 +62,8 @@ public:
 	UFUNCTION()    
     void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit );
 	UFUNCTION()
-	void CancelGrapple();
+	void MaxGrappleTimeReached();
+	void CancelGrapple(bool ShouldTriggerCooldown = true);
 	UFUNCTION()
 	void ResetStatus();
 

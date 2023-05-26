@@ -26,7 +26,7 @@ void UGrappleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 	if (GrappleState == EGrappleState::Firing && FMath::Abs(FVector::Dist(GetStartLocation(), _GrappleHook->GetActorLocation())) > GrappleRange)
 	{
-		CancelGrapple();
+		CancelGrapple(false);
 	}
 	else if (GrappleState == EGrappleState::Attached)
 	{
@@ -46,8 +46,6 @@ void UGrappleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 void UGrappleComponent::Fire(FVector TargetLocation)
 {
-
-	GEngine->AddOnScreenDebugMessage(0, 2, FColor::Red, FString::Printf(TEXT("%f %f %f"), TargetLocation.X, TargetLocation.Y, TargetLocation.Z));
 	OnGrappleActivatedDelegate.ExecuteIfBound();
 	GrappleState = EGrappleState::Firing;
 
@@ -62,7 +60,6 @@ void UGrappleComponent::Fire(FVector TargetLocation)
 	_GrappleHook = GetWorld()->SpawnActorDeferred<AGrappleHook>(GrappleHookType, ActorTransform);
 	_GrappleHook->FireVelocity = VectorDirection * FireSpeed;
 	_GrappleHook->OnActorHit.AddDynamic(this, &UGrappleComponent::OnHit);
-	// _GrappleHook->SphereCollider->OnComponentHit.AddDynamic(this, &UGrappleComponent::OnHit);
 	_GrappleHook->SphereCollider->SetCollisionProfileName(TEXT("OverlapAll"));
 	UGameplayStatics::FinishSpawningActor(_GrappleHook, ActorTransform);
 
@@ -94,7 +91,7 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 
 	FTimerHandle handle;
 	// TODO: SET MAXIMUM GRAPPLE TIME HERE
-	GetWorld()->GetTimerManager().SetTimer(handle, this, &UGrappleComponent::CancelGrapple, 3, false);
+	GetWorld()->GetTimerManager().SetTimer(handle, this, &UGrappleComponent::MaxGrappleTimeReached, 3, false);
 
 	GrappleState = EGrappleState::Attached;
 
@@ -111,7 +108,12 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 	}
 }
 
-void UGrappleComponent::CancelGrapple()
+void UGrappleComponent::MaxGrappleTimeReached()
+{
+	CancelGrapple();
+}
+
+void UGrappleComponent::CancelGrapple(bool ShouldTriggerCooldown)
 {
 	if (_GrappleHook && Cable)
 	{
@@ -121,17 +123,21 @@ void UGrappleComponent::CancelGrapple()
 		Cable->Destroy();
 		Cable = nullptr;
 
-		if (APlayerCharacter *PlayerCharacter = Cast<APlayerCharacter>(GetOwner()))
+		if (ShouldTriggerCooldown)
 		{
-			UCharacterMovementComponent *MovementComponent = PlayerCharacter->GetCharacterMovement();
-			MovementComponent->GroundFriction = 1;
-			MovementComponent->GravityScale = 1;
-			MovementComponent->AirControl = 0.05;
+			if (APlayerCharacter *PlayerCharacter = Cast<APlayerCharacter>(GetOwner()))
+			{
+				UCharacterMovementComponent *MovementComponent = PlayerCharacter->GetCharacterMovement();
+				MovementComponent->GroundFriction = 1;
+				MovementComponent->GravityScale = 1;
+				MovementComponent->AirControl = 0.05;
+			}
+			GrappleState = EGrappleState::Cooldown;
+			GetWorld()->GetTimerManager().SetTimer(CooldownTimerHandle, this, &UGrappleComponent::ResetStatus, Cooldown, false);
+			OnGrappleCooldownStartDelegate.ExecuteIfBound(CooldownTimerHandle);
+		} else {
+			ResetStatus();
 		}
-
-		GrappleState = EGrappleState::Cooldown;
-		GetWorld()->GetTimerManager().SetTimer(CooldownTimerHandle, this, &UGrappleComponent::ResetStatus, Cooldown, false);
-		OnGrappleCooldownStartDelegate.ExecuteIfBound(CooldownTimerHandle);
 	}
 }
 
@@ -145,7 +151,6 @@ FVector UGrappleComponent::GetToGrappleHookDirection()
 void UGrappleComponent::ResetStatus()
 {
 	GrappleState = EGrappleState::ReadyToFire;
-
 	CooldownTimerHandle.Invalidate();
 	OnGrappleCooldownEndDelegate.ExecuteIfBound();
 }
