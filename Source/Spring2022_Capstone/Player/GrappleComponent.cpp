@@ -90,8 +90,7 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 	}
 
 	FTimerHandle handle;
-	// TODO: SET MAXIMUM GRAPPLE TIME HERE
-	GetWorld()->GetTimerManager().SetTimer(handle, this, &UGrappleComponent::MaxGrappleTimeReached, 3, false);
+	GetWorld()->GetTimerManager().SetTimer(handle, this, &UGrappleComponent::MaxGrappleTimeReached, MaximumGrappleTime, false);
 
 	GrappleState = EGrappleState::Attached;
 
@@ -102,7 +101,7 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 		MovementComponent->GroundFriction = 0;
 		MovementComponent->GravityScale = 0;
 		MovementComponent->AirControl = 0.2;
-		MovementComponent->Velocity = ToGrappleHookDirection * 1200;
+		MovementComponent->Velocity = ToGrappleHookDirection * GrappleForce;
 		InitialHookDirection2D = FVector(ToGrappleHookDirection.X, ToGrappleHookDirection.Y, 0);
 		InitialHookDirection2D.Normalize();
 	}

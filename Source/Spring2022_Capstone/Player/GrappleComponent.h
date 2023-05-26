@@ -34,11 +34,15 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, Category = "Grapple")
 	float Cooldown = 1.f;
+	UPROPERTY(EditAnywhere, Category = "Grapple")
+	float MaximumGrappleTime = 5.f;
 
 	UPROPERTY(EditAnywhere, Category = "Grapple")
 	FVector GrappleOffset;
 	UPROPERTY(EditAnywhere, Category = "Grapple")
 	float FireSpeed = 5000;
+	UPROPERTY(EditAnywhere, Category = "Grapple")
+	float GrappleForce = 1200;
 
 	UPROPERTY(EditAnywhere, Category = "Grapple")
 	TSubclassOf<AGrappleHook> GrappleHookType;
