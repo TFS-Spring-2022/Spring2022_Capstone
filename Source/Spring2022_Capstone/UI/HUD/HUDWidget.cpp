@@ -6,19 +6,22 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
+#include "Spring2022_Capstone/Player/GrappleComponent.h"
 
 void UHUDWidget::NativeConstruct()
 {
     Super::NativeConstruct();
 
-    if (APlayerCharacter *playerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
+    if (APlayerCharacter *PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
     {
-        playerCharacter->OnHealthChangedDelegate.BindUObject(this, &UHUDWidget::OnHealthChanged);
-        playerCharacter->OnGrappleActivatedDelegate.BindUObject(this, &UHUDWidget::OnGrappleActivated);
-        playerCharacter->OnGrappleCooldownStartDelegate.BindUObject(this, &UHUDWidget::OnGrappleCooldownStart);
-        playerCharacter->OnGrappleCooldownEndDelegate.BindUObject(this, &UHUDWidget::OnGrappleCooldownEnd);
-        
-        MaxHealth = playerCharacter->GetMaxHealth();
+        PlayerCharacter->OnHealthChangedDelegate.BindUObject(this, &UHUDWidget::OnHealthChanged);
+        MaxHealth = PlayerCharacter->GetMaxHealth();
+        if (UGrappleComponent *GrappleComponent = PlayerCharacter->GetGrappleComponent())
+        {
+            GrappleComponent->OnGrappleActivatedDelegate.BindUObject(this, &UHUDWidget::OnGrappleActivated);
+            GrappleComponent->OnGrappleCooldownStartDelegate.BindUObject(this, &UHUDWidget::OnGrappleCooldownStart);
+            GrappleComponent->OnGrappleCooldownEndDelegate.BindUObject(this, &UHUDWidget::OnGrappleCooldownEnd);
+        }
     }
 
     GrappleCooldownText->SetText(FText::GetEmpty());

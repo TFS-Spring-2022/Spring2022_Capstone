@@ -229,18 +229,6 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 		TargetLocation = HitResult.ImpactPoint;
 	}
 	GrappleComponent->Fire(TargetLocation);
-
-	if (OnGrappleActivatedDelegate.IsBound())
-	{
-		OnGrappleActivatedDelegate.Execute();
-	}
-
-	GetWorld()->GetTimerManager().SetTimer(handle, this, &APlayerCharacter::GrappleDone, 5, false);
-
-	if (OnGrappleCooldownStartDelegate.IsBound())
-	{
-		OnGrappleCooldownStartDelegate.Execute(handle);
-	}
 }
 
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
@@ -248,14 +236,6 @@ void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 	ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 }
 
-void APlayerCharacter::GrappleDone()
-{
-	handle.Invalidate();
-	if (OnGrappleCooldownEndDelegate.IsBound())
-	{
-		OnGrappleCooldownEndDelegate.Execute();
-	}
-}
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)
 {
@@ -350,6 +330,11 @@ void APlayerCharacter::HealByPercentage(int Percentage)
 float APlayerCharacter::GetMaxHealth() const
 {
 	return HealthComponent->GetMaxHealth();
+}
+
+UGrappleComponent* APlayerCharacter::GetGrappleComponent()
+{
+    return GrappleComponent;
 }
 
 void APlayerCharacter::UpdateHealthBar()

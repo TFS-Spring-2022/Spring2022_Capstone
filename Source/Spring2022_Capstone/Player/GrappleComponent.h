@@ -11,17 +11,24 @@ class AGrappleCable;
 class AGrappleHook;
 class ACableActor;
 
+DECLARE_DELEGATE(FOnGrappleActivated);
+DECLARE_DELEGATE_OneParam(FOnGrappleCooldownStart, FTimerHandle&);
+DECLARE_DELEGATE(FOnGrappleCooldownEnd);
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class SPRING2022_CAPSTONE_API UGrappleComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
 	UGrappleComponent();
 
+	FTimerHandle CooldownTimerHandle;
+	FOnGrappleActivated OnGrappleActivatedDelegate;
+	FOnGrappleCooldownStart OnGrappleCooldownStartDelegate;
+	FOnGrappleCooldownEnd OnGrappleCooldownEndDelegate;
+
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
 private:
@@ -45,7 +52,6 @@ private:
 	FVector GetToGrappleHookDirection();
 
 public:
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
 	UPROPERTY(EditAnywhere, Category = "Grapple")
@@ -62,4 +68,6 @@ public:
 
 	void Fire(FVector TargetLocation);
 	FVector GetStartLocation();
+
+	
 };

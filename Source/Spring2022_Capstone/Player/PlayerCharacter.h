@@ -18,9 +18,7 @@ class UHealthComponent;
 class UGrappleComponent;
 
 DECLARE_DELEGATE_OneParam(FOnHealthChanged, float);
-DECLARE_DELEGATE(FOnGrappleActivated);
-DECLARE_DELEGATE_OneParam(FOnGrappleCooldownStart, FTimerHandle&);
-DECLARE_DELEGATE(FOnGrappleCooldownEnd);
+
 UCLASS()
 class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 {
@@ -30,9 +28,6 @@ public:
 	APlayerCharacter();
 
 	FOnHealthChanged OnHealthChangedDelegate;
-	FOnGrappleActivated OnGrappleActivatedDelegate;
-	FOnGrappleCooldownStart OnGrappleCooldownStartDelegate;
-	FOnGrappleCooldownEnd OnGrappleCooldownEndDelegate;
 
 	virtual void Tick(float DeltaTime) override;
 
@@ -197,11 +192,6 @@ private:
 	void TakeHit();
 
 public:
-	UFUNCTION()
-	void GrappleDone();
-
-	FTimerHandle handle;
-
 	UFUNCTION(BlueprintCallable)
 	void IncreaseMaxHealth(int Value);
 	UFUNCTION(BlueprintCallable)
@@ -223,6 +213,7 @@ public:
 
 	void HealByPercentage(int Percentage);
 	float GetMaxHealth() const;
+	UGrappleComponent* GetGrappleComponent();
 
 	// Sets Weapon references and sets to ActiveWeapon
 	void SetWeapon1(AWeaponBase *Weapon);

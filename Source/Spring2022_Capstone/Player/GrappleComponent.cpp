@@ -38,7 +38,6 @@ void UGrappleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 			if (FVector::Distance(_GrappleHook->GetActorLocation(), GetOwner()->GetActorLocation()) < 250 ||
 				FVector::DotProduct(InitialHookDirection2D, FVector(ToGrappleHookDirection.X, ToGrappleHookDirection.Y, 0)) < 0)
 			{
-				UE_LOG(LogTemp, Display, TEXT("CANCELED"));
 				CancelGrapple();
 			}
 		}
@@ -47,7 +46,9 @@ void UGrappleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 void UGrappleComponent::Fire(FVector TargetLocation)
 {
+
 	GEngine->AddOnScreenDebugMessage(0, 2, FColor::Red, FString::Printf(TEXT("%f %f %f"), TargetLocation.X, TargetLocation.Y, TargetLocation.Z));
+	OnGrappleActivatedDelegate.ExecuteIfBound();
 	GrappleState = EGrappleState::Firing;
 
 	FVector StartLocation = GetStartLocation();
@@ -75,9 +76,6 @@ void UGrappleComponent::Fire(FVector TargetLocation)
 	Cable->CableComponent->bEnableStiffness = true;
 	Cable->CableComponent->SubstepTime = 0.005f;
 	Cable->CableComponent->SetCollisionProfileName(TEXT("OverlapAll"));
-
-	// FTimerHandle handle;
-	// GetWorld()->GetTimerManager().SetTimer(handle, this, &UGrappleComponent::CancelGrapple, GrappleTimer, false);
 }
 
 FVector UGrappleComponent::GetStartLocation()
@@ -132,8 +130,8 @@ void UGrappleComponent::CancelGrapple()
 		}
 
 		GrappleState = EGrappleState::Cooldown;
-		FTimerHandle handle;
-		GetWorld()->GetTimerManager().SetTimer(handle, this, &UGrappleComponent::ResetStatus, Cooldown, false);
+		GetWorld()->GetTimerManager().SetTimer(CooldownTimerHandle, this, &UGrappleComponent::ResetStatus, Cooldown, false);
+		OnGrappleCooldownStartDelegate.ExecuteIfBound(CooldownTimerHandle);
 	}
 }
 
@@ -147,4 +145,7 @@ FVector UGrappleComponent::GetToGrappleHookDirection()
 void UGrappleComponent::ResetStatus()
 {
 	GrappleState = EGrappleState::ReadyToFire;
+
+	CooldownTimerHandle.Invalidate();
+	OnGrappleCooldownEndDelegate.ExecuteIfBound();
 }
