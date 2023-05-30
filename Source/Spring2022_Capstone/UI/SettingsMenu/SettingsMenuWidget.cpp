@@ -3,7 +3,6 @@
 #include "SettingsMenuWidget.h"
 #include "Spring2022_Capstone/UI/MainMenu/MainMenuManager.h"
 #include "Components/Button.h"
-#include "Kismet/GameplayStatics.h"
 
 void USettingsMenuWidget::NativeConstruct()
 {
@@ -14,14 +13,10 @@ void USettingsMenuWidget::NativeConstruct()
 	GraphicsButton->OnClicked.AddUniqueDynamic(this, &USettingsMenuWidget::OnGraphicsButtonPressed);
 	AudioButton->OnClicked.AddUniqueDynamic(this, &USettingsMenuWidget::OnAudioButtonPressed);
 	ControlsButton->OnClicked.AddUniqueDynamic(this, &USettingsMenuWidget::OnControlsButtonPressed);
-
 }
-
-
 
 void USettingsMenuWidget::OnBackButtonPressed()
 {
-	UE_LOG(LogTemp, Display, TEXT("no back"));
     Manager->DismissSettingsWidget();
 }
 

@@ -15,11 +15,10 @@ class USpringArmComponent;
 class UCameraComponent;
 class UCharacterMovementComponent;
 class UHealthComponent;
+class UGrappleComponent;
 
 DECLARE_DELEGATE_OneParam(FOnHealthChanged, float);
-DECLARE_DELEGATE(FOnGrappleActivated);
-DECLARE_DELEGATE_OneParam(FOnGrappleCooldownStart, FTimerHandle&);
-DECLARE_DELEGATE(FOnGrappleCooldownEnd);
+
 UCLASS()
 class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 {
@@ -29,9 +28,6 @@ public:
 	APlayerCharacter();
 
 	FOnHealthChanged OnHealthChangedDelegate;
-	FOnGrappleActivated OnGrappleActivatedDelegate;
-	FOnGrappleCooldownStart OnGrappleCooldownStartDelegate;
-	FOnGrappleCooldownEnd OnGrappleCooldownEndDelegate;
 
 	virtual void Tick(float DeltaTime) override;
 
@@ -89,15 +85,17 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *SwitchWeaponAction;
-
 	/**
-	 * @brief Health Component
-	 * @note Change health points using Set funtions
+	 * @brief Holds the Dash Input Action 
 	 */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UHealthComponent *HealthComponent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction *DashAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
+	UGrappleComponent *GrappleComponent;
+	
 	void Move(const FInputActionValue &Value);
+	void Dash(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
 	void Sprint(const FInputActionValue &Value);
 	void Crouch(const FInputActionValue &Value);
@@ -106,6 +104,61 @@ protected:
 	// Switches ActiveWeapon between Weapon1 and Weapon2
 	void SwitchWeapon(const FInputActionValue &Value);
 
+	// Time between presses of a button to indicate a double tap
+	UPROPERTY(EditAnywhere, Category = "Input")
+	float DoubleTapActivationDelay = 0.5f;
+
+// Dash Mechanic Runtime
+	bool bCanDash = true;
+	
+	// Double Tap Time Handling on Dash
+	float LastDashActionTappedTime = 0.0f;
+
+	// Used to check for double press of same button
+	float PreviousDashDirection;
+
+	UPROPERTY(EditAnywhere)
+	float DashDistance = 1250;
+
+	// Used with DashCoolDownTime to handle cooldown
+	FTimerHandle DashCooldownTimerHandle;
+
+	/**
+	* @brief Dash cooldown in seconds
+	*/
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float DashCooldownTime;
+	
+	/**
+	 * @brief Sets bCanDash back to true
+	 * @note Called automatically from Dash()
+	 */
+	UFUNCTION()
+	void ResetDashCooldown();
+
+	// Used to handle the delay after initial knock-up in Dash()
+	FTimerHandle DashDirectionalMovementDelayTimerHandle;
+
+	/**
+	 * @brief Dashes the Actor in the desired direction
+	 * @note Called automatically from Dash() after a tiny delay.
+	 */
+	UFUNCTION()
+	void DashDirectionalLaunch();
+
+	/**
+	 * @brief The InputValue used in the dash's direction.
+	 * @note Set in Dash() and used in DashDirectionLaunch
+	 */
+	FVector2D DashDirectionalValue;
+	
+	/**
+	 * @brief Health Component
+	 * @note Change health points using Set functions
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UHealthComponent *HealthComponent;
+	
 	void UpdateHealthBar();
 
 private:
@@ -139,11 +192,6 @@ private:
 	void TakeHit();
 
 public:
-	UFUNCTION()
-	void GrappleDone();
-
-	FTimerHandle handle;
-
 	UFUNCTION(BlueprintCallable)
 	void IncreaseMaxHealth(int Value);
 	UFUNCTION(BlueprintCallable)
@@ -165,6 +213,7 @@ public:
 
 	void HealByPercentage(int Percentage);
 	float GetMaxHealth() const;
+	UGrappleComponent* GetGrappleComponent();
 
 	// Sets Weapon references and sets to ActiveWeapon
 	void SetWeapon1(AWeaponBase *Weapon);

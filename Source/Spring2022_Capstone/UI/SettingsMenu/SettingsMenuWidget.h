@@ -73,7 +73,6 @@ public:
 
 private:
 	
-
 	UFUNCTION()
 	void OnBackButtonPressed();
 
@@ -91,4 +90,5 @@ private:
 
 	UFUNCTION()
 	void ClearPanels();
+	
 };

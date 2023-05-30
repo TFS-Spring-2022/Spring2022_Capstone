@@ -1,18 +1,18 @@
 // Created by Spring2022_Capstone team
 
 #include "PlayerCharacter.h"
-
-#include <string>
-
+#include "GrappleComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "Weapon/WeaponBase.h"
+#include "GrappleState.h"
+#include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "HealthComponent.h"
+#include "Spring2022_Capstone/HealthComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -22,6 +22,8 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetupAttachment(RootComponent);
 	Camera->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
 	Camera->bUsePawnControlRotation = true;
+
+	GrappleComponent = CreateDefaultSubobject<UGrappleComponent>(TEXT("Grapple"));
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
@@ -39,6 +41,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Dash);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Grapple);
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Crouch);
@@ -83,6 +86,62 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
 		AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * 100);
 		AddMovementInput(GetActorRightVector(), DirectionalValue.X * 100);
 	}
+}
+
+void APlayerCharacter::Dash(const FInputActionValue &Value)
+{
+	const float CurrentTime = GetWorld()->GetRealTimeSeconds();
+
+	if (bCanDash)
+	{
+
+		// If Player Double Taps the same direction
+		if (CurrentTime - LastDashActionTappedTime < DoubleTapActivationDelay && Value.GetMagnitude() == PreviousDashDirection)
+		{
+
+			// Knock the actor up slightly to prevent ground collision
+			LaunchCharacter(FVector(0, 0, 250), false, true); // Note: I like the feel of true Overrides but we can come back later.
+
+			// Set Dash DirectionalValue to be used in DashDirectionLaunch
+			DashDirectionalValue = Value.Get<FVector2D>();
+
+			// After a tiny delay dash in desired direction
+			GetWorld()->GetTimerManager().SetTimer(DashDirectionalMovementDelayTimerHandle, this, &APlayerCharacter::DashDirectionalLaunch, 0.065, false); // Note: This number will never change while running. 0.65 feels good.
+		}
+	}
+
+	LastDashActionTappedTime = CurrentTime;
+	PreviousDashDirection = Value.GetMagnitude();
+}
+
+void APlayerCharacter::DashDirectionalLaunch()
+{
+	const float PreDashSpeed = GetVelocity().Length();
+
+	if (DashDirectionalValue.Y == 1)
+		LaunchCharacter(GetActorForwardVector() * DashDistance, true, false);
+	else if (DashDirectionalValue.Y == -1)
+		LaunchCharacter(-GetActorForwardVector() * DashDistance, true, false);
+	else if (DashDirectionalValue.X == -1)
+		LaunchCharacter(-GetActorRightVector() * DashDistance, true, false);
+	else if (DashDirectionalValue.X == 1)
+		LaunchCharacter(GetActorRightVector() * DashDistance, true, false);
+
+	// Handle velocity after dash
+	FVector PostDashDirection = UKismetMathLibrary::Conv_RotatorToVector(GetCharacterMovement()->GetLastUpdateRotation());
+	PostDashDirection *= PreDashSpeed;
+	GetCharacterMovement()->Velocity = PostDashDirection;
+
+	// Handle Dash Cooldown
+	bCanDash = false;
+	GetWorld()->GetTimerManager().SetTimer(DashCooldownTimerHandle, this, &APlayerCharacter::ResetDashCooldown, DashCooldownTime, false);
+
+	LastDashActionTappedTime = 0;
+}
+
+void APlayerCharacter::ResetDashCooldown()
+{
+	bCanDash = true;
 }
 
 void APlayerCharacter::Look(const FInputActionValue &Value)
@@ -151,29 +210,33 @@ void APlayerCharacter::Attack(const FInputActionValue &Value)
 
 void APlayerCharacter::Grapple(const FInputActionValue &Value)
 {
-	if (OnGrappleActivatedDelegate.IsBound())
+	if (!Value.Get<bool>())
 	{
-		OnGrappleActivatedDelegate.Execute();
+		GrappleComponent->CancelGrapple();
+		return;
 	}
-	GetWorld()->GetTimerManager().SetTimer(handle, this, &APlayerCharacter::GrappleDone, 5, false);
-	if (OnGrappleCooldownStartDelegate.IsBound())
+	if (GrappleComponent->GrappleState != EGrappleState::ReadyToFire)
 	{
-		OnGrappleCooldownStartDelegate.Execute(handle);
+		return;
 	}
+	FHitResult HitResult;
+	FVector StartLocation = Camera->GetComponentLocation();
+	FVector EndLocation = Camera->GetForwardVector() * GrappleComponent->GrappleRange + StartLocation;
+	FCollisionQueryParams TraceParams;
+
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility);
+	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.f);
+	FVector TargetLocation = EndLocation;
+	if (AActor *HitActor = HitResult.GetActor())
+	{
+		TargetLocation = HitResult.ImpactPoint;
+	}
+	GrappleComponent->Fire(TargetLocation);
 }
 
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
 	ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
-}
-
-void APlayerCharacter::GrappleDone()
-{
-	handle.Invalidate();
-	if (OnGrappleCooldownEndDelegate.IsBound())
-	{
-		OnGrappleCooldownEndDelegate.Execute();
-	}
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)
@@ -269,6 +332,11 @@ void APlayerCharacter::HealByPercentage(int Percentage)
 float APlayerCharacter::GetMaxHealth() const
 {
 	return HealthComponent->GetMaxHealth();
+}
+
+UGrappleComponent *APlayerCharacter::GetGrappleComponent()
+{
+	return GrappleComponent;
 }
 
 void APlayerCharacter::UpdateHealthBar()
