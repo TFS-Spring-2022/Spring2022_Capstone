@@ -91,8 +91,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *DashAction;
 
+	/**
+	 * @brief Holds the Pause Input Action
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction *PauseAction; 
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UGrappleComponent *GrappleComponent;
+
+	
 	
 	void Move(const FInputActionValue &Value);
 	void Dash(const FInputActionValue &Value);
@@ -103,7 +111,9 @@ protected:
 	void Grapple(const FInputActionValue &Value);
 	// Switches ActiveWeapon between Weapon1 and Weapon2
 	void SwitchWeapon(const FInputActionValue &Value);
+	void PauseGame(const FInputActionValue &Value);
 
+	
 	// Time between presses of a button to indicate a double tap
 	UPROPERTY(EditAnywhere, Category = "Input")
 	float DoubleTapActivationDelay = 0.5f;
@@ -160,6 +170,7 @@ protected:
 	UHealthComponent *HealthComponent;
 	
 	void UpdateHealthBar();
+	
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
@@ -192,6 +203,9 @@ private:
 	void TakeHit();
 
 public:
+
+	bool paused = false;
+
 	UFUNCTION(BlueprintCallable)
 	void IncreaseMaxHealth(int Value);
 	UFUNCTION(BlueprintCallable)
