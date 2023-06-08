@@ -8,6 +8,8 @@
 #include "WeaponBase.generated.h"
 
 
+DECLARE_DELEGATE_OneParam(FOnWeaponChargeChanged, float);
+DECLARE_DELEGATE_OneParam(FOnWeaponOverheatChanged, bool);
 
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API AWeaponBase : public AActor
@@ -27,6 +29,9 @@ public:
 
 	virtual void Shoot() PURE_VIRTUAL(AWeaponBase::Shoot());
 	
+	FOnWeaponChargeChanged OnWeaponChargeChangedDelegate;
+	FOnWeaponOverheatChanged OnWeaponOverheatChangedDelegate;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -34,7 +39,7 @@ protected:
 	
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	
+
 	//// Weapon Stats
 
 	// Current weapon charge (ammo) percentage.

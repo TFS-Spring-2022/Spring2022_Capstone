@@ -237,18 +237,32 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
 	ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+	if (OnWeaponSwitchedDelegate.IsBound())
+	{
+		OnWeaponSwitchedDelegate.Execute(ActiveWeapon);
+	}
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)
 {
 	Weapon1 = Weapon;
 	ActiveWeapon = Weapon1;
+
+	if (OnWeaponSwitchedDelegate.IsBound())
+	{
+		OnWeaponSwitchedDelegate.Execute(ActiveWeapon);
+	}
 }
 
 void APlayerCharacter::SetWeapon2(AWeaponBase *Weapon)
 {
 	Weapon2 = Weapon;
 	ActiveWeapon = Weapon2;
+
+	if (OnWeaponSwitchedDelegate.IsBound())
+	{
+		OnWeaponSwitchedDelegate.Execute(ActiveWeapon);
+	}
 }
 
 AWeaponBase *APlayerCharacter::GetWeapon1() const
@@ -259,6 +273,11 @@ AWeaponBase *APlayerCharacter::GetWeapon1() const
 AWeaponBase *APlayerCharacter::GetWeapon2() const
 {
 	return Weapon2;
+}
+
+AWeaponBase* APlayerCharacter::GetActiveWeapon() const
+{
+	return ActiveWeapon;
 }
 
 void APlayerCharacter::TakeHit()

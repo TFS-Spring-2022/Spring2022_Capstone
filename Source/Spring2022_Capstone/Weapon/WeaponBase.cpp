@@ -86,7 +86,10 @@ void AWeaponBase::Overheat()
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("OVERHEATING"));
 	bIsOverheating = true;
 	bCanFire = false;
-	
+	if (OnWeaponOverheatChangedDelegate.IsBound())
+	{
+		OnWeaponOverheatChangedDelegate.Execute(true);
+	}
 	GetWorldTimerManager().SetTimer(OverheatTimerHandle, this, &AWeaponBase::WeaponCooldown, OverheatTime, false, -1);
 }
 
@@ -96,6 +99,14 @@ void AWeaponBase::WeaponCooldown()
 	bIsOverheating = false;
 	bCanFire = true;
 	CurWeaponCharge = 0;
+	if (OnWeaponOverheatChangedDelegate.IsBound())
+	{
+		OnWeaponOverheatChangedDelegate.Execute(false);
+	}
+	if (OnWeaponChargeChangedDelegate.IsBound())
+	{
+		OnWeaponChargeChangedDelegate.Execute(CurWeaponCharge);
+	}
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("WEAPON COOLED"));
 }
 

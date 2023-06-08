@@ -18,6 +18,7 @@ class UHealthComponent;
 class UGrappleComponent;
 
 DECLARE_DELEGATE_OneParam(FOnHealthChanged, float);
+DECLARE_DELEGATE_OneParam(FOnWeaponSwitched, AWeaponBase*);
 
 UCLASS()
 class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
@@ -28,6 +29,7 @@ public:
 	APlayerCharacter();
 
 	FOnHealthChanged OnHealthChangedDelegate;
+	FOnWeaponSwitched OnWeaponSwitchedDelegate;
 
 	virtual void Tick(float DeltaTime) override;
 
@@ -220,6 +222,7 @@ public:
 	void SetWeapon2(AWeaponBase *Weapon);
 	AWeaponBase *GetWeapon1() const;
 	AWeaponBase *GetWeapon2() const;
+	AWeaponBase* GetActiveWeapon() const;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
 	FVector CrouchEyeOffset;

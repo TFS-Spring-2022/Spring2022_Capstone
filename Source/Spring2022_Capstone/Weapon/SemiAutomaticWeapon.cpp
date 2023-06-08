@@ -48,6 +48,10 @@ void ASemiAutomaticWeapon::Shoot()
 			}
 			
 			CurWeaponCharge += ShotCost;
+			if (OnWeaponChargeChangedDelegate.IsBound())
+			{
+				OnWeaponChargeChangedDelegate.Execute(CurWeaponCharge);
+			}
 
 			// Call recoil
 			if(RecoilComponent)

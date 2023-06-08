@@ -35,14 +35,22 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UProgressBar *GrappleCooldownBar;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UTextBlock *GrappleCooldownText;
-
+	UTextBlock* GrappleCooldownText;
+	//OverHeat bar
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UProgressBar* OverheatBar;
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Grapple")
 	float GrappleCooldown;
 	
 	UFUNCTION()
 	void OnHealthChanged(float HealthValue);
+	UFUNCTION()
+		void OnWeaponChargeChanged(float ChargeValue);
+	UFUNCTION()
+		void OnWeaponOverheatChanged(bool IsOverheat);
+	UFUNCTION()
+		void OnWeaponSwitched(AWeaponBase* SwitchedWeapon);
 	UFUNCTION()
 	void OnGrappleActivated();
 	UFUNCTION()

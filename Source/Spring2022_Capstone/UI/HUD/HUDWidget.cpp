@@ -7,21 +7,23 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "Spring2022_Capstone/Player/GrappleComponent.h"
+#include "Spring2022_Capstone/Weapon/WeaponBase.h"
 
 void UHUDWidget::NativeConstruct()
 {
     Super::NativeConstruct();
 
-    if (APlayerCharacter *PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
+    if (APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
     {
         PlayerCharacter->OnHealthChangedDelegate.BindUObject(this, &UHUDWidget::OnHealthChanged);
         MaxHealth = PlayerCharacter->GetMaxHealth();
-        if (UGrappleComponent *GrappleComponent = PlayerCharacter->GetGrappleComponent())
+        if (UGrappleComponent* GrappleComponent = PlayerCharacter->GetGrappleComponent())
         {
             GrappleComponent->OnGrappleActivatedDelegate.BindUObject(this, &UHUDWidget::OnGrappleActivated);
             GrappleComponent->OnGrappleCooldownStartDelegate.BindUObject(this, &UHUDWidget::OnGrappleCooldownStart);
             GrappleComponent->OnGrappleCooldownEndDelegate.BindUObject(this, &UHUDWidget::OnGrappleCooldownEnd);
         }
+        PlayerCharacter->OnWeaponSwitchedDelegate.BindUObject(this, &UHUDWidget::OnWeaponSwitched);
     }
 
     GrappleCooldownText->SetText(FText::GetEmpty());
@@ -42,6 +44,24 @@ void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
 void UHUDWidget::OnHealthChanged(float HealthValue)
 {
     HealthBar->SetPercent(HealthValue / MaxHealth);
+}
+
+void UHUDWidget::OnWeaponChargeChanged(float ChargeValue)
+{
+    OverheatBar->SetPercent(ChargeValue / 100);
+}
+
+void UHUDWidget::OnWeaponOverheatChanged(bool IsOverheat)
+{
+
+}
+
+void UHUDWidget::OnWeaponSwitched(AWeaponBase* SwitchedWeapon)
+{
+    SwitchedWeapon->OnWeaponChargeChangedDelegate.Unbind();
+    SwitchedWeapon->OnWeaponOverheatChangedDelegate.Unbind();
+    SwitchedWeapon->OnWeaponChargeChangedDelegate.BindUObject(this, &UHUDWidget::OnWeaponChargeChanged);
+    SwitchedWeapon->OnWeaponOverheatChangedDelegate.BindUObject(this, &UHUDWidget::OnWeaponOverheatChanged);
 }
 
 void UHUDWidget::OnGrappleActivated()
