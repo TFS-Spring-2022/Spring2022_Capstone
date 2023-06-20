@@ -57,6 +57,13 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable)
 		void IncreaseMovementSpeedByAmount(int Value);
+
+	/**
+	 * @brief Increases the given AWeaponBase's shotDamage.
+	 * @param Value Value added to WeaponToUpgrade's shotDamage.
+	 */
+	UFUNCTION(BlueprintCallable)
+		void IncreaseWeaponDamageByAmount(AWeaponBase* WeaponToUpgrade, float Value);
 	
 	
 };

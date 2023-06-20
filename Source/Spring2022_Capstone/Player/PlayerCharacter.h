@@ -200,11 +200,6 @@ private:
 public:
 	
 	UFUNCTION(BlueprintCallable)
-	void IncreaseDamagePrimary(float Value);
-	UFUNCTION(BlueprintCallable)
-	void IncreaseDamageSecondary(float Value);
-
-	UFUNCTION(BlueprintCallable)
 	void ToggleDoubleJump();
 
 	UFUNCTION(BlueprintCallable)

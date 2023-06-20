@@ -68,3 +68,12 @@ void UUpgradeSystemComponent::IncreaseMovementSpeedByAmount(int Value)
 	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Movement Speed is: %f"), PlayerToUpgrade->Speed));
 }
 
+void UUpgradeSystemComponent::IncreaseWeaponDamageByAmount(AWeaponBase* WeaponToUpgrade, float Value)
+{
+	if(WeaponToUpgrade)
+	{
+		WeaponToUpgrade->SetDamage(WeaponToUpgrade->GetDamage() + Value);
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Damage is now: %f"), *WeaponToUpgrade->GetName(), WeaponToUpgrade->GetDamage()));
+	}
+}
+
