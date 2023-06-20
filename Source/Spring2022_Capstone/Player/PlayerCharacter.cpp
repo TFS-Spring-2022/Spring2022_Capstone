@@ -27,6 +27,8 @@ APlayerCharacter::APlayerCharacter()
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
+	UpgradeSystemComponent = CreateDefaultSubobject<UUpgradeSystemComponent>("Upgrades System");
+
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
 }

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "UpgradeSystemComponent.h"
 #include "PlayerCharacter.generated.h"
 
 class AWeaponBase;
@@ -38,6 +39,9 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	
+	UPROPERTY(EditAnywhere, Category="Upgrades")
+	UUpgradeSystemComponent* UpgradeSystemComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputMappingContext *CharacterMappingContext;
