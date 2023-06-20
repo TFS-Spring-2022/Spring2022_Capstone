@@ -49,5 +49,14 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable)
 		void IncreaseMaxHealthByPercentage(float PercentageAmount);
+
+
+	/**
+	 * @brief Increases the given Character's movement speed by value
+	 * @param Value Value added to the Character's current move speed.
+	 */
+	UFUNCTION(BlueprintCallable)
+		void IncreaseMovementSpeedByAmount(int Value);
+	
 	
 };
