@@ -3,6 +3,7 @@
 
 #include "UpgradeSystemComponent.h"
 
+#include "GrappleComponent.h"
 #include "PlayerCharacter.h"
 #include "Spring2022_Capstone/HealthComponent.h"
 
@@ -81,5 +82,11 @@ void UUpgradeSystemComponent::UnlockDoubleJump()
 {
 	PlayerToUpgrade->JumpMaxCount = PlayerToUpgrade->JumpMaxCount == 1 ? 2 : 1;
 	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your max jumps are: %i"), PlayerToUpgrade->JumpMaxCount));
+}
+
+void UUpgradeSystemComponent::DecrementGrappleCooldownBySeconds(const float Seconds)
+{
+	PlayerToUpgrade->GrappleComponent->DecrementGrappleCooldown(Seconds);
+	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your grapple cooldown is: %f"), PlayerToUpgrade->GrappleComponent->GetCooldown()));
 }
 

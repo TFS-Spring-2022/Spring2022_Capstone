@@ -68,5 +68,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void UnlockDoubleJump();
 
+	UFUNCTION(BlueprintCallable)
+		void DecrementGrappleCooldownBySeconds(float Seconds);
+
 	
 };
