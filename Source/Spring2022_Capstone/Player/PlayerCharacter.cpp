@@ -272,20 +272,6 @@ void APlayerCharacter::TakeHit()
 	}
 }
 
-void APlayerCharacter::IncreaseMaxHealth(int Value)
-{
-	HealthComponent->SetMaxHealth(HealthComponent->GetMaxHealth() + Value);
-	HealthComponent->SetHealth(HealthComponent->GetHealth() + Value);
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), HealthComponent->GetMaxHealth()));
-}
-
-void APlayerCharacter::IncreaseMaxHealthPercentage(int Percentage)
-{
-	float HealthIncrease = HealthComponent->GetMaxHealth() * Percentage / 100;
-	HealthComponent->SetMaxHealth(HealthComponent->GetMaxHealth() + HealthIncrease);
-	HealthComponent->SetHealth(HealthComponent->GetHealth() + HealthIncrease);
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), HealthComponent->GetMaxHealth()));
-}
 
 void APlayerCharacter::IncreaseMovementSpeed(int Value)
 {

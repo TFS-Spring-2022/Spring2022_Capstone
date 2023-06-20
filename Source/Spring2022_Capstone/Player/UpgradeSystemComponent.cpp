@@ -3,6 +3,9 @@
 
 #include "UpgradeSystemComponent.h"
 
+#include "PlayerCharacter.h"
+#include "Spring2022_Capstone/HealthComponent.h"
+
 // Sets default values for this component's properties
 UUpgradeSystemComponent::UUpgradeSystemComponent()
 {
@@ -32,7 +35,7 @@ void UUpgradeSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	// ...
 }
 
-void UUpgradeSystemComponent::UpgradeMaxChargeAmount(AWeaponBase* WeaponToUpgrade, float IncrementAmount)
+void UUpgradeSystemComponent::IncreaseMaxChargeAmount(AWeaponBase* WeaponToUpgrade, float IncrementAmount)
 {
 	if(WeaponToUpgrade)
 	{
@@ -41,7 +44,21 @@ void UUpgradeSystemComponent::UpgradeMaxChargeAmount(AWeaponBase* WeaponToUpgrad
 	}
 }
 
-void UUpgradeSystemComponent::UpgradeMaxHealth(APlayerCharacter* Character, float IncrementAmount)
+void UUpgradeSystemComponent::IncreaseMaxHealthByAmount(APlayerCharacter* Character, float IncrementAmount)
 {
+	if(Character)
+	{
+		Character->HealthComponent->SetMaxHealth(Character->HealthComponent->GetMaxHealth() + IncrementAmount);
+		Character->HealthComponent->SetHealth(Character->HealthComponent->GetHealth() + IncrementAmount);
+		GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), Character->HealthComponent->GetMaxHealth()));
+	}
+}
+
+void UUpgradeSystemComponent::IncreaseMaxHealthByPercentage(APlayerCharacter* Character, float PercentageAmount)
+{
+	float HealthIncrease = Character->HealthComponent->GetMaxHealth() * PercentageAmount / 100;
+	Character->HealthComponent->SetMaxHealth(Character->HealthComponent->GetMaxHealth() + HealthIncrease);
+	Character->HealthComponent->SetHealth(Character->HealthComponent->GetHealth() + HealthIncrease);
+	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), Character->HealthComponent->GetMaxHealth()));
 }
 

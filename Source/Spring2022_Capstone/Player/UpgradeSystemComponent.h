@@ -31,7 +31,22 @@ public:
 	 * @param IncrementAmount Amount added to give weapon's MaxChargeAmount.
 	 */
 	UFUNCTION(BlueprintCallable)
-		void UpgradeMaxChargeAmount(AWeaponBase* WeaponToUpgrade, float IncrementAmount);
+		void IncreaseMaxChargeAmount(AWeaponBase* WeaponToUpgrade, float IncrementAmount);
 
-		
+	/**
+	 * @brief Increases the given APlayerCharacter's max health by a float amount.
+	 * @param Character APlayerCharacter child to be changed.
+	 * @param IncrementAmount Amount to be added to Character's Max Health.
+	 */
+	UFUNCTION(BlueprintCallable)
+		void IncreaseMaxHealthByAmount(APlayerCharacter* Character, float IncrementAmount);
+	
+	/**
+	 * @brief Increases the given APlayerCharacter's max health by a percentage.
+	 * @param Character PlayerCharacter child to be changed.
+	 * @param PercentageAmount Percentage of health to be added to Character's Max Health.
+	 */
+	UFUNCTION(BlueprintCallable)
+		void IncreaseMaxHealthByPercentage(APlayerCharacter* Character, float PercentageAmount);
+	
 };
