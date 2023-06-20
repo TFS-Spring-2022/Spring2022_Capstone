@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "UpgradeSystemComponent.h"
 #include "PlayerCharacter.generated.h"
 
 class AWeaponBase;
@@ -24,6 +25,8 @@ class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	friend class UUpgradeSystemComponent;
+
 public:
 	APlayerCharacter();
 
@@ -38,6 +41,9 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	
+	UPROPERTY(BlueprintReadWrite, Category="Upgrades")
+	UUpgradeSystemComponent* UpgradeSystemComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputMappingContext *CharacterMappingContext;
@@ -189,25 +195,10 @@ private:
 	bool bIsSprinting;
 
 	UFUNCTION(BlueprintCallable)
-	void TakeHit();
+	void TakeDamage(float DamageAmount);
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void IncreaseMaxHealth(int Value);
-	UFUNCTION(BlueprintCallable)
-	void IncreaseMaxHealthPercentage(int Percentage);
-
-	UFUNCTION(BlueprintCallable)
-	void IncreaseMovementSpeed(int Value);
-
-	UFUNCTION(BlueprintCallable)
-	void IncreaseDamagePrimary(float Value);
-	UFUNCTION(BlueprintCallable)
-	void IncreaseDamageSecondary(float Value);
-
-	UFUNCTION(BlueprintCallable)
-	void ToggleDoubleJump();
-
+	
 	UFUNCTION(BlueprintCallable)
 	void Heal(int Value);
 
@@ -220,9 +211,14 @@ public:
 	void SetWeapon2(AWeaponBase *Weapon);
 	AWeaponBase *GetWeapon1() const;
 	AWeaponBase *GetWeapon2() const;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
 	FVector CrouchEyeOffset;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
 	float CrouchSpeed;
+
+	// Testing
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE AWeaponBase* GetActiveWeapon() {return ActiveWeapon;}
+
 };

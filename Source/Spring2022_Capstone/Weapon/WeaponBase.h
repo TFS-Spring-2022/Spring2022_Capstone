@@ -3,17 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "GameFramework/Actor.h"
 #include "WeaponBase.generated.h"
 
-
+class APlayerCharacter;
 
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API AWeaponBase : public AActor
 {
 	GENERATED_BODY()
-	
+
+	friend class UUpgradeSystemComponent;
+		
 public:	
 	// Sets default values for this actor's properties
 	AWeaponBase();
@@ -31,15 +32,17 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	
-
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	//// Weapon Stats
 
-	// Current weapon charge (ammo) percentage.
-	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
-		float CurWeaponCharge = 0;
+	// Current weapon charge (ammo).
+	UPROPERTY(EditAnywhere, Category="Weapon Stats")
+		float CurrentCharge = 0;
+
+	// Max weapon charge amoutn before overheating
+	UPROPERTY(EditAnywhere, Category="Weapon Stats")
+		float MaxChargeAmount = 100;
 
 	// Weapon charge cost per shot.
 	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")

@@ -11,6 +11,8 @@ class SPRING2022_CAPSTONE_API UHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+	friend class UUpgradeSystemComponent;
+
 public:
 	// Sets default values for this component's properties
 	UHealthComponent();

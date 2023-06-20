@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/GameModeBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 
 // Sets default values
 AWeaponBase::AWeaponBase()
@@ -75,9 +76,9 @@ void AWeaponBase::ClearFireTimerHandle()
 
 void AWeaponBase::ChargeCooldown()
 {
-	if(CurWeaponCharge > 0 && bIsOverheating == false)
+	if(CurrentCharge > 0 && bIsOverheating == false)
 	{
-		CurWeaponCharge -= ChargeCooldownRate;
+		CurrentCharge -= ChargeCooldownRate;
 	}
 }
 
@@ -95,7 +96,7 @@ void AWeaponBase::WeaponCooldown()
 	GetWorldTimerManager().ClearTimer(OverheatTimerHandle); 
 	bIsOverheating = false;
 	bCanFire = true;
-	CurWeaponCharge = 0;
+	CurrentCharge = 0;
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("WEAPON COOLED"));
 }
 
