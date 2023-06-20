@@ -40,7 +40,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
-	UPROPERTY(EditAnywhere, Category="Upgrades")
+	UPROPERTY(BlueprintReadWrite, Category="Upgrades")
 	UUpgradeSystemComponent* UpgradeSystemComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
@@ -224,9 +224,14 @@ public:
 	void SetWeapon2(AWeaponBase *Weapon);
 	AWeaponBase *GetWeapon1() const;
 	AWeaponBase *GetWeapon2() const;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
 	FVector CrouchEyeOffset;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
 	float CrouchSpeed;
+
+	// Testing
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE AWeaponBase* GetActiveWeapon() {return ActiveWeapon;}
+
 };
