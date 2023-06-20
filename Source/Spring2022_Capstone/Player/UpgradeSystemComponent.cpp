@@ -32,3 +32,16 @@ void UUpgradeSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	// ...
 }
 
+void UUpgradeSystemComponent::UpgradeMaxChargeAmount(AWeaponBase* WeaponToUpgrade, float IncrementAmount)
+{
+	if(WeaponToUpgrade)
+	{
+		WeaponToUpgrade->MaxChargeAmount += IncrementAmount;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Max Charge Amount Increased"), *WeaponToUpgrade->GetName()));
+	}
+}
+
+void UUpgradeSystemComponent::UpgradeMaxHealth(APlayerCharacter* Character, float IncrementAmount)
+{
+}
+
