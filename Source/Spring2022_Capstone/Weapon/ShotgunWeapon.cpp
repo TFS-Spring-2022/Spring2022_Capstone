@@ -14,7 +14,7 @@ AShotgunWeapon::AShotgunWeapon()
 void AShotgunWeapon::Shoot()
 {
 
-	if(!bIsOverheating && CurWeaponCharge > 100 )
+	if(!bIsOverheating && CurWeaponCharge > MaxChargeAmount )
 	{
 		Overheat();
 	}
