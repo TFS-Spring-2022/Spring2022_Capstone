@@ -7,10 +7,12 @@
 #include "UpgradeSystemComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Within=(PlayerCharacter))
 class SPRING2022_CAPSTONE_API UUpgradeSystemComponent : public UActorComponent
 {
 	GENERATED_BODY()
+
+	
 
 public:	
 	// Sets default values for this component's properties
