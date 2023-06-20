@@ -54,7 +54,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
 
-		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this , &APlayerCharacter::PauseGame);
+		
 	}
 }
 
@@ -308,16 +308,6 @@ void APlayerCharacter::UpdateHealthBar()
 	}
 }
 
-void APlayerCharacter::PauseGame(const FInputActionValue &Value)
-{
-	if(!paused)
-	{
-		paused = true;
 
-	}
-	else
-	{
-		paused = false;
-	}
 	
-}
+
