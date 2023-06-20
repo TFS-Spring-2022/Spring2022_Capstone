@@ -25,6 +25,8 @@ class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	friend class UUpgradeSystemComponent;
+
 public:
 	APlayerCharacter();
 
@@ -196,11 +198,7 @@ private:
 	void TakeHit();
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void IncreaseMaxHealth(int Value);
-	UFUNCTION(BlueprintCallable)
-	void IncreaseMaxHealthPercentage(int Percentage);
-
+	
 	UFUNCTION(BlueprintCallable)
 	void IncreaseMovementSpeed(int Value);
 
