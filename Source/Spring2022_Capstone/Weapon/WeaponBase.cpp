@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/GameModeBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 
 // Sets default values
 AWeaponBase::AWeaponBase()
