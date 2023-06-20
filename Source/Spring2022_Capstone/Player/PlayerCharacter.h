@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "UpgradeSystemComponent.h"
 #include "PlayerCharacter.generated.h"
 
 class AWeaponBase;
@@ -24,6 +25,8 @@ class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	friend class UUpgradeSystemComponent;
+
 public:
 	APlayerCharacter();
 
@@ -38,6 +41,9 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	
+	UPROPERTY(BlueprintReadWrite, Category="Upgrades")
+	UUpgradeSystemComponent* UpgradeSystemComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputMappingContext *CharacterMappingContext;
@@ -91,16 +97,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *DashAction;
 
-	/**
-	 * @brief Holds the Pause Input Action
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction *PauseAction; 
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UGrappleComponent *GrappleComponent;
-
-	
 	
 	void Move(const FInputActionValue &Value);
 	void Dash(const FInputActionValue &Value);
@@ -111,9 +109,7 @@ protected:
 	void Grapple(const FInputActionValue &Value);
 	// Switches ActiveWeapon between Weapon1 and Weapon2
 	void SwitchWeapon(const FInputActionValue &Value);
-	void PauseGame(const FInputActionValue &Value);
 
-	
 	// Time between presses of a button to indicate a double tap
 	UPROPERTY(EditAnywhere, Category = "Input")
 	float DoubleTapActivationDelay = 0.5f;
@@ -170,7 +166,6 @@ protected:
 	UHealthComponent *HealthComponent;
 	
 	void UpdateHealthBar();
-	
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
@@ -200,28 +195,10 @@ private:
 	bool bIsSprinting;
 
 	UFUNCTION(BlueprintCallable)
-	void TakeHit();
+	void TakeDamage(float DamageAmount);
 
 public:
-
-	bool paused = false;
-
-	UFUNCTION(BlueprintCallable)
-	void IncreaseMaxHealth(int Value);
-	UFUNCTION(BlueprintCallable)
-	void IncreaseMaxHealthPercentage(int Percentage);
-
-	UFUNCTION(BlueprintCallable)
-	void IncreaseMovementSpeed(int Value);
-
-	UFUNCTION(BlueprintCallable)
-	void IncreaseDamagePrimary(float Value);
-	UFUNCTION(BlueprintCallable)
-	void IncreaseDamageSecondary(float Value);
-
-	UFUNCTION(BlueprintCallable)
-	void ToggleDoubleJump();
-
+	
 	UFUNCTION(BlueprintCallable)
 	void Heal(int Value);
 
@@ -234,9 +211,14 @@ public:
 	void SetWeapon2(AWeaponBase *Weapon);
 	AWeaponBase *GetWeapon1() const;
 	AWeaponBase *GetWeapon2() const;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
 	FVector CrouchEyeOffset;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
 	float CrouchSpeed;
+
+	// Testing
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE AWeaponBase* GetActiveWeapon() {return ActiveWeapon;}
+
 };

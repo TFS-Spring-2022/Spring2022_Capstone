@@ -82,6 +82,14 @@ FVector UGrappleComponent::GetStartLocation()
 	return StartingLocation;
 }
 
+void UGrappleComponent::DecrementGrappleCooldown(float Seconds)
+{
+	Cooldown -= Seconds;
+
+	if(Cooldown <= MinimumGrappleCooldown)
+		Cooldown = MinimumGrappleCooldown;
+}
+
 void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector NormalImpulse, const FHitResult &Hit)
 {
 	if (OtherActor->IsA(APlayerCharacter::StaticClass()))
