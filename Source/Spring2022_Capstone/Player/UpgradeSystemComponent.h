@@ -27,51 +27,67 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+// Weapon Upgrades
 	
 	/**
-	 * @brief Increases given weapon's MaxChargeAmount by IncrementAmount.
+	 * @brief Increases given weapon's MaxChargeAmount by Amount.
 	 * @param WeaponToUpgrade  WeaponBase child to be changed.
-	 * @param IncrementAmount Amount added to give weapon's MaxChargeAmount.
+	 * @param Amount Amount added to give weapon's MaxChargeAmount.
 	 */
 	UFUNCTION(BlueprintCallable)
-		void IncreaseMaxChargeAmount(AWeaponBase* WeaponToUpgrade, float IncrementAmount);
+		void IncreaseMaxChargeAmount(AWeaponBase* WeaponToUpgrade, float Amount);
 
 	/**
-	 * @brief Increases the given APlayerCharacter's max health by a float amount.
-	 * @param IncrementAmount Amount to be added to Character's Max Health.
+	* @brief Increases the given AWeaponBase's ShotDamage.
+	* @param Amount Value added to WeaponToUpgrade's ShotDamage.
+	*/
+	UFUNCTION(BlueprintCallable)
+		void IncreaseWeaponDamageByAmount(AWeaponBase* WeaponToUpgrade, float Amount);
+
+	/**
+	 * @brief Increases the given AWeaponBase's ChargeCooldownRate.
+	 * @param Amount Value added to WeaponToUpgrade's ChargeCooldownRate.
 	 */
 	UFUNCTION(BlueprintCallable)
-		void IncreaseMaxHealthByAmount(float IncrementAmount);
+		void IncreaseChargeCooldownRate(AWeaponBase* WeaponToUpgrade, float Amount);
+
+// Health Upgrades
+
+	/**
+	 * @brief Increases the given character's max health by a float amount.
+	 * @param Amount Amount to be added to Character's Max Health.
+	 */
+	UFUNCTION(BlueprintCallable)
+		void IncreaseMaxHealthByAmount(float Amount);
 	
 	/**
-	 * @brief Increases the given APlayerCharacter's max health by a percentage.
+	 * @brief Increases the character's max health by a percentage.
 	 * @param PercentageAmount Percentage of health to be added to Character's Max Health.
 	 */
 	UFUNCTION(BlueprintCallable)
 		void IncreaseMaxHealthByPercentage(float PercentageAmount);
 
+// Movement Upgrades
 
 	/**
-	 * @brief Increases the given Character's movement speed by value
-	 * @param Value Value added to the Character's current move speed.
+	 * @brief Increases the character's movement speed by Amount.
+	 * @param Amount Value added to the Character's current move speed.
 	 */
 	UFUNCTION(BlueprintCallable)
-		void IncreaseMovementSpeedByAmount(int Value);
-
-	/**
-	 * @brief Increases the given AWeaponBase's shotDamage.
-	 * @param Value Value added to WeaponToUpgrade's shotDamage.
-	 */
-	UFUNCTION(BlueprintCallable)
-		void IncreaseWeaponDamageByAmount(AWeaponBase* WeaponToUpgrade, float Value);
+		void IncreaseMovementSpeedByAmount(int Amount);
 	
+	/**
+	 * @brief Sets the Player's max jump amount to 2.
+	 */
 	UFUNCTION(BlueprintCallable)
 		void UnlockDoubleJump();
 
+	/**
+	 * @brief Decrease the Player's grapple cooldown by Amount.
+	 * @param Seconds Value decreased from AWeaponBase's ChargeCooldownRate.
+	 */
 	UFUNCTION(BlueprintCallable)
-		void DecrementGrappleCooldownBySeconds(float Seconds);
-
-	UFUNCTION(BlueprintCallable)
-		void IncreaseChargeCooldownRate(AWeaponBase* WeaponToUpgrade, float Amount);
+		void DecreaseGrappleCooldownBySeconds(float Seconds);
 	
 };

@@ -13,8 +13,7 @@ UUpgradeSystemComponent::UUpgradeSystemComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
-
-	// ...
+	
 }
 
 
@@ -32,25 +31,24 @@ void UUpgradeSystemComponent::BeginPlay()
 void UUpgradeSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+	
 }
 
-void UUpgradeSystemComponent::IncreaseMaxChargeAmount(AWeaponBase* WeaponToUpgrade, float IncrementAmount)
+void UUpgradeSystemComponent::IncreaseMaxChargeAmount(AWeaponBase* WeaponToUpgrade, float Amount)
 {
 	if(WeaponToUpgrade)
 	{
-		WeaponToUpgrade->MaxChargeAmount += IncrementAmount;
+		WeaponToUpgrade->MaxChargeAmount += Amount;
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Max Charge Amount Increased"), *WeaponToUpgrade->GetName()));
 	}
 }
 
-void UUpgradeSystemComponent::IncreaseMaxHealthByAmount(float IncrementAmount)
+void UUpgradeSystemComponent::IncreaseMaxHealthByAmount(float Amount)
 {
 	if(PlayerToUpgrade)
 	{
-		PlayerToUpgrade->HealthComponent->SetMaxHealth(PlayerToUpgrade->HealthComponent->GetMaxHealth() + IncrementAmount);
-		PlayerToUpgrade->HealthComponent->SetHealth(PlayerToUpgrade->HealthComponent->GetHealth() + IncrementAmount);
+		PlayerToUpgrade->HealthComponent->SetMaxHealth(PlayerToUpgrade->HealthComponent->GetMaxHealth() + Amount);
+		PlayerToUpgrade->HealthComponent->SetHealth(PlayerToUpgrade->HealthComponent->GetHealth() + Amount);
 		GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), PlayerToUpgrade->HealthComponent->GetMaxHealth()));
 	}
 }
@@ -63,17 +61,17 @@ void UUpgradeSystemComponent::IncreaseMaxHealthByPercentage(float PercentageAmou
 	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), PlayerToUpgrade->HealthComponent->GetMaxHealth()));
 }
 
-void UUpgradeSystemComponent::IncreaseMovementSpeedByAmount(int Value)
+void UUpgradeSystemComponent::IncreaseMovementSpeedByAmount(int Amount)
 {
-	PlayerToUpgrade->Speed += Value;
+	PlayerToUpgrade->Speed += Amount;
 	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Movement Speed is: %f"), PlayerToUpgrade->Speed));
 }
 
-void UUpgradeSystemComponent::IncreaseWeaponDamageByAmount(AWeaponBase* WeaponToUpgrade, float Value)
+void UUpgradeSystemComponent::IncreaseWeaponDamageByAmount(AWeaponBase* WeaponToUpgrade, float Amount)
 {
 	if(WeaponToUpgrade)
 	{
-		WeaponToUpgrade->SetDamage(WeaponToUpgrade->GetDamage() + Value);
+		WeaponToUpgrade->SetDamage(WeaponToUpgrade->GetDamage() + Amount);
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Damage is now: %f"), *WeaponToUpgrade->GetName(), WeaponToUpgrade->GetDamage()));
 	}
 }
@@ -84,7 +82,7 @@ void UUpgradeSystemComponent::UnlockDoubleJump()
 	GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, FString::Printf(TEXT("Your max jumps are: %i"), PlayerToUpgrade->JumpMaxCount));
 }
 
-void UUpgradeSystemComponent::DecrementGrappleCooldownBySeconds(const float Seconds)
+void UUpgradeSystemComponent::DecreaseGrappleCooldownBySeconds(const float Seconds)
 {
 	PlayerToUpgrade->GrappleComponent->DecrementGrappleCooldown(Seconds);
 	GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, FString::Printf(TEXT("Your grapple cooldown is: %f"), PlayerToUpgrade->GrappleComponent->GetCooldown()));
