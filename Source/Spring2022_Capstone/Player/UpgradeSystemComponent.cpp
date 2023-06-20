@@ -22,8 +22,8 @@ void UUpgradeSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	PlayerToUpgrade = Cast<APlayerCharacter>(GetOwner());	
+
 }
 
 
@@ -44,21 +44,27 @@ void UUpgradeSystemComponent::IncreaseMaxChargeAmount(AWeaponBase* WeaponToUpgra
 	}
 }
 
-void UUpgradeSystemComponent::IncreaseMaxHealthByAmount(APlayerCharacter* Character, float IncrementAmount)
+void UUpgradeSystemComponent::IncreaseMaxHealthByAmount(float IncrementAmount)
 {
-	if(Character)
+	if(PlayerToUpgrade)
 	{
-		Character->HealthComponent->SetMaxHealth(Character->HealthComponent->GetMaxHealth() + IncrementAmount);
-		Character->HealthComponent->SetHealth(Character->HealthComponent->GetHealth() + IncrementAmount);
-		GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), Character->HealthComponent->GetMaxHealth()));
+		PlayerToUpgrade->HealthComponent->SetMaxHealth(PlayerToUpgrade->HealthComponent->GetMaxHealth() + IncrementAmount);
+		PlayerToUpgrade->HealthComponent->SetHealth(PlayerToUpgrade->HealthComponent->GetHealth() + IncrementAmount);
+		GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), PlayerToUpgrade->HealthComponent->GetMaxHealth()));
 	}
 }
 
-void UUpgradeSystemComponent::IncreaseMaxHealthByPercentage(APlayerCharacter* Character, float PercentageAmount)
+void UUpgradeSystemComponent::IncreaseMaxHealthByPercentage(float PercentageAmount)
 {
-	float HealthIncrease = Character->HealthComponent->GetMaxHealth() * PercentageAmount / 100;
-	Character->HealthComponent->SetMaxHealth(Character->HealthComponent->GetMaxHealth() + HealthIncrease);
-	Character->HealthComponent->SetHealth(Character->HealthComponent->GetHealth() + HealthIncrease);
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), Character->HealthComponent->GetMaxHealth()));
+	float HealthIncrease = PlayerToUpgrade->HealthComponent->GetMaxHealth() * PercentageAmount / 100;
+	PlayerToUpgrade->HealthComponent->SetMaxHealth(PlayerToUpgrade->HealthComponent->GetMaxHealth() + HealthIncrease);
+	PlayerToUpgrade->HealthComponent->SetHealth(PlayerToUpgrade->HealthComponent->GetHealth() + HealthIncrease);
+	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), PlayerToUpgrade->HealthComponent->GetMaxHealth()));
+}
+
+void UUpgradeSystemComponent::IncreaseMovementSpeedByAmount(int Value)
+{
+	PlayerToUpgrade->Speed += Value;
+	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Movement Speed is: %f"), PlayerToUpgrade->Speed));
 }
 

@@ -21,6 +21,9 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	UPROPERTY(VisibleAnywhere)
+	APlayerCharacter* PlayerToUpgrade;
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -35,18 +38,16 @@ public:
 
 	/**
 	 * @brief Increases the given APlayerCharacter's max health by a float amount.
-	 * @param Character APlayerCharacter child to be changed.
 	 * @param IncrementAmount Amount to be added to Character's Max Health.
 	 */
 	UFUNCTION(BlueprintCallable)
-		void IncreaseMaxHealthByAmount(APlayerCharacter* Character, float IncrementAmount);
+		void IncreaseMaxHealthByAmount(float IncrementAmount);
 	
 	/**
 	 * @brief Increases the given APlayerCharacter's max health by a percentage.
-	 * @param Character PlayerCharacter child to be changed.
 	 * @param PercentageAmount Percentage of health to be added to Character's Max Health.
 	 */
 	UFUNCTION(BlueprintCallable)
-		void IncreaseMaxHealthByPercentage(APlayerCharacter* Character, float PercentageAmount);
+		void IncreaseMaxHealthByPercentage(float PercentageAmount);
 	
 };
