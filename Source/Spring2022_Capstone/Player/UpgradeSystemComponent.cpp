@@ -81,12 +81,19 @@ void UUpgradeSystemComponent::IncreaseWeaponDamageByAmount(AWeaponBase* WeaponTo
 void UUpgradeSystemComponent::UnlockDoubleJump()
 {
 	PlayerToUpgrade->JumpMaxCount = PlayerToUpgrade->JumpMaxCount == 1 ? 2 : 1;
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your max jumps are: %i"), PlayerToUpgrade->JumpMaxCount));
+	GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, FString::Printf(TEXT("Your max jumps are: %i"), PlayerToUpgrade->JumpMaxCount));
 }
 
 void UUpgradeSystemComponent::DecrementGrappleCooldownBySeconds(const float Seconds)
 {
 	PlayerToUpgrade->GrappleComponent->DecrementGrappleCooldown(Seconds);
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your grapple cooldown is: %f"), PlayerToUpgrade->GrappleComponent->GetCooldown()));
+	GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, FString::Printf(TEXT("Your grapple cooldown is: %f"), PlayerToUpgrade->GrappleComponent->GetCooldown()));
 }
+
+void UUpgradeSystemComponent::IncreaseChargeCooldownRate(AWeaponBase* WeaponToUpgrade, float Amount)
+{
+	WeaponToUpgrade->ChargeCooldownRate += Amount;
+	GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, FString::Printf(TEXT("%s Charge cooldown rate is: %f"), *WeaponToUpgrade->GetName(), WeaponToUpgrade->ChargeCooldownRate));
+}
+
 

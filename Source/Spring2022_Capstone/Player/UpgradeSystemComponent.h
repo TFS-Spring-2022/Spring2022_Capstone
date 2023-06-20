@@ -71,5 +71,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void DecrementGrappleCooldownBySeconds(float Seconds);
 
+	UFUNCTION(BlueprintCallable)
+		void IncreaseChargeCooldownRate(AWeaponBase* WeaponToUpgrade, float Amount);
 	
 };
