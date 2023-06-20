@@ -65,5 +65,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void IncreaseWeaponDamageByAmount(AWeaponBase* WeaponToUpgrade, float Value);
 	
+	UFUNCTION(BlueprintCallable)
+		void UnlockDoubleJump();
+
 	
 };

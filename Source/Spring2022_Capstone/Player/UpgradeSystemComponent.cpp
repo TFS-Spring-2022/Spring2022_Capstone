@@ -77,3 +77,9 @@ void UUpgradeSystemComponent::IncreaseWeaponDamageByAmount(AWeaponBase* WeaponTo
 	}
 }
 
+void UUpgradeSystemComponent::UnlockDoubleJump()
+{
+	PlayerToUpgrade->JumpMaxCount = PlayerToUpgrade->JumpMaxCount == 1 ? 2 : 1;
+	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your max jumps are: %i"), PlayerToUpgrade->JumpMaxCount));
+}
+
