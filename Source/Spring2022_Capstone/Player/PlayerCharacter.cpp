@@ -272,13 +272,6 @@ void APlayerCharacter::TakeHit()
 	}
 }
 
-
-void APlayerCharacter::IncreaseMovementSpeed(int Value)
-{
-	Speed += Value;
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Movement Speed is: %f"), Speed));
-}
-
 void APlayerCharacter::IncreaseDamagePrimary(float Value)
 {
 	if (!Weapon1)
