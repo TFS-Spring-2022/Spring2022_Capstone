@@ -263,11 +263,11 @@ AWeaponBase *APlayerCharacter::GetWeapon2() const
 	return Weapon2;
 }
 
-void APlayerCharacter::TakeHit()
+void APlayerCharacter::TakeDamage(float DamageAmount)
 {
 	if (HealthComponent)
 	{
-		HealthComponent->SetHealth(HealthComponent->GetHealth() - 5.0f);
+		HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 		UpdateHealthBar();
 	}
 }

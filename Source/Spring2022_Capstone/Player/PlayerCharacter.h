@@ -195,7 +195,7 @@ private:
 	bool bIsSprinting;
 
 	UFUNCTION(BlueprintCallable)
-	void TakeHit();
+	void TakeDamage(float DamageAmount);
 
 public:
 	
