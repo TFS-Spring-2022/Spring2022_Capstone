@@ -16,7 +16,7 @@ ASemiAutomaticWeapon::ASemiAutomaticWeapon()
 void ASemiAutomaticWeapon::Shoot()
 {
 
-	if(!bIsOverheating && CurWeaponCharge > MaxChargeAmount )
+	if(!bIsOverheating && CurrentCharge > MaxChargeAmount )
 	{
 		Overheat();
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("OVERHEATING"));
@@ -47,7 +47,7 @@ void ASemiAutomaticWeapon::Shoot()
 				DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 			}
 			
-			CurWeaponCharge += ShotCost;
+			CurrentCharge += ShotCost;
 
 			// Call recoil
 			if(RecoilComponent)

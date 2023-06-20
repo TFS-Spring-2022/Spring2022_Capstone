@@ -14,7 +14,7 @@ AShotgunWeapon::AShotgunWeapon()
 void AShotgunWeapon::Shoot()
 {
 
-	if(!bIsOverheating && CurWeaponCharge > MaxChargeAmount )
+	if(!bIsOverheating && CurrentCharge > MaxChargeAmount )
 	{
 		Overheat();
 	}
@@ -58,7 +58,7 @@ void AShotgunWeapon::Shoot()
 				}	
 			}
 			
-			CurWeaponCharge += ShotCost;
+			CurrentCharge += ShotCost;
 
 			// Call recoil
 			if(RecoilComponent)

@@ -39,7 +39,7 @@ protected:
 
 	// Current weapon charge (ammo).
 	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
-		float CurWeaponCharge = 0;
+		float CurrentCharge = 0;
 
 	// Max weapon charge amoutn before overheating
 	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
