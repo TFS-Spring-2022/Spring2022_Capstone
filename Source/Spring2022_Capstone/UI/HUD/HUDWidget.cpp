@@ -60,3 +60,11 @@ void UHUDWidget::OnGrappleCooldownEnd()
     GrappleCooldownBar->SetPercent(0);
     GrappleCooldownText->SetText(FText::GetEmpty());
 }
+
+/*void UHUDWidget::NotificationText()
+{
+    if (NotificationText) 
+    {
+        
+    }
+}*/

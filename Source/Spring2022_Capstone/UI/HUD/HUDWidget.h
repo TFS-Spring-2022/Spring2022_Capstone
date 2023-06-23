@@ -36,7 +36,8 @@ public:
 	UProgressBar *GrappleCooldownBar;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UTextBlock *GrappleCooldownText;
-
+	UPROPERTY(EditAnywhere)
+		UPanelWidget* NotificationText;
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Grapple")
 	float GrappleCooldown;
@@ -51,6 +52,9 @@ private:
 	void OnGrappleCooldownEnd();
 
 	int MaxHealth;
+
+	/*UFUNCTION()
+		void NotificationText();*/
 
 	FTimerHandle *GrappleTimerHandle;
 };
