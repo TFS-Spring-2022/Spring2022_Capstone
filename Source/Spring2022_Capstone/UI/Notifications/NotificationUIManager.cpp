@@ -9,12 +9,17 @@ ANotificationUIManager::ANotificationUIManager()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true; // can probably be false
 
+	NotificationZoneCollider = CreateDefaultSubobject<USphereComponent>("Notification Zone Collider");
+	RootComponent = NotificationZoneCollider;
+
 }
 
 // Called when the game starts or when spawned
 void ANotificationUIManager::BeginPlay()
 {
 	Super::BeginPlay();
+
+	NotificationZoneCollider->OnComponentBeginOverlap.AddDynamic(this, &ANotificationUIManager::OnOverlapBegin);
 	
 }
 
@@ -23,5 +28,11 @@ void ANotificationUIManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ANotificationUIManager::OnOverlapBegin(UPrimitiveComponent* Comp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Display Notification");
 }
 
