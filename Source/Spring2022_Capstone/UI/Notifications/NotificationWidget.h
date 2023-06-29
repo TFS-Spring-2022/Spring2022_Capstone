@@ -13,5 +13,14 @@ UCLASS()
 class SPRING2022_CAPSTONE_API UNotificationWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UPanelWidget* RootPanel;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UTextBlock* NotificationText;
+	
 	
 };
