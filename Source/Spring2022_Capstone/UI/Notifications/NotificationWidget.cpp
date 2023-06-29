@@ -2,4 +2,10 @@
 
 
 #include "NotificationWidget.h"
+#include "Components/TextBlock.h"
 
+void UNotificationWidget::ChangeNotificationText(FText NewText)
+{
+	if(NotificationText)
+		NotificationText->SetText(NewText);
+}
