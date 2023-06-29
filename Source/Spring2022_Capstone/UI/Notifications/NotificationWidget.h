@@ -1,0 +1,17 @@
+// Created by Spring2022_Capstone team
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
+#include "NotificationWidget.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class SPRING2022_CAPSTONE_API UNotificationWidget : public UUserWidget
+{
+	GENERATED_BODY()
+	
+};
