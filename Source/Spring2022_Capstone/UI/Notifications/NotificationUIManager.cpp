@@ -38,6 +38,11 @@ void ANotificationUIManager::OnOverlapBegin(UPrimitiveComponent* Comp, AActor* O
 	{
 		// Display Notification
 		_NotificationWidget = Cast<UNotificationWidget>(CreateWidget(GetWorld(), NotificationWidget));
+
+		// Overwrite Notification's text instance with NewNotificationText set in details.
+		if(bOverwriteNotificationText)
+			_NotificationWidget->ChangeNotificationText(NewNotificationText);
+		
 		_NotificationWidget->AddToViewport(1);
 	}
 	else
