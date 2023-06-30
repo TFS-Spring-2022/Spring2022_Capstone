@@ -46,7 +46,7 @@ protected:
 	bool bOverwriteNotificationText = false;
 	
 	// Text that will overwrite notification bp if OverwriteNotificationText == true.
-	UPROPERTY(EditAnywhere, Category = "Notification Manager")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Notification Manager", meta=(MultiLine="true"))
 	FText NewNotificationText;
 	
 	// Time the notification will be shown for.
