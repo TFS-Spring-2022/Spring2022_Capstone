@@ -27,12 +27,23 @@ void ANotificationUIManager::BeginPlay()
 void ANotificationUIManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 }
 
 void ANotificationUIManager::OnOverlapBegin(UPrimitiveComponent* Comp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Display Notification");
+	
+	if(NotificationWidget)
+	{
+		// Display Notification
+		_NotificationWidget = Cast<UNotificationWidget>(CreateWidget(GetWorld(), NotificationWidget));
+		_NotificationWidget->AddToViewport(1);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "NotificationUIManager missing NotificationWidget");
+	}
+	
 }
 
