@@ -34,20 +34,38 @@ protected:
 	void OnOverlapBegin(UPrimitiveComponent* Comp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
 
 	// NotificationWidget BP to be created.
-	UPROPERTY(EditAnywhere, Category = "Widget")
+	UPROPERTY(EditAnywhere, Category = "Notification Manager")
 	TSubclassOf<UNotificationWidget> NotificationWidget;
 
 	// Notification instance.
 	UPROPERTY()
 	UNotificationWidget* _NotificationWidget;
 
-	// Overwrite the text on the notification widget BP.
-	UPROPERTY(EditAnywhere, Category = "Widget")
+	// If true: NotificationWidget Instance's Notification text will be overwritten with NewNotificationText.
+	UPROPERTY(EditAnywhere, Category = "Notification Manager")
 	bool bOverwriteNotificationText = false;
 	
 	// Text that will overwrite notification bp if OverwriteNotificationText == true.
-	UPROPERTY(EditAnywhere, Category = "Widget")
+	UPROPERTY(EditAnywhere, Category = "Notification Manager")
 	FText NewNotificationText;
+	
+	// Time the notification will be shown for.
+	UPROPERTY(EditAnywhere, Category = "Notification Manager")
+	float SecondsDisplayed;
 
+	// Timer to handle notification display time.
+	FTimerHandle NotificationDisplayTimerHandle;	
+	
+	/**
+	 * @brief Called automatically after SecondsDisplayed has elapsed.
+	 * Removes the NotificationWidget or Destroys based on bDestroyAfterViewing.
+	 */
+	UFUNCTION()
+	void DismissNotification();
+
+	UPROPERTY(EditAnywhere, Category = "Notification Manager")
+	bool bDestroyAfterViewing;
+	
+	bool bNotificationIsShowing;
 
 };

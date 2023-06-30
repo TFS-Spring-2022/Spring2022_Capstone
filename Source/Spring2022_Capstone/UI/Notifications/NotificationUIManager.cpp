@@ -20,6 +20,8 @@ void ANotificationUIManager::BeginPlay()
 	Super::BeginPlay();
 
 	NotificationZoneCollider->OnComponentBeginOverlap.AddDynamic(this, &ANotificationUIManager::OnOverlapBegin);
+
+	bNotificationIsShowing = false;
 	
 }
 
@@ -34,8 +36,9 @@ void ANotificationUIManager::OnOverlapBegin(UPrimitiveComponent* Comp, AActor* O
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	
-	if(NotificationWidget)
+	if(!bNotificationIsShowing && NotificationWidget)
 	{
+		
 		// Display Notification
 		_NotificationWidget = Cast<UNotificationWidget>(CreateWidget(GetWorld(), NotificationWidget));
 
@@ -44,11 +47,23 @@ void ANotificationUIManager::OnOverlapBegin(UPrimitiveComponent* Comp, AActor* O
 			_NotificationWidget->ChangeNotificationText(NewNotificationText);
 		
 		_NotificationWidget->AddToViewport(1);
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "NotificationUIManager missing NotificationWidget");
+
+		bNotificationIsShowing = true;
+		
+		GetWorldTimerManager().SetTimer(NotificationDisplayTimerHandle, this, &ANotificationUIManager::DismissNotification, SecondsDisplayed, false);
 	}
 	
+}
+
+void ANotificationUIManager::DismissNotification()
+{
+
+	if(bDestroyAfterViewing)
+		Destroy();
+	
+	if(_NotificationWidget)
+		_NotificationWidget->RemoveFromParent();
+	
+	bNotificationIsShowing = false;
 }
 
