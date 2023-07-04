@@ -53,6 +53,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 										   &APlayerCharacter::SwitchWeapon);
 
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
+
+		
 	}
 }
 
@@ -305,3 +307,7 @@ void APlayerCharacter::UpdateHealthBar()
 		OnHealthChangedDelegate.Execute(HealthComponent->GetHealth());
 	}
 }
+
+
+	
+
