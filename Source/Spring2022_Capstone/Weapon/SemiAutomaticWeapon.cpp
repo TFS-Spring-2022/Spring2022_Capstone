@@ -39,10 +39,10 @@ void ASemiAutomaticWeapon::Shoot()
 
 			if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
-				if(HitResult.GetActor()->IsA(ADevTargets::StaticClass()))
+				if(HitResult.GetActor()->Implements<UDamageableActor>())
 				{
-					ADevTargets* CurrentHit = Cast<ADevTargets>(HitResult.GetActor());
-					CurrentHit->ToggleMaterial();
+					IDamageableActor* DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
+					DamageableActor->DamageActor(this, ShotDamage);	
 				}
 				DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 			}
