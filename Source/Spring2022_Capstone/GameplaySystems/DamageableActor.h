@@ -20,6 +20,12 @@ class SPRING2022_CAPSTONE_API IDamageableActor
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	/**
+	 * @brief 
+	 * @param DamagingActor Actor sending damage to implementing class.
+	 * @param DamageAmount  Damage value of calling actor.
+	 */
+	virtual void DamageActor(const AActor* DamagingActor, const float DamageAmount) {}
+
 };
