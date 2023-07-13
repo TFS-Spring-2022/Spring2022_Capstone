@@ -7,7 +7,6 @@
 #include "BaseEnemy.generated.h"
 
 class UHealthComponent;
-
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API ABaseEnemy : public ACharacter
 {
@@ -29,6 +28,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UHealthComponent *HealthComponent;
 
+	UFUNCTION(BlueprintCallable)
 	virtual void Attack();
 
 public:
