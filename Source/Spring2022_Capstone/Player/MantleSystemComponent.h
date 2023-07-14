@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "MantleSystemComponent.generated.h"
 
 
@@ -23,5 +24,10 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+private:
+	
+	UPROPERTY()
+	UCharacterMovementComponent* PlayersCharacterMovementComponent;
 	
 };
