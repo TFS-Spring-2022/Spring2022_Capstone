@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "GrappleState.h"
+#include "MantleSystemComponent.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
@@ -28,6 +29,8 @@ APlayerCharacter::APlayerCharacter()
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
 	UpgradeSystemComponent = CreateDefaultSubobject<UUpgradeSystemComponent>("Upgrades System");
+
+	MantleSystemComponent = CreateDefaultSubobject<UMantleSystemComponent>("Mantle System");
 
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;

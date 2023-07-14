@@ -45,6 +45,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category="Upgrades")
 	UUpgradeSystemComponent* UpgradeSystemComponent;
 
+	UPROPERTY()
+	class UMantleSystemComponent* MantleSystemComponent;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputMappingContext *CharacterMappingContext;
 
