@@ -14,6 +14,7 @@ class SPRING2022_CAPSTONE_API AWeaponBase : public AActor
 	GENERATED_BODY()
 
 	friend class UUpgradeSystemComponent;
+	friend class URecoilComponent;
 		
 public:	
 	// Sets default values for this actor's properties
