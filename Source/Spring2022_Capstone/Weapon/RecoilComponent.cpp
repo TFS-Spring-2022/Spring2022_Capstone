@@ -69,7 +69,7 @@ void URecoilComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 		PitchRecoveryAmount = OwnersPlayerController->GetControlRotation().Pitch + (TimesFired * VerticalKickAmount);
 		RecoveryRotation = FRotator(PitchRecoveryAmount, OwnersPlayerController->GetControlRotation().Yaw, OwnersPlayerController->GetControlRotation().Roll); /** Removing this FRotator and using PitchRecoveryAmount inside CorrectionRotation.Pitch will cause issues **/
 	}
-	if(bIsRecovering)
+	else if(bIsRecovering)
 	{
 		// Set backup recovery timer to prevent control being taken from player.
 		if(!GetWorld()->GetTimerManager().IsTimerActive(BackupRecoveryTimer))
@@ -77,6 +77,10 @@ void URecoilComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 		RecoverRecoil(DeltaTime);
 	}
+
+	if(!OwnersPawnMovementComponent->IsMovingOnGround())
+		RecoilReset();
+
 }
 
 void URecoilComponent::RecoverRecoil(float Time)
