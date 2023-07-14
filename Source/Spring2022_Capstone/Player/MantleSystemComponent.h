@@ -29,5 +29,15 @@ private:
 	
 	UPROPERTY()
 	UCharacterMovementComponent* PlayersCharacterMovementComponent;
+
+	// Used in checking for a mantle-able surface
+	FHitResult MantleCheckHit;
+
+	void Mantle();
+
+	const float CAPSULE_TRACE_RADIUS = 30.0f;
+	const float CAPSULE_TRACE_HALF_HEIGHT = 60.0f;
+	const float CAPSULE_TRACE_DISTANCE = 30.0f;
+	const float CAPSULE_TRACE_ZAXIS_RAISE = 45.0f;
 	
 };
