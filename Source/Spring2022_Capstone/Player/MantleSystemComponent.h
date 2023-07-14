@@ -35,6 +35,8 @@ private:
 
 	void Mantle();
 
+	bool CheckMantleRoom(FVector TargetLocation); 
+
 // Runtime
 	bool bCanMantle;
 

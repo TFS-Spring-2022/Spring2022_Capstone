@@ -4,6 +4,7 @@
 #include "MantleSystemComponent.h"
 
 #include "PlayerCharacter.h"
+#include "Components/CapsuleComponent.h"
 
 UMantleSystemComponent::UMantleSystemComponent()
 {
@@ -84,6 +85,58 @@ void UMantleSystemComponent::Mantle()
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Mantling");
 			TargetLocation = HitResult2.Location;
 		}
+	}
+	
+}
+
+bool UMantleSystemComponent::CheckMantleRoom(FVector TargetLocation)
+{
+
+
+	FCollisionQueryParams TraceParams;
+	TraceParams.bTraceComplex = true; 
+	TraceParams.AddIgnoredActor(GetOwner());
+	
+	FHitResult SpaceCheckHitResult;
+	
+	float SpaceCheckSphereRadius = PlayersCharacterMovementComponent->GetCharacterOwner()->GetCapsuleComponent()->GetUnscaledCapsuleRadius(); 
+
+	FVector SpaceCheckEnd = FVector(TargetLocation.X, TargetLocation.Y, TargetLocation.Z + PlayersCharacterMovementComponent->GetCharacterOwner()->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight());
+
+	FVector SpaceCheckStart = FVector(TargetLocation.X, TargetLocation.Y, TargetLocation.Z + 15);
+	
+	if(GetWorld()->SweepSingleByChannel(SpaceCheckHitResult, SpaceCheckStart, SpaceCheckEnd, FQuat::Identity,
+			ECC_Visibility, FCollisionShape::MakeSphere(SpaceCheckSphereRadius), TraceParams))
+	{
+
+		// bBlockingHit vs IsValidBlockingHit ( i think IsValidBlockingHeight does something different : ("Return true if there was a blocking hit that was not caused by starting in penetration.") so use bBlockingHit
+		
+		if(SpaceCheckHitResult.bBlockingHit || SpaceCheckHitResult.bStartPenetrating) // could maybe just check for any hit or something?
+		{
+			
+			bool bCantFitCrouched = (SpaceCheckHitResult.Distance <= PlayersCharacterMovementComponent->GetCharacterOwner()->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight() ) ? true : false;
+
+			if(bCantFitCrouched)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Crouch Check FAILED");
+				return false;
+			}
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Crouch Check PASSED");
+				//Crouch // this will need to call that camera shake in else so figure out prob another function thats like ClimbUp(FVector ClimbLocation) or something in Tick because Lerp I believe.
+				// play camera shake
+				return true;
+			}
+			
+		}
+		else
+		{
+			// Play Camera Shake
+			return true;
+			// maybe move camera shake into the actual climb 
+		}
+		
 	}
 	
 }
