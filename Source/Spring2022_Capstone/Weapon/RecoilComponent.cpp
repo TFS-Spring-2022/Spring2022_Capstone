@@ -78,9 +78,9 @@ void URecoilComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 		RecoverRecoil(DeltaTime);
 	}
 
+	// Reset recoil when Player leaves the ground.
 	if(!OwnersPawnMovementComponent->IsMovingOnGround())
 		RecoilReset();
-
 }
 
 void URecoilComponent::RecoverRecoil(float Time)
