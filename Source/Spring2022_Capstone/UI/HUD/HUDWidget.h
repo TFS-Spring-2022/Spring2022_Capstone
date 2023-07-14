@@ -21,6 +21,10 @@ protected:
 	virtual void NativeTick(const FGeometry &MyGeometry, float DeltaTime) override;
 
 public:
+
+
+	void PlayCrosshairAnimation();
+
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *RootPanel;
 	// Health bar
@@ -29,13 +33,26 @@ public:
 	// Crosshair
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UImage *Crosshair;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage *HitCrosshair;
+	
+	UPROPERTY(BlueprintReadWrite)
+		class UWidgetAnimation* CrosshairAnimation;
+
 	// Grapple
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UImage *GrappleIcon;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UProgressBar *GrappleCooldownBar;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		UProgressBar * OverheatBar;
+	
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UTextBlock *GrappleCooldownText;
+
+	class APlayerCharacter* PlayerRef;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Grapple")
@@ -49,6 +66,7 @@ private:
 	void OnGrappleCooldownStart(FTimerHandle &TimerHandle);
 	UFUNCTION()
 	void OnGrappleCooldownEnd();
+	
 
 	int MaxHealth;
 

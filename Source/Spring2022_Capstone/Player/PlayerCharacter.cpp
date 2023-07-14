@@ -249,6 +249,16 @@ void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)
 	ActiveWeapon = Weapon1;
 }
 
+
+void APlayerCharacter::CrosshairChange()
+{
+	if (OnDamagedDelegate.IsBound())
+	{
+		OnDamagedDelegate.Execute();
+	}
+
+}
+
 void APlayerCharacter::SetWeapon2(AWeaponBase *Weapon)
 {
 	Weapon2 = Weapon;

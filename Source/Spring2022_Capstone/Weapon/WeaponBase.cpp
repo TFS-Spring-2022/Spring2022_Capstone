@@ -54,9 +54,16 @@ void AWeaponBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 }
 
+
 void AWeaponBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AWeaponBase::CrosshairChange(APlayerCharacter* PlayerThatShot)
+{
+	if (PlayerThatShot == nullptr) return;
+	PlayerThatShot->CrosshairChange();
 }
 
 float AWeaponBase::GetDamage()

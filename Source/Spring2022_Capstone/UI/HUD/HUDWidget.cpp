@@ -6,17 +6,23 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
+#include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "Spring2022_Capstone/Player/GrappleComponent.h"
 
 void UHUDWidget::NativeConstruct()
 {
     Super::NativeConstruct();
 
-    if (APlayerCharacter *PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
+    PlayerRef = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+
+    if (PlayerRef != nullptr)
     {
-        PlayerCharacter->OnHealthChangedDelegate.BindUObject(this, &UHUDWidget::OnHealthChanged);
-        MaxHealth = PlayerCharacter->GetMaxHealth();
-        if (UGrappleComponent *GrappleComponent = PlayerCharacter->GetGrappleComponent())
+        PlayerRef->OnHealthChangedDelegate.BindUObject(this, &UHUDWidget::OnHealthChanged);
+        PlayerRef->OnDamagedDelegate.BindUObject(this, &UHUDWidget::PlayCrosshairAnimation);
+        
+
+        MaxHealth = PlayerRef->GetMaxHealth();
+        if (UGrappleComponent *GrappleComponent = PlayerRef->GetGrappleComponent())
         {
             GrappleComponent->OnGrappleActivatedDelegate.BindUObject(this, &UHUDWidget::OnGrappleActivated);
             GrappleComponent->OnGrappleCooldownStartDelegate.BindUObject(this, &UHUDWidget::OnGrappleCooldownStart);
@@ -25,6 +31,13 @@ void UHUDWidget::NativeConstruct()
     }
 
     GrappleCooldownText->SetText(FText::GetEmpty());
+}
+
+void UHUDWidget::PlayCrosshairAnimation()
+{
+    if (CrosshairAnimation == nullptr) return;
+
+    PlayAnimation(CrosshairAnimation, 0.0f, 1, EUMGSequencePlayMode::PingPong);
 }
 
 void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
@@ -36,6 +49,17 @@ void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
         float grappleCooldownPercent = timerRemainingTime / GrappleCooldown;
         GrappleCooldownBar->SetPercent(grappleCooldownPercent);
         GrappleCooldownText->SetText(FText::FromString(FString::FromInt(FMath::CeilToInt(timerRemainingTime))));
+    }
+
+    if (PlayerRef != nullptr)
+    {
+        AWeaponBase* CurrentWeapon = PlayerRef->GetActiveWeapon();
+        if (CurrentWeapon != nullptr)
+        {
+
+            if (OverheatBar == nullptr) return;
+            OverheatBar->SetPercent(CurrentWeapon->CurrentCharge / 100);
+        }
     }
 }
 

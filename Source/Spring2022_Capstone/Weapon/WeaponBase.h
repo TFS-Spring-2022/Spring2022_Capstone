@@ -8,6 +8,7 @@
 
 class APlayerCharacter;
 
+
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API AWeaponBase : public AActor
 {
@@ -19,6 +20,8 @@ public:
 	// Sets default values for this actor's properties
 	AWeaponBase();
 
+
+
 	/**
 	* @brief Attaches the actor to a PlayerCharacter.
 	* @param TargetCharacter APlayerCharacter instance holding the actor.
@@ -27,18 +30,23 @@ public:
 	void AttachWeapon(APlayerCharacter* TargetCharacter);
 
 	virtual void Shoot() PURE_VIRTUAL(AWeaponBase::Shoot());
+
+	// Current weapon charge (ammo).
+
+	//Had to make it public, because UI needed to get updated. Makign this private would break that so disclaimer
+	UPROPERTY(EditAnywhere, Category = "Weapon Stats")
+		float CurrentCharge = 0;
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	void CrosshairChange(class APlayerCharacter* PlayerThatShot);
 	
 	//// Weapon Stats
 
-	// Current weapon charge (ammo).
-	UPROPERTY(EditAnywhere, Category="Weapon Stats")
-		float CurrentCharge = 0;
 
 	// Max weapon charge amoutn before overheating
 	UPROPERTY(EditAnywhere, Category="Weapon Stats")

@@ -2,6 +2,8 @@
 
 
 #include "SemiAutomaticWeapon.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "DevTargets.h"
 
@@ -15,7 +17,6 @@ ASemiAutomaticWeapon::ASemiAutomaticWeapon()
 
 void ASemiAutomaticWeapon::Shoot()
 {
-
 	if(!bIsOverheating && CurrentCharge > MaxChargeAmount )
 	{
 		Overheat();
@@ -43,6 +44,8 @@ void ASemiAutomaticWeapon::Shoot()
 				{
 					IDamageableActor* DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
 					DamageableActor->DamageActor(this, ShotDamage);	
+					CrosshairChange(Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)));
+
 				}
 				DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 			}

@@ -19,7 +19,7 @@ class UHealthComponent;
 class UGrappleComponent;
 
 DECLARE_DELEGATE_OneParam(FOnHealthChanged, float);
-
+DECLARE_DELEGATE(FOnDamaged);
 UCLASS()
 class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 {
@@ -28,9 +28,16 @@ class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 	friend class UUpgradeSystemComponent;
 
 public:
+	FOnDamaged OnDamagedDelegate;
+
+	void CrosshairChange();
+
 	APlayerCharacter();
 
 	FOnHealthChanged OnHealthChangedDelegate;
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class UHUDWidget> WidgetClass;
 
 	virtual void Tick(float DeltaTime) override;
 
