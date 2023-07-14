@@ -62,9 +62,8 @@ void AShotgunWeapon::Shoot()
 
 			// Call recoil
 			if(RecoilComponent)
-			{
-				// RecoilComponent->RecoilStart();
-			}
+				RecoilComponent->RecoilKick();
+			
 		}
 	}
 }
