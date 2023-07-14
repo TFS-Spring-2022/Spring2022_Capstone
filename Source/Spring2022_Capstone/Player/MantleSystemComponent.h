@@ -35,6 +35,14 @@ private:
 
 	void Mantle();
 
+// Runtime
+	bool bCanMantle;
+
+	FVector InitialPoint; // hit surface point
+	FVector InitialNormal; // normal of hit point
+
+	FVector TargetLocation; // Location of player after mantle
+	
 	const float CAPSULE_TRACE_RADIUS = 30.0f;
 	const float CAPSULE_TRACE_HALF_HEIGHT = 60.0f;
 	const float CAPSULE_TRACE_DISTANCE = 30.0f;
