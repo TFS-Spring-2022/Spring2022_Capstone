@@ -17,7 +17,7 @@ class SPRING2022_CAPSTONE_API ASniperEnemyHit : public AActor
 
 public:
 	// Sets default values for this actor's properties
-	ARangedEnemyHit();
+	ASniperEnemyHit();
 	float WarningAreaEditable;
 
 protected:

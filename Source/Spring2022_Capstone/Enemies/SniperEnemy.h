@@ -15,7 +15,7 @@
  *
  */
 UCLASS()
-class SPRING2022_CAPSTONE_API ASniper : public ABaseEnemy
+class SPRING2022_CAPSTONE_API ASniperEnemy : public ABaseEnemy
 {
 	GENERATED_BODY()
 
@@ -29,19 +29,24 @@ public:
 protected:
 	virtual void Attack() override;
 
-private:
+protected:
 
 	void Raycast();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
-		int MagazineSize;
+		int32 MagazineSize;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
-		int Ammo;
+		int32 Ammo;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 		float ReloadTime;
 	float RangeDistance;
 
-	UPROPERTY(EditAnywhere, meta = (AllowedPrivateAccess = True))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = true))
+		USceneComponent* Root;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = true))
+		USkeletalMeshComponent* S_SniperEnemy;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowedPrivateAccess = true))
 		TSubclassOf<AActor> ActorToSpawn;
 	void Reload();
 };
