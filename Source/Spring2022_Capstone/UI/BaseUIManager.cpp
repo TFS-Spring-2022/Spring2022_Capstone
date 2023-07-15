@@ -26,7 +26,6 @@ void ABaseUIManager::DisplayWidget()
 		_RootWidget = CreateWidget(GetWorld(), RootWidget);
 
 		
-
 		if (UMainMenuWidget *Widget = Cast<UMainMenuWidget>(_RootWidget))
         {
 			if(AMainMenuManager *Manager = Cast<AMainMenuManager>(this))
@@ -34,10 +33,10 @@ void ABaseUIManager::DisplayWidget()
             	Widget->Manager = Manager;
 			}
         }
-
+		
 		_RootWidget->AddToViewport(1);
 
-		//
+		// Add Additional Widget Blueprints
 		for (TSubclassOf<UUserWidget> WidgetBluePrint : AdditionalWidgets)
 		{
 			UUserWidget* _AdditionalWidgetToAdd = CreateWidget(GetWorld(), WidgetBluePrint);
