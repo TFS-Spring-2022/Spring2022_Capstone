@@ -105,6 +105,8 @@ protected:
 	UMantleSystemComponent* PlayerMantleSystemComponent;
 	
 	void Move(const FInputActionValue &Value);
+	virtual void Jump() override;
+	
 	void Dash(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
 	void Sprint(const FInputActionValue &Value);

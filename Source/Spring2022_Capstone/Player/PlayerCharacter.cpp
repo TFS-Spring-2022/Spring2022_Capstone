@@ -42,7 +42,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 
 	if (UEnhancedInputComponent *EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
@@ -75,6 +75,8 @@ void APlayerCharacter::BeginPlay()
 	}
 	Speed = GetCharacterMovement()->MaxWalkSpeed;
 	UpdateHealthBar();
+
+	bIsMantleing = false;
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -98,6 +100,23 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
 	else
 		bIsMoving = false;
 }
+
+void APlayerCharacter::Jump()
+{
+	
+	if(!bIsMantleing)
+	{
+		if(bIsMoving)
+		{
+			if(PlayerMantleSystemComponent->AttemptMantle())
+			{
+				bIsMantleing = true;
+				return;
+			}
+		}
+	}
+
+	Super::Jump();
 }
 
 void APlayerCharacter::Dash(const FInputActionValue &Value)
@@ -215,12 +234,9 @@ void APlayerCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo &OutResult)
 
 void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
-	PlayerMantleSystemComponent->Mantle();
-	/*
 	if (bIsSprinting)
 		return;
 	ActiveWeapon->Shoot();
-	*/
 }
 
 void APlayerCharacter::Grapple(const FInputActionValue &Value)
