@@ -8,6 +8,7 @@
 #include "MantleSystemComponent.h"
 #include "UpgradeSystemComponent.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
+#include "Spring2022_Capstone/UI/HUD/DirectionalDamageIndicatorWidget.h"
 #include "PlayerCharacter.generated.h"
 
 class AWeaponBase;
@@ -49,6 +50,16 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputMappingContext *CharacterMappingContext;
+
+	//// HUD Related
+	
+	// Directional Damage UUSerWidget To Create.
+	UPROPERTY(EditAnywhere, Category = "HUD")
+	TSubclassOf<UUserWidget> DamageIndicatorWidgetBP;
+	
+	UPROPERTY()
+	UDirectionalDamageIndicatorWidget* DirectionalDamageIndicatorWidget;
+	
 
 	////	MOVEMENT RELATED INPUT ACTIONS
 	/**

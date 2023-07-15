@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "GrappleState.h"
 #include "MantleSystemComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
@@ -77,6 +78,13 @@ void APlayerCharacter::BeginPlay()
 	UpdateHealthBar();
 
 	bIsMantleing = false;
+
+	// Create and add Damage Indicator Widget
+	if(DamageIndicatorWidgetBP)
+	{
+		DirectionalDamageIndicatorWidget = Cast<UDirectionalDamageIndicatorWidget>(CreateWidget(GetWorld(), DamageIndicatorWidgetBP));
+		DirectionalDamageIndicatorWidget->AddToViewport(1);
+	}
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
