@@ -17,6 +17,8 @@ class SPRING2022_CAPSTONE_API UDirectionalDamageIndicatorWidget : public UUserWi
 	GENERATED_BODY()
 
 protected:
+	virtual void NativeConstruct() override;
+
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
 	UPanelWidget* RootPanel;
 
