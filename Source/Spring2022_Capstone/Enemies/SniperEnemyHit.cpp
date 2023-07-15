@@ -14,6 +14,7 @@ ASniperEnemyHit::ASniperEnemyHit()
 	PrimaryActorTick.bCanEverTick = true;
 	/*
 	WarningAreaEditable = 5;
+	ExplosionDamageEditable = 10;
 	Hitmesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HitMesh"));
 	GetWorld()->GetTimeManager().SetTimer(ReloadTimeRanged, this, Explode(), ReloadTime);
 	staticMesh->SetWorldScale3D(FVector(WarningAreaEditable, WarningAreaEditable, WarningAreaEditable));
@@ -39,7 +40,14 @@ void ASniperEnemyHit::BeginPlay()
 
 void ASniperEnemyHit::Explode()
 {
-
+	/*
+	if (HitObject.IsA(APlayerCharacter::StaticClass)
+	{		
+		APlayerCharacter* Player = Cast<APlayerCharacater>(HitObject))
+		Player->TakeDamage(ExplosionDamageEditable);
+		
+	}
+	Destroy();*/
 }
 
 

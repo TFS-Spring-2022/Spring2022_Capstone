@@ -15,10 +15,14 @@ class SPRING2022_CAPSTONE_API ASniperEnemyHit : public AActor
 	GENERATED_BODY()
 
 
+
 public:
 	// Sets default values for this actor's properties
 	ASniperEnemyHit();
+	UPROPERTY(EditAnywhere, Category = "Component")
 	float WarningAreaEditable;
+	UPROPERTY(EdItAnyWhere, Category = "Component")
+		float ExplosionDamageEditable;
 
 protected:
 	// Called when the game starts or when spawned
