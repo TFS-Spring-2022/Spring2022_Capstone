@@ -3,6 +3,7 @@
 
 #include "MantleSystemComponent.h"
 #include "PlayerCharacter.h"
+#include "Components/CapsuleComponent.h"
 
 UMantleSystemComponent::UMantleSystemComponent()
 {
@@ -14,7 +15,9 @@ void UMantleSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PlayersCharacterMovementComponent = Cast<APlayerCharacter>(GetOwner())->GetCharacterMovement();
+	PlayerCharacterMovementComponent = Cast<APlayerCharacter>(GetOwner())->GetCharacterMovement();
+	PlayerCapsuleComponent = PlayerCharacterMovementComponent->GetCharacterOwner()->GetCapsuleComponent();
+
 	SetTraceParams();
 	
 }

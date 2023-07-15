@@ -30,6 +30,8 @@ private:
 	
 	UPROPERTY()
 	UCharacterMovementComponent* PlayersCharacterMovementComponent;
+	UPROPERTY()
+	UCapsuleComponent* PlayerCapsuleComponent;
 	
 // Runtime
 	const float CAPSULE_TRACE_RADIUS = 30.0f;
