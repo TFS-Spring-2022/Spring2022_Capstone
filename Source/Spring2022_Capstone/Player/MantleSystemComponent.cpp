@@ -34,10 +34,14 @@ void UMantleSystemComponent::SetTraceParams()
 
 	// Ignore Player and all it's components.
 	TraceParams.AddIgnoredActor(GetOwner());
-	TArray ComponentsToIgnore = GetOwner()->GetComponents();
-	TraceParams.AddIgnoredComponents(ComponentsToIgnore);
+	// Warning. Anything that causes Component ownership change or destruction will invalidate array.
+	TSet<UActorComponent*> ComponentsToIgnore = GetOwner()->GetComponents(); 
+	for (UActorComponent* Component : ComponentsToIgnore)
+		TraceParams.AddIgnoredComponent(Cast<UPrimitiveComponent>(Component));
+	
 	// ToDo: Ensure weapons are ignored.
 }
+
 
 ///////////////////////////////////////////////////////////////////////////// TIMELINE FUNCTIONS /////////////////////////////////////////////////////////////////////////////
 void UMantleSystemComponent::TimelineCallback(float val)
@@ -47,6 +51,8 @@ void UMantleSystemComponent::TimelineCallback(float val)
 void UMantleSystemComponent::TimelineFinishedCallback()
 {
 }
+
+
 
 void UMantleSystemComponent::PlayTimeline()
 {
