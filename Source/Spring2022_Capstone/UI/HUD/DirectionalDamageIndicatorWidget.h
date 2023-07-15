@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Image.h"
-#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "DirectionalDamageIndicatorWidget.generated.h"
 
 /**
@@ -24,10 +23,16 @@ protected:
 	UPanelWidget* RootPanel;
 
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
-	UImage* DamageIndicator;
+	UImage* DamageIndicatorImage;
 
 	UPROPERTY()
-	APlayerCharacter* Player;
-	
+	class APlayerCharacter* Player;
+
+	UPROPERTY()
+	AActor* DamagingActor; // ToDo: Replace AActor reference with FVector location
+
+public:
+
+	void SetDamagingActor(AActor* Damager);
 	
 };
