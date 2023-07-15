@@ -85,6 +85,7 @@ void APlayerCharacter::BeginPlay()
 		DirectionalDamageIndicatorWidget = Cast<UDirectionalDamageIndicatorWidget>(CreateWidget(GetWorld(), DamageIndicatorWidgetBP));
 		DirectionalDamageIndicatorWidget->AddToViewport(1);
 	}
+	
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -315,6 +316,12 @@ void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 		HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 		UpdateHealthBar();
 	}
+
+	// Set DirectionalDamageIndicator to rotate
+	if(DirectionalDamageIndicatorWidget)
+		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
+	
+	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 }
 
 void APlayerCharacter::Heal(int Value)
