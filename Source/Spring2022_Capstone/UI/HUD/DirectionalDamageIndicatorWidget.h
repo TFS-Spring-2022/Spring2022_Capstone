@@ -29,24 +29,32 @@ protected:
 	class APlayerCharacter* Player;
 
 	UPROPERTY()
-	AActor* DamagingActor; // ToDo: Replace AActor reference with FVector location
+	AActor* DamagingActor;
 
 public:
 
 	void SetDamagingActor(AActor* Damager);
 
-	UFUNCTION()
-	void HideNotification();
+private:
 
-	//private:
-
-	// Makes DirectionalDamageIndicator visible and starts timer to hide again (ToDo: Fade?)
+	// Begins indicator image fade in process and starts timer for fade out process.
 	void StartNotification();
 
+	// Begins indicator image fade out process and clears DamagingActor reference
+	UFUNCTION()
+	void HideNotification();
+	
+	// Timer used for indicator image visibility
 	FTimerHandle NotificationVisibilityTimerHandle;
 
 	// Time notification is visible in seconds
 	UPROPERTY(EditAnywhere, Category = "Damage Indicator")
 	float VisibilityTime;
+	
+	bool bFadingIn;
+	bool bFadingOut;
+
+	float const NOTIFICATION_FADEOUT_SPEED = 5.0f;
+	float const NOTIFICATION_FADEIN_SPEED = 10.0f;
 	
 };

@@ -13,24 +13,29 @@ void UDirectionalDamageIndicatorWidget::NativeConstruct()
 
 	Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 
-	// Start invisibile
-	SetVisibility(ESlateVisibility::Hidden);
+	// Start invisible
+	DamageIndicatorImage->SetRenderOpacity(0);
 	
 }
 
 void UDirectionalDamageIndicatorWidget::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
 {
 	Super::NativeTick(MyGeometry, DeltaTime);
-
+	
 	if(DamagingActor)
 	{
 		float DamagingEnemyLookAtRotationYaw = UKismetMathLibrary::FindLookAtRotation(Player->GetActorLocation(), DamagingActor->GetActorLocation()).Yaw;
 		DamagingEnemyLookAtRotationYaw -= Player->GetControlRotation().Yaw; // Set direction for Damage Indicator Image rotation.
 
-		// ToDo: lerp to rotation (when we switch to setting intial location 
+		// ToDo: lerp to rotation (If we switch from AActor* to FVector) 
 		DamageIndicatorImage->SetRenderTransformAngle(DamagingEnemyLookAtRotationYaw);;
-		// ToDo: Make Visible/Invisible with timer
 	}
+
+	if(bFadingIn)
+		DamageIndicatorImage->SetRenderOpacity(FMath::FInterpTo(DamageIndicatorImage->GetRenderOpacity(), 1, DeltaTime, NOTIFICATION_FADEIN_SPEED));
+	else if(bFadingOut)
+		DamageIndicatorImage->SetRenderOpacity(FMath::FInterpTo(DamageIndicatorImage->GetRenderOpacity(), 0, DeltaTime, NOTIFICATION_FADEOUT_SPEED));
+	
 }
 
 void UDirectionalDamageIndicatorWidget::SetDamagingActor(AActor* Damager)
@@ -41,18 +46,13 @@ void UDirectionalDamageIndicatorWidget::SetDamagingActor(AActor* Damager)
 
 void UDirectionalDamageIndicatorWidget::StartNotification()
 {
-	SetVisibility(ESlateVisibility::Visible);
-
+	bFadingIn = true;
 	GetWorld()->GetTimerManager().SetTimer(NotificationVisibilityTimerHandle, this, &UDirectionalDamageIndicatorWidget::HideNotification, VisibilityTime, false);
-	
 }
-
 
 void UDirectionalDamageIndicatorWidget::HideNotification()
 {
-	SetVisibility(ESlateVisibility::Hidden);
-
+	bFadingIn = false;
+	bFadingOut = true;
+	DamagingActor = nullptr;
 }
-
-
-
