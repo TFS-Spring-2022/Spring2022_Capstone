@@ -61,7 +61,6 @@ bool UMantleSystemComponent::AttemptMantle()
 	if(!TraceDownForMantleSurface())
 		return false;
 
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Reached");
 	// Start Mantle (Movement handled in TickComponent().
 	PlayerCharacterMovementComponent->SetMovementMode(MOVE_None); // Stop player from moving while mantle-ing.
 	
