@@ -198,6 +198,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	bool bIsSprinting;
 
+	bool bIsMoving;
+
+	bool bIsMantleing;
+
 	UFUNCTION(BlueprintCallable)
 	void TakeDamage(float DamageAmount);
 
@@ -221,6 +225,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
 	float CrouchSpeed;
 
+	void SetIsMantleing(bool IsMantleingStatus);
+	
 	// Testing
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE AWeaponBase* GetActiveWeapon() {return ActiveWeapon;}
