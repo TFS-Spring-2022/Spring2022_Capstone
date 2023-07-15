@@ -4,6 +4,8 @@
 #include "MantleSystemComponent.h"
 #include "PlayerCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UMantleSystemComponent::UMantleSystemComponent()
 {
@@ -15,27 +17,51 @@ void UMantleSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PlayerCharacterMovementComponent = Cast<APlayerCharacter>(GetOwner())->GetCharacterMovement();
-	PlayerCapsuleComponent = PlayerCharacterMovementComponent->GetCharacterOwner()->GetCapsuleComponent();
+	Player = Cast<APlayerCharacter>(GetOwner());
+	PlayerCharacterMovementComponent = Player->GetCharacterMovement();
+	PlayerCapsuleComponent = Player->GetCapsuleComponent();
 
 	SetTraceParams();
-	
+
+	// Setup Timeline
+	FOnTimelineFloat TimelineCallback;
+	FOnTimelineEventStatic TimelineFinishedCallback;
+
+	// Length of Timeline is set from of MantleTimelineCurve; Length should match duration of CameraShake.
+	if(MantleTimelineFloatCurve)
+	{
+		TimelineFinishedCallback.BindUFunction(this, FName(TEXT("TimelineFinishedCallback")));
+		MantleTimeline.AddInterpFloat(MantleTimelineFloatCurve, TimelineCallback); 
+		MantleTimeline.SetTimelineFinishedFunc(TimelineFinishedCallback);
+	}
 }
 
 void UMantleSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	MantleTimeline.TickTimeline(DeltaTime); 
+	
+	if(bCanMantle && !MantleTimeline.IsPlaying())
+	{
+		UGameplayStatics::GetPlayerCameraManager(GetWorld(),0)->StartCameraShake(ClimbingCameraShake);
+		MantleTimeline.PlayFromStart();
+	}
+	if(MantleTimeline.IsPlaying())
+	{
+		Player->SetActorLocation(FMath::Lerp(InitialPlayerPosition, TargetLocation, MantleTimeline.GetPlaybackPosition()));
+	}
 	
 }
 
 void UMantleSystemComponent::Mantle()
 {
 
-	// Check for blocking wall //
+	/////////////////// Check for blocking wall /////////////////
 	FHitResult BlockingWallHitResult;
 	
-	FVector BlockingWallCheckStartLocation =	PlayerCharacterMovementComponent->GetActorLocation();
-	BlockingWallCheckStartLocation.Z += CAPSULE_TRACE_ZAXIS_RAISE; // Raise capsule trace to avoid lower surfaces/
+	FVector BlockingWallCheckStartLocation = PlayerCharacterMovementComponent->GetActorLocation();
+	BlockingWallCheckStartLocation.Z += CAPSULE_TRACE_ZAXIS_RAISE; // Raise capsule trace to avoid lower surfaces.
 
 	FVector BlockingWallCheckEndLocation = BlockingWallCheckStartLocation + (GetOwner()->GetActorForwardVector() * CAPSULE_TRACE_REACH); 
 
@@ -45,49 +71,60 @@ void UMantleSystemComponent::Mantle()
 
 		if(!PlayerCharacterMovementComponent->IsWalkable(BlockingWallHitResult))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Climbable Object Hit");
-
+			// Climbable Object Hit
 			InitialPoint = BlockingWallHitResult.ImpactPoint;
 			InitialNormal = BlockingWallHitResult.ImpactNormal;
 		}
-		else
-		{
-			bCanMantle = false; 
-			//return; // Leave Mantle() other calculations are unnecessary.
-		}
+	}
+	else
+	{
+		// Didnt hit a wall.
+		bCanMantle = false; 
+		return; 
 	}
 
-	// Trace downwards for surface //
+	
+	/////////////////// Trace downwards for surface /////////////////
 	FHitResult SurfaceCheckHitResult;
 
-	FVector SurfaceCheckStartLocation = FVector(InitialPoint.X, InitialPoint.Y, PlayerCharacterMovementComponent->GetActorLocation().Z - CAPSULE_TRACE_ZAXIS_RAISE) + InitialNormal * MANTLE_SURFACE_DEPTH; // Subtracting to account for raise above
-	SurfaceCheckStartLocation.Z += 120; // Surface height check ToDo: Get player/capsule height and use that
-
-	FVector SurfaceCheckEndLocation = FVector(InitialPoint.X, InitialPoint.Y, PlayerCharacterMovementComponent->GetActorLocation().Z - CAPSULE_TRACE_ZAXIS_RAISE) + InitialNormal * MANTLE_SURFACE_DEPTH; // Subtracting to account for raise above
+	FVector SurfaceCheckStartLocation = FVector(InitialPoint.X, InitialPoint.Y, PlayerCharacterMovementComponent->GetActorLocation().Z - CAPSULE_TRACE_ZAXIS_RAISE) + InitialNormal * MANTLE_SURFACE_DEPTH; // Subtracting to account for raise above.
+	SurfaceCheckStartLocation.Z += PlayerCapsuleComponent->GetScaledCapsuleHalfHeight() * 2;
+	
+	FVector SurfaceCheckEndLocation = FVector(InitialPoint.X, InitialPoint.Y, PlayerCharacterMovementComponent->GetActorLocation().Z - CAPSULE_TRACE_ZAXIS_RAISE) + InitialNormal * MANTLE_SURFACE_DEPTH; // Subtracting to account for raise above.
 	
 	if(GetWorld()->SweepSingleByChannel(SurfaceCheckHitResult, SurfaceCheckStartLocation, SurfaceCheckEndLocation, FQuat::Identity, ECC_Visibility,
 		FCollisionShape::MakeSphere(CAPSULE_TRACE_RADIUS), TraceParams))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Surface Object Hit"); // Im confused what exactly are we looking for here. No hits I would think
 
-		DrawDebugSphere(GetWorld(), SurfaceCheckStartLocation, CAPSULE_TRACE_RADIUS, 8, FColor::Red, false, 5.0f);
-		DrawDebugSphere(GetWorld(), SurfaceCheckEndLocation, CAPSULE_TRACE_RADIUS, 8, FColor::Blue, false, 5.0f);
-		
 		if(SurfaceCheckHitResult.bBlockingHit && PlayerCharacterMovementComponent->IsWalkable(SurfaceCheckHitResult))
-		{
-			// Can mantle
+		{ 
+			// Can climb up here.
 			TargetLoc = SurfaceCheckHitResult.Location;
 		}
 		else
 		{
-			// Cannot mantle
+			// Cannot mantle. // This gets called when there is a hit but it is now a walkable surface.
 			bCanMantle = false; 
-			TargetLocation = FVector(0, 0, 0); // Why do we have this right now?
+			TargetLocation = FVector(0, 0, 0); 
+			return;
 		}
 	}
-
+	else
+	{
+		// Object to tall.
+		bCanMantle = false; 
+		TargetLocation = FVector(0, 0, 0); 
+		return;
+	}
 	
+	/////////////////// Start Mantle (Handled in Tick) /////////////////
+	PlayerCharacterMovementComponent->SetMovementMode(MOVE_None); // Stop player from moving while mantle-ing.
+
+	TargetLocation = FVector(TargetLoc.X, TargetLoc.Y, TargetLoc.Z + 300);
+	InitialPlayerPosition = Player->GetActorLocation();
+	bCanMantle = true;
 }
+
 
 void UMantleSystemComponent::SetTraceParams()
 {
@@ -100,41 +137,12 @@ void UMantleSystemComponent::SetTraceParams()
 	for (UActorComponent* Component : ComponentsToIgnore)
 		TraceParams.AddIgnoredComponent(Cast<UPrimitiveComponent>(Component));
 	
-	// ToDo: Ensure weapons are ignored.
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-///////////////////////////////////////////////////////////////////////////// TIMELINE FUNCTIONS /////////////////////////////////////////////////////////////////////////////
-void UMantleSystemComponent::TimelineCallback(float val)
-{
+	// ToDo: Ensure weapons are ignored when meshes added
 }
 
 void UMantleSystemComponent::TimelineFinishedCallback()
 {
-	// BIsClimbing = false;
+	PlayerCharacterMovementComponent->SetMovementMode(MOVE_Walking);
+	MantleTimeline.Stop();
+	bCanMantle = false;
 }
-
-
-
-void UMantleSystemComponent::PlayTimeline()
-{
-}
-
-

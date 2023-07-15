@@ -35,17 +35,20 @@ private:
 	UCapsuleComponent* PlayerCapsuleComponent;
 	
 // Runtime
-
+	
+	
 	const float CAPSULE_TRACE_ZAXIS_RAISE = 45.0f;
-	const float CAPSULE_TRACE_REACH = 30.0f;
+	const float CAPSULE_TRACE_REACH = 45.0f; // Distance to wall to mantle ** Note - Needs Tinkering
 	
 	
 	const float CAPSULE_TRACE_RADIUS = 30.0f;
 	const float CAPSULE_TRACE_HALF_HEIGHT = 60.0f;
 
-	const float MANTLE_SURFACE_DEPTH = -30.0f; // Depth the player will climb up to.
+	const float MANTLE_SURFACE_DEPTH = -60.0f; //-30.0f; // Depth the player will climb up to. // This is not true iunno what this even does D:
+	const float MANTLE_SPACE_CHECK_HEIGHT_BUFFER = 15.0f; // Amount space check sphere cast is raised to ensure not inside mantle object.
 
-
+	const float MANTLE_SPACE_CHECK_RADIUS = 10.0f; // Radius of sphere cast used when checking if player can mantle into crouched space. Must be smaller then character capsule radius.
+	
 public:
 	void Mantle();
 
@@ -60,7 +63,9 @@ private:
 
 	FVector TargetLocation;
 
-	FVector TargetLoc; // Why?
+	FVector TargetLoc; // Why does he have two what is the deal with that? I think I can remove the TargetLocation later it seems to be perma 0 in his version
+
+	FVector InitialPlayerPosition; // Player's position before mantle begins. Used to calculate movement through mantle lerp.
 	
 // Timeline Members
 	UPROPERTY()
@@ -68,13 +73,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	UCurveFloat* MantleTimelineFloatCurve;
-
-	void PlayTimeline();
 	
-	// This function is called for every tick in the timeline.
-	UFUNCTION()
-	void TimelineCallback(float val);
-
 	// This function is called when the timeline finishes playing.
 	UFUNCTION()
 	void TimelineFinishedCallback();
@@ -85,5 +84,17 @@ private:
 	void SetTraceParams();
 
 	FCollisionQueryParams TraceParams;
+
+	bool CheckMantleSpace(FVector LocationToCheck);
+
+	UPROPERTY(EditAnywhere, Category = "Mantle | Components")
+	TSubclassOf<UCameraShakeBase> ClimbingCameraShake;
+
+	UPROPERTY(EditAnywhere)
+	bool bIsMantleing;
+
+	UPROPERTY(EditAnywhere, Category = "Mantle | Components")
+	ACharacter* Player; // Doesn't need APlayerCharacter* Can throw circular dependency error
+	
 	
 };
