@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "MantleSystemComponent.h"
 #include "UpgradeSystemComponent.h"
+#include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
 #include "PlayerCharacter.generated.h"
 
 class AWeaponBase;
@@ -23,6 +24,7 @@ DECLARE_DELEGATE_OneParam(FOnHealthChanged, float);
 
 UCLASS()
 class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
+class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter, public IDamageableActor
 {
 	GENERATED_BODY()
 
@@ -204,9 +206,6 @@ private:
 
 	bool bIsMantleing;
 
-	UFUNCTION(BlueprintCallable)
-	void TakeDamage(float DamageAmount);
-
 public:
 	
 	UFUNCTION(BlueprintCallable)
@@ -232,5 +231,8 @@ public:
 	// Testing
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE AWeaponBase* GetActiveWeapon() {return ActiveWeapon;}
-	
+
+	UFUNCTION(BlueprintCallable)
+	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
+
 };

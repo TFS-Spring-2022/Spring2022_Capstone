@@ -297,8 +297,11 @@ void APlayerCharacter::SetIsMantleing(bool IsMantleingStatus)
 	bIsMantleing = IsMantleingStatus;
 }
 
-void APlayerCharacter::TakeDamage(float DamageAmount)
+void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmount)
 {
+
+	IDamageableActor::DamageActor(DamagingActor, DamageAmount);
+	
 	if (HealthComponent)
 	{
 		HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
