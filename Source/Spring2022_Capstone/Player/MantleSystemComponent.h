@@ -26,6 +26,9 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	// Attempt to start the mantle process
+	bool AttemptMantle(); // ToDo: Rename? AttemptMantle()?
+
 private:
 	
 	UPROPERTY()
@@ -33,41 +36,23 @@ private:
 
 	UPROPERTY()
 	UCapsuleComponent* PlayerCapsuleComponent;
-	
-// Runtime
-	
-	
-	const float CAPSULE_TRACE_ZAXIS_RAISE = 45.0f;
-	const float CAPSULE_TRACE_REACH = 45.0f; // Distance to wall to mantle ** Note - Needs Tinkering
-	
-	
-	const float CAPSULE_TRACE_RADIUS = 30.0f;
-	const float CAPSULE_TRACE_HALF_HEIGHT = 60.0f;
 
-	const float MANTLE_SURFACE_DEPTH = -60.0f; //-30.0f; // Depth the player will climb up to. // This is not true iunno what this even does D:
-	const float MANTLE_SPACE_CHECK_HEIGHT_BUFFER = 15.0f; // Amount space check sphere cast is raised to ensure not inside mantle object.
+	UPROPERTY()
+	ACharacter* Player;
 
-	const float MANTLE_SPACE_CHECK_RADIUS = 10.0f; // Radius of sphere cast used when checking if player can mantle into crouched space. Must be smaller then character capsule radius.
+	UPROPERTY(EditAnywhere, Category = "AttemptMantle")
+	TSubclassOf<UCameraShakeBase> ClimbingCameraShake;
 	
-public:
-	void Mantle();
-
-private:
-
-// Runtime
-	
+/// Runtime ///
 	bool bCanMantle;
 	
 	FVector InitialPoint; // Initial point of contact on blocking wall check.
 	FVector InitialNormal; // Initial normal of contact on blocking wall check.
 
-	FVector TargetLocation;
+	FVector InitialPlayerPosition; // Player's position as mantle begins. Used to calculate movement in mantle lerp.
+	FVector TargetLocation; // The location the player will be moved to when mantle-ing.
 
-	FVector TargetLoc; // Why does he have two what is the deal with that? I think I can remove the TargetLocation later it seems to be perma 0 in his version
-
-	FVector InitialPlayerPosition; // Player's position before mantle begins. Used to calculate movement through mantle lerp.
-	
-// Timeline Members
+/// Timeline ///
 	UPROPERTY()
 	FTimeline MantleTimeline;
 
@@ -78,23 +63,33 @@ private:
 	UFUNCTION()
 	void TimelineFinishedCallback();
 	
-	UPROPERTY()
-	TEnumAsByte<ETimelineDirection::Type> TimelineDirection;
+/// AttemptMantle Process ///
 	
+	/**
+	 * @brief Capsule cast in front of player to check if object is mantle-able.
+	 * @return true - wall is mantle-able
+	 */
+	bool CheckForBlockingWall();
+
+	/**
+	 * @brief Sphere cast above mantle-able object to see if player can get on top.
+	 * @return true - can climb onto, false - object is to tall.
+	 */
+	bool TraceDownForMantleSurface();
+
+	/**
+	* @brief Set CollisionQuereyParams properties of TraceParams
+	*/
 	void SetTraceParams();
-
-	FCollisionQueryParams TraceParams;
-
-	bool CheckMantleSpace(FVector LocationToCheck);
-
-	UPROPERTY(EditAnywhere, Category = "Mantle | Components")
-	TSubclassOf<UCameraShakeBase> ClimbingCameraShake;
-
-	UPROPERTY(EditAnywhere)
-	bool bIsMantleing;
-
-	UPROPERTY(EditAnywhere, Category = "Mantle | Components")
-	ACharacter* Player; // Doesn't need APlayerCharacter* Can throw circular dependency error
 	
+	// FCollisionQuereyParams used in all mantle process casts.
+	FCollisionQueryParams TraceParams;
+	
+/// Const Variables ///
+	const float CAPSULE_TRACE_ZAXIS_RAISE = 50.0f;	// Amount blocking wall cast is raised to ensure lower surfaces are not caught.
+	const float CAPSULE_TRACE_REACH = 45.0f;		// Distance to wall to mantle.
+	const float CAPSULE_TRACE_RADIUS = 30.0f;		// Radius used in check for blocking wall and mantle surface.
+	const float MANTLE_SURFACE_DEPTH = -60.0f;		// Depth the player will climb up to. *
+	const float MANTLE_VERTICAL_KNOCK = 300.0f;		// Used in mantle process to knock-up the player and ensure they don't get stuck on ground.
 	
 };

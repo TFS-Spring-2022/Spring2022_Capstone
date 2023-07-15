@@ -10,7 +10,6 @@
 UMantleSystemComponent::UMantleSystemComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-	
 }
 
 void UMantleSystemComponent::BeginPlay()
@@ -40,24 +39,40 @@ void UMantleSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// Advance Timeline (Does not play timeline)
 	MantleTimeline.TickTimeline(DeltaTime); 
 	
 	if(bCanMantle && !MantleTimeline.IsPlaying())
 	{
-		UGameplayStatics::GetPlayerCameraManager(GetWorld(),0)->StartCameraShake(ClimbingCameraShake);
 		MantleTimeline.PlayFromStart();
+		UGameplayStatics::GetPlayerCameraManager(GetWorld(),0)->StartCameraShake(ClimbingCameraShake);
 	}
+	
 	if(MantleTimeline.IsPlaying())
-	{
 		Player->SetActorLocation(FMath::Lerp(InitialPlayerPosition, TargetLocation, MantleTimeline.GetPlaybackPosition()));
-	}
 	
 }
 
-void UMantleSystemComponent::Mantle()
+bool UMantleSystemComponent::AttemptMantle()
 {
+	if(!CheckForBlockingWall())
+		return false;
 
-	/////////////////// Check for blocking wall /////////////////
+	if(!TraceDownForMantleSurface())
+		return false;
+
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Reached");
+	// Start Mantle (Movement handled in TickComponent().
+	PlayerCharacterMovementComponent->SetMovementMode(MOVE_None); // Stop player from moving while mantle-ing.
+	
+	TargetLocation.Z += MANTLE_VERTICAL_KNOCK;
+	InitialPlayerPosition = Player->GetActorLocation();
+	bCanMantle = true;
+	return true;
+}
+
+bool UMantleSystemComponent::CheckForBlockingWall()
+{
 	FHitResult BlockingWallHitResult;
 	
 	FVector BlockingWallCheckStartLocation = PlayerCharacterMovementComponent->GetActorLocation();
@@ -80,11 +95,14 @@ void UMantleSystemComponent::Mantle()
 	{
 		// Didnt hit a wall.
 		bCanMantle = false; 
-		return; 
+		return false; 
 	}
 
-	
-	/////////////////// Trace downwards for surface /////////////////
+	return true;
+}
+
+bool UMantleSystemComponent::TraceDownForMantleSurface()
+{
 	FHitResult SurfaceCheckHitResult;
 
 	FVector SurfaceCheckStartLocation = FVector(InitialPoint.X, InitialPoint.Y, PlayerCharacterMovementComponent->GetActorLocation().Z - CAPSULE_TRACE_ZAXIS_RAISE) + InitialNormal * MANTLE_SURFACE_DEPTH; // Subtracting to account for raise above.
@@ -99,14 +117,14 @@ void UMantleSystemComponent::Mantle()
 		if(SurfaceCheckHitResult.bBlockingHit && PlayerCharacterMovementComponent->IsWalkable(SurfaceCheckHitResult))
 		{ 
 			// Can climb up here.
-			TargetLoc = SurfaceCheckHitResult.Location;
+			TargetLocation = SurfaceCheckHitResult.Location;
 		}
 		else
 		{
-			// Cannot mantle. // This gets called when there is a hit but it is now a walkable surface.
+			// Cannot mantle. // This gets called when there is a hit but it is not a walkable surface.
 			bCanMantle = false; 
 			TargetLocation = FVector(0, 0, 0); 
-			return;
+			return false;
 		}
 	}
 	else
@@ -114,17 +132,11 @@ void UMantleSystemComponent::Mantle()
 		// Object to tall.
 		bCanMantle = false; 
 		TargetLocation = FVector(0, 0, 0); 
-		return;
+		return false;
 	}
-	
-	/////////////////// Start Mantle (Handled in Tick) /////////////////
-	PlayerCharacterMovementComponent->SetMovementMode(MOVE_None); // Stop player from moving while mantle-ing.
 
-	TargetLocation = FVector(TargetLoc.X, TargetLoc.Y, TargetLoc.Z + 300);
-	InitialPlayerPosition = Player->GetActorLocation();
-	bCanMantle = true;
+	return true;
 }
-
 
 void UMantleSystemComponent::SetTraceParams()
 {
@@ -132,7 +144,7 @@ void UMantleSystemComponent::SetTraceParams()
 
 	// Ignore Player and all it's components.
 	TraceParams.AddIgnoredActor(GetOwner());
-	// Warning. Anything that causes Component ownership change or destruction will invalidate array.
+	// Warning - Anything that causes Component ownership change or destruction will invalidate array so beware when iterating.
 	TSet<UActorComponent*> ComponentsToIgnore = GetOwner()->GetComponents(); 
 	for (UActorComponent* Component : ComponentsToIgnore)
 		TraceParams.AddIgnoredComponent(Cast<UPrimitiveComponent>(Component));
@@ -145,4 +157,5 @@ void UMantleSystemComponent::TimelineFinishedCallback()
 	PlayerCharacterMovementComponent->SetMovementMode(MOVE_Walking);
 	MantleTimeline.Stop();
 	bCanMantle = false;
+	Cast<APlayerCharacter>(Player)->SetIsMantleing(false);
 }
