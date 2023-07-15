@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "MantleSystemComponent.h"
 #include "UpgradeSystemComponent.h"
 #include "PlayerCharacter.generated.h"
 
@@ -44,10 +45,7 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite, Category="Upgrades")
 	UUpgradeSystemComponent* UpgradeSystemComponent;
-
-	UPROPERTY()
-	class UMantleSystemComponent* MantleSystemComponent;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputMappingContext *CharacterMappingContext;
 
@@ -102,6 +100,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UGrappleComponent *GrappleComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
+	UMantleSystemComponent* PlayerMantleSystemComponent;
 	
 	void Move(const FInputActionValue &Value);
 	void Dash(const FInputActionValue &Value);
@@ -223,5 +224,5 @@ public:
 	// Testing
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE AWeaponBase* GetActiveWeapon() {return ActiveWeapon;}
-
+	
 };

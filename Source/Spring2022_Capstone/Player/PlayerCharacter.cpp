@@ -30,7 +30,7 @@ APlayerCharacter::APlayerCharacter()
 
 	UpgradeSystemComponent = CreateDefaultSubobject<UUpgradeSystemComponent>("Upgrades System");
 
-	MantleSystemComponent = CreateDefaultSubobject<UMantleSystemComponent>("Mantle System");
+	PlayerMantleSystemComponent = CreateDefaultSubobject<UMantleSystemComponent>(TEXT("Mantle"));
 
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
@@ -86,6 +86,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 void APlayerCharacter::Move(const FInputActionValue &Value)
 {
+	
 	const FVector2D DirectionalValue = Value.Get<FVector2D>();
 	if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
 	{
@@ -210,9 +211,12 @@ void APlayerCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo &OutResult)
 
 void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
+	PlayerMantleSystemComponent->Mantle();
+	/*
 	if (bIsSprinting)
 		return;
 	ActiveWeapon->Shoot();
+	*/
 }
 
 void APlayerCharacter::Grapple(const FInputActionValue &Value)
