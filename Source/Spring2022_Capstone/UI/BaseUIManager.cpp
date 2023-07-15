@@ -36,6 +36,14 @@ void ABaseUIManager::DisplayWidget()
         }
 
 		_RootWidget->AddToViewport(1);
+
+		//
+		for (TSubclassOf<UUserWidget> WidgetBluePrint : AdditionalWidgets)
+		{
+			UUserWidget* _AdditionalWidgetToAdd = CreateWidget(GetWorld(), WidgetBluePrint);
+			_AdditionalWidgetToAdd->AddToViewport(1);
+		}
+		
 	} else {
 		UE_LOG(LogTemp, Error, TEXT("Type not specizfied for Root Widget"));
 	}
