@@ -15,6 +15,7 @@ void UMantleSystemComponent::BeginPlay()
 	Super::BeginPlay();
 
 	PlayersCharacterMovementComponent = Cast<APlayerCharacter>(GetOwner())->GetCharacterMovement();
+	SetTraceParams();
 	
 }
 
@@ -27,6 +28,15 @@ void UMantleSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 void UMantleSystemComponent::Mantle()
 {
 	
+void UMantleSystemComponent::SetTraceParams()
+{
+	TraceParams.bTraceComplex = true;
+
+	// Ignore Player and all it's components.
+	TraceParams.AddIgnoredActor(GetOwner());
+	TArray ComponentsToIgnore = GetOwner()->GetComponents();
+	TraceParams.AddIgnoredComponents(ComponentsToIgnore);
+	// ToDo: Ensure weapons are ignored.
 }
 
 ///////////////////////////////////////////////////////////////////////////// TIMELINE FUNCTIONS /////////////////////////////////////////////////////////////////////////////

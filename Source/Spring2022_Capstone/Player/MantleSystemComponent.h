@@ -59,5 +59,10 @@ public:
 	
 	UPROPERTY()
 	TEnumAsByte<ETimelineDirection::Type> TimelineDirection;
+
+private:
+	void SetTraceParams();
+
+	FCollisionQueryParams TraceParams;
 	
 };
