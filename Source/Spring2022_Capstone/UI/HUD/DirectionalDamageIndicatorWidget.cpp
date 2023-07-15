@@ -14,5 +14,10 @@ void UDirectionalDamageIndicatorWidget::NativeConstruct()
 	
 }
 
+void UDirectionalDamageIndicatorWidget::NativeTick(const FGeometry& MyGeometry, float DeltaTime)
+{
+	Super::NativeTick(MyGeometry, DeltaTime);
+}
+
 
 

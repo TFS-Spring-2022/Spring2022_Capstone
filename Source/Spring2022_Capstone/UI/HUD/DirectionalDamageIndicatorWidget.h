@@ -18,6 +18,7 @@ class SPRING2022_CAPSTONE_API UDirectionalDamageIndicatorWidget : public UUserWi
 
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry &MyGeometry, float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
 	UPanelWidget* RootPanel;
