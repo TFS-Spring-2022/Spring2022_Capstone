@@ -23,7 +23,6 @@ class UGrappleComponent;
 DECLARE_DELEGATE_OneParam(FOnHealthChanged, float);
 
 UCLASS()
-class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
 class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter, public IDamageableActor
 {
 	GENERATED_BODY()
