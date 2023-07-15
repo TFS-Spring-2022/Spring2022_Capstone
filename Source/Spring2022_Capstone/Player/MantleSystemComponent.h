@@ -43,6 +43,8 @@ private:
 	const float CAPSULE_TRACE_RADIUS = 30.0f;
 	const float CAPSULE_TRACE_HALF_HEIGHT = 60.0f;
 
+	const float MANTLE_SURFACE_DEPTH = -30.0f; // Depth the player will climb up to.
+
 
 public:
 	void Mantle();
@@ -55,6 +57,10 @@ private:
 	
 	FVector InitialPoint; // Initial point of contact on blocking wall check.
 	FVector InitialNormal; // Initial normal of contact on blocking wall check.
+
+	FVector TargetLocation;
+
+	FVector TargetLoc; // Why?
 	
 // Timeline Members
 	UPROPERTY()
