@@ -30,7 +30,35 @@ void UMantleSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UMantleSystemComponent::Mantle()
 {
+
+	// Check for blocking wall //
+	FHitResult BlockingWallHitResult;
 	
+	FVector StartLocation =	PlayerCharacterMovementComponent->GetActorLocation();
+	StartLocation.Z += CAPSULE_TRACE_ZAXIS_RAISE; // Raise capsule trace to avoid lower surfaces/
+
+	FVector EndLocation = StartLocation + (GetOwner()->GetActorForwardVector() * CAPSULE_TRACE_REACH); 
+
+	if(GetWorld()->SweepSingleByChannel(BlockingWallHitResult, StartLocation, EndLocation, FQuat::Identity, ECC_Visibility,
+		FCollisionShape::MakeCapsule(CAPSULE_TRACE_RADIUS, PlayerCapsuleComponent->GetScaledCapsuleHalfHeight()), TraceParams))
+	{
+
+		if(!PlayerCharacterMovementComponent->IsWalkable(BlockingWallHitResult))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Climbable Object Hit");
+
+			InitialPoint = BlockingWallHitResult.ImpactPoint;
+			InitialNormal = BlockingWallHitResult.ImpactNormal;
+		}
+		else
+		{
+			bCanMantle = false; 
+			//return; // Leave Mantle() other calculations are unnecessary.
+		}
+		
+	}
+}
+
 void UMantleSystemComponent::SetTraceParams()
 {
 	TraceParams.bTraceComplex = true;

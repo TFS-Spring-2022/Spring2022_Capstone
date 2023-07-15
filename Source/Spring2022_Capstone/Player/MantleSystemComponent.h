@@ -29,18 +29,32 @@ public:
 private:
 	
 	UPROPERTY()
-	UCharacterMovementComponent* PlayersCharacterMovementComponent;
+	UCharacterMovementComponent* PlayerCharacterMovementComponent;
+
 	UPROPERTY()
 	UCapsuleComponent* PlayerCapsuleComponent;
 	
 // Runtime
+
+	const float CAPSULE_TRACE_ZAXIS_RAISE = 45.0f;
+	const float CAPSULE_TRACE_REACH = 30.0f;
+	
+	
 	const float CAPSULE_TRACE_RADIUS = 30.0f;
 	const float CAPSULE_TRACE_HALF_HEIGHT = 60.0f;
-	const float CAPSULE_TRACE_DISTANCE = 30.0f;
-	const float CAPSULE_TRACE_ZAXIS_RAISE = 45.0f;
+
 
 public:
 	void Mantle();
+
+private:
+
+// Runtime
+	
+	bool bCanMantle;
+	
+	FVector InitialPoint; // Initial point of contact on blocking wall check.
+	FVector InitialNormal; // Initial normal of contact on blocking wall check.
 	
 // Timeline Members
 	UPROPERTY()
@@ -61,8 +75,7 @@ public:
 	
 	UPROPERTY()
 	TEnumAsByte<ETimelineDirection::Type> TimelineDirection;
-
-private:
+	
 	void SetTraceParams();
 
 	FCollisionQueryParams TraceParams;
