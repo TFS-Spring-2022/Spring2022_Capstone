@@ -12,6 +12,9 @@ void UDirectionalDamageIndicatorWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+
+	// Start invisibile
+	SetVisibility(ESlateVisibility::Hidden);
 	
 }
 
@@ -33,5 +36,23 @@ void UDirectionalDamageIndicatorWidget::NativeTick(const FGeometry& MyGeometry, 
 void UDirectionalDamageIndicatorWidget::SetDamagingActor(AActor* Damager)
 {
 	DamagingActor = Damager;
+	StartNotification();
 }
+
+void UDirectionalDamageIndicatorWidget::StartNotification()
+{
+	SetVisibility(ESlateVisibility::Visible);
+
+	GetWorld()->GetTimerManager().SetTimer(NotificationVisibilityTimerHandle, this, &UDirectionalDamageIndicatorWidget::HideNotification, VisibilityTime, false);
+	
+}
+
+
+void UDirectionalDamageIndicatorWidget::HideNotification()
+{
+	SetVisibility(ESlateVisibility::Hidden);
+
+}
+
+
 

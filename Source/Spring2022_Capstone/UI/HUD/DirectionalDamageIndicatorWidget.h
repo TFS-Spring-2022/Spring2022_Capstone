@@ -34,5 +34,19 @@ protected:
 public:
 
 	void SetDamagingActor(AActor* Damager);
+
+	UFUNCTION()
+	void HideNotification();
+
+	//private:
+
+	// Makes DirectionalDamageIndicator visible and starts timer to hide again (ToDo: Fade?)
+	void StartNotification();
+
+	FTimerHandle NotificationVisibilityTimerHandle;
+
+	// Time notification is visible in seconds
+	UPROPERTY(EditAnywhere, Category = "Damage Indicator")
+	float VisibilityTime;
 	
 };
