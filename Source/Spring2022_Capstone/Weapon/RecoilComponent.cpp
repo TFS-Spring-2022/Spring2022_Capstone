@@ -73,7 +73,7 @@ void URecoilComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	{
 		// Set backup recovery timer to prevent control being taken from player.
 		if(!GetWorld()->GetTimerManager().IsTimerActive(BackupRecoveryTimer))
-			GetWorld()->GetTimerManager().SetTimer(BackupRecoveryTimer, this, &URecoilComponent::RecoilReset,  (bHasLargerFireRate) ? LargeFireRateMaxTimeInRecovery : OwningParentWeapon->FireRate + SemiAutomaticMaxTimeInRecoveryBuffer, false);
+			GetWorld()->GetTimerManager().SetTimer(BackupRecoveryTimer, this, &URecoilComponent::RecoilReset,  (bHasLargerFireRate) ? LargeFireRateMaxTimeInRecovery : OwningParentWeapon->FireRate /*+ SemiAutomaticMaxTimeInRecoveryBuffer*/, false);
 
 		RecoverRecoil(DeltaTime);
 	}
