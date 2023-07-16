@@ -147,6 +147,9 @@ protected:
 	// Used with DashCoolDownTime to handle cooldown
 	FTimerHandle DashCooldownTimerHandle;
 
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TSubclassOf<UCameraShakeBase> DashCameraShake;
+
 	/**
 	* @brief Dash cooldown in seconds
 	*/
@@ -175,6 +178,25 @@ protected:
 	 * @note Set in Dash() and used in DashDirectionLaunch
 	 */
 	FVector2D DashDirectionalValue;
+
+	/// Dash 
+	FTimerHandle DashBlurTimerHandle;
+
+	// Time dash blur post process effect will remain on screen. (0.3).
+	UPROPERTY(EditAnywhere)
+	float DashBlurUpTime;
+
+	bool bDashBlurFadingIn;
+
+	/**
+	 * @brief Sets post process blur effect weight to 0. Turning off
+	 * the effect. Called automatically for Timer set in Dash().
+	 */
+	UFUNCTION()
+	void ClearDashBlur();
+
+	float const DASH_BLUR_FADEIN_SPEED = 0.060; // FInterpTo speed used to fade in dash blur post process effect.
+
 	
 	/**
 	 * @brief Health Component

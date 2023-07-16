@@ -34,6 +34,8 @@ protected:
 	virtual void BeginPlay() override;
 	
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	void PlayWeaponCameraShake();
 	
 	//// Weapon Stats
 
@@ -117,6 +119,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* SkeletalMesh;
+	
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TSubclassOf<UCameraShakeBase> FireCameraShake;
 
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
