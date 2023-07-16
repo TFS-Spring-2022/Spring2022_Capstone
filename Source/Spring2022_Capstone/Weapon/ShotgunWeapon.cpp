@@ -21,6 +21,9 @@ void AShotgunWeapon::Shoot()
 	
 	if(bCanFire)
 	{
+
+		PlayWeaponCameraShake();
+		
 		if(!GetWorldTimerManager().IsTimerActive(FireTimerHandle))							
 		{
 			// Start timer the fire rate timer (after it runs for FireRate (time between shots in seconds) it will be cleared
@@ -45,7 +48,7 @@ void AShotgunWeapon::Shoot()
 				
 				FVector EndTrace = ((ForwardVector * ShotDistance) + StartTrace);
 				FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
-
+				
 				if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 				{
 					if(HitResult.GetActor()->Implements<UDamageableActor>())

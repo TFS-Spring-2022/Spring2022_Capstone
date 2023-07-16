@@ -24,6 +24,9 @@ void ASemiAutomaticWeapon::Shoot()
 	
 	if(bCanFire)
 	{
+
+		PlayWeaponCameraShake();
+		
 		if(!GetWorldTimerManager().IsTimerActive(FireTimerHandle))							
 		{
 			// Start timer the fire rate timer (after it runs for FireRate (time between shots in seconds) it will be cleared

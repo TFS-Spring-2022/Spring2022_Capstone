@@ -54,6 +54,12 @@ void AWeaponBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 }
 
+void AWeaponBase::PlayWeaponCameraShake()
+{
+	if(FireCameraShake)
+		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(FireCameraShake);
+}
+
 void AWeaponBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
