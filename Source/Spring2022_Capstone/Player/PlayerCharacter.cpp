@@ -85,6 +85,8 @@ void APlayerCharacter::BeginPlay()
 		DirectionalDamageIndicatorWidget = Cast<UDirectionalDamageIndicatorWidget>(CreateWidget(GetWorld(), DamageIndicatorWidgetBP));
 		DirectionalDamageIndicatorWidget->AddToViewport(1);
 	}
+
+	bDashBlurFadingIn = false;
 	
 }
 
@@ -93,6 +95,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	float CrouchInterpTime = FMath::Min(1.f, CrouchSpeed * DeltaTime);
 	CrouchEyeOffset = (1.f - CrouchInterpTime) * CrouchEyeOffset;
+
+	if(bDashBlurFadingIn)
+		Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight = FMath::FInterpTo(Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight, 1, DeltaTime, DASH_BLUR_FADEIN_SPEED);
+	
 }
 
 void APlayerCharacter::Move(const FInputActionValue &Value)
@@ -147,6 +153,13 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 
 			// After a tiny delay dash in desired direction
 			GetWorld()->GetTimerManager().SetTimer(DashDirectionalMovementDelayTimerHandle, this, &APlayerCharacter::DashDirectionalLaunch, 0.065, false); // Note: This number will never change while running. 0.65 feels good.
+
+			if(DashCameraShake)
+				UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(DashCameraShake);
+
+			bDashBlurFadingIn = true;
+			GetWorld()->GetTimerManager().SetTimer(DashBlurTimerHandle, this, &APlayerCharacter::ClearDashBlur, DashBlurUpTime, false);
+			
 		}
 	}
 
@@ -177,6 +190,12 @@ void APlayerCharacter::DashDirectionalLaunch()
 	GetWorld()->GetTimerManager().SetTimer(DashCooldownTimerHandle, this, &APlayerCharacter::ResetDashCooldown, DashCooldownTime, false);
 
 	LastDashActionTappedTime = 0;
+}
+
+void APlayerCharacter::ClearDashBlur()
+{
+	bDashBlurFadingIn = false;
+	Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight = 0;
 }
 
 void APlayerCharacter::ResetDashCooldown()
