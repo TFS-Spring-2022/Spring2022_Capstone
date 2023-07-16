@@ -21,8 +21,6 @@ void AShotgunWeapon::Shoot()
 	
 	if(bCanFire)
 	{
-
-		PlayWeaponCameraShake();
 		
 		if(!GetWorldTimerManager().IsTimerActive(FireTimerHandle))							
 		{
@@ -62,6 +60,7 @@ void AShotgunWeapon::Shoot()
 			}
 			
 			CurrentCharge += ShotCost;
+			PlayWeaponCameraShake();
 
 			// Call recoil
 			if(RecoilComponent)

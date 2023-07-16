@@ -24,8 +24,6 @@ void ASemiAutomaticWeapon::Shoot()
 	
 	if(bCanFire)
 	{
-
-		PlayWeaponCameraShake();
 		
 		if(!GetWorldTimerManager().IsTimerActive(FireTimerHandle))							
 		{
@@ -51,7 +49,8 @@ void ASemiAutomaticWeapon::Shoot()
 			}
 			
 			CurrentCharge += ShotCost;
-
+			PlayWeaponCameraShake();
+			
 			// Call recoil
 			if(RecoilComponent)
 				RecoilComponent->RecoilKick();
