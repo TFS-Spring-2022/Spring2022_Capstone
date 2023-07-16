@@ -26,6 +26,6 @@ public:
 	 * @param DamagingActor Actor sending damage to implementing class.
 	 * @param DamageAmount  Damage value of calling actor.
 	 */
-	virtual void DamageActor(const AActor* DamagingActor, const float DamageAmount) {}
+	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) {}
 
 };
