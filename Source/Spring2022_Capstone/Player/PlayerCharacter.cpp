@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "GrappleState.h"
+#include "MantleSystemComponent.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
@@ -29,6 +30,8 @@ APlayerCharacter::APlayerCharacter()
 
 	UpgradeSystemComponent = CreateDefaultSubobject<UUpgradeSystemComponent>("Upgrades System");
 
+	PlayerMantleSystemComponent = CreateDefaultSubobject<UMantleSystemComponent>(TEXT("Mantle"));
+
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
 }
@@ -39,7 +42,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 
 	if (UEnhancedInputComponent *EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
@@ -72,6 +75,8 @@ void APlayerCharacter::BeginPlay()
 	}
 	Speed = GetCharacterMovement()->MaxWalkSpeed;
 	UpdateHealthBar();
+
+	bIsMantleing = false;
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -83,13 +88,35 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 void APlayerCharacter::Move(const FInputActionValue &Value)
 {
+	
 	const FVector2D DirectionalValue = Value.Get<FVector2D>();
 	if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
 	{
+		bIsMoving = true;
 		GetCharacterMovement()->MaxWalkSpeed = bIsSprinting ? Speed * SprintMultiplier : Speed;
 		AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * 100);
 		AddMovementInput(GetActorRightVector(), DirectionalValue.X * 100);
 	}
+	else
+		bIsMoving = false;
+}
+
+void APlayerCharacter::Jump()
+{
+	
+	if(!bIsMantleing)
+	{
+		if(bIsMoving)
+		{
+			if(PlayerMantleSystemComponent->AttemptMantle())
+			{
+				bIsMantleing = true;
+				return;
+			}
+		}
+	}
+
+	Super::Jump();
 }
 
 void APlayerCharacter::Dash(const FInputActionValue &Value)
@@ -263,6 +290,11 @@ AWeaponBase *APlayerCharacter::GetWeapon1() const
 AWeaponBase *APlayerCharacter::GetWeapon2() const
 {
 	return Weapon2;
+}
+
+void APlayerCharacter::SetIsMantleing(bool IsMantleingStatus)
+{
+	bIsMantleing = IsMantleingStatus;
 }
 
 void APlayerCharacter::TakeDamage(float DamageAmount)
