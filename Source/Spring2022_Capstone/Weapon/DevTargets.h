@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
 #include "DevTargets.generated.h"
 
 UCLASS()
-class SPRING2022_CAPSTONE_API ADevTargets : public AActor
+class SPRING2022_CAPSTONE_API ADevTargets : public AActor, public IDamageableActor
 {
 	GENERATED_BODY()
 	
@@ -33,5 +34,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
 
 };
