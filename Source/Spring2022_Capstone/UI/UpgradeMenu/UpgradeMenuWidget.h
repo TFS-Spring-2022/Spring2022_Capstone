@@ -33,5 +33,9 @@ class SPRING2022_CAPSTONE_API UUpgradeMenuWidget : public UUserWidget
 	UButton* Upgrade3Button;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UTextBlock* Upgrade3Text;
-	
+
+public:
+
+	// Changes text above given upgrade choice.
+	void UpdateUpdateTextBox(int UpgradeChoiceNumber, FText UpgradeText);
 };
