@@ -25,6 +25,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	TSubclassOf<UUserWidget> RootWidget;
 
+	// Additional WidgetBluePrints to be created and added to viewport.
+	UPROPERTY(EditAnywhere, Category = "Widget")
+	TArray<TSubclassOf<UUserWidget>> AdditionalWidgets;
+	
 	UFUNCTION()
 	void DisplayWidget();
 	UFUNCTION()
