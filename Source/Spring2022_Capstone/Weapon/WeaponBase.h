@@ -146,7 +146,6 @@ public:
 	float GetDamage();
 	void SetDamage(float Value);
 
-	UPROPERTY(BlueprintReadOnly)
-	const UPirateGameInstance* PirateGameInstance;
+	
 	
 };

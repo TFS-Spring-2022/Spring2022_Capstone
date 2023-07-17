@@ -46,7 +46,7 @@ void AWeaponBase::BeginPlay()
 	}
 
 	//Get Game instance
-	PirateGameInstance = Cast<UPirateGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())); 
+	
 	
 }
 

@@ -62,10 +62,7 @@ void AShotgunWeapon::Shoot()
 			}
 
 			//Play gun sound
-			if(PirateGameInstance->GetSoundManager())
-			{
-				PirateGameInstance->GetSoundManager()->PlaySound(GetActorLocation(), GunShotSound);
-			}
+			
 			
 			
 			CurrentCharge += ShotCost;
