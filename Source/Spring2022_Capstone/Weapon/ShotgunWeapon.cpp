@@ -4,7 +4,6 @@
 #include "ShotgunWeapon.h"
 #include "DevTargets.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Spring2022_Capstone/GameplaySystems/PirateGameInstance.h"
 
 
 AShotgunWeapon::AShotgunWeapon()

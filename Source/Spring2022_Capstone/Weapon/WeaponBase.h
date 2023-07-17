@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Spring2022_Capstone/GameplaySystems/PirateGameInstance.h"
 #include "WeaponBase.generated.h"
 
 class APlayerCharacter;
