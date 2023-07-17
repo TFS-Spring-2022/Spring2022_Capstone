@@ -2,7 +2,7 @@
 
 
 #include "SemiAutomaticWeapon.h"
-
+#include "Kismet/GameplayStatics.h"
 #include "DevTargets.h"
 
 
@@ -47,6 +47,11 @@ void ASemiAutomaticWeapon::Shoot()
 				}
 				DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 			}
+			
+			//Play gun sound
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), GunShotSound, GetActorLocation(), 1.0f, 1.0f,0.0f);
+			
+			
 			
 			CurrentCharge += ShotCost;
 			PlayWeaponCameraShake();

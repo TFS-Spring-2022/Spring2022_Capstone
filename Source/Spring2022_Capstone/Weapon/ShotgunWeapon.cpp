@@ -4,12 +4,14 @@
 #include "ShotgunWeapon.h"
 #include "DevTargets.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Spring2022_Capstone/GameplaySystems/PirateGameInstance.h"
 
 
 AShotgunWeapon::AShotgunWeapon()
 {
 	RecoilComponent = CreateDefaultSubobject<URecoilComponent>("Shotgun Recoil Component");
 }
+
 
 void AShotgunWeapon::Shoot()
 {
@@ -58,6 +60,13 @@ void AShotgunWeapon::Shoot()
 					DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 				}	
 			}
+
+			//Play gun sound
+			if(PirateGameInstance->GetSoundManager())
+			{
+				PirateGameInstance->GetSoundManager()->PlaySound(GetActorLocation(), GunShotSound);
+			}
+			
 			
 			CurrentCharge += ShotCost;
 			PlayWeaponCameraShake();

@@ -44,6 +44,9 @@ void AWeaponBase::BeginPlay()
 		Character->SetWeapon2(this);
 		AttachWeapon(Character);
 	}
+
+	//Get Game instance
+	PirateGameInstance = Cast<UPirateGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())); 
 	
 }
 

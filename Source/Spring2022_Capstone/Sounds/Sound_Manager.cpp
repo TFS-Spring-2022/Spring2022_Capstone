@@ -3,6 +3,8 @@
 
 #include "Sound_Manager.h"
 
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 ASound_Manager::ASound_Manager()
 {
@@ -22,6 +24,16 @@ void ASound_Manager::BeginPlay()
 void ASound_Manager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
+
+
+void ASound_Manager::PlaySound(FVector Location, USoundBase* Sound)
+{
+	if(Sound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, Location, 1.0f, 1.0f,0.0f);
+	}
+}
+
+
 

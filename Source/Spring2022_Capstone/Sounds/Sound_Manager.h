@@ -22,5 +22,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	
+	UFUNCTION()
+	void PlaySound(FVector Location, USoundBase* Sound);
 };

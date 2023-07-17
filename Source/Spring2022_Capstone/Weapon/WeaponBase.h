@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Spring2022_Capstone/GameplaySystems/PirateGameInstance.h"
 #include "WeaponBase.generated.h"
 
 class APlayerCharacter;
@@ -122,7 +123,21 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TSubclassOf<UCameraShakeBase> FireCameraShake;
+	
 
+
+	/// Sounds
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* GunShotSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* GunReloadSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* OverHeatSound;
+	
+	
+	
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
 	// Called every frame
@@ -130,5 +145,8 @@ public:
 
 	float GetDamage();
 	void SetDamage(float Value);
+
+	UPROPERTY(BlueprintReadOnly)
+	const UPirateGameInstance* PirateGameInstance;
 	
 };
