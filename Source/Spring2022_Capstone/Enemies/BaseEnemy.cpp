@@ -2,11 +2,13 @@
 
 #include "BaseEnemy.h"
 #include "Spring2022_Capstone/HealthComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "AIController.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
@@ -16,14 +18,12 @@ ABaseEnemy::ABaseEnemy()
 
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPoint"));
 	ProjectileSpawnPoint->SetupAttachment(WeaponMesh);
-
 }
 
 // Called when the game starts or when spawned
 void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void ABaseEnemy::Attack()
@@ -34,6 +34,4 @@ void ABaseEnemy::Attack()
 void ABaseEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
-
