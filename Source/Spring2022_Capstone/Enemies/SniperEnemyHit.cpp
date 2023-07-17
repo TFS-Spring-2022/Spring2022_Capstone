@@ -9,17 +9,17 @@
 // Sets default values
 ASniperEnemyHit::ASniperEnemyHit()
 {
-	
+	/*
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	/*
+	
 	WarningAreaEditable = 5;
 	ExplosionDamageEditable = 10;
 	Hitmesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HitMesh"));
 	GetWorld()->GetTimeManager().SetTimer(ReloadTimeRanged, this, Explode(), ReloadTime);
 	staticMesh->SetWorldScale3D(FVector(WarningAreaEditable, WarningAreaEditable, WarningAreaEditable));
 	staticMesh->SetRelativeScale3D(FVector(WarningAreaEditable, WarningAreaEditable, WarningAreaEditable));
-*/	
+	*/
 }
 
 void ASniperEnemyHit::Tick(float DeltaTime)
@@ -47,7 +47,8 @@ void ASniperEnemyHit::Explode()
 		Player->TakeDamage(ExplosionDamageEditable);
 		
 	}
-	Destroy();*/
+	Destroy();
+	*/
 }
 
 

@@ -39,14 +39,27 @@ protected:
 		int32 Ammo;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 		float ReloadTime;
-	float RangeDistance;
+	float SniperDistance;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
+		float RotationSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
+		float MaxRotationAngle;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = true))
 		USceneComponent* Root;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = true))
 		USkeletalMeshComponent* S_SniperEnemy;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = true))
+		USceneComponent* SniperRotation;
+
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowedPrivateAccess = true))
 		TSubclassOf<AActor> ActorToSpawn;
+	
 	void Reload();
+
+	void Search();
 };
