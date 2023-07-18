@@ -25,7 +25,9 @@ void UUpgradeSystemComponent::BeginPlay()
 	PlayerToUpgrade = Cast<APlayerCharacter>(GetOwner());
 
 	if(UpgradeMenuWidgetBP)
-		UpgradeMenuWidget = Cast<UUpgradeMenuWidget>(CreateWidget(GetWorld(), UpgradeMenuWidgetBP));
+		UpgradeMenuWidgetInstance = Cast<UUpgradeMenuWidget>(CreateWidget(GetWorld(), UpgradeMenuWidgetBP));
+
+	bIsMenuOpen = false;
 
 }
 
@@ -95,6 +97,24 @@ void UUpgradeSystemComponent::IncreaseChargeCooldownRate(AWeaponBase* WeaponToUp
 {
 	WeaponToUpgrade->ChargeCooldownRate += Amount;
 	GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, FString::Printf(TEXT("%s Charge cooldown rate is: %f"), *WeaponToUpgrade->GetName(), WeaponToUpgrade->ChargeCooldownRate));
+}
+
+void UUpgradeSystemComponent::OpenUpgradeMenu()
+{
+	if(UpgradeMenuWidgetInstance)
+	{
+		UpgradeMenuWidgetInstance->AddToViewport(0);
+		bIsMenuOpen = true;
+	}
+}
+
+void UUpgradeSystemComponent::CloseUpgradeMenu()
+{
+	if(UpgradeMenuWidgetInstance)
+	{
+		UpgradeMenuWidgetInstance->RemoveFromParent();
+		bIsMenuOpen = false;
+	}
 }
 
 

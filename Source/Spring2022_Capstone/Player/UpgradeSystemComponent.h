@@ -23,7 +23,7 @@ public:
 	TSubclassOf<UUpgradeMenuWidget> UpgradeMenuWidgetBP;
 
 	UPROPERTY()
-	UUpgradeMenuWidget* UpgradeMenuWidget;
+	UUpgradeMenuWidget* UpgradeMenuWidgetInstance;
 	
 
 protected:
@@ -98,5 +98,16 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable)
 		void DecreaseGrappleCooldownBySeconds(float Seconds);
+
+// UI Functionality
+
+	UFUNCTION(BlueprintCallable)
+	void OpenUpgradeMenu();
+
+	UFUNCTION(BlueprintCallable)
+	void CloseUpgradeMenu();
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsMenuOpen;
 	
 };
