@@ -22,7 +22,10 @@ void UUpgradeSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PlayerToUpgrade = Cast<APlayerCharacter>(GetOwner());	
+	PlayerToUpgrade = Cast<APlayerCharacter>(GetOwner());
+
+	if(UpgradeMenuWidgetBP)
+		UpgradeMenuWidget = Cast<UUpgradeMenuWidget>(CreateWidget(GetWorld(), UpgradeMenuWidgetBP));
 
 }
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Spring2022_Capstone/UI/UpgradeMenu/UpgradeMenuWidget.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "UpgradeSystemComponent.generated.h"
 
@@ -16,6 +17,14 @@ class SPRING2022_CAPSTONE_API UUpgradeSystemComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UUpgradeSystemComponent();
+	
+	// Widget Blue Print used to create instance for Player's upgrade menu
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUpgradeMenuWidget> UpgradeMenuWidgetBP;
+
+	UPROPERTY()
+	UUpgradeMenuWidget* UpgradeMenuWidget;
+	
 
 protected:
 	// Called when the game starts
