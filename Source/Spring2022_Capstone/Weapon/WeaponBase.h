@@ -130,5 +130,7 @@ public:
 
 	float GetDamage();
 	void SetDamage(float Value);
+
+	float GetCurrentCharge() const;
 	
 };

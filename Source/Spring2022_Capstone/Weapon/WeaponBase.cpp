@@ -80,6 +80,11 @@ void AWeaponBase::ClearFireTimerHandle()
 	GetWorldTimerManager().ClearTimer(FireTimerHandle); 
 }
 
+float AWeaponBase::GetCurrentCharge() const
+{
+	return CurrentCharge;
+}
+
 void AWeaponBase::ChargeCooldown()
 {
 	if(CurrentCharge > 0 && bIsOverheating == false)
