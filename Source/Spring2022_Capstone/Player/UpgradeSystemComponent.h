@@ -8,6 +8,45 @@
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "UpgradeSystemComponent.generated.h"
 
+UENUM()
+enum EUpgradeType
+{
+	None,
+	MaxChargeAmount,
+	WeaponDamage,
+	ChargeCooldown,
+	MaxHealth,
+	MovementSpeed,
+	GrappleCooldown,
+	UnlockDoubleJump,
+	// ToDo: Ability Cooldown
+	// ToDo: Grapple Range
+	// ToDo: Dash Distance
+	// ToDo: Crit Hit Multiplier
+};
+
+USTRUCT()
+struct FUpgradeChoice
+{
+	GENERATED_BODY()
+	FUpgradeChoice()
+	{
+		TypeOfUpgrade = EUpgradeType::None;
+		UpgradeValue = 0;
+	}
+
+	FUpgradeChoice(const EUpgradeType Type, const float Value)
+	{
+		TypeOfUpgrade = Type;
+		UpgradeValue = Value;
+	}
+	
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<EUpgradeType> TypeOfUpgrade;
+
+	UPROPERTY(EditAnywhere)
+	float UpgradeValue;
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Within=(PlayerCharacter))
 class SPRING2022_CAPSTONE_API UUpgradeSystemComponent : public UActorComponent
@@ -32,6 +71,9 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite)
 	APlayerCharacter* PlayerToUpgrade;
+	
+	UPROPERTY()
+	APlayerController* PlayerController;
 
 public:	
 	// Called every frame
@@ -99,7 +141,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void DecreaseGrappleCooldownBySeconds(float Seconds);
 
-// UI Functionality
+// UI
 
 	UFUNCTION(BlueprintCallable)
 	void OpenUpgradeMenu();
@@ -110,7 +152,42 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsMenuOpen;
 
-	UPROPERTY()
-	APlayerController* PlayerController;
+// Upgrade Selection Functionality
+	
+	// Available upgrades for the player. ToDo: Remove EditAnywhere specifier.
+	UPROPERTY(EditAnywhere, Category = "AvailableUpgrades")
+	TArray<FUpgradeChoice> UpgradeChoices =
+		{
+			// Health
+			FUpgradeChoice(EUpgradeType::MaxHealth, 5),
+			FUpgradeChoice(EUpgradeType::MaxHealth, 5),
+			FUpgradeChoice(EUpgradeType::MaxHealth, 5),
+			FUpgradeChoice(EUpgradeType::MaxHealth, 5),
+			FUpgradeChoice(EUpgradeType::MaxHealth, 5),
+			// Weapon Damage (ToDo: Specific Weapon)
+			FUpgradeChoice(EUpgradeType::WeaponDamage, 5),
+			FUpgradeChoice(EUpgradeType::WeaponDamage, 5),
+			FUpgradeChoice(EUpgradeType::WeaponDamage, 5),
+			FUpgradeChoice(EUpgradeType::WeaponDamage, 5),
+			FUpgradeChoice(EUpgradeType::WeaponDamage, 5),
+			// Move Speed
+			FUpgradeChoice(EUpgradeType::MovementSpeed, 5),
+			FUpgradeChoice(EUpgradeType::MovementSpeed, 5),
+			FUpgradeChoice(EUpgradeType::MovementSpeed, 5),
+			// Double Jump
+			FUpgradeChoice(EUpgradeType::UnlockDoubleJump, NULL),
+			// Max Weapon Charge
+			FUpgradeChoice(EUpgradeType::ChargeCooldown, 5),
+			FUpgradeChoice(EUpgradeType::ChargeCooldown, 5),
+			FUpgradeChoice(EUpgradeType::ChargeCooldown, 5),
+			// Weapon Cooldown
+			FUpgradeChoice(EUpgradeType::ChargeCooldown, 5),
+			FUpgradeChoice(EUpgradeType::ChargeCooldown, 5),
+			FUpgradeChoice(EUpgradeType::ChargeCooldown, 5),
+			// ToDo: Ability Cooldown
+			// ToDo: Grapple Range
+			// ToDo: Dash Distance
+			// ToDo: Crit Hit Multiplier
+		};
 	
 };
