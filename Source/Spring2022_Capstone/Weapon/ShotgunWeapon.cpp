@@ -14,13 +14,14 @@ AShotgunWeapon::AShotgunWeapon()
 void AShotgunWeapon::Shoot()
 {
 
-	if(!bIsOverheating && CurWeaponCharge > 100 )
+	if(!bIsOverheating && CurrentCharge > MaxChargeAmount )
 	{
 		Overheat();
 	}
 	
 	if(bCanFire)
 	{
+		
 		if(!GetWorldTimerManager().IsTimerActive(FireTimerHandle))							
 		{
 			// Start timer the fire rate timer (after it runs for FireRate (time between shots in seconds) it will be cleared
@@ -45,30 +46,32 @@ void AShotgunWeapon::Shoot()
 				
 				FVector EndTrace = ((ForwardVector * ShotDistance) + StartTrace);
 				FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
-
+				
 				if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 				{
-					if(HitResult.GetActor()->IsA(ADevTargets::StaticClass()))
+					if(HitResult.GetActor()->Implements<UDamageableActor>())
 					{
-						ADevTargets* CurrentHit = Cast<ADevTargets>(HitResult.GetActor());
-						CurrentHit->ToggleMaterial();
+						IDamageableActor* DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
+						DamageableActor->DamageActor(this, ShotDamage);	
 					}
 					
 					DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 				}	
 			}
 			
-			CurWeaponCharge += ShotCost;
+			CurrentCharge += ShotCost;
 			if (OnWeaponChargeChangedDelegate.IsBound())
 			{
-				OnWeaponChargeChangedDelegate.Execute(CurWeaponCharge);
+				OnWeaponChargeChangedDelegate.Execute(CurrentCharge);
 			}
+
+			CurrentCharge += ShotCost;
+			PlayWeaponCameraShake();
 
 			// Call recoil
 			if(RecoilComponent)
-			{
-				RecoilComponent->RecoilStart();
-			}
+				RecoilComponent->RecoilKick();
+			
 		}
 	}
 }

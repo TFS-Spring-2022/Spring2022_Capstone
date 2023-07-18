@@ -55,6 +55,9 @@ private:
 	FVector InitialHookDirection2D;
 	FVector GetToGrappleHookDirection();
 
+	UPROPERTY(EditAnywhere)
+	float MinimumGrappleCooldown = 1;
+
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
@@ -74,5 +77,7 @@ public:
 	void Fire(FVector TargetLocation);
 	FVector GetStartLocation();
 
+	void DecrementGrappleCooldown(float Seconds);
+	FORCEINLINE float GetCooldown() const { return Cooldown; }
 	
 };

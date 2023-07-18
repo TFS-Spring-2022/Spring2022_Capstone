@@ -70,7 +70,7 @@ void UGrappleComponent::Fire(FVector TargetLocation)
 	Cable->CableComponent->EndLocation = FVector::ZeroVector;
 	Cable->CableComponent->SetAttachEndTo(_GrappleHook, TEXT(""));
 	Cable->CableComponent->CableWidth = 1.25f;
-	Cable->CableComponent->bEnableStiffness = true;
+	Cable->CableComponent->bEnableStiffness = false;
 	Cable->CableComponent->SubstepTime = 0.005f;
 	Cable->CableComponent->SetCollisionProfileName(TEXT("OverlapAll"));
 }
@@ -80,6 +80,14 @@ FVector UGrappleComponent::GetStartLocation()
 	FVector TransformedDirection = UKismetMathLibrary::TransformDirection(GetOwner()->GetActorTransform(), GrappleOffset);
 	FVector StartingLocation = TransformedDirection + GetOwner()->GetActorLocation();
 	return StartingLocation;
+}
+
+void UGrappleComponent::DecrementGrappleCooldown(float Seconds)
+{
+	Cooldown -= Seconds;
+
+	if(Cooldown <= MinimumGrappleCooldown)
+		Cooldown = MinimumGrappleCooldown;
 }
 
 void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector NormalImpulse, const FHitResult &Hit)
@@ -100,7 +108,7 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 		FVector ToGrappleHookDirection = GetToGrappleHookDirection();
 		MovementComponent->GroundFriction = 0;
 		MovementComponent->GravityScale = 0;
-		MovementComponent->AirControl = 0.2;
+		MovementComponent->AirControl = 0.6;
 		MovementComponent->Velocity = ToGrappleHookDirection * GrappleForce;
 		InitialHookDirection2D = FVector(ToGrappleHookDirection.X, ToGrappleHookDirection.Y, 0);
 		InitialHookDirection2D.Normalize();

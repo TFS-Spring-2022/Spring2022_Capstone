@@ -5,6 +5,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "GrappleState.h"
+#include "MantleSystemComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
@@ -27,6 +29,10 @@ APlayerCharacter::APlayerCharacter()
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
+	UpgradeSystemComponent = CreateDefaultSubobject<UUpgradeSystemComponent>("Upgrades System");
+
+	PlayerMantleSystemComponent = CreateDefaultSubobject<UMantleSystemComponent>(TEXT("Mantle"));
+
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
 }
@@ -37,7 +43,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 
 	if (UEnhancedInputComponent *EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
@@ -51,6 +57,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 										   &APlayerCharacter::SwitchWeapon);
 
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
+
+		
 	}
 }
 
@@ -68,6 +76,18 @@ void APlayerCharacter::BeginPlay()
 	}
 	Speed = GetCharacterMovement()->MaxWalkSpeed;
 	UpdateHealthBar();
+
+	bIsMantleing = false;
+
+	// Create and add Damage Indicator Widget
+	if(DamageIndicatorWidgetBP)
+	{
+		DirectionalDamageIndicatorWidget = Cast<UDirectionalDamageIndicatorWidget>(CreateWidget(GetWorld(), DamageIndicatorWidgetBP));
+		DirectionalDamageIndicatorWidget->AddToViewport(1);
+	}
+
+	bDashBlurFadingIn = false;
+	
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -75,17 +95,43 @@ void APlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	float CrouchInterpTime = FMath::Min(1.f, CrouchSpeed * DeltaTime);
 	CrouchEyeOffset = (1.f - CrouchInterpTime) * CrouchEyeOffset;
+
+	if(bDashBlurFadingIn)
+		Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight = FMath::FInterpTo(Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight, 1, DeltaTime, DASH_BLUR_FADEIN_SPEED);
+	
 }
 
 void APlayerCharacter::Move(const FInputActionValue &Value)
 {
+	
 	const FVector2D DirectionalValue = Value.Get<FVector2D>();
 	if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
 	{
+		bIsMoving = true;
 		GetCharacterMovement()->MaxWalkSpeed = bIsSprinting ? Speed * SprintMultiplier : Speed;
 		AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * 100);
 		AddMovementInput(GetActorRightVector(), DirectionalValue.X * 100);
 	}
+	else
+		bIsMoving = false;
+}
+
+void APlayerCharacter::Jump()
+{
+	
+	if(!bIsMantleing)
+	{
+		if(bIsMoving)
+		{
+			if(PlayerMantleSystemComponent->AttemptMantle())
+			{
+				bIsMantleing = true;
+				return;
+			}
+		}
+	}
+
+	Super::Jump();
 }
 
 void APlayerCharacter::Dash(const FInputActionValue &Value)
@@ -107,6 +153,13 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 
 			// After a tiny delay dash in desired direction
 			GetWorld()->GetTimerManager().SetTimer(DashDirectionalMovementDelayTimerHandle, this, &APlayerCharacter::DashDirectionalLaunch, 0.065, false); // Note: This number will never change while running. 0.65 feels good.
+
+			if(DashCameraShake)
+				UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(DashCameraShake);
+
+			bDashBlurFadingIn = true;
+			GetWorld()->GetTimerManager().SetTimer(DashBlurTimerHandle, this, &APlayerCharacter::ClearDashBlur, DashBlurUpTime, false);
+			
 		}
 	}
 
@@ -137,6 +190,12 @@ void APlayerCharacter::DashDirectionalLaunch()
 	GetWorld()->GetTimerManager().SetTimer(DashCooldownTimerHandle, this, &APlayerCharacter::ResetDashCooldown, DashCooldownTime, false);
 
 	LastDashActionTappedTime = 0;
+}
+
+void APlayerCharacter::ClearDashBlur()
+{
+	bDashBlurFadingIn = false;
+	Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight = 0;
 }
 
 void APlayerCharacter::ResetDashCooldown()
@@ -225,7 +284,7 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 	FCollisionQueryParams TraceParams;
 
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility);
-	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.f);
+	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.f);
 	FVector TargetLocation = EndLocation;
 	if (AActor *HitActor = HitResult.GetActor())
 	{
@@ -275,61 +334,33 @@ AWeaponBase *APlayerCharacter::GetWeapon2() const
 	return Weapon2;
 }
 
+
 AWeaponBase* APlayerCharacter::GetActiveWeapon() const
 {
 	return ActiveWeapon;
 }
 
-void APlayerCharacter::TakeHit()
+void APlayerCharacter::SetIsMantleing(bool IsMantleingStatus)
 {
+	bIsMantleing = IsMantleingStatus;
+}
+
+void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmount)
+{
+
+	IDamageableActor::DamageActor(DamagingActor, DamageAmount);
+	
 	if (HealthComponent)
 	{
-		HealthComponent->SetHealth(HealthComponent->GetHealth() - 5.0f);
+		HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 		UpdateHealthBar();
 	}
-}
 
-void APlayerCharacter::IncreaseMaxHealth(int Value)
-{
-	HealthComponent->SetMaxHealth(HealthComponent->GetMaxHealth() + Value);
-	HealthComponent->SetHealth(HealthComponent->GetHealth() + Value);
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), HealthComponent->GetMaxHealth()));
-}
-
-void APlayerCharacter::IncreaseMaxHealthPercentage(int Percentage)
-{
-	float HealthIncrease = HealthComponent->GetMaxHealth() * Percentage / 100;
-	HealthComponent->SetMaxHealth(HealthComponent->GetMaxHealth() + HealthIncrease);
-	HealthComponent->SetHealth(HealthComponent->GetHealth() + HealthIncrease);
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), HealthComponent->GetMaxHealth()));
-}
-
-void APlayerCharacter::IncreaseMovementSpeed(int Value)
-{
-	Speed += Value;
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Movement Speed is: %f"), Speed));
-}
-
-void APlayerCharacter::IncreaseDamagePrimary(float Value)
-{
-	if (!Weapon1)
-		return;
-	Weapon1->SetDamage(Weapon1->GetDamage() + Value);
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Primary Weapon Damage is: %f"), Weapon1->GetDamage()));
-}
-
-void APlayerCharacter::IncreaseDamageSecondary(float Value)
-{
-	if (!Weapon2)
-		return;
-	Weapon2->SetDamage(Weapon2->GetDamage() + Value);
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Secondary Weapon Damage is: %f"), Weapon2->GetDamage()));
-}
-
-void APlayerCharacter::ToggleDoubleJump()
-{
-	JumpMaxCount = JumpMaxCount == 1 ? 2 : 1;
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your max jumps are: %i"), JumpMaxCount));
+	// Set DirectionalDamageIndicator to rotate
+	if(DirectionalDamageIndicatorWidget)
+		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
+	
+	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 }
 
 void APlayerCharacter::Heal(int Value)
@@ -365,3 +396,7 @@ void APlayerCharacter::UpdateHealthBar()
 		OnHealthChangedDelegate.Execute(HealthComponent->GetHealth());
 	}
 }
+
+
+	
+

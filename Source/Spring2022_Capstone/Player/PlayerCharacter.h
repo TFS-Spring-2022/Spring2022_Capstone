@@ -5,6 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "MantleSystemComponent.h"
+#include "UpgradeSystemComponent.h"
+#include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
+#include "Spring2022_Capstone/UI/HUD/DirectionalDamageIndicatorWidget.h"
 #include "PlayerCharacter.generated.h"
 
 class AWeaponBase;
@@ -21,9 +25,11 @@ DECLARE_DELEGATE_OneParam(FOnHealthChanged, float);
 DECLARE_DELEGATE_OneParam(FOnWeaponSwitched, AWeaponBase*);
 
 UCLASS()
-class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter
+class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter, public IDamageableActor
 {
 	GENERATED_BODY()
+
+	friend class UUpgradeSystemComponent;
 
 public:
 	APlayerCharacter();
@@ -40,9 +46,22 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
+	
+	UPROPERTY(BlueprintReadWrite, Category="Upgrades")
+	UUpgradeSystemComponent* UpgradeSystemComponent;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputMappingContext *CharacterMappingContext;
+
+	//// HUD Related
+	
+	// Directional Damage UUSerWidget To Create.
+	UPROPERTY(EditAnywhere, Category = "HUD")
+	TSubclassOf<UUserWidget> DamageIndicatorWidgetBP;
+	
+	UPROPERTY()
+	UDirectionalDamageIndicatorWidget* DirectionalDamageIndicatorWidget;
+	
 
 	////	MOVEMENT RELATED INPUT ACTIONS
 	/**
@@ -95,8 +114,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UGrappleComponent *GrappleComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
+	UMantleSystemComponent* PlayerMantleSystemComponent;
 	
 	void Move(const FInputActionValue &Value);
+	virtual void Jump() override;
+	
 	void Dash(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
 	void Sprint(const FInputActionValue &Value);
@@ -124,6 +148,9 @@ protected:
 
 	// Used with DashCoolDownTime to handle cooldown
 	FTimerHandle DashCooldownTimerHandle;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TSubclassOf<UCameraShakeBase> DashCameraShake;
 
 	/**
 	* @brief Dash cooldown in seconds
@@ -153,6 +180,25 @@ protected:
 	 * @note Set in Dash() and used in DashDirectionLaunch
 	 */
 	FVector2D DashDirectionalValue;
+
+	/// Dash 
+	FTimerHandle DashBlurTimerHandle;
+
+	// Time dash blur post process effect will remain on screen. (0.3).
+	UPROPERTY(EditAnywhere)
+	float DashBlurUpTime;
+
+	bool bDashBlurFadingIn;
+
+	/**
+	 * @brief Sets post process blur effect weight to 0. Turning off
+	 * the effect. Called automatically for Timer set in Dash().
+	 */
+	UFUNCTION()
+	void ClearDashBlur();
+
+	float const DASH_BLUR_FADEIN_SPEED = 0.060; // FInterpTo speed used to fade in dash blur post process effect.
+
 	
 	/**
 	 * @brief Health Component
@@ -190,26 +236,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	bool bIsSprinting;
 
-	UFUNCTION(BlueprintCallable)
-	void TakeHit();
+	bool bIsMoving;
+
+	bool bIsMantleing;
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void IncreaseMaxHealth(int Value);
-	UFUNCTION(BlueprintCallable)
-	void IncreaseMaxHealthPercentage(int Percentage);
-
-	UFUNCTION(BlueprintCallable)
-	void IncreaseMovementSpeed(int Value);
-
-	UFUNCTION(BlueprintCallable)
-	void IncreaseDamagePrimary(float Value);
-	UFUNCTION(BlueprintCallable)
-	void IncreaseDamageSecondary(float Value);
-
-	UFUNCTION(BlueprintCallable)
-	void ToggleDoubleJump();
-
+	
 	UFUNCTION(BlueprintCallable)
 	void Heal(int Value);
 
@@ -222,10 +254,21 @@ public:
 	void SetWeapon2(AWeaponBase *Weapon);
 	AWeaponBase *GetWeapon1() const;
 	AWeaponBase *GetWeapon2() const;
-	AWeaponBase* GetActiveWeapon() const;
 
+	AWeaponBase* GetActiveWeapon() const;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
 	FVector CrouchEyeOffset;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Crouch)
 	float CrouchSpeed;
+
+	void SetIsMantleing(bool IsMantleingStatus);
+	
+	// Testing
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE AWeaponBase* GetActiveWeapon() {return ActiveWeapon;}
+
+	UFUNCTION(BlueprintCallable)
+	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
+
 };

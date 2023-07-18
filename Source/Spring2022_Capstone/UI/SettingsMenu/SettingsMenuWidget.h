@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Slider.h"
 #include "SettingsMenuWidget.generated.h"
 
 class UPanelWidget;
@@ -59,6 +60,16 @@ public:
 	UButton *AudioButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UPanelWidget *AudioPanel;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	USlider *MaxVolumeSlider;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	USlider *MusicSlider;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	USlider *SFXSlider;
+
 
 private:
 	
