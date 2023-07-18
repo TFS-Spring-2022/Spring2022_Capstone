@@ -271,7 +271,7 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 {
 	if (!Value.Get<bool>())
 	{
-		GrappleComponent->CancelGrapple(false);
+		GrappleComponent->CancelGrapple();
 		return;
 	}
 	if (GrappleComponent->GrappleState != EGrappleState::ReadyToFire)
