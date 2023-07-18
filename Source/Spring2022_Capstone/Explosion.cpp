@@ -16,7 +16,7 @@ AExplosion::AExplosion()
 void AExplosion::BeginPlay()
 {
 	Super::BeginPlay();
-	Explode();
+	//Explode();
 }
 
 // Called every frame
@@ -32,7 +32,7 @@ void AExplosion::Explode()
 	UKismetSystemLibrary::SphereOverlapActors(this, GetActorLocation(), Radius, ObjectTypes, AActor::StaticClass(), IgnoreActors, HitActors);
 	
 	for(int32 i = 0; i < HitActors.Num(); i++)
-	{
+	{	
 		HitActors[i]->TakeDamage(Damage, FDamageEvent(),nullptr,nullptr);
 	}
 }

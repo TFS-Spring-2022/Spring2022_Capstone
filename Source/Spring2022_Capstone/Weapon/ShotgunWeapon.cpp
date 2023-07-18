@@ -53,7 +53,10 @@ void AShotgunWeapon::Shoot()
 					{
 						IDamageableActor* DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
 						DamageableActor->DamageActor(this, ShotDamage);	
+					
 					}
+
+					//This gets called on every single actor that's being shot. It's bad for performance
 					HitResult.GetActor()->TakeDamage(ShotDamage, FDamageEvent(), nullptr, nullptr);
 
 					DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);

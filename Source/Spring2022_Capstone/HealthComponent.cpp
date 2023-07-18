@@ -32,6 +32,11 @@ void UHealthComponent::SetHealth(float NewHealth)
 	HealthPoints = NewHealth;
 }
 
+void UHealthComponent::TakeDamage(float DamageCaused)
+{
+	HealthPoints = FMath::Clamp(HealthPoints - DamageCaused, 0.0f, MaxHealth);
+}
+
 float UHealthComponent::GetMaxHealth()
 {
     return MaxHealth;
