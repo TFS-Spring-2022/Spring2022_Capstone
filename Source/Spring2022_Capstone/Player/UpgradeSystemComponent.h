@@ -109,5 +109,8 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsMenuOpen;
+
+	UPROPERTY()
+	APlayerController* PlayerController;
 	
 };

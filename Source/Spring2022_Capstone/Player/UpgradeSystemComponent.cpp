@@ -5,6 +5,7 @@
 
 #include "GrappleComponent.h"
 #include "PlayerCharacter.h"
+#include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/HealthComponent.h"
 
 // Sets default values for this component's properties
@@ -28,6 +29,8 @@ void UUpgradeSystemComponent::BeginPlay()
 		UpgradeMenuWidgetInstance = Cast<UUpgradeMenuWidget>(CreateWidget(GetWorld(), UpgradeMenuWidgetBP));
 
 	bIsMenuOpen = false;
+
+	PlayerController = GetWorld()->GetFirstPlayerController();
 
 }
 
@@ -103,6 +106,8 @@ void UUpgradeSystemComponent::OpenUpgradeMenu()
 {
 	if(UpgradeMenuWidgetInstance)
 	{
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		PlayerController->bShowMouseCursor = true;
 		UpgradeMenuWidgetInstance->AddToViewport(0);
 		bIsMenuOpen = true;
 	}
@@ -112,6 +117,8 @@ void UUpgradeSystemComponent::CloseUpgradeMenu()
 {
 	if(UpgradeMenuWidgetInstance)
 	{
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		PlayerController->bShowMouseCursor = false;
 		UpgradeMenuWidgetInstance->RemoveFromParent();
 		bIsMenuOpen = false;
 	}
