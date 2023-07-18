@@ -15,6 +15,7 @@ class SPRING2022_CAPSTONE_API AWeaponBase : public AActor
 	GENERATED_BODY()
 
 	friend class UUpgradeSystemComponent;
+	friend class URecoilComponent;
 		
 public:	
 	// Sets default values for this actor's properties
@@ -43,7 +44,11 @@ protected:
 	
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+
 	void CrosshairChange(class APlayerCharacter* PlayerThatShot);
+
+	void PlayWeaponCameraShake();
+
 	
 	//// Weapon Stats
 
@@ -124,6 +129,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* SkeletalMesh;
+	
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TSubclassOf<UCameraShakeBase> FireCameraShake;
 
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]

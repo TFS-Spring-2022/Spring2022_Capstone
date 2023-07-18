@@ -25,6 +25,7 @@ void ASemiAutomaticWeapon::Shoot()
 	
 	if(bCanFire)
 	{
+		
 		if(!GetWorldTimerManager().IsTimerActive(FireTimerHandle))							
 		{
 			// Start timer the fire rate timer (after it runs for FireRate (time between shots in seconds) it will be cleared
@@ -51,12 +52,11 @@ void ASemiAutomaticWeapon::Shoot()
 			}
 			
 			CurrentCharge += ShotCost;
-
+			PlayWeaponCameraShake();
+			
 			// Call recoil
 			if(RecoilComponent)
-			{
-				RecoilComponent->RecoilStart();
-			}
+				RecoilComponent->RecoilKick();
 				
 		}
 	}

@@ -3,129 +3,118 @@
 
 #include "RecoilComponent.h"
 
+#include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
-// Sets default values for this component's properties
 URecoilComponent::URecoilComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
 }
 
-// Called when the game starts
 void URecoilComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
 	OwningParentWeapon = Cast<AWeaponBase>(GetOwner()); 
-	
 	OwnersPlayerController = GetWorld()->GetFirstPlayerController();
+	OwnersPawnMovementComponent = OwnersPlayerController->GetPawn()->GetMovementComponent();
+
+	// Check if weapon has a 'larger' fire rate
+	bHasLargerFireRate = (OwningParentWeapon->FireRate >= LargeFireRateSize) ? true : false;
 	
-	bOriginalAimRotSet = false;
+	RecoilReset();
 	
 }
 
-void URecoilComponent::RecoilStart()
+// Called when weapon is fired
+void URecoilComponent::RecoilKick()
 {
-	
-	GetWorld()->GetTimerManager().SetTimer(TimeSinceLastShotTimerHandle, this, &URecoilComponent::RecoilStop, TimeBeforeRecovery); // Set timer to check if player has stopped firing.
-	
-	PlayerDeltaRot = FRotator::ZeroRotator;
-	RecoilDeltaRot = FRotator::ZeroRotator;
-	Del = FRotator::ZeroRotator;
-	if(bOriginalAimRotSet == false)
-	{
-		RecoilStartRot = OwnersPlayerController->GetControlRotation();
-		bOriginalAimRotSet = true;
-	}
-	
-	bIsFiring = true;
-	
-	GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &URecoilComponent::RecoilTimerFunction, RecoverySpeed, false);
-	
-	bRecoil = true;
-	bRecoilRecovery = false;
-	
-}
 
-void URecoilComponent::RecoilStop()
-{
-	bIsFiring = false;
-}
-
-void URecoilComponent::RecoveryStart()
-{
-	if(OwnersPlayerController->GetControlRotation().Pitch > RecoilStartRot.Pitch)
-	{
-		bRecoilRecovery = true;
-		GetWorld()->GetTimerManager().SetTimer(RecoveryTimerHandle, this, &URecoilComponent::RecoveryTimerFunction, 0.5, false); // Note - Leave 0.5 Issues with moving and shooting when not.
-	}
+	// If first shot in batch, save Player's Control Rotation.
+	if(bIsRecoiling == false)
+		RecoilStartRotation = UKismetMathLibrary::NormalizedDeltaRotator(OwnersPlayerController->GetControlRotation(), FRotator::ZeroRotator);
+	
+	// Start timer to ensure RecoilStartRotation is not overwritten when firing multiple times.
+	if(bHasLargerFireRate)
+		// Weapon's with larger fire rates cannot use their FireRate to go into recovery, they must use LargeFireRateRecoveryStartTime.
+		GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &URecoilComponent::FireTimerHandleFunction, LargeFireRateRecoveryStartTime, false);
 	else
-	{
-		bOriginalAimRotSet = false;
-		PlayerDeltaRot = FRotator::ZeroRotator;
-		RecoilDeltaRot = FRotator::ZeroRotator;
-	}
+		GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &URecoilComponent::FireTimerHandleFunction, (OwningParentWeapon->FireRate + FireTimeBuffer), false);
 	
+	TimesFired++;
+
+	// Knock up Player's Control Rotation.
+	RecoilRotation = FRotator(OwnersPlayerController->GetControlRotation().Pitch - VerticalKickAmount, OwnersPlayerController->GetControlRotation().Yaw, OwnersPlayerController->GetControlRotation().Roll);
+	OwnersPlayerController->SetControlRotation(RecoilRotation);
+
+	// set bIsRecoiling true to calculate Player's mouse movement correction in TickComponent(). 
+	bIsRecoiling = true;
+	bIsRecovering = false;
 }
 
-void URecoilComponent::RecoveryTimerFunction()
+void URecoilComponent::FireTimerHandleFunction()
 {
-	bRecoilRecovery = false;
-	
-	// This is the last called method in Recoil execution. After recoil finishes we want to have to OriginalAimRot reset on next fire.
-	bOriginalAimRotSet = false; // Reset aim point after recoil recovery has finished
-	
+	// Player has stopped firing, begin recovery.
+	bIsRecoiling = false;
+	bIsRecovering = true;
 }
 
-void URecoilComponent::RecoilTimerFunction()
-{
-	bRecoil = false;
-	GetWorld()->GetTimerManager().PauseTimer(FireTimerHandle);
-}
-
-// Called every frame
 void URecoilComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if(bRecoil)
+	
+	if(bIsRecoiling)
 	{
-
-		Del.Roll = 0;
-		Del.Pitch = VerticalKickAmount; 
-
-		PlayerDeltaRot = OwnersPlayerController->GetControlRotation() - RecoilStartRot - RecoilDeltaRot;
-		OwnersPlayerController->SetControlRotation(RecoilStartRot + PlayerDeltaRot + Del);
-		RecoilDeltaRot = Del;
-		
-		if(!bIsFiring)
-		{
-			GetWorld()->GetTimerManager().ClearTimer(FireTimerHandle);
-			bRecoil = false;
-			RecoveryStart();
-		}
-		
+		// Account for Player's mouse movement while weapon is recoiling.
+		PitchRecoveryAmount = OwnersPlayerController->GetControlRotation().Pitch + (TimesFired * VerticalKickAmount);
+		RecoveryRotation = FRotator(PitchRecoveryAmount, OwnersPlayerController->GetControlRotation().Yaw, OwnersPlayerController->GetControlRotation().Roll); /** Removing this FRotator and using PitchRecoveryAmount inside CorrectionRotation.Pitch will cause issues **/
 	}
-	else if(bRecoilRecovery)
+	else if(bIsRecovering)
 	{
-		// Reset Recoil
-		FRotator TmpRot = OwnersPlayerController->GetControlRotation(); 
+		// Set backup recovery timer to prevent control being taken from player.
+		if(!GetWorld()->GetTimerManager().IsTimerActive(BackupRecoveryTimer))
+			GetWorld()->GetTimerManager().SetTimer(BackupRecoveryTimer, this, &URecoilComponent::RecoilReset,  (bHasLargerFireRate) ? LargeFireRateMaxTimeInRecovery : OwningParentWeapon->FireRate /*+ SemiAutomaticMaxTimeInRecoveryBuffer*/, false);
 
-		if(TmpRot.Pitch >= RecoilStartRot.Pitch)						
-		{
+		RecoverRecoil(DeltaTime);
+	}
 
-			// We want to reset the vertical recoil, but maintain horizontal change.
-			FRotator AimResetRotation = FRotator(RecoilStartRot.Pitch + PlayerDeltaRot.Pitch, OwnersPlayerController->GetControlRotation().Yaw, OwnersPlayerController->GetControlRotation().Roll);
+	// Reset recoil when Player leaves the ground.
+	if(!OwnersPawnMovementComponent->IsMovingOnGround())
+		RecoilReset();
+}
 
-			OwnersPlayerController->SetControlRotation(UKismetMathLibrary::RInterpTo(TmpRot, AimResetRotation, DeltaTime, RecoverySpeed));
+void URecoilComponent::RecoverRecoil(float Time)
+{
+	// If the Player is grounded and their aim has been knocked upwards
+	if(OwnersPawnMovementComponent->IsMovingOnGround() && OwnersPlayerController->GetControlRotation().Pitch > RecoilStartRotation.Pitch)
+	{
+		// Reset the vertical recoil using RecoveryRotation calculated in bIsRecoiling, but maintain horizontal change.
+		CorrectionRotation = UKismetMathLibrary::NormalizedDeltaRotator(FRotator(RecoveryRotation.Pitch, OwnersPlayerController->GetControlRotation().Yaw, OwnersPlayerController->GetControlRotation().Roll), FRotator::ZeroRotator); 
 			
-		}
-		else
-		{
-			RecoveryTimerHandle.Invalidate();
-		}
+		// Bring down Player's Control Rotation to CorrectionRotation/RecoveryRotation.
+		OwnersPlayerController->SetControlRotation(UKismetMathLibrary::RInterpTo(OwnersPlayerController->GetControlRotation(), CorrectionRotation, Time, RecoverySpeed));
+
+		// Convert rotations to quaternions to ensure recoil recovers properly.
+		FQuat CurrentRotationAsQuat = UKismetMathLibrary::NormalizedDeltaRotator(OwnersPlayerController->GetControlRotation(), FRotator::ZeroRotator).Quaternion();
+		FQuat RecoveryTargetRotationAsQuat = UKismetMathLibrary::NormalizedDeltaRotator(FRotator(CorrectionRotation.Pitch, OwnersPlayerController->GetControlRotation().Yaw, OwnersPlayerController->GetControlRotation().Roll), FRotator::ZeroRotator).Quaternion();
+
+		// When the Player's Control Rotation has recovered downwards enough, end recovery.	
+		if(CurrentRotationAsQuat.Equals(RecoveryTargetRotationAsQuat, RecoilRecoveryTolerance))
+			RecoilReset();
 	}
+	else
+		RecoilReset();
+}
+
+void URecoilComponent::RecoilReset()
+{
+	bIsRecoiling = false;
+	bIsRecovering = false;
+	TimesFired = 0;
+	
+	RecoilRotation = FRotator::ZeroRotator;
+	RecoveryRotation = FRotator::ZeroRotator;
+	PitchRecoveryAmount = 0;
+
+	GetWorld()->GetTimerManager().PauseTimer(BackupRecoveryTimer);
 }
