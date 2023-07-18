@@ -45,7 +45,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
-	UPROPERTY(BlueprintReadWrite, Category="Upgrades")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrades")
 	UUpgradeSystemComponent* UpgradeSystemComponent;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
