@@ -3,6 +3,7 @@
 #include "WeaponBase.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Spring2022_Capstone/Sounds/Sound_Manager.h"
 #include "GameFramework/GameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
@@ -45,7 +46,12 @@ void AWeaponBase::BeginPlay()
 		AttachWeapon(Character);
 	}
 
-	//Get Game instance
+	//Get Game mode instance
+	SkyPirateGameMode = Cast<ASkyPirateGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(SkyPirateGameMode)
+	{
+		 SoundManagerInstance = SkyPirateGameMode->GetSoundManager();
+	}
 	
 	
 }

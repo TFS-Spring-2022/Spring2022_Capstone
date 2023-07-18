@@ -15,11 +15,15 @@ class SPRING2022_CAPSTONE_API ASkyPirateGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 public:
+	ASkyPirateGameMode();
+	
+	virtual void BeginPlay() override;
+	
 	UFUNCTION()
 	ASound_Manager* GetSoundManager() const;
 
-protected:
-	UPROPERTY(BlueprintReadOnly)
+	
+	UPROPERTY(EditAnywhere, Category = "Sounds")
 	ASound_Manager* SoundManagerInstance;
 
 	

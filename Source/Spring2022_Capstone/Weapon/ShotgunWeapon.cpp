@@ -61,8 +61,11 @@ void AShotgunWeapon::Shoot()
 			}
 
 			//Play gun sound
-			
-			
+			if(SoundManagerInstance)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::MakeRandomColor(), "SoundManagerInstance");
+				SoundManagerInstance->PlaySound(GetActorLocation(), GunShotSound);
+			}
 			
 			CurrentCharge += ShotCost;
 			PlayWeaponCameraShake();

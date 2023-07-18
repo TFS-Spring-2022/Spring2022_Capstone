@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Spring2022_Capstone/GameplaySystems/SkyPirateGameMode.h"
 #include "WeaponBase.generated.h"
 
 class APlayerCharacter;
@@ -145,6 +146,11 @@ public:
 	float GetDamage();
 	void SetDamage(float Value);
 
+	UPROPERTY()
+	ASkyPirateGameMode* SkyPirateGameMode;
+
+	UPROPERTY()
+	ASound_Manager* SoundManagerInstance;
 	
 	
 };

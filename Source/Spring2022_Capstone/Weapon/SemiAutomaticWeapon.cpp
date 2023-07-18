@@ -49,7 +49,10 @@ void ASemiAutomaticWeapon::Shoot()
 			}
 			
 			//Play gun sound
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), GunShotSound, GetActorLocation(), 1.0f, 1.0f,0.0f);
+			if(SoundManagerInstance)
+			{
+				SoundManagerInstance->PlaySound(GetActorLocation(), GunShotSound);
+			}
 			
 			
 			
