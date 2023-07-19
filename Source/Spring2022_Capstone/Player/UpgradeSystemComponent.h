@@ -155,7 +155,7 @@ public:
 // Upgrade Selection Functionality
 	
 	// Available upgrades for the player. ToDo: Remove EditAnywhere specifier.
-	UPROPERTY(EditAnywhere, Category = "AvailableUpgrades")
+	UPROPERTY(VisibleAnywhere, Category = "AvailableUpgrades")
 	TArray<FUpgradeChoice> UpgradeChoices =
 		{
 			// Health
