@@ -40,8 +40,7 @@ void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
         GrappleCooldownBar->SetPercent(grappleCooldownPercent);
         GrappleCooldownText->SetText(FText::FromString(FString::FromInt(FMath::CeilToInt(timerRemainingTime))));
     }
-
-    // ToDo: Clean up
+    
     if(PlayerCharacter)
     {
         AWeaponBase* CurrentWeapon = PlayerCharacter->GetActiveWeapon();
