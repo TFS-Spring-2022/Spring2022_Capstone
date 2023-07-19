@@ -33,6 +33,16 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent *HookMesh;
 
+	//Sounds
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* GrappleFireSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* GrappleRetractSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* GrappleHitSound;
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UProjectileMovementComponent *ProjectileMovementComp;

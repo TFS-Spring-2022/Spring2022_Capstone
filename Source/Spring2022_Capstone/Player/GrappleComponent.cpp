@@ -18,6 +18,7 @@ UGrappleComponent::UGrappleComponent()
 void UGrappleComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
 }
 
 void UGrappleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
@@ -73,6 +74,12 @@ void UGrappleComponent::Fire(FVector TargetLocation)
 	Cable->CableComponent->bEnableStiffness = false;
 	Cable->CableComponent->SubstepTime = 0.005f;
 	Cable->CableComponent->SetCollisionProfileName(TEXT("OverlapAll"));
+
+	//Play Fire Sound
+	if(SoundManagerSubSystem)
+	{
+		SoundManagerSubSystem->PlaySound(_GrappleHook->GetActorLocation(), _GrappleHook->GrappleFireSound);
+	}
 }
 
 FVector UGrappleComponent::GetStartLocation()
@@ -85,7 +92,7 @@ FVector UGrappleComponent::GetStartLocation()
 void UGrappleComponent::DecrementGrappleCooldown(float Seconds)
 {
 	Cooldown -= Seconds;
-
+	
 	if(Cooldown <= MinimumGrappleCooldown)
 		Cooldown = MinimumGrappleCooldown;
 }

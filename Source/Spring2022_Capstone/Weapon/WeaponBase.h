@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Spring2022_Capstone/GameplaySystems/SkyPirateGameMode.h"
+#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "WeaponBase.generated.h"
 
 class APlayerCharacter;
@@ -123,20 +123,7 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TSubclassOf<UCameraShakeBase> FireCameraShake;
-	
 
-
-	/// Sounds
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* GunShotSound;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* GunReloadSound;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* OverHeatSound;
-	
-	
 	
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
@@ -146,11 +133,20 @@ public:
 	float GetDamage();
 	void SetDamage(float Value);
 
-	UPROPERTY()
-	ASkyPirateGameMode* SkyPirateGameMode;
-
-	UPROPERTY()
-	ASound_Manager* SoundManagerInstance;
 	
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
+
+	
+	/// Sound files
+	//Weapons
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* GunFireSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* GunReloadSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* OverheatSound;
 	
 };

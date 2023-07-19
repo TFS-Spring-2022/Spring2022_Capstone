@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GrappleState.h"
+#include "Spring2022_Capstone/GameplaySystems/SkyPirateGameMode.h"
 #include "Components/ActorComponent.h"
+#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "GrappleComponent.generated.h"
 
 class AGrappleCable;
@@ -22,11 +24,12 @@ class SPRING2022_CAPSTONE_API UGrappleComponent : public UActorComponent
 
 public:
 	UGrappleComponent();
-
 	FTimerHandle CooldownTimerHandle;
 	FOnGrappleActivated OnGrappleActivatedDelegate;
 	FOnGrappleCooldownStart OnGrappleCooldownStartDelegate;
 	FOnGrappleCooldownEnd OnGrappleCooldownEndDelegate;
+
+	
 
 protected:
 	virtual void BeginPlay() override;
@@ -74,10 +77,18 @@ public:
 	UFUNCTION()
 	void ResetStatus();
 
+	//Sound 
+	UPROPERTY()
+	ASkyPirateGameMode* SkyPirateGameMode;
+
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
+
 	void Fire(FVector TargetLocation);
 	FVector GetStartLocation();
 
 	void DecrementGrappleCooldown(float Seconds);
 	FORCEINLINE float GetCooldown() const { return Cooldown; }
+	
 	
 };

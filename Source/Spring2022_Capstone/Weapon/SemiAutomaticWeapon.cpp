@@ -49,9 +49,9 @@ void ASemiAutomaticWeapon::Shoot()
 			}
 			
 			//Play gun sound
-			if(SoundManagerInstance)
+			if(SoundManagerSubSystem)
 			{
-				SoundManagerInstance->PlaySound(GetActorLocation(), GunShotSound);
+				SoundManagerSubSystem->PlaySound(GetActorLocation(), GunFireSound);
 			}
 			
 			

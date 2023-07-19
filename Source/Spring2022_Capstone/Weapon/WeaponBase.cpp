@@ -3,7 +3,6 @@
 #include "WeaponBase.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Spring2022_Capstone/Sounds/Sound_Manager.h"
 #include "GameFramework/GameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
@@ -17,6 +16,8 @@ AWeaponBase::AWeaponBase()
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Skeletal Mesh Component");
 
 	RootComponent = SkeletalMesh;
+
+	
 	
 }
 
@@ -25,6 +26,8 @@ void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SoundManagerSubSystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USoundManagerSubSystem>();
+	
 	PlayerCamera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager; // No constructor will crash (execution order),
 	
 	// call CrystalCooldown() every second to recharge crystalCharge
@@ -46,12 +49,6 @@ void AWeaponBase::BeginPlay()
 		AttachWeapon(Character);
 	}
 
-	//Get Game mode instance
-	SkyPirateGameMode = Cast<ASkyPirateGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(SkyPirateGameMode)
-	{
-		 SoundManagerInstance = SkyPirateGameMode->GetSoundManager();
-	}
 	
 	
 }

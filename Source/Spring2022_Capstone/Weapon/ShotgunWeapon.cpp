@@ -4,6 +4,7 @@
 #include "ShotgunWeapon.h"
 #include "DevTargets.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 
 
 AShotgunWeapon::AShotgunWeapon()
@@ -59,12 +60,11 @@ void AShotgunWeapon::Shoot()
 					DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 				}	
 			}
-
+			
 			//Play gun sound
-			if(SoundManagerInstance)
+			if(SoundManagerSubSystem)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::MakeRandomColor(), "SoundManagerInstance");
-				SoundManagerInstance->PlaySound(GetActorLocation(), GunShotSound);
+				SoundManagerSubSystem->PlaySound(GetActorLocation(), GunFireSound);
 			}
 			
 			CurrentCharge += ShotCost;
