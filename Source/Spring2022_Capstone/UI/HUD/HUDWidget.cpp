@@ -11,10 +11,13 @@
 void UHUDWidget::NativeConstruct()
 {
     Super::NativeConstruct();
+    
+    PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
 
-    if (APlayerCharacter *PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
+    if (PlayerCharacter)
     {
         PlayerCharacter->OnHealthChangedDelegate.BindUObject(this, &UHUDWidget::OnHealthChanged);
+        PlayerCharacter->OnDamagedDelegate.BindUObject(this, &UHUDWidget::PlayHitMarkerAnimation);
         MaxHealth = PlayerCharacter->GetMaxHealth();
         if (UGrappleComponent *GrappleComponent = PlayerCharacter->GetGrappleComponent())
         {
@@ -37,6 +40,18 @@ void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
         GrappleCooldownBar->SetPercent(grappleCooldownPercent);
         GrappleCooldownText->SetText(FText::FromString(FString::FromInt(FMath::CeilToInt(timerRemainingTime))));
     }
+
+    // ToDo: Clean up
+    if(PlayerCharacter)
+    {
+        AWeaponBase* CurrentWeapon = PlayerCharacter->GetActiveWeapon();
+        if(CurrentWeapon)
+        {
+            if(OverheatBar == nullptr) return;
+                OverheatBar->SetPercent(CurrentWeapon->GetCurrentCharge() / 100);
+        }
+    }
+    
 }
 
 void UHUDWidget::OnHealthChanged(float HealthValue)
@@ -59,4 +74,10 @@ void UHUDWidget::OnGrappleCooldownEnd()
     GrappleTimerHandle = nullptr;
     GrappleCooldownBar->SetPercent(0);
     GrappleCooldownText->SetText(FText::GetEmpty());
+}
+
+void UHUDWidget::PlayHitMarkerAnimation()
+{
+    if(HitMarkerAnimation)
+        PlayAnimation(HitMarkerAnimation, 0.0f, 1, EUMGSequencePlayMode::Forward, 1);
 }

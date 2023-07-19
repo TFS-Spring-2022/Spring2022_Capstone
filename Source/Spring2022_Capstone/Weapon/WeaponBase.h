@@ -93,6 +93,11 @@ protected:
 	 * @note Called from ChargeCooldown() after 'OverheatTime' has elapsed.
 	 */
 	void WeaponCooldown();
+
+	/**
+	 * @brief Calls ChangeCrosshair() from PlayerCharacter.
+	 */
+	void ShowHitMarker();
 	
 	// Timer used to handle seconds between shots.
 	FTimerHandle FireTimerHandle;
@@ -112,7 +117,7 @@ protected:
 	 * @brief The character holding the weapon.
 	 */
 	UPROPERTY()
-	APlayerCharacter* Character;
+	APlayerCharacter* PlayerCharacter;
 
 	UPROPERTY()
 	APlayerCameraManager* PlayerCamera; 
