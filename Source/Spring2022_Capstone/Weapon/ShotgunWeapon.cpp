@@ -64,7 +64,8 @@ void AShotgunWeapon::Shoot()
 			//Play gun sound
 			if(SoundManagerSubSystem)
 			{
-				SoundManagerSubSystem->PlaySound(GetActorLocation(), GunFireSound);
+				AudioComponent->Play();
+				//SoundManagerSubSystem->PlaySound(GetActorLocation(), GunFireSound);
 			}
 			
 			CurrentCharge += ShotCost;

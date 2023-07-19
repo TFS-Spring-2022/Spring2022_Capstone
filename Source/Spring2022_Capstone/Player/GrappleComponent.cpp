@@ -74,12 +74,7 @@ void UGrappleComponent::Fire(FVector TargetLocation)
 	Cable->CableComponent->bEnableStiffness = false;
 	Cable->CableComponent->SubstepTime = 0.005f;
 	Cable->CableComponent->SetCollisionProfileName(TEXT("OverlapAll"));
-
-	//Play Fire Sound
-	if(SoundManagerSubSystem)
-	{
-		SoundManagerSubSystem->PlaySound(_GrappleHook->GetActorLocation(), _GrappleHook->GrappleFireSound);
-	}
+	
 }
 
 FVector UGrappleComponent::GetStartLocation()
@@ -101,6 +96,7 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 {
 	if (OtherActor->IsA(APlayerCharacter::StaticClass()))
 	{
+		_GrappleHook->AudioComponent->Play();
 		return;
 	}
 
@@ -119,6 +115,9 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 		MovementComponent->Velocity = ToGrappleHookDirection * GrappleForce;
 		InitialHookDirection2D = FVector(ToGrappleHookDirection.X, ToGrappleHookDirection.Y, 0);
 		InitialHookDirection2D.Normalize();
+
+		//Sound
+		_GrappleHook->AudioComponent->Play();
 	}
 }
 

@@ -69,21 +69,14 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Grapple")
 	float GrappleRange = 500.f;
 
-	UFUNCTION()    
+	UFUNCTION()
     void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit );
 	UFUNCTION()
 	void MaxGrappleTimeReached();
 	void CancelGrapple(bool ShouldTriggerCooldown = true);
 	UFUNCTION()
 	void ResetStatus();
-
-	//Sound 
-	UPROPERTY()
-	ASkyPirateGameMode* SkyPirateGameMode;
-
-	UPROPERTY()
-	USoundManagerSubSystem* SoundManagerSubSystem;
-
+	
 	void Fire(FVector TargetLocation);
 	FVector GetStartLocation();
 

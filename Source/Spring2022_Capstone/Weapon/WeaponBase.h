@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/AudioComponent.h"
 #include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "WeaponBase.generated.h"
 
@@ -148,5 +149,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundBase* OverheatSound;
-	
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	UAudioComponent* AudioComponent;
 };

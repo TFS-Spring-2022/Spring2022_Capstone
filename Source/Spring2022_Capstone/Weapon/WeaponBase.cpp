@@ -14,10 +14,10 @@ AWeaponBase::AWeaponBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Skeletal Mesh Component");
-
+	
 	RootComponent = SkeletalMesh;
 
-	
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio Component");
 	
 }
 
