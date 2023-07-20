@@ -39,6 +39,9 @@ public:
 	// Changes text above given upgrade choice.
 	void SetUpgradeTextBox(int UpgradeChoiceNumber, FText UpgradeText);
 
+	// Sets Visibility of given UpgradeTextBox ToDo/Note: Using collapsed will allow us to automatically reposition upgrade cards when the art is added.
+	void SetUpgradeTextBoxVisibility(int UpgradeChoiceNumber, ESlateVisibility NewVisibility);
+
 	FORCEINLINE UButton* GetUpgrade1Button() {return Upgrade1Button;}
 	FORCEINLINE UButton* GetUpgrade2Button() {return Upgrade2Button;}
 	FORCEINLINE UButton* GetUpgrade3Button() {return Upgrade3Button;}

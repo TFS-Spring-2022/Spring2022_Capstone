@@ -21,3 +21,22 @@ void UUpgradeMenuWidget::SetUpgradeTextBox(int UpgradeChoiceNumber, FText Upgrad
 		break;
 	}
 }
+
+void UUpgradeMenuWidget::SetUpgradeTextBoxVisibility(int UpgradeChoiceNumber, ESlateVisibility NewVisibility)
+{
+	switch (UpgradeChoiceNumber)
+	{
+	case 1:
+		Upgrade1Text->SetVisibility(NewVisibility);
+		break;
+	case 2:
+		Upgrade2Text->SetVisibility(NewVisibility);
+		break;
+	case 3:
+		Upgrade3Text->SetVisibility(NewVisibility);
+		break;
+	default:
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Error - Upgrade Text to update doesn't exist");
+		break;
+	}
+}
