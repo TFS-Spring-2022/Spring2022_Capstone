@@ -218,6 +218,25 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Upgrades");
 	FUpgradeChoice UpgradeChoice3;
+
+	/**
+	 * @brief Applies UpgradeChoice1 to the player and removes it from UpgradeChoices[].
+	 */
+	UFUNCTION()
+	void ApplyUpgrade1();
+
+	/**
+	 * @brief Applies UpgradeChoice2 to the player and removes it from UpgradeChoices[].
+	 */
+	UFUNCTION()
+	void ApplyUpgrade2();
+
+	/**
+	 * @brief Applies UpgradeChoice3 to the player and removes it from UpgradeChoices[].
+	 */
+	UFUNCTION()
+	void ApplyUpgrade3();
+
 	/**
 	 * @brief Removes first instance of FUpgradeChoice from UpgradeChoices[] with the given ID.
 	 * @param ID Unique ID number of FUpgradeChoice to be removed.
