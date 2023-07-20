@@ -111,6 +111,7 @@ void UUpgradeSystemComponent::OpenUpgradeMenu()
 		PlayerController->bShowMouseCursor = true;
 		UpgradeMenuWidgetInstance->AddToViewport(0);
 		bIsMenuOpen = true;
+		PlayerToUpgrade->GetPlayerHUD()->SetVisibility(ESlateVisibility::Hidden);
 	}
 
 
@@ -129,7 +130,8 @@ void UUpgradeSystemComponent::CloseUpgradeMenu()
 		UpgradeMenuWidgetInstance->GetUpgrade1Button()->OnClicked.Clear();
 		UpgradeMenuWidgetInstance->GetUpgrade2Button()->OnClicked.Clear();
 		UpgradeMenuWidgetInstance->GetUpgrade3Button()->OnClicked.Clear();
-		
+
+		PlayerToUpgrade->GetPlayerHUD()->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
