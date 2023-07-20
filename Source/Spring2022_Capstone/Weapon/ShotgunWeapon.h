@@ -31,5 +31,8 @@ class SPRING2022_CAPSTONE_API AShotgunWeapon : public AWeaponBase
 
 	UPROPERTY(EditAnywhere)
 	URecoilComponent* RecoilComponent;
+
+	// Used to prevent multiple calls to ShowHitMarker() when multiple pellets hit.
+	bool bPelletConnected = false;
 	
 };
