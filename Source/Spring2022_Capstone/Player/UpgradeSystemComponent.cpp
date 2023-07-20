@@ -31,7 +31,7 @@ void UUpgradeSystemComponent::BeginPlay()
 	bIsMenuOpen = false;
 
 	PlayerController = GetWorld()->GetFirstPlayerController();
-
+	
 }
 
 
