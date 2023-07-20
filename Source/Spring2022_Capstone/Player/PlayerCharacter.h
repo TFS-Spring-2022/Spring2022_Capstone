@@ -260,7 +260,7 @@ public:
 
 	void SetIsMantleing(bool IsMantleingStatus);
 	
-	// Testing
+
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE AWeaponBase* GetActiveWeapon() {return ActiveWeapon;}
 
