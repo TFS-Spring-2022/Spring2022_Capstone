@@ -242,5 +242,8 @@ public:
 	 * @param ID Unique ID number of FUpgradeChoice to be removed.
 	 */
 	void RemoveUpgradeChoice(int ID);
+
+	// Temporary function to return text before we have upgrade card art.
+	FString GetUpgradeEnumValueText(int Value) const;
 	
 };

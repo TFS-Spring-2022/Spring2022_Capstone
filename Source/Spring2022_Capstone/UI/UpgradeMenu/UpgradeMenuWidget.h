@@ -37,7 +37,7 @@ class SPRING2022_CAPSTONE_API UUpgradeMenuWidget : public UUserWidget
 public:
 
 	// Changes text above given upgrade choice.
-	void UpdateUpdateTextBox(int UpgradeChoiceNumber, FText UpgradeText);
+	void SetUpgradeTextBox(int UpgradeChoiceNumber, FText UpgradeText);
 
 	FORCEINLINE UButton* GetUpgrade1Button() {return Upgrade1Button;}
 	FORCEINLINE UButton* GetUpgrade2Button() {return Upgrade2Button;}

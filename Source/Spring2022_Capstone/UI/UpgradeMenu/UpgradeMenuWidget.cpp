@@ -3,7 +3,7 @@
 
 #include "UpgradeMenuWidget.h"
 
-void UUpgradeMenuWidget::UpdateUpdateTextBox(int UpgradeChoiceNumber, FText UpgradeText)
+void UUpgradeMenuWidget::SetUpgradeTextBox(int UpgradeChoiceNumber, FText UpgradeText)
 {
 	switch (UpgradeChoiceNumber)
 	{

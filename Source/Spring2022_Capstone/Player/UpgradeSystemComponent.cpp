@@ -133,15 +133,24 @@ void UUpgradeSystemComponent::CloseUpgradeMenu()
 
 void UUpgradeSystemComponent::PrepareUpgradeChoices()
 {
+	// ToDo/Note: Text will not be in final version. There will be cards/images to show upgrades.
+	// Set UpgradeChoices
 	UpgradeChoice1 = GetUpgradeChoice();
+	const FString UpgradeChoice1FString = FString::Printf(TEXT("%s + %s"), *GetUpgradeEnumValueText(UpgradeChoice1.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice1.UpgradeValue, 1));
+	UpgradeMenuWidgetInstance->SetUpgradeTextBox(1, FText::FromString(UpgradeChoice1FString));
+	// Upgrade 2
 	UpgradeChoice2 = GetUpgradeChoice();
+	const FString UpgradeChoice2FString = FString::Printf(TEXT("%s + %s"), *GetUpgradeEnumValueText(UpgradeChoice2.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice2.UpgradeValue, 1));
+	UpgradeMenuWidgetInstance->SetUpgradeTextBox(2, FText::FromString(UpgradeChoice2FString));
+	// Upgrade3
 	UpgradeChoice3 = GetUpgradeChoice();
+	const FString UpgradeChoice3FString = FString::Printf(TEXT("%s + %s"), *GetUpgradeEnumValueText(UpgradeChoice3.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice3.UpgradeValue, 1));
+	UpgradeMenuWidgetInstance->SetUpgradeTextBox(3, FText::FromString(UpgradeChoice3FString));
 
 	UpgradeMenuWidgetInstance->GetUpgrade1Button()->OnClicked.AddDynamic(this, &UUpgradeSystemComponent::ApplyUpgrade1);
 	UpgradeMenuWidgetInstance->GetUpgrade2Button()->OnClicked.AddDynamic(this, &UUpgradeSystemComponent::ApplyUpgrade2);
 	UpgradeMenuWidgetInstance->GetUpgrade3Button()->OnClicked.AddDynamic(this, &UUpgradeSystemComponent::ApplyUpgrade3);
-	
-	// ToDo: Change text of buttons (temporary until art made)
+
 }
 
 FUpgradeChoice UUpgradeSystemComponent::GetUpgradeChoice()
@@ -264,5 +273,30 @@ void UUpgradeSystemComponent::RemoveUpgradeChoice(const int ID)
 			break;
 		}
 		i++;
+	}
+}
+
+FString UUpgradeSystemComponent::GetUpgradeEnumValueText(const int Value) const
+{
+	switch (Value)
+	{
+	case 0:
+		return "None";
+	case 1:
+		return "Max Charge Amount";
+	case 2:
+		return "Weapon Damage";
+	case 3:
+		return "Charge Cooldown";
+	case 4:
+		return "Max Health";
+	case 5:
+		return "Movement Speed";
+	case 6:
+		return "Grapple Cooldown";
+	case 7:
+		return "Unlock Double Jump";
+	default:
+		return "Error! Value out of range";
 	}
 }
