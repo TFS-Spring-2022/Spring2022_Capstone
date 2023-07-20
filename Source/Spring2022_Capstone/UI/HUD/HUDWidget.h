@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "HUDWidget.generated.h"
 
 class UPanelWidget;
 class UProgressBar;
 class UImage;
 class UTextBlock;
+class APlayerCharacter;
 
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API UHUDWidget : public UUserWidget
