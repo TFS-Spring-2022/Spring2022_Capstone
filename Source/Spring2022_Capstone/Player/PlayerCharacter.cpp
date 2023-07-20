@@ -79,15 +79,20 @@ void APlayerCharacter::BeginPlay()
 
 	bIsMantleing = false;
 
+	// Create and add Player HUD
+	if(PlayerHUDWidgetBP)
+	{
+		PlayerHUDWidgetInstance = Cast<UHUDWidget>(CreateWidget(GetWorld(), PlayerHUDWidgetBP));
+		PlayerHUDWidgetInstance->AddToViewport(1);
+	}
 	// Create and add Damage Indicator Widget
 	if(DamageIndicatorWidgetBP)
 	{
 		DirectionalDamageIndicatorWidget = Cast<UDirectionalDamageIndicatorWidget>(CreateWidget(GetWorld(), DamageIndicatorWidgetBP));
 		DirectionalDamageIndicatorWidget->AddToViewport(1);
 	}
-
-	bDashBlurFadingIn = false;
 	
+	bDashBlurFadingIn = false;
 }
 
 void APlayerCharacter::Tick(float DeltaTime)

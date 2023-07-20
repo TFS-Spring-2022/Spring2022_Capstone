@@ -9,6 +9,7 @@
 #include "UpgradeSystemComponent.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
 #include "Spring2022_Capstone/UI/HUD/DirectionalDamageIndicatorWidget.h"
+#include "Spring2022_Capstone/UI/HUD/HUDWidget.h"
 #include "PlayerCharacter.generated.h"
 
 class AWeaponBase;
@@ -52,6 +53,13 @@ protected:
 	UInputMappingContext *CharacterMappingContext;
 
 	//// HUD Related
+	
+	//Player HUD
+	UPROPERTY(EditAnywhere, Category = "HUD")
+	TSubclassOf<UUserWidget> PlayerHUDWidgetBP;
+
+	UPROPERTY()
+	UHUDWidget* PlayerHUDWidgetInstance;
 	
 	// Directional Damage UUSerWidget To Create.
 	UPROPERTY(EditAnywhere, Category = "HUD")
@@ -259,7 +267,8 @@ public:
 	float CrouchSpeed;
 
 	void SetIsMantleing(bool IsMantleingStatus);
-	
+
+	FORCEINLINE UHUDWidget* GetPlayerHUD() {return PlayerHUDWidgetInstance;}
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE AWeaponBase* GetActiveWeapon() {return ActiveWeapon;}
