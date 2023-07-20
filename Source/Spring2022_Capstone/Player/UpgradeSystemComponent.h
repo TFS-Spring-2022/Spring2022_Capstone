@@ -218,5 +218,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Upgrades");
 	FUpgradeChoice UpgradeChoice3;
+	/**
+	 * @brief Removes first instance of FUpgradeChoice from UpgradeChoices[] with the given ID.
+	 * @param ID Unique ID number of FUpgradeChoice to be removed.
+	 */
+	void RemoveUpgradeChoice(int ID);
 	
 };

@@ -142,3 +142,16 @@ FUpgradeChoice UUpgradeSystemComponent::GetUpgradeChoice()
 }
 
 
+void UUpgradeSystemComponent::RemoveUpgradeChoice(const int ID)
+{
+	int i = 0;
+	for (const FUpgradeChoice Choice : UpgradeChoices)
+	{
+		if(Choice.UniqueID == ID)
+		{
+			UpgradeChoices.RemoveAt(i);
+			break;
+		}
+		i++;
+	}
+}
