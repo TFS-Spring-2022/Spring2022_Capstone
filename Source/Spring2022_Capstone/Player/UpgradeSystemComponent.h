@@ -210,13 +210,13 @@ public:
 	 */
 	FUpgradeChoice GetUpgradeChoice();
 	
-	UPROPERTY(VisibleAnywhere, Category = "Upgrades");
+	UPROPERTY();
 	FUpgradeChoice UpgradeChoice1;
 
-	UPROPERTY(VisibleAnywhere, Category = "Upgrades");
+	UPROPERTY();
 	FUpgradeChoice UpgradeChoice2;
 
-	UPROPERTY(VisibleAnywhere, Category = "Upgrades");
+	UPROPERTY();
 	FUpgradeChoice UpgradeChoice3;
 
 	/**
