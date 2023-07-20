@@ -31,12 +31,14 @@ struct FUpgradeChoice
 	GENERATED_BODY()
 	FUpgradeChoice()
 	{
+		UniqueID = FMath::RandRange(0, 1024);
 		TypeOfUpgrade = EUpgradeType::None;
 		UpgradeValue = 0;
 	}
 
-	FUpgradeChoice(const EUpgradeType Type, const float Value)
+	FUpgradeChoice(const int Identifier, const EUpgradeType Type, const float Value)
 	{
+		UniqueID = Identifier;
 		TypeOfUpgrade = Type;
 		UpgradeValue = Value;
 	}
@@ -46,6 +48,10 @@ struct FUpgradeChoice
 
 	UPROPERTY(EditAnywhere)
 	float UpgradeValue;
+
+	// Used to remove upgrade from UpgradeChoices 
+	UPROPERTY(EditAnywhere)
+	int UniqueID;
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Within=(PlayerCharacter))
@@ -154,36 +160,40 @@ public:
 
 // Upgrade Selection Functionality
 	
-	// Available upgrades for the player. ToDo: Remove EditAnywhere specifier.
+	// Available upgrades for the player.
 	UPROPERTY(VisibleAnywhere, Category = "AvailableUpgrades")
 	TArray<FUpgradeChoice> UpgradeChoices =
 		{
 			// Health
-			FUpgradeChoice(EUpgradeType::MaxHealth, 5),
-			FUpgradeChoice(EUpgradeType::MaxHealth, 5),
-			FUpgradeChoice(EUpgradeType::MaxHealth, 5),
-			FUpgradeChoice(EUpgradeType::MaxHealth, 5),
-			FUpgradeChoice(EUpgradeType::MaxHealth, 5),
-			// Weapon Damage (ToDo: Specific Weapon)
-			FUpgradeChoice(EUpgradeType::WeaponDamage, 5),
-			FUpgradeChoice(EUpgradeType::WeaponDamage, 5),
-			FUpgradeChoice(EUpgradeType::WeaponDamage, 5),
-			FUpgradeChoice(EUpgradeType::WeaponDamage, 5),
-			FUpgradeChoice(EUpgradeType::WeaponDamage, 5),
+			FUpgradeChoice(0, EUpgradeType::MaxHealth, 5),
+			FUpgradeChoice(1, EUpgradeType::MaxHealth, 5),
+			FUpgradeChoice(2, EUpgradeType::MaxHealth, 5),
+			FUpgradeChoice(3, EUpgradeType::MaxHealth, 5),
+			FUpgradeChoice(4, EUpgradeType::MaxHealth, 5),
+			// Weapon Damage (ToDo: Specific Weapon (Currently effects active weapon)
+			FUpgradeChoice(5, EUpgradeType::WeaponDamage, 5),
+			FUpgradeChoice(6, EUpgradeType::WeaponDamage, 5),
+			FUpgradeChoice(7, EUpgradeType::WeaponDamage, 5),
+			FUpgradeChoice(8, EUpgradeType::WeaponDamage, 5),
+			FUpgradeChoice(9, EUpgradeType::WeaponDamage, 5),
 			// Move Speed
-			FUpgradeChoice(EUpgradeType::MovementSpeed, 5),
-			FUpgradeChoice(EUpgradeType::MovementSpeed, 5),
-			FUpgradeChoice(EUpgradeType::MovementSpeed, 5),
+			FUpgradeChoice(10, EUpgradeType::MovementSpeed, 5),
+			FUpgradeChoice(11, EUpgradeType::MovementSpeed, 5),
+			FUpgradeChoice(12, EUpgradeType::MovementSpeed, 5),
 			// Double Jump
-			FUpgradeChoice(EUpgradeType::UnlockDoubleJump, NULL),
-			// Max Weapon Charge
-			FUpgradeChoice(EUpgradeType::ChargeCooldown, 5),
-			FUpgradeChoice(EUpgradeType::ChargeCooldown, 5),
-			FUpgradeChoice(EUpgradeType::ChargeCooldown, 5),
-			// Weapon Cooldown
-			FUpgradeChoice(EUpgradeType::ChargeCooldown, 5),
-			FUpgradeChoice(EUpgradeType::ChargeCooldown, 5),
-			FUpgradeChoice(EUpgradeType::ChargeCooldown, 5),
+			FUpgradeChoice(13, EUpgradeType::UnlockDoubleJump, NULL),
+			// Max Weapon Charge (ToDo: Specific Weapon (Currently effects active weapon)
+			FUpgradeChoice(14, EUpgradeType::ChargeCooldown, 5),
+			FUpgradeChoice(15, EUpgradeType::ChargeCooldown, 5),
+			FUpgradeChoice(16, EUpgradeType::ChargeCooldown, 5),
+			// Weapon Cooldown (ToDo: Specific Weapon (Currently effects active weapon)
+			FUpgradeChoice(17, EUpgradeType::ChargeCooldown, 5),
+			FUpgradeChoice(18, EUpgradeType::ChargeCooldown, 5),
+			FUpgradeChoice(19, EUpgradeType::ChargeCooldown, 5),
+			// Grapple Cooldown
+			FUpgradeChoice(20, EUpgradeType::GrappleCooldown, 1),
+			FUpgradeChoice(21, EUpgradeType::GrappleCooldown, 1),
+			FUpgradeChoice(22, EUpgradeType::GrappleCooldown, 1),
 			// ToDo: Ability Cooldown
 			// ToDo: Grapple Range
 			// ToDo: Dash Distance
