@@ -38,4 +38,9 @@ public:
 
 	// Changes text above given upgrade choice.
 	void UpdateUpdateTextBox(int UpgradeChoiceNumber, FText UpgradeText);
+
+	FORCEINLINE UButton* GetUpgrade1Button() {return Upgrade1Button;}
+	FORCEINLINE UButton* GetUpgrade2Button() {return Upgrade2Button;}
+	FORCEINLINE UButton* GetUpgrade3Button() {return Upgrade3Button;}
+	
 };
