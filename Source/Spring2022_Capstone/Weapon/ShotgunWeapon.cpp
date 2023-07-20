@@ -52,11 +52,17 @@ void AShotgunWeapon::Shoot()
 					if(HitResult.GetActor()->Implements<UDamageableActor>())
 					{
 						IDamageableActor* DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
-						DamageableActor->DamageActor(this, ShotDamage);	
+						DamageableActor->DamageActor(this, ShotDamage);
+						bPelletConnected = true;
 					}
 					
 					DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 				}	
+			}
+			if(bPelletConnected)
+			{
+				ShowHitMarker();
+				bPelletConnected = false;
 			}
 			
 			CurrentCharge += ShotCost;

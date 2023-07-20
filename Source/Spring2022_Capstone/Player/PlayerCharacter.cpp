@@ -57,8 +57,6 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 										   &APlayerCharacter::SwitchWeapon);
 
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
-
-		
 	}
 }
 
@@ -341,6 +339,12 @@ void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
 	
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
+}
+
+void APlayerCharacter::ChangeCrosshair()
+{
+	if(OnDamagedDelegate.IsBound())
+		OnDamagedDelegate.Execute();
 }
 
 void APlayerCharacter::Heal(int Value)

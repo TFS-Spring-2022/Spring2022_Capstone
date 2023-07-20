@@ -22,6 +22,7 @@ class UHealthComponent;
 class UGrappleComponent;
 
 DECLARE_DELEGATE_OneParam(FOnHealthChanged, float);
+DECLARE_DELEGATE(FOnDamaged);
 
 UCLASS()
 class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter, public IDamageableActor
@@ -34,6 +35,7 @@ public:
 	APlayerCharacter();
 
 	FOnHealthChanged OnHealthChangedDelegate;
+	FOnDamaged OnDamagedDelegate;
 
 	virtual void Tick(float DeltaTime) override;
 
@@ -266,5 +268,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
+
+	// ToDo: Handle Grapple Indicator in here
+	void ChangeCrosshair();
 
 };
