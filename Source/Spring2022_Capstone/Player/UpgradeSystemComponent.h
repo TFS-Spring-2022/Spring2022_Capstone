@@ -204,6 +204,12 @@ public:
 	// Sets values of UpgradeChoice1/2/3 to be used by UpgradeChoice functions.
 	void PrepareUpgradeChoices();
 
+	/**
+	 * @brief  Called through PrepareUpgradeChoices(), used to select from UpgradeChoices[].
+	 * @return A copy of an FUpgradeChoice from  UpgradeChoices[]
+	 */
+	FUpgradeChoice GetUpgradeChoice();
+	
 	UPROPERTY(VisibleAnywhere, Category = "Upgrades");
 	FUpgradeChoice UpgradeChoice1;
 

@@ -125,8 +125,19 @@ void UUpgradeSystemComponent::CloseUpgradeMenu()
 
 void UUpgradeSystemComponent::PrepareUpgradeChoices()
 {
+	UpgradeChoice1 = GetUpgradeChoice();
+	UpgradeChoice2 = GetUpgradeChoice();
+	UpgradeChoice3 = GetUpgradeChoice();
+
 	// ToDo: Change text of buttons (temporary until art made)
 }
+
+FUpgradeChoice UUpgradeSystemComponent::GetUpgradeChoice()
+{
+	const FUpgradeChoice RandomlySelectedUpgrade = UpgradeChoices[FMath::RandRange(0, UpgradeChoices.Num() - 1)];
+	return RandomlySelectedUpgrade;
+}
+
 	}
 }
 
