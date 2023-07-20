@@ -135,7 +135,6 @@ void UUpgradeSystemComponent::CloseUpgradeMenu()
 
 void UUpgradeSystemComponent::PrepareUpgradeChoices()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT(".Num = %i"), UpgradeChoices.Num()));
 	// ToDo/Note: Text will not be in final version. Add Images of cards to display relevant upgrade information.
 
 	if(UpgradeChoices.Num() >= 3)
