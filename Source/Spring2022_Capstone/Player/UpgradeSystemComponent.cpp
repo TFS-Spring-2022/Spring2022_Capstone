@@ -107,6 +107,7 @@ void UUpgradeSystemComponent::OpenUpgradeMenu()
 	if(UpgradeMenuWidgetInstance)
 	{
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		PrepareUpgradeChoices();
 		PlayerController->bShowMouseCursor = true;
 		UpgradeMenuWidgetInstance->AddToViewport(0);
 		bIsMenuOpen = true;
@@ -121,6 +122,11 @@ void UUpgradeSystemComponent::CloseUpgradeMenu()
 		PlayerController->bShowMouseCursor = false;
 		UpgradeMenuWidgetInstance->RemoveFromParent();
 		bIsMenuOpen = false;
+
+void UUpgradeSystemComponent::PrepareUpgradeChoices()
+{
+	// ToDo: Change text of buttons (temporary until art made)
+}
 	}
 }
 

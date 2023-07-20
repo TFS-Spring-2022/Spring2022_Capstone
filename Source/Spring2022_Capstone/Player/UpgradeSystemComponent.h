@@ -199,5 +199,18 @@ public:
 			// ToDo: Dash Distance
 			// ToDo: Crit Hit Multiplier
 		};
+
+
+	// Sets values of UpgradeChoice1/2/3 to be used by UpgradeChoice functions.
+	void PrepareUpgradeChoices();
+
+	UPROPERTY(VisibleAnywhere, Category = "Upgrades");
+	FUpgradeChoice UpgradeChoice1;
+
+	UPROPERTY(VisibleAnywhere, Category = "Upgrades");
+	FUpgradeChoice UpgradeChoice2;
+
+	UPROPERTY(VisibleAnywhere, Category = "Upgrades");
+	FUpgradeChoice UpgradeChoice3;
 	
 };
