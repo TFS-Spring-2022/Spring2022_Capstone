@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "BaseEnemy.generated.h"
 
+class UBehaviorTree;
 class UHealthComponent;
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API ABaseEnemy : public ACharacter
@@ -27,6 +28,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UHealthComponent *HealthComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, meta = (AllowPrivateAccess = "true"))
+	UBehaviorTree *BehaviorTree;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void Attack();
