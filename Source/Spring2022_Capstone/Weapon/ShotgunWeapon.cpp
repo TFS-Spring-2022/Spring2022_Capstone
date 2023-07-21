@@ -4,6 +4,7 @@
 #include "ShotgunWeapon.h"
 #include "DevTargets.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 
 
 AShotgunWeapon::AShotgunWeapon()
@@ -32,7 +33,7 @@ void AShotgunWeapon::Shoot()
 			FVector StartTrace = PlayerCamera->GetCameraLocation();
 			StartTrace.Z -= 10; // TEMP: Offset to make debug draw lines visible without moving. 
 			FVector ForwardVector = PlayerCamera->GetActorForwardVector();
-
+			
 			// ToDo: UPROPERTY IN HEADER (Naming and Degrees/Radians)	//
 			float HalfAngle = 10;
 			HalfAngle = UKismetMathLibrary::DegreesToRadians(HalfAngle);
@@ -46,7 +47,8 @@ void AShotgunWeapon::Shoot()
 				
 				FVector EndTrace = ((ForwardVector * ShotDistance) + StartTrace);
 				FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
-				
+				TraceParams->AddIgnoredComponent(PlayerCharacter->GetMesh());
+
 				if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 				{
 					if(HitResult.GetActor()->Implements<UDamageableActor>())
