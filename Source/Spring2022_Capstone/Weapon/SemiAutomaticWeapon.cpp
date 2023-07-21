@@ -4,6 +4,7 @@
 #include "SemiAutomaticWeapon.h"
 
 #include "DevTargets.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 
 
 ASemiAutomaticWeapon::ASemiAutomaticWeapon()
@@ -37,6 +38,7 @@ void ASemiAutomaticWeapon::Shoot()
 			FVector ForwardVector = PlayerCamera->GetActorForwardVector();
 			FVector EndTrace = ((ForwardVector * ShotDistance) + StartTrace); 
 			FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
+			TraceParams->AddIgnoredComponent(PlayerCharacter->GetMesh());
 
 			if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
