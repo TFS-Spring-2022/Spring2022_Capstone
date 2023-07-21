@@ -18,6 +18,7 @@ void ARangedEnemy::Attack()
 
 	// ToDo: GetPlayerLocation
 	// ToDo: Raycast towards play (Need FHitResults to play particle effects.
+		// Raycast needs a range. (Unsure where to store this, maybe a const in BaseEnemy)
 
 	// ToDo: Random chance to move Raycast and miss player
 }
