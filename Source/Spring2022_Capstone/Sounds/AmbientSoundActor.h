@@ -28,17 +28,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* SoundCue;
-	
-	
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USphereComponent* Trigger;
-
-	UPROPERTY()
+	
+	UPROPERTY(EditAnywhere)
 	UAudioComponent* AudioComponent;
 
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	float SoundDuration;
+	
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* Comp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
     
