@@ -281,4 +281,6 @@ public:
 	// ToDo: Handle Grapple Indicator in here
 	void ChangeCrosshair();
 
+	float const GRAPPLE_TRACE_START_FORWARD_BUFFER = 35.0f; // Used to start grapple trace in front of Player and not collide with skeletal mesh.
+
 };

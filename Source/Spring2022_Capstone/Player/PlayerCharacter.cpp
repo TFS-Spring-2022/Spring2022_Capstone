@@ -282,9 +282,10 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 		return;
 	}
 	FHitResult HitResult;
-	FVector StartLocation = Camera->GetComponentLocation();
+	FVector StartLocation = Camera->GetComponentLocation() + Camera->GetForwardVector() * GRAPPLE_TRACE_START_FORWARD_BUFFER;
 	FVector EndLocation = Camera->GetForwardVector() * GrappleComponent->GrappleRange + StartLocation;
 	FCollisionQueryParams TraceParams;
+	TraceParams.AddIgnoredActor(this);
 
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility);
 	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.f);
