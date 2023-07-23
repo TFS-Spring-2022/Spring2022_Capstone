@@ -57,8 +57,6 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 										   &APlayerCharacter::SwitchWeapon);
 
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
-
-		
 	}
 }
 
@@ -79,15 +77,20 @@ void APlayerCharacter::BeginPlay()
 
 	bIsMantleing = false;
 
+	// Create and add Player HUD
+	if(PlayerHUDWidgetBP)
+	{
+		PlayerHUDWidgetInstance = Cast<UHUDWidget>(CreateWidget(GetWorld(), PlayerHUDWidgetBP));
+		PlayerHUDWidgetInstance->AddToViewport(1);
+	}
 	// Create and add Damage Indicator Widget
 	if(DamageIndicatorWidgetBP)
 	{
 		DirectionalDamageIndicatorWidget = Cast<UDirectionalDamageIndicatorWidget>(CreateWidget(GetWorld(), DamageIndicatorWidgetBP));
 		DirectionalDamageIndicatorWidget->AddToViewport(1);
 	}
-
-	bDashBlurFadingIn = false;
 	
+	bDashBlurFadingIn = false;
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -341,6 +344,12 @@ void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
 	
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
+}
+
+void APlayerCharacter::ChangeCrosshair()
+{
+	if(OnDamagedDelegate.IsBound())
+		OnDamagedDelegate.Execute();
 }
 
 void APlayerCharacter::Heal(int Value)

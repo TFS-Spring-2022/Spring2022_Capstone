@@ -10,6 +10,7 @@ class UPanelWidget;
 class UProgressBar;
 class UImage;
 class UTextBlock;
+class APlayerCharacter;
 
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API UHUDWidget : public UUserWidget
@@ -21,14 +22,26 @@ protected:
 	virtual void NativeTick(const FGeometry &MyGeometry, float DeltaTime) override;
 
 public:
+
+	UPROPERTY(VisibleAnywhere)
+	APlayerCharacter* PlayerCharacter;
+	
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *RootPanel;
 	// Health bar
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UProgressBar *HealthBar;
+	// Overheat Barrie
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	UProgressBar* OverheatBar;
 	// Crosshair
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UImage *Crosshair;
+	// Hit Marker
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* HitMarker;
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* HitMarkerAnimation;
 	// Grapple
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UImage *GrappleIcon;
@@ -53,4 +66,6 @@ private:
 	int MaxHealth;
 
 	FTimerHandle *GrappleTimerHandle;
+
+	void PlayHitMarkerAnimation();
 };

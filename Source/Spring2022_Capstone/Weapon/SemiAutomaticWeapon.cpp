@@ -43,7 +43,8 @@ void ASemiAutomaticWeapon::Shoot()
 				if(HitResult.GetActor()->Implements<UDamageableActor>())
 				{
 					IDamageableActor* DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
-					DamageableActor->DamageActor(this, ShotDamage);	
+					DamageableActor->DamageActor(this, ShotDamage);
+					ShowHitMarker();
 				}
 				DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 			}
