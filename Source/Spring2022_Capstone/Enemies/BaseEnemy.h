@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
 #include "BaseEnemy.generated.h"
 
+class UBehaviorTree;
 class UHealthComponent;
 UCLASS(Abstract)
-class SPRING2022_CAPSTONE_API ABaseEnemy : public ACharacter
+class SPRING2022_CAPSTONE_API ABaseEnemy : public ACharacter, public IDamageableActor
 {
 	GENERATED_BODY()
 
@@ -25,8 +27,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	USceneComponent *ProjectileSpawnPoint;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UHealthComponent *HealthComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Pawn, meta = (AllowPrivateAccess = "true"))
+	UHealthComponent *HealthComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Pawn, meta = (AllowPrivateAccess = "true"))
+	UBehaviorTree *BehaviorTree;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Pawn, meta = (AllowPrivateAccess = "true"))
+	bool bDidHide;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void Attack();
@@ -34,6 +42,9 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
