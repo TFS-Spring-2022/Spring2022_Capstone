@@ -35,3 +35,12 @@ void ABaseEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
+
+void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount)
+{
+	IDamageableActor::DamageActor(DamagingActor, DamageAmount);
+	if (HealthComp)
+	{
+		HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
+	}
+}

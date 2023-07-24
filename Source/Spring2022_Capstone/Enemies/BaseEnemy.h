@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
 #include "BaseEnemy.generated.h"
 
 class UBehaviorTree;
 class UHealthComponent;
 UCLASS(Abstract)
-class SPRING2022_CAPSTONE_API ABaseEnemy : public ACharacter
+class SPRING2022_CAPSTONE_API ABaseEnemy : public ACharacter, public IDamageableActor
 {
 	GENERATED_BODY()
 
@@ -41,6 +42,9 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
