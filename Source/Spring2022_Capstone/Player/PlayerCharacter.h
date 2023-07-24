@@ -9,6 +9,7 @@
 #include "UpgradeSystemComponent.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
 #include "Spring2022_Capstone/UI/HUD/DirectionalDamageIndicatorWidget.h"
+#include "Spring2022_Capstone/UI/HUD/HUDWidget.h"
 #include "PlayerCharacter.generated.h"
 
 class AWeaponBase;
@@ -22,6 +23,7 @@ class UHealthComponent;
 class UGrappleComponent;
 
 DECLARE_DELEGATE_OneParam(FOnHealthChanged, float);
+DECLARE_DELEGATE(FOnDamaged);
 
 UCLASS()
 class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter, public IDamageableActor
@@ -34,6 +36,7 @@ public:
 	APlayerCharacter();
 
 	FOnHealthChanged OnHealthChangedDelegate;
+	FOnDamaged OnDamagedDelegate;
 
 	virtual void Tick(float DeltaTime) override;
 
@@ -45,13 +48,20 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
-	UPROPERTY(BlueprintReadWrite, Category="Upgrades")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrades")
 	UUpgradeSystemComponent* UpgradeSystemComponent;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputMappingContext *CharacterMappingContext;
 
 	//// HUD Related
+	
+	//Player HUD
+	UPROPERTY(EditAnywhere, Category = "HUD")
+	TSubclassOf<UUserWidget> PlayerHUDWidgetBP;
+
+	UPROPERTY()
+	UHUDWidget* PlayerHUDWidgetInstance;
 	
 	// Directional Damage UUSerWidget To Create.
 	UPROPERTY(EditAnywhere, Category = "HUD")
@@ -259,12 +269,16 @@ public:
 	float CrouchSpeed;
 
 	void SetIsMantleing(bool IsMantleingStatus);
-	
-	// Testing
+
+	FORCEINLINE UHUDWidget* GetPlayerHUD() {return PlayerHUDWidgetInstance;}
+
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE AWeaponBase* GetActiveWeapon() {return ActiveWeapon;}
 
 	UFUNCTION(BlueprintCallable)
 	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
+
+	// ToDo: Handle Grapple Indicator in here
+	void ChangeCrosshair();
 
 };
