@@ -4,9 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Sound/SoundCue.h"
-#include "Components/AudioComponent.h"
-#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "WeaponBase.generated.h"
 
 class APlayerCharacter;
@@ -96,6 +93,11 @@ protected:
 	 * @note Called from ChargeCooldown() after 'OverheatTime' has elapsed.
 	 */
 	void WeaponCooldown();
+
+	/**
+	 * @brief Calls ChangeCrosshair() from PlayerCharacter.
+	 */
+	void ShowHitMarker();
 	
 	// Timer used to handle seconds between shots.
 	FTimerHandle FireTimerHandle;
@@ -115,7 +117,7 @@ protected:
 	 * @brief The character holding the weapon.
 	 */
 	UPROPERTY()
-	APlayerCharacter* Character;
+	APlayerCharacter* PlayerCharacter;
 
 	UPROPERTY()
 	APlayerCameraManager* PlayerCamera; 
@@ -126,21 +128,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TSubclassOf<UCameraShakeBase> FireCameraShake;
 
-	/// Sound files
-	//Weapons
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* GunFireSound;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* GunReloadSound;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* OverheatSound;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	UAudioComponent* AudioComponent;
-
-	
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
 	// Called every frame
@@ -149,10 +136,6 @@ public:
 	float GetDamage();
 	void SetDamage(float Value);
 
-	
-	UPROPERTY()
-	USoundManagerSubSystem* SoundManagerSubSystem;
-
-	
+	float GetCurrentCharge() const;
 	
 };

@@ -35,18 +35,18 @@ void AWeaponBase::BeginPlay()
 
 	GetWorldTimerManager().ClearTimer(FireTimerHandle);
 
-	Character = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0)); 
+	PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0)); 
 
 	// DEBUG - attach weapon on spawn. Note - Requires weapons placed in level. - ToDo: Need creator/factory/manager to create and handle weapon instances.
-	if(!Character->GetWeapon1())
+	if(!PlayerCharacter->GetWeapon1())
 	{
-		Character->SetWeapon1(this);
-		AttachWeapon(Character);
+		PlayerCharacter->SetWeapon1(this);
+		AttachWeapon(PlayerCharacter);
 	}
-	else if(!Character->GetWeapon2())
+	else if(!PlayerCharacter->GetWeapon2())
 	{
-		Character->SetWeapon2(this);
-		AttachWeapon(Character);
+		PlayerCharacter->SetWeapon2(this);
+		AttachWeapon(PlayerCharacter);
 	}
 	
 	
@@ -86,6 +86,11 @@ void AWeaponBase::ClearFireTimerHandle()
 	GetWorldTimerManager().ClearTimer(FireTimerHandle); 
 }
 
+float AWeaponBase::GetCurrentCharge() const
+{
+	return CurrentCharge;
+}
+
 void AWeaponBase::ChargeCooldown()
 {
 	if(CurrentCharge > 0 && bIsOverheating == false)
@@ -112,20 +117,25 @@ void AWeaponBase::WeaponCooldown()
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("WEAPON COOLED"));
 }
 
+void AWeaponBase::ShowHitMarker()
+{
+	PlayerCharacter->ChangeCrosshair();
+}
+
 void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 {
 	
-	Character = TargetCharacter; 
+	PlayerCharacter = TargetCharacter; 
 
-	if(Character == nullptr)
+	if(PlayerCharacter == nullptr)
 	{
 		return;
 	}
 
-	// Attach the weapon to the Player Character
+	// Attach the weapon to the Player PlayerCharacter
 	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true); 
 	// ToDo: Connect to skeletal mesh when it is added.
-	//AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
-	AttachToComponent(Character->GetRootComponent(), AttachmentRules, FName(TEXT("GripPoint"))); // ToDo: SkeletonMesh and Socket
+	//AttachToComponent(PlayerCharacter->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
+	AttachToComponent(PlayerCharacter->GetRootComponent(), AttachmentRules, FName(TEXT("GripPoint"))); // ToDo: SkeletonMesh and Socket
 	
 }
