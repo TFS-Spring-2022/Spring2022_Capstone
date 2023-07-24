@@ -14,10 +14,9 @@ AWeaponBase::AWeaponBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Skeletal Mesh Component");
-	
-	RootComponent = SkeletalMesh;
-
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio Component");
+	RootComponent = SkeletalMesh;
+	AudioComponent->bAutoActivate = false;
 	
 }
 
@@ -26,6 +25,7 @@ void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AudioComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	SoundManagerSubSystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USoundManagerSubSystem>();
 	
 	PlayerCamera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager; // No constructor will crash (execution order),
@@ -48,7 +48,7 @@ void AWeaponBase::BeginPlay()
 		Character->SetWeapon2(this);
 		AttachWeapon(Character);
 	}
-
+	
 	
 	
 }

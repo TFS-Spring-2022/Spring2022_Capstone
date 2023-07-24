@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Sound/SoundCue.h"
 #include "Components/AudioComponent.h"
 #include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "WeaponBase.generated.h"
@@ -125,6 +126,20 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TSubclassOf<UCameraShakeBase> FireCameraShake;
 
+	/// Sound files
+	//Weapons
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* GunFireSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* GunReloadSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* OverheatSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	UAudioComponent* AudioComponent;
+
 	
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
@@ -139,17 +154,5 @@ public:
 	USoundManagerSubSystem* SoundManagerSubSystem;
 
 	
-	/// Sound files
-	//Weapons
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* GunFireSound;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* GunReloadSound;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* OverheatSound;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	UAudioComponent* AudioComponent;
+	
 };
