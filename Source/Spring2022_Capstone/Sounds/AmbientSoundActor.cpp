@@ -2,7 +2,7 @@
 
 
 #include "AmbientSoundActor.h"
-
+#include "Components/AudioComponent.h"
 #include "Sound/SoundNodeWavePlayer.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 

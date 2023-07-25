@@ -49,6 +49,12 @@ void ASemiAutomaticWeapon::Shoot()
 			CurrentCharge += ShotCost;
 			PlayWeaponCameraShake();
 
+			//Play gun sound
+            if(AudioComponent->Sound)
+            {
+            	AudioComponent->Play();
+            }
+			
 			// Call recoil
 			if (RecoilComponent)
 				RecoilComponent->RecoilKick();

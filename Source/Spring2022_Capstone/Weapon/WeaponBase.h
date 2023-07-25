@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/AudioComponent.h"
+#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "WeaponBase.generated.h"
 
 class APlayerCharacter;
@@ -28,7 +30,13 @@ public:
 	void AttachWeapon(APlayerCharacter* TargetCharacter);
 
 	virtual void Shoot() PURE_VIRTUAL(AWeaponBase::Shoot());
-	
+
+	UPROPERTY(EditAnywhere)
+	UAudioComponent* AudioComponent;
+
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -127,6 +135,8 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TSubclassOf<UCameraShakeBase> FireCameraShake;
+
+	
 
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]

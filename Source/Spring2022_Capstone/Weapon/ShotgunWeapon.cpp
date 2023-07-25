@@ -34,8 +34,12 @@ void AShotgunWeapon::Shoot()
 			// ToDo: UPROPERTY IN HEADER (Naming and Degrees/Radians)	//
 			float HalfAngle = 10;
 			HalfAngle = UKismetMathLibrary::DegreesToRadians(HalfAngle);
-			//															//
-
+			//													//
+			if(AudioComponent->Sound)
+			{
+				AudioComponent->Play();
+			}
+			
 			for (int i = 0; i < PelletCount; i++)
 			{
 
@@ -44,7 +48,7 @@ void AShotgunWeapon::Shoot()
 
 				FVector EndTrace = ((ForwardVector * ShotDistance) + StartTrace);
 				FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
-
+	
 				if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 				{
 					if (HitResult.GetActor()->Implements<UDamageableActor>())
