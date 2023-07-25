@@ -20,6 +20,11 @@ void UAIAttackSystemComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+	PlayerInstance = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	// Temp/To: Assign random agent at the start of a wave.
+	if(Agents[0])
+		TokenHolder = Agents[0];
 	
 }
 
@@ -28,6 +33,18 @@ void UAIAttackSystemComponent::BeginPlay()
 void UAIAttackSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
+	for (AActor* ActiveAgent : Agents)
+	{
+		const float AgentRelevancy = CalculateAgentRelevance(ActiveAgent, PlayerInstance);
+		
+		// Recheck current token holder and replace if more relevant
+		if(AgentRelevancy < CalculateAgentRelevance(TokenHolder, PlayerInstance))
+			TokenHolder = ActiveAgent;
+	}
+	
+}
+
 float UAIAttackSystemComponent::CalculateDelay(AActor* Agent, AActor* Target)
 {
 
@@ -43,5 +60,20 @@ float UAIAttackSystemComponent::CalculateDelay(AActor* Agent, AActor* Target)
 	const float Delay = BaseDelay * (DistanceMultiplier * StanceMultiplier * FacingDirectionMultiplier * CoverMultiplier * FacingDirectionMultiplier * VelocityMultiplier);
 
 	// ...
+float UAIAttackSystemComponent::CalculateAgentRelevance(AActor* Agent, AActor* Target)
+{
+	// Weighted Sum
+	float AgentWeightedSum = 0;
+	// Distance To Target (This one is getting the furthest actor, how should I reverse this? Lowest weight is most relevant maybe?
+	AgentWeightedSum += FVector::Dist(Agent->GetActorLocation(), Target->GetActorLocation());
+	
+	// Target Exposure
+	// Check for foot bones and head bone to see if player in half cover
+	// Archetype
+	// If Agent is Currently Under Attack
+	// Token Is Currently Under Attack
+
+	return AgentWeightedSum;
+}
 }
 
