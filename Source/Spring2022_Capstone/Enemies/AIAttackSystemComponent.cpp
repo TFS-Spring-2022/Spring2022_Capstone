@@ -3,23 +3,21 @@
 
 #include "AIAttackSystemComponent.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+
 // Sets default values for this component's properties
 UAIAttackSystemComponent::UAIAttackSystemComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
 }
-
 
 // Called when the game starts
 void UAIAttackSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
 	PlayerInstance = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	// Temp/To: Assign random agent at the start of a wave.
@@ -28,8 +26,6 @@ void UAIAttackSystemComponent::BeginPlay()
 	
 }
 
-
-// Called every frame
 void UAIAttackSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -59,11 +55,14 @@ float UAIAttackSystemComponent::CalculateDelay(AActor* Agent, AActor* Target)
 
 	const float Delay = BaseDelay * (DistanceMultiplier * StanceMultiplier * FacingDirectionMultiplier * CoverMultiplier * FacingDirectionMultiplier * VelocityMultiplier);
 
-	// ...
+	return Delay;
+}
+
 float UAIAttackSystemComponent::CalculateAgentRelevance(AActor* Agent, AActor* Target)
 {
 	// Weighted Sum
 	float AgentWeightedSum = 0;
+	
 	// Distance To Target (This one is getting the furthest actor, how should I reverse this? Lowest weight is most relevant maybe?
 	AgentWeightedSum += FVector::Dist(Agent->GetActorLocation(), Target->GetActorLocation());
 	
@@ -75,5 +74,16 @@ float UAIAttackSystemComponent::CalculateAgentRelevance(AActor* Agent, AActor* T
 
 	return AgentWeightedSum;
 }
+
+float UAIAttackSystemComponent::GetStanceMultiplier(AActor* Agent)
+{
+	// ToDo: Get targets stance and return value.
+	return 1;
+}
+
+float UAIAttackSystemComponent::GetCoverMultiplier(AActor* Agent)
+{
+	// ToDo: Find target's cover status. Could try tracing towards specific bones (i.e. foot/knee to see if in half cover).
+	return 1;
 }
 

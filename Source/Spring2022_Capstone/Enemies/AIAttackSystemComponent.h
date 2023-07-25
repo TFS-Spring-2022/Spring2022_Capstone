@@ -22,7 +22,6 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere)
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -52,5 +51,8 @@ private:
 
 	float CalculateAgentRelevance(AActor* Agent, AActor* Target);
 
+	float GetStanceMultiplier(AActor* Agent); 
+
+	float GetCoverMultiplier(AActor* Agent); 
 	
 };
