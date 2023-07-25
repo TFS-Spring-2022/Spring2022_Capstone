@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BaseEnemy.h"
 #include "Components/ActorComponent.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "AIAttackSystemComponent.generated.h"
 
 
@@ -21,18 +23,34 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
-	UCurveFloat* DistanceMultiplierFloatCurve;
-
-	UPROPERTY(EditAnywhere)
-	UCurveFloat* AngleDifferenceMultiplierFloatCurve;
-	
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+private:
+	
+	/// Runtime
+	UPROPERTY()
+	APlayerCharacter* PlayerInstance;
+
+	// Temporary for testing
+	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
+	AActor* TokenHolder; // Testing going to use AActor instead of ABaseEnemy
+
+	UPROPERTY(EditAnywhere, Category = "Attack System | Debug")
+	TArray<AActor*> Agents; // Note: Temporarily using AActor* for testing
+	// TArray<ABaseEnemy*> Agents;
+	
+	/// Components
+	UPROPERTY(EditAnywhere, Category = "Attack System | Components")
+	UCurveFloat* DistanceMultiplierFloatCurve;
+
+	UPROPERTY(EditAnywhere, Category = "Attack System | Components")
+	UCurveFloat* AngleDifferenceMultiplierFloatCurve;
+	
 	float CalculateDelay(AActor* Agent, AActor* Target);
 
 	float CalculateAgentRelevance(AActor* Agent, AActor* Target);
 
 	
-		
 };
