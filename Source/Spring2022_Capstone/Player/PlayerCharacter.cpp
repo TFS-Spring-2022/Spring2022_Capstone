@@ -162,8 +162,7 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 
 			bDashBlurFadingIn = true;
 			GetWorld()->GetTimerManager().SetTimer(DashBlurTimerHandle, this, &APlayerCharacter::ClearDashBlur, DashBlurUpTime, false);
-
-
+			
 		}
 	}
 
@@ -171,20 +170,6 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 	PreviousDashDirection = Value.GetMagnitude();
 }
 
-<<<<<<< Updated upstream
-=======
-float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
-{
-
-	if (HealthComponent == nullptr) return 0.0f;
-
-	HealthComponent->TakeDamage(DamageAmount);
-
-	return 0.0f;
-
-}
-
->>>>>>> Stashed changes
 void APlayerCharacter::DashDirectionalLaunch()
 {
 	const float PreDashSpeed = GetVelocity().Length();
