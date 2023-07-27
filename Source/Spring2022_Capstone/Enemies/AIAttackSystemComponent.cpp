@@ -4,23 +4,20 @@
 #include "AIAttackSystemComponent.h"
 
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 
-// Sets default values for this component's properties
 UAIAttackSystemComponent::UAIAttackSystemComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
 }
 
-// Called when the game starts
 void UAIAttackSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
 	PlayerInstance = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
-	// Temp/To: Assign random agent at the start of a wave.
+	// Temp/ToDo: Assign random agent at the start of a wave.
 	if(Agents[0])
 		TokenHolder = Agents[0];
 	
@@ -32,58 +29,38 @@ void UAIAttackSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	
 	for (AActor* ActiveAgent : Agents)
 	{
-		const float AgentRelevancy = CalculateAgentRelevance(ActiveAgent, PlayerInstance);
+		
+		float AgentRelevancy = CalculateAgentRelevance(ActiveAgent, PlayerInstance); // removed const to test something
 		
 		// Recheck current token holder and replace if more relevant
 		if(AgentRelevancy < CalculateAgentRelevance(TokenHolder, PlayerInstance))
+		{
 			TokenHolder = ActiveAgent;
+		}
+		
 	}
-	
 }
 
-float UAIAttackSystemComponent::CalculateDelay(AActor* Agent, AActor* Target)
-{
-
-	// Delay = BaseDelay * (DistanceMultiplayer * StanceMultiplier * CoverMultiplier * FacingDirectionMultiplier * VelocityMultiplier);  
-
-	const float BaseDelay = 0.5; // Question - Per Character?
-	const float DistanceMultiplier = DistanceMultiplierFloatCurve->GetFloatValue(FVector::Dist(Agent->GetActorLocation(), Target->GetActorLocation()));
-	const float StanceMultiplier = GetStanceMultiplier(Agent);
-	const float CoverMultiplier = GetCoverMultiplier(Agent);
-	const float FacingDirectionMultiplier = AngleDifferenceMultiplierFloatCurve->GetFloatValue(UKismetMathLibrary::FindLookAtRotation(Agent->GetActorLocation(), Target->GetActorLocation()).Yaw);
-	const float VelocityMultiplier = 2; // Question - How should I calculate this?
-
-	const float Delay = BaseDelay * (DistanceMultiplier * StanceMultiplier * FacingDirectionMultiplier * CoverMultiplier * FacingDirectionMultiplier * VelocityMultiplier);
-
-	return Delay;
-}
-
+// Calculate weighted sum and the highest score is chosen as relevant agent. 
 float UAIAttackSystemComponent::CalculateAgentRelevance(AActor* Agent, AActor* Target)
 {
-	// Weighted Sum
-	float AgentWeightedSum = 0;
+
+	// ToDo: 
+	// When selecting the most relevant agent we are going to look at:
+	// ____________________________________________________________ //
+	// Distance to the Target: Close the agent the more options it has to receive a token.
+	// Target Exposure: The more access to player (player outside of half/full cover) the higher chance of obtaining a token.
+	// Archetype: The tougher the type of enemy, the easier it is to get a token.
+	// Agent Attack Status: If the agent is currently under attack, it is more likely it will receive a token.
+	// (Currently avoiding) Token Assignment History: Agents that have not received a token in a long time may have a higher change of receiving the token soon. 
+
+	// Distance to target multiplier
+	float DistanceValueMultiplier = DistanceMultiplierFloatCurve->GetFloatValue(FVector::Dist(Agent->GetActorLocation(), Target->GetActorLocation()));
+
+	// Temporary for testing
+	return DistanceValueMultiplier;
 	
-	// Distance To Target (This one is getting the furthest actor, how should I reverse this? Lowest weight is most relevant maybe?
-	AgentWeightedSum += FVector::Dist(Agent->GetActorLocation(), Target->GetActorLocation());
 	
-	// Target Exposure
-	// Check for foot bones and head bone to see if player in half cover
-	// Archetype
-	// If Agent is Currently Under Attack
-	// Token Is Currently Under Attack
-
-	return AgentWeightedSum;
+	// Question/ToDo: How should the calculation look?
+	// AgentRelevanceScore = ArcheType * (DistanceValueMultiplier * TargetExposureMultiplier * Attack Status)
 }
-
-float UAIAttackSystemComponent::GetStanceMultiplier(AActor* Agent)
-{
-	// ToDo: Get targets stance and return value.
-	return 1;
-}
-
-float UAIAttackSystemComponent::GetCoverMultiplier(AActor* Agent)
-{
-	// ToDo: Find target's cover status. Could try tracing towards specific bones (i.e. foot/knee to see if in half cover).
-	return 1;
-}
-

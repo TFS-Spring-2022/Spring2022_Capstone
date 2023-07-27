@@ -32,7 +32,7 @@ private:
 	UPROPERTY()
 	APlayerCharacter* PlayerInstance;
 
-	// Temporary for testing
+	// Temporary holding for testing
 	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
 	AActor* TokenHolder; // Testing going to use AActor instead of ABaseEnemy
 
@@ -46,13 +46,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Attack System | Components")
 	UCurveFloat* AngleDifferenceMultiplierFloatCurve;
-	
-	float CalculateDelay(AActor* Agent, AActor* Target);
 
 	float CalculateAgentRelevance(AActor* Agent, AActor* Target);
-
-	float GetStanceMultiplier(AActor* Agent); 
-
-	float GetCoverMultiplier(AActor* Agent); 
 	
 };
