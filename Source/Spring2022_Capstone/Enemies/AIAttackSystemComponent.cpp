@@ -33,18 +33,27 @@ void UAIAttackSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 		float AgentRelevancy = CalculateAgentRelevance(ActiveAgent, PlayerInstance); // removed const to test something
 		
 		// Recheck current token holder and replace if more relevant
-		if(AgentRelevancy < CalculateAgentRelevance(TokenHolder, PlayerInstance))
+		if(AgentRelevancy >	 CalculateAgentRelevance(TokenHolder, PlayerInstance))
 		{
 			TokenHolder = ActiveAgent;
 		}
 		
 	}
+
+	/* Debug Printing
+	Agent1RelevanceValue = CalculateAgentRelevance(Agents[0], PlayerInstance);
+	Agent2RelevanceValue = CalculateAgentRelevance(Agents[1], PlayerInstance);
+	Agent3RelevanceValue = CalculateAgentRelevance(Agents[2], PlayerInstance);
+	Agent4RelevanceValue = CalculateAgentRelevance(Agents[3], PlayerInstance);
+	*/
 }
 
 // Calculate weighted sum and the highest score is chosen as relevant agent. 
 float UAIAttackSystemComponent::CalculateAgentRelevance(AActor* Agent, AActor* Target)
 {
 
+	// AgentRelevanceScore = ArcheType * (DistanceValueMultiplier * TargetExposureMultiplier * Attack Status)
+	
 	// ToDo: 
 	// When selecting the most relevant agent we are going to look at:
 	// ____________________________________________________________ //
@@ -54,13 +63,58 @@ float UAIAttackSystemComponent::CalculateAgentRelevance(AActor* Agent, AActor* T
 	// Agent Attack Status: If the agent is currently under attack, it is more likely it will receive a token.
 	// (Currently avoiding) Token Assignment History: Agents that have not received a token in a long time may have a higher change of receiving the token soon. 
 
-	// Distance to target multiplier
-	float DistanceValueMultiplier = DistanceMultiplierFloatCurve->GetFloatValue(FVector::Dist(Agent->GetActorLocation(), Target->GetActorLocation()));
+	// Temporary. ToDo: Add enemy Archetypes to be passed to AIAttackSystemComponent. This will allow some enemies to be more likely to receive the token.
+	float ArchetypeValue = 0.5; 
+	
+	// Distance.
+	float DistanceValueMultiplier = RelevanceDistanceMultiplierFloatCurve->GetFloatValue(FVector::Dist(Agent->GetActorLocation(), Target->GetActorLocation()));
 
-	// Temporary for testing
-	return DistanceValueMultiplier;
+	// Target Exposure .
+	float TargetExposureMultiplier = GetTargetExposureMultiplier(Agent, Target);
+
+	// Final Calculation
+	float AgentRelevance = ArchetypeValue * ((DistanceValueMultiplier /* 2*/) * TargetExposureMultiplier);
 	
+	return AgentRelevance;
 	
-	// Question/ToDo: How should the calculation look?
-	// AgentRelevanceScore = ArcheType * (DistanceValueMultiplier * TargetExposureMultiplier * Attack Status)
+}
+
+// ToDo: Rename GetTargetExposure
+float UAIAttackSystemComponent::GetTargetExposureMultiplier(AActor* Agent, AActor* Target)
+{
+
+	float CoverValue = 1;
+
+	FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
+	TraceParams->AddIgnoredActor(Agent);
+
+	ACharacter* TargetCharacter = Cast<ACharacter>(Target);
+	
+	/// Check if player is in full cover ///
+	FHitResult FullCoverCheckHitResult;
+	FVector StartFullCoverCheckTrace = Agent->GetActorLocation();
+	FVector EndFullCoverCheckTrace = TargetCharacter->GetMesh()->GetBoneLocation(UpperBone);
+
+	if(GetWorld()->LineTraceSingleByChannel(FullCoverCheckHitResult, StartFullCoverCheckTrace, EndFullCoverCheckTrace, ECC_Visibility, *TraceParams))
+	{
+		if(FullCoverCheckHitResult.BoneName == UpperBone)
+			CoverValue += .5f; // Target's upper half is hittable.
+		else
+			CoverValue -= .5f; // Target's upper half is behind cover.			
+	}
+	
+	/// Check if player is in half cover ///
+	FHitResult HalfCoverCheckHitResult;
+	FVector StartHalfCoverCheckTrace = Agent->GetActorLocation();
+	FVector EndHalfCoverCheckTrace = TargetCharacter->GetMesh()->GetBoneLocation(LowerBone);
+
+	if(GetWorld()->LineTraceSingleByChannel(HalfCoverCheckHitResult, StartHalfCoverCheckTrace, EndHalfCoverCheckTrace, ECC_Visibility, *TraceParams))
+	{
+		if(HalfCoverCheckHitResult.BoneName == LowerBone)
+			CoverValue += .5f; // Target's lower half is hittable
+		else
+			CoverValue -= .5f; // Target's upper half is behind cover
+	}
+	
+	return CoverValue;
 }

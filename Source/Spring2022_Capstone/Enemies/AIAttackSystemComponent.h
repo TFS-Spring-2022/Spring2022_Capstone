@@ -41,12 +41,48 @@ private:
 	// TArray<ABaseEnemy*> Agents;
 	
 	/// Components
-	UPROPERTY(EditAnywhere, Category = "Attack System | Components")
-	UCurveFloat* DistanceMultiplierFloatCurve;
 
+	// Float Curve used to calculate delay with distance to Target.
 	UPROPERTY(EditAnywhere, Category = "Attack System | Components")
-	UCurveFloat* AngleDifferenceMultiplierFloatCurve;
+	UCurveFloat* DelayDistanceMultiplierFloatCurve;
 
+	// Float Curve used to calculate delay with Agent/Target line of sight.
+	UPROPERTY(EditAnywhere, Category = "Attack System | Components")
+	UCurveFloat* DelayAngleDifferenceMultiplierFloatCurve;
+
+	// Float Curve used to calculate Agent relevance with distance to target.
+	UPROPERTY(EditAnywhere, Category = "Attack System | Components")
+	UCurveFloat* RelevanceDistanceMultiplierFloatCurve;
+
+	/**
+	 * @brief Calculates the weighted sum of Agent's relevance, used to assign next holder of attack token.
+	 * @param Agent The Agent who's sum is being evaluated.
+	 * @param Target The Target the Agent is in combat with.
+	 * @return Weighted sum of the Agent's relevance, calculated through distance, target exposure, archetype, and combat status.
+	 */
 	float CalculateAgentRelevance(AActor* Agent, AActor* Target);
-	
+
+	// Returns a value based on the target's cover status (full cover, half cover, open).
+	float GetTargetExposureMultiplier(AActor* Agent, AActor* Target);
+
+	// Bone used to check if lower half of target's body is behind cover Note - ToDo: Change when player skeleton added, currently using Unreal Engine 'pelvis'.
+	UPROPERTY(EditAnywhere, Category = "Attack System | Bones")
+	FName LowerBone;
+
+	// Bone used to check if upper half of target's body is behind cover Note - ToDo: Change when player skeleton added, currently using Unreal Engine 'spine_03'.
+	UPROPERTY(EditAnywhere, Category = "Attack System | Bones")
+	FName UpperBone;
+
+	// Debug - Testing values ToDo: Erase
+	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
+	float Agent1RelevanceValue;
+
+	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
+	float Agent2RelevanceValue;
+
+	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
+	float Agent3RelevanceValue;
+
+	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
+	float Agent4RelevanceValue;
 };
