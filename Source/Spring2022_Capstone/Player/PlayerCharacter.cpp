@@ -170,6 +170,10 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 	PreviousDashDirection = Value.GetMagnitude();
 }
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 void APlayerCharacter::DashDirectionalLaunch()
 {
 	const float PreDashSpeed = GetVelocity().Length();
