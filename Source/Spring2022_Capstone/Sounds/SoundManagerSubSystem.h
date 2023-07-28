@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Sound/SoundCue.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SoundManagerSubSystem.generated.h"
 
@@ -21,5 +22,18 @@ public:
 	
 	UFUNCTION()
 	void PlaySound(const FVector& Location, USoundBase* Sound) const;
+
+	UFUNCTION()
+	void PlaysMusic(const USoundCue* Music) const;
+
+	UPROPERTY(EditAnywhere, Category = "Menu Music")
+	USoundCue* MainMenuMusic;
+
+	UPROPERTY(EditAnywhere, Category = "Menu sounds")
+	USoundCue* HoverButtonSound;
+
+	UPROPERTY(EditAnywhere, Category = "Menu sounds")
+	USoundCue* ClickButtonSound;
+
 	
 };

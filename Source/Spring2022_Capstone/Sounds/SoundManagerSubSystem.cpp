@@ -18,3 +18,15 @@ void USoundManagerSubSystem::PlaySound(const FVector& Location, USoundBase* Soun
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, Location, 1.0f, 1.0f,0.0f);
 	}
 }
+
+void USoundManagerSubSystem::PlaysMusic(const USoundCue* Music) const
+{
+	if(Music)
+	{
+		
+	}
+}
+
+
+
+
