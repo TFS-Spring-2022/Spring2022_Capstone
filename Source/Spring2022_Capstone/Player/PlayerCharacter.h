@@ -281,4 +281,8 @@ public:
 	// ToDo: Handle Grapple Indicator in here
 	void ChangeCrosshair();
 
+	// NOTE - Temporarily using to call GameMode's SpawnWave() from player bp.
+	UFUNCTION(BlueprintCallable)
+	void DEBUG_SpawnWave();
+	
 };
