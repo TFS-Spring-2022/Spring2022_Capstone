@@ -17,8 +17,8 @@ struct FEnemyWave
 	
 };
 
-UCLASS(Blueprintable, BlueprintType)
-class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UObject
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable)
+class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponent 
 {
 	GENERATED_BODY()
 
