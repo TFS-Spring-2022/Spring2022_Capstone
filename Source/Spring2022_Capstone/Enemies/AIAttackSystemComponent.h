@@ -85,4 +85,17 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
 	float Agent4RelevanceValue;
+
+public:
+
+	/**
+	 * @brief Adds the given Agent to the 'Agents' array.
+	 */
+	void AddNewAgent(AActor* NewAgent); // ToDo: Change parameter type if we change from AActor* to ABaseEnemy*.
+
+	/**
+	 * @brief Clears the 'Agents' array of all references.
+	 */
+	void ClearAgents();
+	
 };

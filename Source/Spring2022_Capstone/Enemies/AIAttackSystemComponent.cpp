@@ -3,6 +3,7 @@
 
 #include "AIAttackSystemComponent.h"
 
+#include "AttackSystemAgentInterface.h"
 #include "Kismet/GameplayStatics.h"
 
 UAIAttackSystemComponent::UAIAttackSystemComponent()
@@ -117,4 +118,19 @@ float UAIAttackSystemComponent::GetTargetExposureMultiplier(AActor* Agent, AActo
 	}
 	
 	return CoverValue;
+}
+
+void UAIAttackSystemComponent::AddNewAgent(AActor* NewAgent)
+{
+	// If the given AActor is a valid Agent and does not exist inside Agents array, add NewAgent.
+	if(NewAgent->Implements<UAttackSystemAgentInterface>())
+	{
+		if(!Agents.Contains(NewAgent))
+			Agents.Add(NewAgent);	
+	}
+}
+
+void UAIAttackSystemComponent::ClearAgents()
+{
+	Agents.Empty();
 }
