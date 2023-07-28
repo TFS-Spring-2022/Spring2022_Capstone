@@ -22,7 +22,12 @@ class SPRING2022_CAPSTONE_API ASpring2022_CapstoneGameModeBase : public AGameMod
 	TSubclassOf<UEnemyWaveManagementSystem> LevelEnemyWaveManagerBP;
 
 	// An instance of the LevelEnemyWaveManagerBP.
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "Wave Management")
 	UEnemyWaveManagementSystem* EnemyWaveManagerInstance;
+
+public:
+
+	UFUNCTION(BlueprintCallable)
+	UEnemyWaveManagementSystem* GetWaveManager();
 	
 };
