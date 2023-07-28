@@ -50,4 +50,7 @@ public:
 
 	void SpawnWave();
 
+	// Remove an ActiveEnemy from ActiveEnemies array.
+	void RemoveActiveEnemy(AActor* EnemyToRemove);
+
 };

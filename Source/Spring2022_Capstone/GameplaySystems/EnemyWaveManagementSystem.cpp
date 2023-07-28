@@ -51,3 +51,9 @@ void UEnemyWaveManagementSystem::SpawnWave()
 		CurrentWave = 0;
 	}
 }
+
+void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
+{
+	if(ActiveEnemies.Contains(EnemyToRemove))
+		ActiveEnemies.Remove(EnemyToRemove);
+}
