@@ -3,7 +3,10 @@
 
 #include "EnemyWaveManagementSystem.h"
 
-void UEnemyWaveManagementSystem::DEBUG_PublicCall()
+#include "Kismet/GameplayStatics.h"
+
+void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Instance : %f"), DEBUG_FloatValue);
+	// ToDo: Add EnemySpawnPoints to array from EnemySpawnPoint::BeginPlay() (beware execution order).
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemySpawnPoint::StaticClass(), EnemySpawnLocations);
 }

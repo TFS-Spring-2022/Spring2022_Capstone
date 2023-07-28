@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnemySpawnPoint.h"
 #include "Spring2022_Capstone/Enemies/BaseEnemy.h"
 #include "EnemyWaveManagementSystem.generated.h"
 
@@ -21,19 +22,19 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable)
 class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponent 
 {
 	GENERATED_BODY()
-
-private:
-
+	
 	// Set of enemies to be spawned at the start of a new wave.
 	UPROPERTY(EditAnywhere, Category = "Waves")
 	TArray<FEnemyWave> Waves;
 
+	// All available spawn points in current level
+	UPROPERTY(EditAnywhere, Category = "Waves")
+	TArray<AActor*> EnemySpawnLocations;
+	
 public:
-	
-	UPROPERTY(EditAnywhere, Category = "DEBUG")
-	float DEBUG_FloatValue;
-	
-	// Using to test, just prints to UE_Log the value of DEBUG_FloatValue.
-	void DEBUG_PublicCall();
+
+	// ToDo: Find a more effective way to handle this. I tried to add in EnemySpawnPoint::BeginPlay() but execution order causes it to null reference.
+	// Grabs all EnemySpawnPoint actors in scene and adds them to EnemySpawnLocations.
+	void SetEnemySpawnLocations();
 
 };
