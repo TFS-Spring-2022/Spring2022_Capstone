@@ -281,7 +281,7 @@ public:
 	// ToDo: Handle Grapple Indicator in here
 	void ChangeCrosshair();
 	
-	float const GRAPPLE_TRACE_START_FORWARD_BUFFER = 35.0f; // Used to start grapple trace in front of Player and not collide with skeletal mesh.
+	float const GRAPPLE_TRACE_START_FORWARD_BUFFER = 65.0f; // Used to start grapple trace in front of Player and not collide with skeletal mesh.
 	
 	// NOTE - Temporarily using to call GameMode's SpawnWave() from player bp.
 	UFUNCTION(BlueprintCallable)
