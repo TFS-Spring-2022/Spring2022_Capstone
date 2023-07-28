@@ -29,5 +29,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UEnemyWaveManagementSystem* GetWaveManager();
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnWave();
 	
 };

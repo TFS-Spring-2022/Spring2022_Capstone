@@ -20,3 +20,9 @@ UEnemyWaveManagementSystem* ASpring2022_CapstoneGameModeBase::GetWaveManager()
 	else
 		return nullptr;
 }
+
+void ASpring2022_CapstoneGameModeBase::SpawnWave()
+{
+	if(EnemyWaveManagerInstance)
+		EnemyWaveManagerInstance->SpawnWave();
+}
