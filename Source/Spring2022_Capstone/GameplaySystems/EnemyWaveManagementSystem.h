@@ -22,8 +22,6 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable)
 class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponent 
 {
 	GENERATED_BODY()
-
-	virtual void BeginPlay() override;
 	
 	// Set of enemies to be spawned at the start of a new wave.
 	UPROPERTY(EditAnywhere, Category = "Waves")

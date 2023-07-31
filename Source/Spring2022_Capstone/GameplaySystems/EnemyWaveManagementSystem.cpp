@@ -5,14 +5,6 @@
 
 #include "Kismet/GameplayStatics.h"
 
-void UEnemyWaveManagementSystem::BeginPlay()
-{
-	Super::BeginPlay();
-
-	CurrentWave = 0;
-	
-}
-
 void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 {
 	// ToDo: Add EnemySpawnPoints to array from EnemySpawnPoint::BeginPlay() (beware execution order).
