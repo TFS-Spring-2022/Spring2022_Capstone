@@ -37,7 +37,7 @@ void UAIAttackSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	TokenTimer += DeltaTime;
 	if(TokenTimer > TokenPassTime)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::MakeRandomColor(), "Attack Player");
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::MakeRandomColor(), "Token Holder Attack");
 		PlayerInstance->DamageActor(TokenHolder, 10); // ToDo: Pass Token To TokenHolder Enemy
 		TokenTimer = 0;
 	}

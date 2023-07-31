@@ -37,7 +37,10 @@ protected:
 	bool bDidHide;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void Attack();
+	virtual void AttackHit();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void AttackMiss();
 	
 	// Called when the enemy runs out of health. Removes enemy from WaveManager ActiveEnemies[] and destroys itself.
 	UFUNCTION(BlueprintCallable)

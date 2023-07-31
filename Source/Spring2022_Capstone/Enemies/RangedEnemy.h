@@ -19,7 +19,7 @@ public:
 	ARangedEnemy();
 
 protected: 
-	virtual void Attack() override;
+	virtual void AttackHit() override;
 
 private:
 

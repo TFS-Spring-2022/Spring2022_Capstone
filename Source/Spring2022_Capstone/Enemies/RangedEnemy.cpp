@@ -10,9 +10,9 @@ ARangedEnemy::ARangedEnemy()
     
 }
 
-void ARangedEnemy::Attack()
+void ARangedEnemy::AttackHit()
 {
-	// Test Attack, Just here to show Damage Indicator functionality.
+	// Test AttackHit, Just here to show Damage Indicator functionality.
 	// APlayerCharacter* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
 	// Player->DamageActor(this, 10.0f);
 

@@ -27,7 +27,11 @@ void ABaseEnemy::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ABaseEnemy::Attack()
+void ABaseEnemy::AttackHit()
+{
+}
+
+void ABaseEnemy::AttackMiss()
 {
 }
 
