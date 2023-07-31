@@ -288,5 +288,7 @@ public:
 	void DEBUG_SpawnWave();
 
 	UUpgradeSystemComponent* GetUpgradeSystemComponent();
+
+	FORCEINLINE bool GetIsSprinting() const {return bIsSprinting;}
 	
 };

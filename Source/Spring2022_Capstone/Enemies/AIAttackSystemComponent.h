@@ -32,6 +32,9 @@ private:
 	UPROPERTY()
 	APlayerCharacter* PlayerInstance;
 
+	UPROPERTY()
+	UPawnMovementComponent* PlayerMovementComponent;
+
 	// Temporary holding for testing
 	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
 	AActor* TokenHolder; // Testing going to use AActor instead of ABaseEnemy
@@ -68,6 +71,8 @@ private:
 	// Returns a value based on the target's cover status (full cover, half cover, open).
 	float GetTargetExposureMultiplier(AActor* Agent, AActor* Target);
 
+	float GetVelocityMultiplier(const AActor* Target) const;
+
 	// Bone used to check if lower half of target's body is behind cover Note - ToDo: Change when player skeleton added, currently using Unreal Engine 'pelvis'.
 	UPROPERTY(EditAnywhere, Category = "Attack System | Bones")
 	FName LowerBone;
@@ -100,5 +105,8 @@ public:
 	 * @brief Clears the 'Agents' array of all references.
 	 */
 	void ClearAgents();
+
+	// Note - When created grapple/dash would be around 1000-1200. Number will need to be changed if movement speed/dash force is updated.
+	float const DASH_GRAPPLE_VELOCITY_LENGTH = 1000.0f; // Velocity length when the player is dashing or grappling. 
 	
 };

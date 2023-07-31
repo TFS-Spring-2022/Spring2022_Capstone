@@ -18,6 +18,8 @@ void UAIAttackSystemComponent::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerInstance = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if(PlayerInstance)
+		PlayerMovementComponent = PlayerInstance->GetMovementComponent();
 
 	// Temp/ToDo: Assign random agent at the start of a wave.
 	if(Agents[0])
@@ -42,6 +44,9 @@ void UAIAttackSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 		
 	}
 
+	// testing
+	GetVelocityMultiplier(PlayerInstance);
+
 	/* Debug Printing 
 	Agent1RelevanceValue = CalculateAgentRelevance(Agents[0], PlayerInstance);
 	Agent2RelevanceValue = CalculateAgentRelevance(Agents[1], PlayerInstance);
@@ -65,12 +70,43 @@ float UAIAttackSystemComponent::CalculateDelay(AActor* Agent, AActor* Target)
 
 	const float FacingDirectionMultiplier = DelayAngleDifferenceMultiplierFloatCurve->GetFloatValue(UKismetMathLibrary::FindLookAtRotation(Target->GetActorLocation(), Agent->GetActorLocation()).Yaw); // We want to hit them in the back less. So we need to get the target's look at rotation because agent should always be looking straight at target.
 
-	const float VelocityMultiplier = 1; // ToDo/Question: How should I implement this part? Probably something like the more velocity the more the multiplier doesn't really matter about direction. Yea that's actually a lot easier then I was thinking before. To much overthinking broken brain.
+	const float VelocityMultiplier = GetVelocityMultiplier(Target);
 
 	const float Delay = BaseDelay * (DistanceMultiplier, StanceMultiplier, CoverMultiplier, FacingDirectionMultiplier, VelocityMultiplier);
 	
 	return Delay;
 }
+
+float UAIAttackSystemComponent::GetVelocityMultiplier(const AActor* Target) const
+{
+																
+	const float TargetVelocityLength = Target->GetVelocity().Length(); 
+
+	// Target Still
+	if(TargetVelocityLength == 0)
+		return 0;
+		
+	if(Target->IsA(APlayerCharacter::StaticClass()))
+	{
+		if(PlayerMovementComponent->IsMovingOnGround())
+		{
+			if(PlayerInstance->GetIsSprinting() == true) // Target Sprinting
+			{
+				return 2;
+			}
+			if(TargetVelocityLength == PlayerInstance->GetMovementComponent()->GetMaxSpeed()) // Target Walking
+			{
+				return 1.5f;
+			}
+		}
+		else if(TargetVelocityLength >= DASH_GRAPPLE_VELOCITY_LENGTH) // Target Dashing/Grappling/Falling
+		{
+			return 2.2;
+		}
+	}
+	return 1;
+}
+
 
 // Calculate weighted sum and the highest score is chosen as relevant agent. 
 float UAIAttackSystemComponent::CalculateAgentRelevance(AActor* Agent, AActor* Target)
