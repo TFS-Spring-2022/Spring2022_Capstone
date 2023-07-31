@@ -3,6 +3,8 @@
 
 #include "Spring2022_CapstoneGameModeBase.h"
 
+#include "Kismet/GameplayStatics.h"
+
 void ASpring2022_CapstoneGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -10,6 +12,8 @@ void ASpring2022_CapstoneGameModeBase::BeginPlay()
 	// Create an instance of EnemyWaveManager BP assigned in the details panel. 
 	EnemyWaveManagerInstance = NewObject<UEnemyWaveManagementSystem>(this, LevelEnemyWaveManagerBP);
 	EnemyWaveManagerInstance->SetEnemySpawnLocations();
+	
+	GetWorld()->GetTimerManager().SetTimer(FirstWaveStartTimerHandle, this, &ASpring2022_CapstoneGameModeBase::SpawnWave, TimeBeforeFirstWave, false);
 	
 }
 
