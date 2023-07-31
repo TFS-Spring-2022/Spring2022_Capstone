@@ -92,7 +92,7 @@ float UAIAttackSystemComponent::GetVelocityMultiplier(const AActor* Target) cons
 		{
 			if(PlayerInstance->GetIsSprinting() == true) // Target Sprinting
 			{
-				return 2;
+				return 1.8;
 			}
 			if(TargetVelocityLength == PlayerInstance->GetMovementComponent()->GetMaxSpeed()) // Target Walking
 			{
