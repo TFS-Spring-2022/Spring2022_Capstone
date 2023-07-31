@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "GameplaySystems/EnemyWaveManagementSystem.h"
+#include "Player/PlayerCharacter.h"
 #include "Spring2022_CapstoneGameModeBase.generated.h"
 
 /**
@@ -26,11 +27,19 @@ class SPRING2022_CAPSTONE_API ASpring2022_CapstoneGameModeBase : public AGameMod
 	UEnemyWaveManagementSystem* EnemyWaveManagerInstance;
 
 public:
-
+	
 	UFUNCTION(BlueprintCallable)
 	UEnemyWaveManagementSystem* GetWaveManager();
 
+	// Calls WaveManager's SpawnWave function.
 	UFUNCTION(BlueprintCallable)
 	void SpawnWave();
+
+private:
+
+	FTimerHandle FirstWaveStartTimerHandle;
+
+	UPROPERTY(EditAnywhere, Category = "Wave Management")
+	float TimeBeforeFirstWave;
 	
 };

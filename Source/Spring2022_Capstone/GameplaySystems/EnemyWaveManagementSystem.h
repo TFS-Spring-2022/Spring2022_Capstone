@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "EnemySpawnPoint.h"
 #include "Spring2022_Capstone/Enemies/BaseEnemy.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "EnemyWaveManagementSystem.generated.h"
 
 USTRUCT()
@@ -22,8 +23,6 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable)
 class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponent 
 {
 	GENERATED_BODY()
-
-	virtual void BeginPlay() override;
 	
 	// Set of enemies to be spawned at the start of a new wave.
 	UPROPERTY(EditAnywhere, Category = "Waves")
@@ -41,6 +40,9 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 	// Enemies in the current wave
 	UPROPERTY(VisibleAnywhere, Category = "Waves")
 	TArray<AActor*> ActiveEnemies;
+	
+	UPROPERTY()
+	APlayerCharacter* PlayerCharacter;
 	
 public:
 

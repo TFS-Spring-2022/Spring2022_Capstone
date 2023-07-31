@@ -38,6 +38,10 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void Attack();
+	
+	// Called when the enemy runs out of health. Removes enemy from WaveManager ActiveEnemies[] and destroys itself.
+	UFUNCTION(BlueprintCallable)
+	void Death();
 
 public:
 	// Called every frame
@@ -51,4 +55,5 @@ private:
 	float Damage;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float AttackSpeed;
+	
 };
