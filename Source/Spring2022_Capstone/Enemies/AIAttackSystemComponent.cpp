@@ -24,12 +24,23 @@ void UAIAttackSystemComponent::BeginPlay()
 	// Temp/ToDo: Assign random agent at the start of a wave.
 	if(Agents[0])
 		TokenHolder = Agents[0];
-	
+
+	TokenTimer = 0;
+	TokenPassTime = 9999;
 }
 
 void UAIAttackSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	// Start token timer
+	TokenTimer += DeltaTime;
+	if(TokenTimer > TokenPassTime)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::MakeRandomColor(), "Attack Player");
+		PlayerInstance->DamageActor(TokenHolder, 10); // ToDo: Pass Token To TokenHolder Enemy
+		TokenTimer = 0;
+	}
 	
 	for (AActor* ActiveAgent : Agents)
 	{
@@ -41,26 +52,23 @@ void UAIAttackSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 		{
 			TokenHolder = ActiveAgent;
 		}
-		
 	}
 
-
+	TokenPassTime = CalculateDelay(TokenHolder, PlayerInstance);
 	
-	/* Debug Printing 
-	Agent1RelevanceValue = CalculateAgentRelevance(Agents[0], PlayerInstance);
-	Agent2RelevanceValue = CalculateAgentRelevance(Agents[1], PlayerInstance);
-	Agent3RelevanceValue = CalculateAgentRelevance(Agents[2], PlayerInstance);
-	Agent4RelevanceValue = CalculateAgentRelevance(Agents[3], PlayerInstance);
-	*/
+	/* Debug Printing */
+	Agent1DelayValue = CalculateDelay(Agents[0], PlayerInstance);
+	Agent2DelayValue = CalculateDelay(Agents[1], PlayerInstance);
+	Agent3DelayValue = CalculateDelay(Agents[2], PlayerInstance);
+	Agent4DelayValue = CalculateDelay(Agents[3], PlayerInstance);
+	
 }
 
 float UAIAttackSystemComponent::CalculateDelay(AActor* Agent, AActor* Target)
 {
 
 	// Delay = BaseDelay * (DistanceMultiplier * StanceMultiplier * CoverMultiplier * FacingDirectionMultiplier * VelocityMultiplier);
-
-	const float BaseDelay = 0.5; // Question - Where should I set this? Per player of just a base one? Either works really. I like the total one because it allows us to set a universal feel for attacking enemies.
-
+	
 	const float DistanceMultiplier = DelayDistanceMultiplierFloatCurve->GetFloatValue(FVector::Dist(Agent->GetActorLocation(), Target->GetActorLocation()));
 
 	const float StanceMultiplier = GetStanceMultiplier(Target);
@@ -71,7 +79,7 @@ float UAIAttackSystemComponent::CalculateDelay(AActor* Agent, AActor* Target)
 
 	const float VelocityMultiplier = GetVelocityMultiplier(Target);
 	
-	return BaseDelay * (DistanceMultiplier * StanceMultiplier * CoverMultiplier * FacingDirectionMultiplier * VelocityMultiplier);
+	return BaseDelay * (DistanceMultiplier * StanceMultiplier * CoverMultiplier * FacingDirectionMultiplier * VelocityMultiplier) + BaseDelay; // Adding that +BaseDelay to ensure there is always a minimum time between hits.
 }
 
 float UAIAttackSystemComponent::GetVelocityMultiplier(const AActor* Target) const
@@ -147,15 +155,8 @@ float UAIAttackSystemComponent::CalculateAgentRelevance(AActor* Agent, AActor* T
 {
 
 	// AgentRelevanceScore = ArcheType * (DistanceValueMultiplier * TargetExposureMultiplier * Attack Status)
-	
-	// ToDo: 
-	// When selecting the most relevant agent we are going to look at:
-	// ____________________________________________________________ //
-	// Distance to the Target: Close the agent the more options it has to receive a token.
-	// Target Exposure: The more access to player (player outside of half/full cover) the higher chance of obtaining a token.
-	// Archetype: The tougher the type of enemy, the easier it is to get a token.
-	// Agent Attack Status: If the agent is currently under attack, it is more likely it will receive a token.
-	// (Currently avoiding) Token Assignment History: Agents that have not received a token in a long time may have a higher change of receiving the token soon. 
+	// ToDo: Agent Attack Status: If the agent is currently under attack, it is more likely it will receive a token.
+	// ToDo: Token Assignment History: Agents that have not received a token in a long time may have a higher change of receiving the token soon. 
 
 	// Temporary. ToDo: Add enemy Archetypes to be passed to AIAttackSystemComponent. This will allow some enemies to be more likely to receive the token.
 	float ArchetypeValue = 0.5; 
@@ -167,13 +168,9 @@ float UAIAttackSystemComponent::CalculateAgentRelevance(AActor* Agent, AActor* T
 	float TargetExposureMultiplier = GetTargetExposureMultiplier(Agent, Target);
 
 	// Final Calculation
-	float AgentRelevance = ArchetypeValue * ((DistanceValueMultiplier /* 2*/) * TargetExposureMultiplier);
-	
-	return AgentRelevance;
-	
+	return ArchetypeValue * ((DistanceValueMultiplier /* 2*/) * TargetExposureMultiplier);
 }
-
-// ToDo: Rename GetTargetExposure
+	
 float UAIAttackSystemComponent::GetTargetExposureMultiplier(AActor* Agent, AActor* Target)
 {
 

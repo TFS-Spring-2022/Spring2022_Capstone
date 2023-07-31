@@ -87,16 +87,19 @@ private:
 
 	// Debug - Testing values ToDo: Erase
 	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
-	float Agent1RelevanceValue;
+	float Agent1DelayValue;
 
 	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
-	float Agent2RelevanceValue;
+	float Agent2DelayValue;
 
 	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
-	float Agent3RelevanceValue;
+	float Agent3DelayValue;
 
 	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
-	float Agent4RelevanceValue;
+	float Agent4DelayValue;
+
+	UPROPERTY(EditAnywhere, Category = "Attack System | Properties")
+	float BaseDelay;
 
 public:
 
@@ -111,6 +114,10 @@ public:
 	void ClearAgents();
 
 	// Note - When created grapple/dash would be around 1000-1200. Number will need to be changed if movement speed/dash force is updated.
-	float const DASH_GRAPPLE_VELOCITY_LENGTH = 1000.0f; // Velocity length when the player is dashing or grappling. 
+	float const DASH_GRAPPLE_VELOCITY_LENGTH = 1000.0f; // Velocity length when the player is dashing or grappling.
+
+	float TokenTimer = 0;
+	UPROPERTY(EditAnywhere, Category = "Attack System | Debug")
+	float TokenPassTime;
 	
 };
