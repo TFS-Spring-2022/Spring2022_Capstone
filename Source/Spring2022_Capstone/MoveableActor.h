@@ -20,7 +20,7 @@ protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent *Platform;
-ini
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
