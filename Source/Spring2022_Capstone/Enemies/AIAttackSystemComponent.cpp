@@ -45,7 +45,7 @@ void UAIAttackSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	}
 
 	// testing
-	GetVelocityMultiplier(PlayerInstance);
+	GetStanceMultiplier(PlayerInstance);
 
 	/* Debug Printing 
 	Agent1RelevanceValue = CalculateAgentRelevance(Agents[0], PlayerInstance);
@@ -64,7 +64,7 @@ float UAIAttackSystemComponent::CalculateDelay(AActor* Agent, AActor* Target)
 
 	const float DistanceMultiplier = DelayDistanceMultiplierFloatCurve->GetFloatValue(FVector::Dist(Agent->GetActorLocation(), Target->GetActorLocation()));
 
-	const float StanceMultiplier = 1; // ToDo: Get if PlayerCharacter is Airborne/Crouched/Standing
+	const float StanceMultiplier = GetStanceMultiplier(Target);
 
 	const float CoverMultiplier = 1; // I should probably do something like if in half cover then make this 1.5 or 2 to make it longer
 
@@ -107,6 +107,19 @@ float UAIAttackSystemComponent::GetVelocityMultiplier(const AActor* Target) cons
 	return 1;
 }
 
+float UAIAttackSystemComponent::GetStanceMultiplier(const AActor* Target) const
+{
+	float StanceMultiplier = 1.0f;
+	
+	if(Target->IsA(APlayerCharacter::StaticClass()))
+	{
+		if(PlayerInstance->bIsCrouched)
+			StanceMultiplier += .3f;
+		if(!PlayerMovementComponent->IsMovingOnGround()) // Target Player Jumping
+			StanceMultiplier += .1;
+	}
+	return StanceMultiplier;
+}
 
 // Calculate weighted sum and the highest score is chosen as relevant agent. 
 float UAIAttackSystemComponent::CalculateAgentRelevance(AActor* Agent, AActor* Target)

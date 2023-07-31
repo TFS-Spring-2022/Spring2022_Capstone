@@ -73,6 +73,8 @@ private:
 
 	float GetVelocityMultiplier(const AActor* Target) const;
 
+	float GetStanceMultiplier(const AActor* Target) const;
+
 	// Bone used to check if lower half of target's body is behind cover Note - ToDo: Change when player skeleton added, currently using Unreal Engine 'pelvis'.
 	UPROPERTY(EditAnywhere, Category = "Attack System | Bones")
 	FName LowerBone;
