@@ -4,6 +4,7 @@
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "AIController.h"
+#include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
@@ -42,5 +43,18 @@ void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount)
 	if (HealthComp)
 	{
 		HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
+		if(HealthComp->GetHealth() <= 0)
+			Death();
 	}
 }
+
+void ABaseEnemy::Death()
+{
+	// ToDo: Rag doll enemy once new skeleton is implemented.
+	// Remove enemy from the wave manager (RemoveActiveEnemy() will only remove enemies inside ActiveEnemies[] in the Wave Manager). 
+	UEnemyWaveManagementSystem* WaveManager = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetWaveManager();
+	if(WaveManager)
+		WaveManager->RemoveActiveEnemy(this);
+	Destroy(false, true);
+}
+
