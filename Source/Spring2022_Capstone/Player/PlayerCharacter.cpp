@@ -392,3 +392,11 @@ void APlayerCharacter::DEBUG_SpawnWave()
 {
 	Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->SpawnWave();
 }
+
+UUpgradeSystemComponent* APlayerCharacter::GetUpgradeSystemComponent()
+{
+	if(UpgradeSystemComponent)
+		return UpgradeSystemComponent;
+	else
+		return nullptr;
+}
