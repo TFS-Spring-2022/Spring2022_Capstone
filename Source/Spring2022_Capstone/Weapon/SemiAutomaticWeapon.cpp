@@ -40,8 +40,7 @@ void ASemiAutomaticWeapon::Shoot()
 			FVector EndTrace = ((ForwardVector * ShotDistance) + StartTrace);
 			FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
 			TraceParams->bReturnPhysicalMaterial = true;  // Hit must return a physical material to tell if the player has hit a headshot.
-			
-			//TraceParams->AddIgnoredComponent(PlayerCharacter->GetMesh()); Do I not need this anymore?
+			TraceParams->AddIgnoredComponent(PlayerCharacter->GetMesh());
 			
 			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
