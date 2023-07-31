@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "EnemySpawnPoint.h"
 #include "Spring2022_Capstone/Enemies/BaseEnemy.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "EnemyWaveManagementSystem.generated.h"
 
 USTRUCT()
@@ -39,6 +40,9 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 	// Enemies in the current wave
 	UPROPERTY(VisibleAnywhere, Category = "Waves")
 	TArray<AActor*> ActiveEnemies;
+	
+	UPROPERTY()
+	APlayerCharacter* PlayerCharacter;
 	
 public:
 
