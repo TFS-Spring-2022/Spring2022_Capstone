@@ -44,9 +44,8 @@ void UAIAttackSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 		
 	}
 
-	// testing
-	GetStanceMultiplier(PlayerInstance);
 
+	
 	/* Debug Printing 
 	Agent1RelevanceValue = CalculateAgentRelevance(Agents[0], PlayerInstance);
 	Agent2RelevanceValue = CalculateAgentRelevance(Agents[1], PlayerInstance);
@@ -66,15 +65,13 @@ float UAIAttackSystemComponent::CalculateDelay(AActor* Agent, AActor* Target)
 
 	const float StanceMultiplier = GetStanceMultiplier(Target);
 
-	const float CoverMultiplier = 1; // I should probably do something like if in half cover then make this 1.5 or 2 to make it longer
+	const float CoverMultiplier = GetCoverMultiplier(Agent, Target);
 
 	const float FacingDirectionMultiplier = DelayAngleDifferenceMultiplierFloatCurve->GetFloatValue(UKismetMathLibrary::FindLookAtRotation(Target->GetActorLocation(), Agent->GetActorLocation()).Yaw); // We want to hit them in the back less. So we need to get the target's look at rotation because agent should always be looking straight at target.
 
 	const float VelocityMultiplier = GetVelocityMultiplier(Target);
-
-	const float Delay = BaseDelay * (DistanceMultiplier, StanceMultiplier, CoverMultiplier, FacingDirectionMultiplier, VelocityMultiplier);
 	
-	return Delay;
+	return BaseDelay * (DistanceMultiplier * StanceMultiplier * CoverMultiplier * FacingDirectionMultiplier * VelocityMultiplier);
 }
 
 float UAIAttackSystemComponent::GetVelocityMultiplier(const AActor* Target) const
@@ -119,6 +116,30 @@ float UAIAttackSystemComponent::GetStanceMultiplier(const AActor* Target) const
 			StanceMultiplier += .1;
 	}
 	return StanceMultiplier;
+}
+
+float UAIAttackSystemComponent::GetCoverMultiplier(const AActor* Agent, AActor* Target) const
+{
+
+	FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
+	TraceParams->AddIgnoredActor(Agent);
+
+	ACharacter* TargetCharacter = Cast<ACharacter>(Target);
+
+	/// Check if player is in half cover ///
+	FHitResult HalfCoverCheckHitResult;
+	FVector StartHalfCoverCheckTrace = Agent->GetActorLocation();
+	FVector EndHalfCoverCheckTrace = TargetCharacter->GetMesh()->GetBoneLocation(LowerBone);
+
+	if(GetWorld()->LineTraceSingleByChannel(HalfCoverCheckHitResult, StartHalfCoverCheckTrace, EndHalfCoverCheckTrace, ECC_Visibility, *TraceParams))
+	{
+		if(HalfCoverCheckHitResult.BoneName == LowerBone)
+			return 0.7; // No half cover
+		else
+			return 1.5; // Target behind half cover
+	}
+
+	return 1;
 }
 
 // Calculate weighted sum and the highest score is chosen as relevant agent. 
