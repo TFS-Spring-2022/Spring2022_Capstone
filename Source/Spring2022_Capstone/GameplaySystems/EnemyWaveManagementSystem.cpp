@@ -27,6 +27,8 @@ void UEnemyWaveManagementSystem::SpawnWave()
 			RandomSpawnSelection = FMath::RandRange(0, EnemySpawnLocations.Num()-1);
 		}
 		while (RandomSpawnSelection == LastSpawnLocationElement);
+
+		LastSpawnLocationElement = RandomSpawnSelection;
 		
 		FVector Location = EnemySpawnLocations[RandomSpawnSelection]->GetActorLocation();
 		FRotator Rotation = EnemySpawnLocations[RandomSpawnSelection]->GetActorRotation();
