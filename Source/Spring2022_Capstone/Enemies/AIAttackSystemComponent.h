@@ -36,6 +36,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
 	AActor* TokenHolder; // Testing going to use AActor instead of ABaseEnemy
 
+	// AGENTS MUST IMPLEMENT AttackSystemAgentInterface!
 	UPROPERTY(EditAnywhere, Category = "Attack System | Debug")
 	TArray<AActor*> Agents; // Note: Temporarily using AActor* for testing
 	// TArray<ABaseEnemy*> Agents;
@@ -54,6 +55,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Attack System | Components")
 	UCurveFloat* RelevanceDistanceMultiplierFloatCurve;
 
+	float CalculateDelay(AActor* Agent, AActor* Target);
+	
 	/**
 	 * @brief Calculates the weighted sum of Agent's relevance, used to assign next holder of attack token.
 	 * @param Agent The Agent who's sum is being evaluated.

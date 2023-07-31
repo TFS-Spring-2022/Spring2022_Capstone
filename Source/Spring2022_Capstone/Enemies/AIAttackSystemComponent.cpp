@@ -5,6 +5,7 @@
 
 #include "AttackSystemAgentInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UAIAttackSystemComponent::UAIAttackSystemComponent()
 {
@@ -41,12 +42,34 @@ void UAIAttackSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 		
 	}
 
-	/* Debug Printing
+	/* Debug Printing 
 	Agent1RelevanceValue = CalculateAgentRelevance(Agents[0], PlayerInstance);
 	Agent2RelevanceValue = CalculateAgentRelevance(Agents[1], PlayerInstance);
 	Agent3RelevanceValue = CalculateAgentRelevance(Agents[2], PlayerInstance);
 	Agent4RelevanceValue = CalculateAgentRelevance(Agents[3], PlayerInstance);
 	*/
+}
+
+float UAIAttackSystemComponent::CalculateDelay(AActor* Agent, AActor* Target)
+{
+
+	// Delay = BaseDelay * (DistanceMultiplier * StanceMultiplier * CoverMultiplier * FacingDirectionMultiplier * VelocityMultiplier);
+
+	const float BaseDelay = 0.5; // Question - Where should I set this? Per player of just a base one? Either works really. I like the total one because it allows us to set a universal feel for attacking enemies.
+
+	const float DistanceMultiplier = DelayDistanceMultiplierFloatCurve->GetFloatValue(FVector::Dist(Agent->GetActorLocation(), Target->GetActorLocation()));
+
+	const float StanceMultiplier = 1; // ToDo: Get if PlayerCharacter is Airborne/Crouched/Standing
+
+	const float CoverMultiplier = 1; // I should probably do something like if in half cover then make this 1.5 or 2 to make it longer
+
+	const float FacingDirectionMultiplier = DelayAngleDifferenceMultiplierFloatCurve->GetFloatValue(UKismetMathLibrary::FindLookAtRotation(Target->GetActorLocation(), Agent->GetActorLocation()).Yaw); // We want to hit them in the back less. So we need to get the target's look at rotation because agent should always be looking straight at target.
+
+	const float VelocityMultiplier = 1; // ToDo/Question: How should I implement this part? Probably something like the more velocity the more the multiplier doesn't really matter about direction. Yea that's actually a lot easier then I was thinking before. To much overthinking broken brain.
+
+	const float Delay = BaseDelay * (DistanceMultiplier, StanceMultiplier, CoverMultiplier, FacingDirectionMultiplier, VelocityMultiplier);
+	
+	return Delay;
 }
 
 // Calculate weighted sum and the highest score is chosen as relevant agent. 
