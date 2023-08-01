@@ -27,16 +27,22 @@ public:
 
 	UFUNCTION()
 	void SetHealth(float NewHealth);
+
 	UFUNCTION(BlueprintCallable)
 	float GetHealth();
+
 	UFUNCTION(BlueprintCallable)
 	float GetMaxHealth();
+
 	UFUNCTION()
 	void SetMaxHealth(float value);
 
+	UFUNCTION(BlueprintCallable)
+	void TakeDamage(float DamageCaused);
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Health")
-	float MaxHealth;
+	float MaxHealth = 100.0f;
 	UPROPERTY(EditAnywhere, Category = "Health")
 	float HealthPoints;
 };

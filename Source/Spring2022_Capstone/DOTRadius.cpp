@@ -5,6 +5,8 @@
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "Components/SphereComponent.h"
+#include "GameplaySystems/DamageableActor.h"
+
 
 // Sets default values
 ADOTRadius::ADOTRadius() 
@@ -14,10 +16,13 @@ ADOTRadius::ADOTRadius()
 	{
 		SphereCollision->SetupAttachment(RootComponent);
 		
+		SphereCollision->SetSphereRadius(1024.0f);
 	}
-	DamagePerSecond = 5;
+	DamageAmount = 5;
+	DamageInterval = 1;
 	CloudSeconds = 15;
-	//Radius = 500;
+	Radius = 500;
+
 
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -41,17 +46,35 @@ void ADOTRadius::BeginPlay()
 {
 	Super::BeginPlay();
 
+
 	SphereCollision->SetSphereRadius(Radius);
 	
+
+	GetWorld()->GetTimerManager().SetTimer(DamagerTimerHandle, this, &ADOTRadius::CauseDamage, DamageInterval, true);
 }
 
 // Called every frame
 void ADOTRadius::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime); 
+
 	//for (AActor* Actor : DamageActors)
 	//{
 	//	Actor->TakeDamage(DamagePerSecond * DeltaTime, FDamageEvent(), nullptr, nullptr);
 	//}
+}
+
+
+void ADOTRadius::CauseDamage()
+{
+	for (AActor* Actor : DamageActors)
+	{
+		if (Actor->Implements<UDamageableActor>())
+		{
+			IDamageableActor* DamageableActor = Cast<IDamageableActor>(Actor);
+			DamageableActor->DamageActor(this, DamageAmount);
+		}
+	}
+
 }
 

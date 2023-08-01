@@ -43,8 +43,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
 	UFUNCTION(BlueprintCallable)
 	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
+
+
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))

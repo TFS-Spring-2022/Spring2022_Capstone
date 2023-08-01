@@ -43,6 +43,7 @@ void ASemiAutomaticWeapon::Shoot()
 					DamageableActor->DamageActor(this, ShotDamage);
 					ShowHitMarker();
 				}
+				//HitResult.GetActor()->TakeDamage(ShotDamage, FDamageEvent(), nullptr, nullptr);
 				DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 			}
 

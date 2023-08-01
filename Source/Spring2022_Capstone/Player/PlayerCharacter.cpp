@@ -171,6 +171,8 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 }
 
 
+
+
 void APlayerCharacter::DashDirectionalLaunch()
 {
 	const float PreDashSpeed = GetVelocity().Length();
@@ -343,8 +345,6 @@ void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 	// Set DirectionalDamageIndicator to rotate
 	if(DirectionalDamageIndicatorWidget)
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
-	
-	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 }
 
 void APlayerCharacter::ChangeCrosshair()
