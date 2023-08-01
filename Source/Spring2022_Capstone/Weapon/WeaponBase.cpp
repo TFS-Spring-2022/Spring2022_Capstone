@@ -60,6 +60,13 @@ void AWeaponBase::PlayWeaponCameraShake()
 		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(FireCameraShake);
 }
 
+void AWeaponBase::PlayTracerEffect(FVector TracerEndPoint)
+{
+	if(BulletTracerNiagaraSystem)
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BulletTracerNiagaraSystem, SkeletalMesh->GetSocketLocation(ShootingStartSocket),
+			FRotator::ZeroRotator)->SetVectorParameter("BeamEnd", TracerEndPoint);
+}
+
 void AWeaponBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -128,7 +135,6 @@ void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 
 	// Attach the weapon to the Player PlayerCharacter
 	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true); 
-	AttachToComponent(PlayerCharacter->GetMesh(), AttachmentRules, FName(WeaponSocketName));
 	AttachToComponent(PlayerCharacter->GetMesh(), AttachmentRules, FName(WeaponSocketName));
 	
 }

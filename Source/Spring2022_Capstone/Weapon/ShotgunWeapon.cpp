@@ -75,10 +75,9 @@ void AShotgunWeapon::Shoot()
 							DamageableActor->DamageActor(this, ShotDamage);
 							break;
 						}
-						
 					}
-
-					DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
+					//DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
+					PlayTracerEffect(HitResult.Location);
 				}
 			}
 			if (bPelletConnected)

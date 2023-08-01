@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "WeaponBase.generated.h"
+
 
 class APlayerCharacter;
 
@@ -133,6 +136,14 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Sockets")
 	FName WeaponSocketName;
+
+	const FName ShootingStartSocket = "Socket_ShootingStart";
+	
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UNiagaraSystem* BulletTracerNiagaraSystem;
+
+	void PlayTracerEffect(FVector TracerEndPoint);
+	
 	
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
