@@ -57,7 +57,7 @@ void AShotgunWeapon::Shoot()
 					}
 
 					//This gets called on every single actor that's being shot. It's bad for performance
-					HitResult.GetActor()->TakeDamage(ShotDamage, FDamageEvent(), nullptr, nullptr);
+					//HitResult.GetActor()->TakeDamage(ShotDamage, FDamageEvent(), nullptr, nullptr);
 
 					DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 				}	

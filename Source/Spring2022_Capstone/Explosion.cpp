@@ -3,6 +3,7 @@
 
 #include "Explosion.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "GameplaySystems/DamageableActor.h"
 
 // Sets default values
 AExplosion::AExplosion()
@@ -33,6 +34,11 @@ void AExplosion::Explode()
 	
 	for(int32 i = 0; i < HitActors.Num(); i++)
 	{	
-		HitActors[i]->TakeDamage(Damage, FDamageEvent(),nullptr,nullptr);
+		//HitActors[i]->TakeDamage(Damage, FDamageEvent(),nullptr,nullptr);
+		if (HitActors[i]->Implements<UDamageableActor>())
+		{
+			IDamageableActor* DamageableActor = Cast<IDamageableActor>(HitActors[i]);
+			DamageableActor->DamageActor(this, Damage);
+		}
 	}
 }

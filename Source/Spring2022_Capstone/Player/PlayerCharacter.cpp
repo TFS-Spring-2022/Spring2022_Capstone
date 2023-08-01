@@ -167,7 +167,7 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 	PreviousDashDirection = Value.GetMagnitude();
 }
 
-float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+/*float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue, FString::Printf(TEXT("Dealing damage")));
 
@@ -177,7 +177,7 @@ float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const
 
 	return 0.0f;
 
-}
+}*/
 
 void APlayerCharacter::DashDirectionalLaunch()
 {

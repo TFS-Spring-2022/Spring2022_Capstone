@@ -5,6 +5,7 @@
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "Components/SphereComponent.h"
+#include "GameplaySystems/DamageableActor.h"
 
 // Sets default values
 ADOTRadius::ADOTRadius() 
@@ -47,9 +48,15 @@ void ADOTRadius::BeginPlay()
 void ADOTRadius::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime); 
-	//for (AActor* Actor : DamageActors)
-	//{
+	for (AActor* Actor : DamageActors)
+	{
 	//	Actor->TakeDamage(DamagePerSecond * DeltaTime, FDamageEvent(), nullptr, nullptr);
-	//}
+		if (Actor->Implements<UDamageableActor>())
+		{
+			IDamageableActor* DamageableActor = Cast<IDamageableActor>(Actor);
+			DamageableActor->DamageActor(this, DamagePerSecond * DeltaTime);
+		}
+	}
+	
 }
 
