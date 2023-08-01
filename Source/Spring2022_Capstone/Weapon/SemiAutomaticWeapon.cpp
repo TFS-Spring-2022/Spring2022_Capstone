@@ -73,6 +73,9 @@ void ASemiAutomaticWeapon::Shoot()
 			CurrentCharge += ShotCost;
 			PlayWeaponCameraShake();
 
+			bIsFiring = true;
+			GetWorld()->GetTimerManager().SetTimer(IsFiringToggleTimerHandle, this, &AWeaponBase::ToggleIsFiringOff, 0.05, false);	
+
 			// Call recoil
 			if (RecoilComponent)
 				RecoilComponent->RecoilKick();

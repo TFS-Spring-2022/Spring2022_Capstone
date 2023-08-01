@@ -154,7 +154,16 @@ public:
 	void SetDamage(float Value);
 
 	float GetCurrentCharge() const;
+	
+	FORCEINLINE USkeletalMeshComponent* GetSkeletalMesh(){return SkeletalMesh;}
 
-	FORCEINLINE USkeletalMeshComponent* GetSkeletalMesh(){return SkeletalMesh;} 
+	bool bIsFiring = false;
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetIsFiring() {return bIsFiring;}
+
+	FTimerHandle IsFiringToggleTimerHandle;
+	UFUNCTION()
+	FORCEINLINE void ToggleIsFiringOff() {bIsFiring = false;}
 	
 };

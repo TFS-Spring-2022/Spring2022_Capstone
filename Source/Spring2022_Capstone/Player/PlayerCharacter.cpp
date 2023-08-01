@@ -98,8 +98,8 @@ void APlayerCharacter::BeginPlay()
 	bDashBlurFadingIn = false;
 
 	// ToDo: Temporary bug fix before equip rework
-	Weapon1->SetActorHiddenInGame(true);
-
+	//Weapon1->SetActorHiddenInGame(true);
+	
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
