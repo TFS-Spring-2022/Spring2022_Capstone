@@ -131,6 +131,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TSubclassOf<UCameraShakeBase> FireCameraShake;
 
+	UPROPERTY(EditAnywhere, Category = "Sockets")
+	FName WeaponSocketName;
+	
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
 	// Called every frame
