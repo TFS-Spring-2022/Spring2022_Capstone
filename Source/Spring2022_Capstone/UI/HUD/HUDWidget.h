@@ -50,10 +50,16 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UTextBlock *GrappleCooldownText;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+		UTextBlock* PlayerKillsText;
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Grapple")
-	float GrappleCooldown;
+		float GrappleCooldown;
 	
+	UPROPERTY(EditDefaultsOnly)
+		class ASpring2022_CapstoneGameModeBase* CurrentGameMode;
+
 	UFUNCTION()
 	void OnHealthChanged(float HealthValue);
 	UFUNCTION()
@@ -68,4 +74,7 @@ private:
 	FTimerHandle *GrappleTimerHandle;
 
 	void PlayHitMarkerAnimation();
+
+	UFUNCTION()
+		void GetPlayerKills();
 };

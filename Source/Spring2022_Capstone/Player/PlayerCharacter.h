@@ -239,7 +239,9 @@ private:
 
 	// Player's current weapon. Will be used on Attack()
 	UPROPERTY(VisibleAnywhere, Category = "Player Inventory")
-	AWeaponBase *ActiveWeapon;
+	AWeaponBase *ActiveWeapon;	
+	
+
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	bool bIsSprinting;
@@ -250,6 +252,9 @@ private:
 
 public:
 	
+	UFUNCTION(BlueprintCallable)
+		void IncrementKills();
+
 	UFUNCTION(BlueprintCallable)
 	void Heal(int Value);
 

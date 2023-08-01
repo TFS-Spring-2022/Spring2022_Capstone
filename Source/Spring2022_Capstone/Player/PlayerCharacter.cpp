@@ -8,6 +8,7 @@
 #include "MantleSystemComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
+#include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -351,6 +352,15 @@ void APlayerCharacter::ChangeCrosshair()
 {
 	if(OnDamagedDelegate.IsBound())
 		OnDamagedDelegate.Execute();
+}
+
+void APlayerCharacter::IncrementKills()
+{
+	ASpring2022_CapstoneGameModeBase* CurrentGameMode = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	if (CurrentGameMode == nullptr) return;
+
+	CurrentGameMode->IncrementKills();
 }
 
 void APlayerCharacter::Heal(int Value)

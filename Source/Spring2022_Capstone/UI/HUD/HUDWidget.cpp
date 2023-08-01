@@ -6,12 +6,15 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
+#include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 #include "Spring2022_Capstone/Player/GrappleComponent.h"
 
 void UHUDWidget::NativeConstruct()
 {
     Super::NativeConstruct();
     
+    CurrentGameMode = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+
     PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
 
     if (PlayerCharacter)
@@ -28,6 +31,23 @@ void UHUDWidget::NativeConstruct()
     }
 
     GrappleCooldownText->SetText(FText::GetEmpty());
+
+    PlayerKillsText->TextDelegate.BindUFunction(this, "GetPlayerKills");
+}
+
+void UHUDWidget::GetPlayerKills()
+{
+    if (CurrentGameMode == nullptr) return;
+    //if (PlayerKillsText == nullptr) return;
+
+    FString BaseText = "Kills: ";
+
+    BaseText.Append(FString::FromInt(CurrentGameMode->PlayerKills));
+
+    GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue, FString::Printf(TEXT("Should add text!!")));
+
+
+
 }
 
 void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
@@ -40,6 +60,10 @@ void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
         GrappleCooldownBar->SetPercent(grappleCooldownPercent);
         GrappleCooldownText->SetText(FText::FromString(FString::FromInt(FMath::CeilToInt(timerRemainingTime))));
     }
+
+    if(CurrentGameMode)
+        PlayerKillsText->SetText(FText::FromString(FString::FromInt(CurrentGameMode->PlayerKills)));
+
     
     if(PlayerCharacter)
     {
