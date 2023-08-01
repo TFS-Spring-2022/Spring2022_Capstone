@@ -154,5 +154,7 @@ public:
 	void SetDamage(float Value);
 
 	float GetCurrentCharge() const;
+
+	FORCEINLINE USkeletalMeshComponent* GetSkeletalMesh(){return SkeletalMesh;} 
 	
 };

@@ -43,6 +43,7 @@ void AWeaponBase::BeginPlay()
 	{
 		PlayerCharacter->SetWeapon2(this);
 		AttachWeapon(PlayerCharacter);
+		SkeletalMesh->SetVisibility(false);
 	}
 	
 }

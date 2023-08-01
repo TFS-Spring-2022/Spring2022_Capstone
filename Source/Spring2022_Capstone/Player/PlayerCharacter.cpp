@@ -92,6 +92,10 @@ void APlayerCharacter::BeginPlay()
 	}
 	
 	bDashBlurFadingIn = false;
+
+	// ToDo: Temporary bug fix before equip rework
+	Weapon1->SetActorHiddenInGame(true);
+	
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -299,7 +303,12 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
-	ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+	if(Weapon1 && Weapon2)
+	{
+		ActiveWeapon->SetActorHiddenInGame(true);//SetHidden(true);
+		ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+		ActiveWeapon->SetActorHiddenInGame(false);
+	}
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)
