@@ -30,9 +30,9 @@ float ABaseEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Dama
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue, FString::Printf(TEXT("Dealing damage")));
 
-	if (HealthComponent == nullptr) return 0.0f;
+	if (HealthComp == nullptr) return 0.0f;
 
-	HealthComponent->TakeDamage(DamageAmount);
+	HealthComp->TakeDamage(DamageAmount);
 
 	return 0.0f;
 
