@@ -26,6 +26,9 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
 	Camera->bUsePawnControlRotation = true;
 
+	// Rotate with controller's pitch so player's arms/weapons move vertically.
+	bUseControllerRotationPitch = true;
+	
 	GrappleComponent = CreateDefaultSubobject<UGrappleComponent>(TEXT("Grapple"));
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
@@ -36,6 +39,7 @@ APlayerCharacter::APlayerCharacter()
 
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
+
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
@@ -95,7 +99,7 @@ void APlayerCharacter::BeginPlay()
 
 	// ToDo: Temporary bug fix before equip rework
 	Weapon1->SetActorHiddenInGame(true);
-	
+
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
