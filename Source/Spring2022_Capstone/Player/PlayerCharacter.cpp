@@ -351,8 +351,6 @@ void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 	// Set DirectionalDamageIndicator to rotate
 	if(DirectionalDamageIndicatorWidget)
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
-	
-	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 }
 
 void APlayerCharacter::Heal(int Value)

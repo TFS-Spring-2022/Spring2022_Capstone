@@ -16,7 +16,8 @@ ADOTRadius::ADOTRadius()
 		SphereCollision->SetupAttachment(RootComponent);
 		SphereCollision->SetSphereRadius(1024.0f);
 	}
-	DamagePerSecond = 5;
+	DamageAmount = 5;
+	DamageInterval = 1;
 	CloudSeconds = 15;
 	Radius = 500;
 
@@ -41,22 +42,24 @@ void ADOTRadius::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* 
 void ADOTRadius::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	GetWorld()->GetTimerManager().SetTimer(DamagerTimerHandle, this, &ADOTRadius::CauseDamage, DamageInterval, true);
 }
 
 // Called every frame
 void ADOTRadius::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime); 
+}
+
+void ADOTRadius::CauseDamage()
+{
 	for (AActor* Actor : DamageActors)
 	{
-	//	Actor->TakeDamage(DamagePerSecond * DeltaTime, FDamageEvent(), nullptr, nullptr);
 		if (Actor->Implements<UDamageableActor>())
 		{
 			IDamageableActor* DamageableActor = Cast<IDamageableActor>(Actor);
-			DamageableActor->DamageActor(this, DamagePerSecond * DeltaTime);
+			DamageableActor->DamageActor(this, DamageAmount);
 		}
 	}
-	
-}
 
+}

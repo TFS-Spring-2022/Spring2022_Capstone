@@ -20,18 +20,22 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 		TSet<AActor*> DamageActors;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
-		float DamagePerSecond;
+		float DamageAmount;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
+		float DamageInterval;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
 		float CloudSeconds;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
 		float Radius;
-
+	UPROPERTY()
+		FTimerHandle DamagerTimerHandle;
 	UFUNCTION(BlueprintCallable)
 		void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
 	
 	UFUNCTION(BlueprintCallable)
 		void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
-
+	UFUNCTION()
+		void CauseDamage();
 
 protected:
 	// Called when the game starts or when spawned
