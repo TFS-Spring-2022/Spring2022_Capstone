@@ -15,10 +15,10 @@ AWeaponBase::AWeaponBase()
 
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Skeletal Mesh Component");
 	RootComponent = SkeletalMesh;
-	GunShotAudioComponent = CreateDefaultSubobject<UAudioComponent>("Gun Shot Audio Component");
-	OverheatAudioComponent = CreateDefaultSubobject<UAudioComponent>("Overheat Audio Component");
-    OverheatAudioComponent->bAutoActivate = false;
-	GunShotAudioComponent->bAutoActivate = false;
+	GunShotAudioComp = CreateDefaultSubobject<UAudioComponent>("Gun Shot Audio");
+	OverheatAudioComp = CreateDefaultSubobject<UAudioComponent>("Overheat Audio");
+    OverheatAudioComp->bAutoActivate = false;
+	GunShotAudioComp->bAutoActivate = false;
 	
 }
 
@@ -27,7 +27,7 @@ void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GunShotAudioComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	GunShotAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	//OverheatAudioComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	
 	PlayerCamera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager; // No constructor will crash (execution order),

@@ -34,10 +34,10 @@ public:
 	
 	
 	UPROPERTY(EditAnywhere)
-	UAudioComponent* OverheatAudioComponent;
+	UAudioComponent* OverheatAudioComp;
 
 	UPROPERTY(EditAnywhere)
-	UAudioComponent* GunShotAudioComponent;
+	UAudioComponent* GunShotAudioComp;
 
 protected:
 	// Called when the game starts or when spawned
