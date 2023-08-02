@@ -15,6 +15,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -388,6 +389,8 @@ void APlayerCharacter::UpdateHealthBar()
 	}
 }
 
-
-	
-
+// Temporary
+void APlayerCharacter::DEBUG_SpawnWave()
+{
+	Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->SpawnWave();
+}
