@@ -34,7 +34,8 @@ void AShotgunWeapon::Shoot()
 			// ToDo: UPROPERTY IN HEADER (Naming and Degrees/Radians)	//
 			float HalfAngle = 10;
 			HalfAngle = UKismetMathLibrary::DegreesToRadians(HalfAngle);
-			//													//
+			
+			//Play sound												
 			if(AudioComponent->Sound)
 			{
 				AudioComponent->Play();
