@@ -45,9 +45,19 @@ void ASemiAutomaticWeapon::Shoot()
 				}
 				DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 			}
+			
+			if(CurrentCharge == 0)
+			{
+				OverheatAudioComp->Play();
+			}
 
 			CurrentCharge += ShotCost;
 			PlayWeaponCameraShake();
+
+			if(OverheatAudioComp)
+			{
+				OverheatAudioComp->SetPitchMultiplier((CurrentCharge/MaxChargeAmount));
+			}
 
 			//Play gun sound
             if(GunShotAudioComp)

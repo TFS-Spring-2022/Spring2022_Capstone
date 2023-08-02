@@ -34,6 +34,8 @@ void AWeaponBase::BeginPlay()
 	GunShotAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	OverheatAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	GunChangeAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	OverheatAudioComp->SetSound(HeatBuildUp);
 	
 	PlayerCamera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager; // No constructor will crash (execution order),
 	
@@ -114,6 +116,9 @@ void AWeaponBase::Overheat()
 
 	if(OverheatAudioComp)
 	{
+		OverheatAudioComp->SetSound(OverHeat);
+		OverheatAudioComp->SetVolumeMultiplier(1.f);
+		OverheatAudioComp->SetPitchMultiplier(1.f);
 		OverheatAudioComp->Play();
 		OverheatAudioComp->FadeOut(OverheatTime,0.f);
 	}
@@ -127,6 +132,10 @@ void AWeaponBase::WeaponCooldown()
 	bIsOverheating = false;
 	bCanFire = true;
 	CurrentCharge = 0;
+	
+	OverheatAudioComp->SetSound(HeatBuildUp);
+	OverheatAudioComp->Stop();
+	
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("WEAPON COOLED"));
 }
 

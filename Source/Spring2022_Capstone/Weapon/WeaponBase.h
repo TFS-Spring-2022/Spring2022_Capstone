@@ -31,7 +31,11 @@ public:
 
 	virtual void Shoot() PURE_VIRTUAL(AWeaponBase::Shoot());
 	
-	
+	UPROPERTY(EditAnywhere)
+	USoundCue* HeatBuildUp;
+
+	UPROPERTY(EditAnywhere)
+	USoundCue* OverHeat;
 	
 	UPROPERTY(EditAnywhere)
 	UAudioComponent* OverheatAudioComp;

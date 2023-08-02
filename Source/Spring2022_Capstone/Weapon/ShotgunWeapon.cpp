@@ -40,6 +40,8 @@ void AShotgunWeapon::Shoot()
 			{
 				GunShotAudioComp->Play();
 			}
+
+			
 			
 			for (int i = 0; i < PelletCount; i++)
 			{
@@ -67,9 +69,22 @@ void AShotgunWeapon::Shoot()
 				ShowHitMarker();
 				bPelletConnected = false;
 			}
-
+			//Plays the sound if first shot
+			if(CurrentCharge == 0)
+			{
+				OverheatAudioComp->Play();
+			}
+			
 			CurrentCharge += ShotCost;
+
+			
+			if(OverheatAudioComp)
+			{
+				OverheatAudioComp->SetPitchMultiplier((CurrentCharge/MaxChargeAmount));
+			}
 			PlayWeaponCameraShake();
+
+			
 
 			// Call recoil
 			if (RecoilComponent)
