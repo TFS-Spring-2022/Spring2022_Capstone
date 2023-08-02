@@ -38,6 +38,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UAudioComponent* GunShotAudioComp;
+	
+	UPROPERTY(EditAnywhere)
+	UAudioComponent* GunChangeAudioComp;
 
 protected:
 	// Called when the game starts or when spawned

@@ -15,10 +15,14 @@ AWeaponBase::AWeaponBase()
 
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Skeletal Mesh Component");
 	RootComponent = SkeletalMesh;
+	//Sound Components
 	GunShotAudioComp = CreateDefaultSubobject<UAudioComponent>("Gun Shot Audio");
 	OverheatAudioComp = CreateDefaultSubobject<UAudioComponent>("Overheat Audio");
+	GunChangeAudioComp = CreateDefaultSubobject<UAudioComponent>("GunSwitch Audio");
+	
     OverheatAudioComp->bAutoActivate = false;
 	GunShotAudioComp->bAutoActivate = false;
+	GunChangeAudioComp->bAutoActivate = false;
 	
 }
 
@@ -28,7 +32,8 @@ void AWeaponBase::BeginPlay()
 	Super::BeginPlay();
 
 	GunShotAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	//OverheatAudioComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	OverheatAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	GunChangeAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	
 	PlayerCamera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager; // No constructor will crash (execution order),
 	
@@ -106,6 +111,12 @@ void AWeaponBase::Overheat()
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("OVERHEATING"));
 	bIsOverheating = true;
 	bCanFire = false;
+
+	if(OverheatAudioComp)
+	{
+		OverheatAudioComp->Play();
+		OverheatAudioComp->FadeOut(OverheatTime,0.f);
+	}
 	
 	GetWorldTimerManager().SetTimer(OverheatTimerHandle, this, &AWeaponBase::WeaponCooldown, OverheatTime, false, -1);
 }
@@ -127,7 +138,7 @@ void AWeaponBase::ShowHitMarker()
 void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 {
 	
-	PlayerCharacter = TargetCharacter; 
+	PlayerCharacter = TargetCharacter;
 
 	if(PlayerCharacter == nullptr)
 	{
