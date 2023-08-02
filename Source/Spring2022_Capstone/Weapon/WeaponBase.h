@@ -30,12 +30,14 @@ public:
 	void AttachWeapon(APlayerCharacter* TargetCharacter);
 
 	virtual void Shoot() PURE_VIRTUAL(AWeaponBase::Shoot());
+	
+	
+	
+	UPROPERTY(EditAnywhere)
+	UAudioComponent* OverheatAudioComponent;
 
 	UPROPERTY(EditAnywhere)
-	UAudioComponent* AudioComponent;
-
-	UPROPERTY()
-	USoundManagerSubSystem* SoundManagerSubSystem;
+	UAudioComponent* GunShotAudioComponent;
 
 protected:
 	// Called when the game starts or when spawned

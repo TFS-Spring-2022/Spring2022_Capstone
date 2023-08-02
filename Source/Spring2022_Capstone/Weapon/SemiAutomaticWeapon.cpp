@@ -50,9 +50,9 @@ void ASemiAutomaticWeapon::Shoot()
 			PlayWeaponCameraShake();
 
 			//Play gun sound
-            if(AudioComponent->Sound)
+            if(GunShotAudioComponent)
             {
-            	AudioComponent->Play();
+            	GunShotAudioComponent->Play();
             }
 			
 			// Call recoil

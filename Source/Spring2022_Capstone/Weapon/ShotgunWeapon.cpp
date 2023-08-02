@@ -36,9 +36,10 @@ void AShotgunWeapon::Shoot()
 			HalfAngle = UKismetMathLibrary::DegreesToRadians(HalfAngle);
 			
 			//Play sound												
-			if(AudioComponent->Sound)
+			if(GunShotAudioComponent)
 			{
-				AudioComponent->Play();
+				GEngine->AddOnScreenDebugMessage(-1,2.f,FColor::Red,"ass");
+				GunShotAudioComponent->Play();
 			}
 			
 			for (int i = 0; i < PelletCount; i++)
