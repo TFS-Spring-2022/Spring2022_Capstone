@@ -3,6 +3,8 @@
 #include "SemiAutomaticWeapon.h"
 
 #include "DevTargets.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Spring2022_Capstone/Spring2022_Capstone.h"
 
 ASemiAutomaticWeapon::ASemiAutomaticWeapon()
 {
@@ -34,13 +36,33 @@ void ASemiAutomaticWeapon::Shoot()
 			FVector ForwardVector = PlayerCamera->GetActorForwardVector();
 			FVector EndTrace = ((ForwardVector * ShotDistance) + StartTrace);
 			FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
-
+			TraceParams->bReturnPhysicalMaterial = true;  // Hit must return a physical material to tell if the player has hit a headshot.
+			
 			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
+				
 				if (HitResult.GetActor()->Implements<UDamageableActor>())
 				{
+
 					IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
-					DamageableActor->DamageActor(this, ShotDamage);
+
+					// Get Surface Type to check if headshot
+					EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
+					
+					switch (HitSurfaceType)
+					{
+					case SURFACE_FleshDefault:
+						DamageableActor->DamageActor(this, ShotDamage);
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Default Shot");
+						break;
+					case SURFACE_FleshVulnerable:
+						DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier);
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Head Shot");
+						break;
+					default:
+						DamageableActor->DamageActor(this, ShotDamage);
+						break;
+					}
 					ShowHitMarker();
 				}
 				DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
