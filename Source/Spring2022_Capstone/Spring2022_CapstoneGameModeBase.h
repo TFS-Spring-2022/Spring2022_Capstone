@@ -16,7 +16,6 @@ class SPRING2022_CAPSTONE_API ASpring2022_CapstoneGameModeBase : public AGameMod
 {
 	GENERATED_BODY()
 
-<<<<<<< Updated upstream
 	virtual void BeginPlay() override;
 
 	// The Enemy Wave Manager BP for the level.
@@ -42,7 +41,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Wave Management")
 	float TimeBeforeFirstWave;
-=======
 public:
 
 	//Variables are contained in Gamemode as it is persistent in the scene regardless of whether a player dies or not.
@@ -56,6 +54,5 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void IncrementKills();
->>>>>>> Stashed changes
 	
 };

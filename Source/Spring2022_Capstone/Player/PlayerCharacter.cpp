@@ -104,6 +104,42 @@ void APlayerCharacter::Tick(float DeltaTime)
 	if(bDashBlurFadingIn)
 		Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight = FMath::FInterpTo(Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight, 1, DeltaTime, DASH_BLUR_FADEIN_SPEED);
 	
+	CheckIsUntouchable();
+	CheckIsLandLubber();
+}
+
+void APlayerCharacter::CheckIsUntouchable()
+{
+	TimeTaken = UGameplayStatics::GetTimeSeconds(GetWorld()) - TimeAtDamage;
+
+
+	if (TimeTaken >= UntouchableSeconds && bIsUntouchable == false)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, TEXT("Untouchable Accolade!!"));
+		bIsUntouchable = true;
+	}
+}
+
+void APlayerCharacter::CheckIsLandLubber()
+{
+	bool IsFalling = GetCharacterMovement()->IsFalling();
+
+	if (IsFalling)
+	{
+		TimeAtFalling = UGameplayStatics::GetTimeSeconds(GetWorld());
+		bIsLandLubber = false;
+	}
+	else
+	{
+		double TimeOnLand = UGameplayStatics::GetTimeSeconds(GetWorld()) - TimeAtFalling;
+
+		if (TimeOnLand >= LandLubberSeconds && bIsLandLubber == false)
+		{
+			bIsLandLubber = true;
+			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, TEXT("Land lubber accolade!!"));
+
+		}
+	}
 }
 
 void APlayerCharacter::Move(const FInputActionValue &Value)
@@ -339,6 +375,9 @@ void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 	{
 		HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 		UpdateHealthBar();
+
+		TimeAtDamage = UGameplayStatics::GetTimeSeconds(GetWorld());
+		bIsUntouchable = false;
 	}
 
 	// Set DirectionalDamageIndicator to rotate

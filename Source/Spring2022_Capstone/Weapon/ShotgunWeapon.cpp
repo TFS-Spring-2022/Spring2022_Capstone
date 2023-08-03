@@ -52,17 +52,15 @@ void AShotgunWeapon::Shoot()
 				{
 					if (HitResult.GetActor()->Implements<UDamageableActor>())
 					{
-<<<<<<< Updated upstream
 
 						// We want to call ShowHitMarker() outside of every shot to prevent unnecessary repeated calls.
-=======
+
 						IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
 						DamageableActor->DamageActor(this, ShotDamage);
 						GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue, FString::Printf(TEXT("Calling damage on enemy")));
->>>>>>> Stashed changes
 						bPelletConnected = true;
 
-						IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
+						//IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
 						
 						// Get Surface Type to check if headshot
 						EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
@@ -79,6 +77,7 @@ void AShotgunWeapon::Shoot()
 							break;
 						default:
 							DamageableActor->DamageActor(this, ShotDamage);
+
 							break;
 						}
 						

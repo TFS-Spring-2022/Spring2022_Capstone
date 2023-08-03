@@ -69,6 +69,9 @@ protected:
 	
 	UPROPERTY()
 	UDirectionalDamageIndicatorWidget* DirectionalDamageIndicatorWidget;
+
+
+
 	
 
 	////	MOVEMENT RELATED INPUT ACTIONS
@@ -252,6 +255,36 @@ private:
 
 public:
 	
+
+	//// ACCOLADES RELATED VARIABLES
+
+	UPROPERTY(BlueprintReadOnly)
+		double TimeAtDamage = 0.0f;
+
+	UPROPERTY(BlueprintReadOnly)
+		double WorldSeconds = 0.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+		double UntouchableSeconds;
+
+	UPROPERTY(EditDefaultsOnly)
+		double LandLubberSeconds;
+
+	UPROPERTY(BlueprintReadOnly)
+		double TimeAtFalling = 0.0f;
+
+	double TimeTaken;
+
+	bool bIsUntouchable = false;
+
+	bool bIsLandLubber = false;
+
+	UFUNCTION()
+		void CheckIsUntouchable();
+
+	UFUNCTION()
+		void CheckIsLandLubber();
+
 	UFUNCTION(BlueprintCallable)
 		void IncrementKills();
 

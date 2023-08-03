@@ -41,19 +41,14 @@ void ABaseEnemy::Tick(float DeltaTime)
 void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount)
 {
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount);
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue, FString::Printf(TEXT("Enemy is taking damage")));
 
 	if (HealthComp)
 	{
 		HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
-<<<<<<< Updated upstream
 		if(HealthComp->GetHealth() <= 0)
-			Death();
-=======
-
-		if (HealthComp->GetHealth() <= 0.0f)
 		{
-			APlayerCharacter* PlayerRef = Cast<APlayerCharacter>(DamagingActor);
+			Death();
+			APlayerCharacter* PlayerRef = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 			if(PlayerRef)
 				PlayerRef->IncrementKills();
@@ -61,7 +56,6 @@ void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount)
 			//Checking to see if health is less than or equal to zero. if it is call increment kills function from player 
 			//as this denotes that the enemy is dead.
 		}
->>>>>>> Stashed changes
 	}
 }
 
