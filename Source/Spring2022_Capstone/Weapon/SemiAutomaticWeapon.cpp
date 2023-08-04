@@ -3,6 +3,7 @@
 #include "SemiAutomaticWeapon.h"
 
 #include "DevTargets.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
@@ -44,14 +45,13 @@ void ASemiAutomaticWeapon::Shoot()
 			
 			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
+				// Get Surface Type to check for headshot and impact material type.
+				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 				
 				if (HitResult.GetActor()->Implements<UDamageableActor>())
 				{
 
 					IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
-
-					// Get Surface Type to check if headshot
-					EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 					
 					switch (HitSurfaceType)
 					{
@@ -68,12 +68,29 @@ void ASemiAutomaticWeapon::Shoot()
 						break;
 					}
 					ShowHitMarker();
+
 				}
 				//DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 				PlayTracerEffect(HitResult.Location);
 
+				
+				switch (HitSurfaceType)
+				{
+				case SURFACE_FleshDefault:
+				case SURFACE_FleshVulnerable:
+					ImpactEffectToPlay = FleshImpactParticleSystem;
+					break;
+				default:
+					ImpactEffectToPlay = RockImpactParticleSystem; // ToDo: Setup default once all custom Surface Types are made.
+					break;
+				}
+				if(ImpactEffectToPlay)
+					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffectToPlay, HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation());
 			}
-
+			
+			if(MuzzleFlashParticleSystem)
+				UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, SkeletalMesh, ShootingStartSocket);
+			
 			CurrentCharge += ShotCost;
 			PlayWeaponCameraShake();
 

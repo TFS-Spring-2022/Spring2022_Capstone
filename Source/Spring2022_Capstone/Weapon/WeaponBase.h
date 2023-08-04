@@ -142,8 +142,23 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	UNiagaraSystem* BulletTracerNiagaraSystem;
 
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UParticleSystem* MuzzleFlashParticleSystem;
+
 	void PlayTracerEffect(FVector TracerEndPoint);
-	
+
+	// Impact Particle Effects
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UParticleSystem* FleshImpactParticleSystem;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UParticleSystem* RockImpactParticleSystem;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UParticleSystem* WaterImpactParticleSystem;
+
+	UPROPERTY()
+	UParticleSystem* ImpactEffectToPlay;
 	
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]

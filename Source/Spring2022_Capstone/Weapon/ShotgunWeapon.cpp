@@ -2,6 +2,7 @@
 
 #include "ShotgunWeapon.h"
 #include "DevTargets.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
@@ -40,6 +41,9 @@ void AShotgunWeapon::Shoot()
 			HalfAngle = UKismetMathLibrary::DegreesToRadians(HalfAngle);
 			//															//
 
+			if(MuzzleFlashParticleSystem)
+				UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, SkeletalMesh, ShootingStartSocket, SkeletalMesh->GetSocketLocation(ShootingStartSocket), SkeletalMesh->GetSocketRotation(ShootingStartSocket));
+			
 			for (int i = 0; i < PelletCount; i++)
 			{
 
@@ -52,6 +56,9 @@ void AShotgunWeapon::Shoot()
 
 				if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 				{
+					// Get Surface Type to check for headshot and impact material.
+					EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
+					
 					if (HitResult.GetActor()->Implements<UDamageableActor>())
 					{
 
@@ -60,9 +67,6 @@ void AShotgunWeapon::Shoot()
 
 						IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
 						
-						// Get Surface Type to check if headshot
-						EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
-					
 						switch (HitSurfaceType)
 						{
 						case SURFACE_FleshDefault:
@@ -80,6 +84,20 @@ void AShotgunWeapon::Shoot()
 					}
 					//DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 					PlayTracerEffect(HitResult.Location);
+
+					switch (HitSurfaceType)
+					{
+					case SURFACE_FleshDefault:
+					case SURFACE_FleshVulnerable:
+						ImpactEffectToPlay = FleshImpactParticleSystem;
+						break;
+					default:
+						ImpactEffectToPlay = RockImpactParticleSystem; // ToDo: Setup default once all custom Surface Types are made.
+						break;
+					}
+					if(ImpactEffectToPlay)
+						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffectToPlay, HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation());
+					
 				}
 			}
 			if (bPelletConnected)
