@@ -86,7 +86,7 @@ void ABaseEnemy::AttackMiss()
 	FVector EndPlayerAttachHitTrace = PlayerCharacter->GetMesh()->GetBoneLocation("head"); // ToDo: const string HeadBone could be useful here once skeleton added
 	EndPlayerAttachHitTrace.Z += 100;
 	
-	// DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, FColor::Black, false, .5f);
+	DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, FColor::Black, false, .5f);
 
 	// ToDo: Implement weighting missed shots into objects/player view
 	//if(GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Visibility, *TraceParams))
@@ -127,6 +127,7 @@ void ABaseEnemy::ReleaseToken()
 void ABaseEnemy::Death()
 {
 	// ToDo: Rag doll enemy once new skeleton is implemented.
+	ReleaseToken();
 	if(CurrentAttackSystemComponent)
 		CurrentAttackSystemComponent->RemoveAgent(this);
 	UEnemyWaveManagementSystem* WaveManager = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetWaveManager();
