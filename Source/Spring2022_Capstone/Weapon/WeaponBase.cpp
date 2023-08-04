@@ -14,8 +14,15 @@ AWeaponBase::AWeaponBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Skeletal Mesh Component");
-
 	RootComponent = SkeletalMesh;
+	//Sound Components
+	GunShotAudioComp = CreateDefaultSubobject<UAudioComponent>("Gun Shot Audio");
+	OverheatAudioComp = CreateDefaultSubobject<UAudioComponent>("Overheat Audio");
+	GunChangeAudioComp = CreateDefaultSubobject<UAudioComponent>("GunSwitch Audio");
+	
+    OverheatAudioComp->bAutoActivate = false;
+	GunShotAudioComp->bAutoActivate = false;
+	GunChangeAudioComp->bAutoActivate = false;
 	
 }
 
@@ -24,6 +31,12 @@ void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GunShotAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	OverheatAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	GunChangeAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	OverheatAudioComp->SetSound(HeatBuildUp);
+	
 	PlayerCamera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager; // No constructor will crash (execution order),
 	
 	// call CrystalCooldown() every second to recharge crystalCharge
@@ -44,6 +57,8 @@ void AWeaponBase::BeginPlay()
 		PlayerCharacter->SetWeapon2(this);
 		AttachWeapon(PlayerCharacter);
 	}
+	
+	
 	
 }
 
@@ -105,6 +120,15 @@ void AWeaponBase::Overheat()
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("OVERHEATING"));
 	bIsOverheating = true;
 	bCanFire = false;
+
+	if(OverheatAudioComp)
+	{
+		OverheatAudioComp->SetSound(OverHeat);
+		OverheatAudioComp->SetVolumeMultiplier(1.f);
+		OverheatAudioComp->SetPitchMultiplier(1.f);
+		OverheatAudioComp->Play();
+		OverheatAudioComp->FadeOut(OverheatTime,0.f);
+	}
 	
 	GetWorldTimerManager().SetTimer(OverheatTimerHandle, this, &AWeaponBase::WeaponCooldown, OverheatTime, false, -1);
 }
@@ -115,6 +139,10 @@ void AWeaponBase::WeaponCooldown()
 	bIsOverheating = false;
 	bCanFire = true;
 	CurrentCharge = 0;
+	
+	OverheatAudioComp->SetSound(HeatBuildUp);
+	OverheatAudioComp->Stop();
+	
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("WEAPON COOLED"));
 }
 
@@ -126,7 +154,7 @@ void AWeaponBase::ShowHitMarker()
 void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 {
 	
-	PlayerCharacter = TargetCharacter; 
+	PlayerCharacter = TargetCharacter;
 
 	if(PlayerCharacter == nullptr)
 	{

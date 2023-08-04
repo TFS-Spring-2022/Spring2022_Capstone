@@ -97,6 +97,17 @@ void ASemiAutomaticWeapon::Shoot()
 			bIsFiring = true;
 			GetWorld()->GetTimerManager().SetTimer(IsFiringToggleTimerHandle, this, &AWeaponBase::ToggleIsFiringOff, 0.05, false);	
 
+			if(OverheatAudioComp)
+			{
+				OverheatAudioComp->SetPitchMultiplier((CurrentCharge/MaxChargeAmount));
+			}
+
+			//Play gun sound
+			if(GunShotAudioComp)
+			{
+				GunShotAudioComp->Play();
+			}
+			
 			// Call recoil
 			if (RecoilComponent)
 				RecoilComponent->RecoilKick();

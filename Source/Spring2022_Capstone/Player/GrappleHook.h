@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/AudioComponent.h"
+#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "GrappleHook.generated.h"
 
 class UProjectileMovementComponent;
@@ -32,6 +34,22 @@ public:
 	USphereComponent *SphereCollider;
 	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent *HookMesh;
+
+	//Sounds
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* GrappleFireSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* GrappleRetractSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* GrappleHitSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	UAudioComponent* AudioComponent;
+
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))

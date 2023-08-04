@@ -307,12 +307,18 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 		TargetLocation = HitResult.ImpactPoint;
 	}
 	GrappleComponent->Fire(TargetLocation);
+
+	//Implement sound here (grapple shot)
 }
 
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
+
 	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
 	{
+		if(ActiveWeapon->GunChangeAudioComp)
+			ActiveWeapon->GunChangeAudioComp->Play();
+		
 		bIsSwappingWeapon = true;
 		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .5f, false);
 		ActiveWeapon->SetActorHiddenInGame(true);

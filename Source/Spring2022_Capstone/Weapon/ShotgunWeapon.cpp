@@ -105,6 +105,16 @@ void AShotgunWeapon::Shoot()
 				ShowHitMarker();
 				bPelletConnected = false;
 			}
+			if(OverheatAudioComp)
+			{
+				OverheatAudioComp->SetPitchMultiplier((CurrentCharge/MaxChargeAmount));
+			}
+
+			//Play gun sound
+			if(GunShotAudioComp)
+			{
+				GunShotAudioComp->Play();
+			}
 
 			CurrentCharge += ShotCost;
 			PlayWeaponCameraShake();

@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "Components/AudioComponent.h"
+#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "WeaponBase.generated.h"
 
 
@@ -32,6 +34,21 @@ public:
 
 	virtual void Shoot() PURE_VIRTUAL(AWeaponBase::Shoot());
 	
+	UPROPERTY(EditAnywhere)
+	USoundCue* HeatBuildUp;
+
+	UPROPERTY(EditAnywhere)
+	USoundCue* OverHeat;
+	
+	UPROPERTY(EditAnywhere)
+	UAudioComponent* OverheatAudioComp;
+
+	UPROPERTY(EditAnywhere)
+	UAudioComponent* GunShotAudioComp;
+	
+	UPROPERTY(EditAnywhere)
+	UAudioComponent* GunChangeAudioComp;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -159,7 +176,7 @@ protected:
 
 	UPROPERTY()
 	UParticleSystem* ImpactEffectToPlay;
-	
+
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
 	// Called every frame
