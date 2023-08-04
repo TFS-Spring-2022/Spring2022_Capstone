@@ -248,6 +248,16 @@ private:
 
 	bool bIsMantleing;
 
+	bool bIsSwappingWeapon = false;
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetIsSwapping() {return bIsSwappingWeapon;}
+
+	FTimerHandle IsSwappingTimerHandle;
+
+	UFUNCTION()
+	FORCEINLINE void ToggleIsSwappingOff() {bIsSwappingWeapon = false;}
+
 public:
 	
 	UFUNCTION(BlueprintCallable)

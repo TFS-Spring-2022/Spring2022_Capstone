@@ -274,6 +274,9 @@ void APlayerCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo &OutResult)
 
 void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
+	if(bIsSwappingWeapon)
+		return;
+	
 	if (bIsSprinting)
 		return;
 	ActiveWeapon->Shoot();
@@ -308,9 +311,11 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
-	if(Weapon1 && Weapon2)
+	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
 	{
-		ActiveWeapon->SetActorHiddenInGame(true);//SetHidden(true);
+		bIsSwappingWeapon = true;
+		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .5f, false);
+		ActiveWeapon->SetActorHiddenInGame(true);
 		ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 		ActiveWeapon->SetActorHiddenInGame(false);
 	}
