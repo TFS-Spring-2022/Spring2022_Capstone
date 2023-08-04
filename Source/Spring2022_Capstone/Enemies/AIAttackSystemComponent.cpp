@@ -20,32 +20,36 @@ void UAIAttackSystemComponent::BeginPlay()
 	PlayerInstance = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if(PlayerInstance)
 		PlayerMovementComponent = PlayerInstance->GetMovementComponent();
-
-	// Temp/ToDo: Assign random agent at the start of a wave.
-	if(Agents[0])
-		TokenHolder = Agents[0];
-
+	
 	TokenTimer = 0;
 	TokenPassTime = 9999;
+
+	bHoldingToken = true;
 }
 
 void UAIAttackSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if(Agents.IsEmpty())
+		return;
+	
 	// Start token timer
 	TokenTimer += DeltaTime;
 	if(TokenTimer > TokenPassTime)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::MakeRandomColor(), "Token Holder Attack");
-		PlayerInstance->DamageActor(TokenHolder, 10); // ToDo: Pass Token To TokenHolder Enemy
+		if(TokenHolder && bHoldingToken == true)
+		{
+			Cast<IAttackSystemAgentInterface>(TokenHolder)->ReceiveToken();
+			bHoldingToken = false;
+		}
 		TokenTimer = 0;
 	}
 	
 	for (AActor* ActiveAgent : Agents)
 	{
 		
-		float AgentRelevancy = CalculateAgentRelevance(ActiveAgent, PlayerInstance); // removed const to test something
+		float AgentRelevancy = CalculateAgentRelevance(ActiveAgent, PlayerInstance); 
 		
 		// Recheck current token holder and replace if more relevant
 		if(AgentRelevancy >	 CalculateAgentRelevance(TokenHolder, PlayerInstance))
@@ -56,16 +60,13 @@ void UAIAttackSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 	TokenPassTime = CalculateDelay(TokenHolder, PlayerInstance);
 	
-	/* Debug Printing */
-	Agent1DelayValue = CalculateDelay(Agents[0], PlayerInstance);
-	Agent2DelayValue = CalculateDelay(Agents[1], PlayerInstance);
-	Agent3DelayValue = CalculateDelay(Agents[2], PlayerInstance);
-	Agent4DelayValue = CalculateDelay(Agents[3], PlayerInstance);
-	
 }
 
 float UAIAttackSystemComponent::CalculateDelay(AActor* Agent, AActor* Target)
 {
+
+	if(!Agent || !Target)
+		return 0;
 
 	// Delay = BaseDelay * (DistanceMultiplier * StanceMultiplier * CoverMultiplier * FacingDirectionMultiplier * VelocityMultiplier);
 	
@@ -114,6 +115,7 @@ float UAIAttackSystemComponent::GetVelocityMultiplier(const AActor* Target) cons
 
 float UAIAttackSystemComponent::GetStanceMultiplier(const AActor* Target) const
 {
+	
 	float StanceMultiplier = 1.0f;
 	
 	if(Target->IsA(APlayerCharacter::StaticClass()))
@@ -128,7 +130,7 @@ float UAIAttackSystemComponent::GetStanceMultiplier(const AActor* Target) const
 
 float UAIAttackSystemComponent::GetCoverMultiplier(const AActor* Agent, AActor* Target) const
 {
-
+	
 	FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 	TraceParams->AddIgnoredActor(Agent);
 
@@ -146,14 +148,15 @@ float UAIAttackSystemComponent::GetCoverMultiplier(const AActor* Agent, AActor* 
 		else
 			return 1.5; // Target behind half cover
 	}
-
 	return 1;
 }
 
 // Calculate weighted sum and the highest score is chosen as relevant agent. 
 float UAIAttackSystemComponent::CalculateAgentRelevance(AActor* Agent, AActor* Target)
 {
-
+	if(!Agent || !Target)
+		return 0;
+	
 	// AgentRelevanceScore = ArcheType * (DistanceValueMultiplier * TargetExposureMultiplier * Attack Status)
 	// ToDo: Agent Attack Status: If the agent is currently under attack, it is more likely it will receive a token.
 	// ToDo: Token Assignment History: Agents that have not received a token in a long time may have a higher change of receiving the token soon. 
@@ -220,7 +223,18 @@ void UAIAttackSystemComponent::AddNewAgent(AActor* NewAgent)
 	}
 }
 
+void UAIAttackSystemComponent::RemoveAgent(AActor* AgentToRemove)
+{
+	if(Agents.Contains(AgentToRemove))
+		Agents.Remove(AgentToRemove);
+}
+
 void UAIAttackSystemComponent::ClearAgents()
 {
 	Agents.Empty();
+}
+
+void UAIAttackSystemComponent::ReturnToken()
+{
+	bHoldingToken = true;
 }

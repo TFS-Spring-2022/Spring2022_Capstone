@@ -67,11 +67,11 @@ void AShotgunWeapon::Shoot()
 						{
 						case SURFACE_FleshDefault:
 							DamageableActor->DamageActor(this, ShotDamage);
-							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Default Shot");
+							GEngine->AddOnScreenDebugMessage(11, .5f, FColor::Black, "Default Shot");
 							break;
 						case SURFACE_FleshVulnerable:
 							DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier);
-							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Head Shot");
+							GEngine->AddOnScreenDebugMessage(10, .5f, FColor::Red, "Head Shot");
 							break;
 						default:
 							DamageableActor->DamageActor(this, ShotDamage);

@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseEnemy.h"
 #include "Components/ActorComponent.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "AIAttackSystemComponent.generated.h"
@@ -85,19 +84,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Attack System | Bones")
 	FName UpperBone;
 
-	// Debug - Testing values ToDo: Erase
-	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
-	float Agent1DelayValue;
-
-	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
-	float Agent2DelayValue;
-
-	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
-	float Agent3DelayValue;
-
-	UPROPERTY(VisibleAnywhere, Category = "Attack System | Debug")
-	float Agent4DelayValue;
-
+	// Base delay time in seconds between token passes.
 	UPROPERTY(EditAnywhere, Category = "Attack System | Properties")
 	float BaseDelay;
 
@@ -109,6 +96,12 @@ public:
 	void AddNewAgent(AActor* NewAgent); // ToDo: Change parameter type if we change from AActor* to ABaseEnemy*.
 
 	/**
+	 * @brief Called when an agent dies to remove them from Agents[] array.
+	 * @param AgentToRemove Agent to be removed.
+	 */
+	void RemoveAgent(AActor* AgentToRemove);
+	
+	/**
 	 * @brief Clears the 'Agents' array of all references.
 	 */
 	void ClearAgents();
@@ -116,8 +109,17 @@ public:
 	// Note - When created grapple/dash would be around 1000-1200. Number will need to be changed if movement speed/dash force is updated.
 	float const DASH_GRAPPLE_VELOCITY_LENGTH = 1000.0f; // Velocity length when the player is dashing or grappling.
 
+	// Timer used in passing the token to most relevant agent.
 	float TokenTimer = 0;
-	UPROPERTY(EditAnywhere, Category = "Attack System | Debug")
+
+	UPROPERTY(VisibleAnywhere)
 	float TokenPassTime;
+
+	// Called when an Agent releases the token back to the attack system component..
+	void ReturnToken();
+	
+	// The state of the Attack System's Token.
+	// true - no agent currently has the token, false - an agent is holding.
+	bool bHoldingToken = true;
 	
 };

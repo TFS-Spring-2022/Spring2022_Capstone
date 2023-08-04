@@ -22,17 +22,15 @@ class SPRING2022_CAPSTONE_API IAttackSystemAgentInterface
 
 public:
 
-	// ToDo: virtual and in-line implementation if possible, ReleaseToken() might be possible.
-	
 	/**
 	 * @brief Called from AIAttackSystemComponent when the system is giving an implementing Agent an attack token.
 	 * @return True - Enemy received and holds token. False - Enemy could not receive token.
 	 */
-	bool ReceiveToken();
+	virtual void ReceiveToken() {};
 
 	/**
 	 * @brief Called when an implementing Agent holding an attack token uses it, returning the logical token to the AIAttackSystemComponent. 
 	 */
-	void ReleaseToken();
+	virtual void ReleaseToken() {};
 	
 };
