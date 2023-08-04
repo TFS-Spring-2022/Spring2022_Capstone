@@ -41,4 +41,7 @@ void ASpring2022_CapstoneGameModeBase::SpawnWave()
 {
 	if(EnemyWaveManagerInstance)
 		EnemyWaveManagerInstance->SpawnWave();
+	// Ensure token is not lost between waves.
+	if(AIAttackSystemComp)
+		AIAttackSystemComp->ReturnToken();
 }
