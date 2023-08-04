@@ -18,7 +18,8 @@ UGrappleComponent::UGrappleComponent()
 void UGrappleComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
 }
 
 void UGrappleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
@@ -96,7 +97,6 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 {
 	if (OtherActor->IsA(APlayerCharacter::StaticClass()))
 	{
-		_GrappleHook->AudioComponent->Play();
 		return;
 	}
 
@@ -116,8 +116,10 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 		InitialHookDirection2D = FVector(ToGrappleHookDirection.X, ToGrappleHookDirection.Y, 0);
 		InitialHookDirection2D.Normalize();
 
-		//Sound
-		_GrappleHook->AudioComponent->Play();
+		if(SoundManagerSubSystem)
+		{
+			SoundManagerSubSystem->PlaySound(Hit.Location ,_GrappleHook->GrappleHitSound);
+		}
 	}
 }
 
@@ -128,6 +130,7 @@ void UGrappleComponent::MaxGrappleTimeReached()
 
 void UGrappleComponent::CancelGrapple(bool ShouldTriggerCooldown)
 {
+	//if (_GrappleHook && Cable)
 	if (_GrappleHook && Cable)
 	{
 		_GrappleHook->Destroy();

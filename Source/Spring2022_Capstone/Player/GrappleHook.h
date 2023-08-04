@@ -37,19 +37,13 @@ public:
 
 	//Sounds
 	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* GrappleFireSound;
+	USoundCue* GrappleHitSound;
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* GrappleRetractSound;
+	UAudioComponent* GrappleShotAudioComp;
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* GrappleHitSound;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	UAudioComponent* AudioComponent;
-
-	UPROPERTY()
-	USoundManagerSubSystem* SoundManagerSubSystem;
+	UAudioComponent* GrappleRetractAudioComp;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))

@@ -26,8 +26,10 @@ AGrappleHook::AGrappleHook()
 	ProjectileMovementComp = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComp"));
 	ProjectileMovementComp->ProjectileGravityScale = 0;
 
-	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio Component");
-	AudioComponent->SetupAttachment(SphereCollider);
+	GrappleShotAudioComp = CreateDefaultSubobject<UAudioComponent>("Audio Component");
+	GrappleShotAudioComp->SetupAttachment(SphereCollider);
+
+	
 }
 
 // Called when the game starts or when spawned
@@ -35,17 +37,13 @@ void AGrappleHook::BeginPlay()
 {
 	Super::BeginPlay();
 	ProjectileMovementComp->SetVelocityInLocalSpace(FireVelocity);
-
-	SoundManagerSubSystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USoundManagerSubSystem>();
-
+	
 	//Sounds
 	//Play Fire Sound
-
-	//AudioComponent->Play();
-	//if(SoundManagerSubSystem)
-	//{
-	//	SoundManagerSubSystem->PlaySound(GetActorLocation(),GrappleFireSound);
-	//}
+	if(GrappleShotAudioComp)
+	{
+		GrappleShotAudioComp->Play();
+	}
 }
 
 // Called every frame

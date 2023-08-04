@@ -106,6 +106,11 @@ void AWeaponBase::ChargeCooldown()
 	{
 		CurrentCharge -= ChargeCooldownRate;
 	}
+
+	if(CurrentCharge <= 0)
+	{
+		OverheatAudioComp->Stop();
+	}
 }
 
 void AWeaponBase::Overheat()

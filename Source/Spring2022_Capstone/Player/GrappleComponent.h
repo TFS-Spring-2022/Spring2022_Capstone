@@ -69,6 +69,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Grapple")
 	float GrappleRange = 500.f;
 
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
 	UFUNCTION()
     void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit );
 	UFUNCTION()
