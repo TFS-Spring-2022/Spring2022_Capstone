@@ -27,9 +27,9 @@ public:
 
 	UFUNCTION()
 	void SetHealth(float NewHealth);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	float GetHealth();
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	float GetMaxHealth();
 	UFUNCTION()
 	void SetMaxHealth(float value);
