@@ -44,12 +44,46 @@ void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount)
 	{
 		HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
 		if(HealthComp->GetHealth() <= 0)
+		{
+			
 			Death();
+		}
 	}
 }
 
 void ABaseEnemy::Death()
 {
+	float TotalProbability = 0.f;
+	for (float Probability : SpawnProbabilities)
+	{
+		TotalProbability += Probability;
+	}
+
+	//  grabs the percentage
+	float RandomValue = FMath::FRandRange(0.f, 1.f);
+
+	
+	if (RandomValue <= TotalProbability)
+	{
+		// If drops are within chance this will make it drop
+		float CurrentProbability = 0.f;
+		for (int32 Index = 0; Index < SpawnableActors.Num(); Index++)
+		{
+			CurrentProbability += SpawnProbabilities[Index];
+			if (RandomValue <= CurrentProbability)
+			{
+				// Spawn the chosen actor
+				UWorld* World = GetWorld();
+				if (World && SpawnableActors[Index])
+				{
+					FVector SpawnLocation = GetActorLocation();
+					FRotator SpawnRotation = GetActorRotation();
+					AActor* SpawnedActor = World->SpawnActor<AActor>(SpawnableActors[Index], SpawnLocation, SpawnRotation);
+				}
+				break;
+			}
+		}
+	}
 	// ToDo: Rag doll enemy once new skeleton is implemented.
 	// Remove enemy from the wave manager (RemoveActiveEnemy() will only remove enemies inside ActiveEnemies[] in the Wave Manager). 
 	UEnemyWaveManagementSystem* WaveManager = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetWaveManager();

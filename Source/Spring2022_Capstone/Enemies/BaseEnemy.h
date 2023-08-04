@@ -33,6 +33,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Pawn, meta = (AllowPrivateAccess = "true"))
 	UBehaviorTree *BehaviorTree;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Spawning", meta = (AllowPrivateAccess = true))
+	TArray<TSubclassOf<AActor>> SpawnableActors;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spawning", meta = (AllowPrivateAccess = true))
+	TArray<float> SpawnProbabilities;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Pawn, meta = (AllowPrivateAccess = "true"))
 	bool bDidHide;
 
