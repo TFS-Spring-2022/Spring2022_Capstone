@@ -299,6 +299,8 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
 	ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+	StashedWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+	PlayerHUDWidgetInstance->SetWeaponIcons(ActiveWeapon->GetWeaponIcon(), StashedWeapon->GetWeaponIcon());
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)
