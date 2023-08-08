@@ -71,7 +71,7 @@ void UGrappleComponent::Fire(FVector TargetLocation)
 	Cable->AttachToActor(GetOwner(), FAttachmentTransformRules::KeepWorldTransform);
 	Cable->CableComponent->EndLocation = FVector::ZeroVector;
 	Cable->CableComponent->SetAttachEndTo(_GrappleHook, TEXT(""));
-	Cable->CableComponent->CableWidth = 1.25f;
+	Cable->CableComponent->CableWidth = 1.f;
 	Cable->CableComponent->bEnableStiffness = false;
 	Cable->CableComponent->SubstepTime = 0.005f;
 	Cable->CableComponent->SetCollisionProfileName(TEXT("OverlapAll"));
