@@ -5,14 +5,6 @@
 
 #include "Kismet/GameplayStatics.h"
 
-void UEnemyWaveManagementSystem::BeginPlay()
-{
-	Super::BeginPlay();
-
-	CurrentWave = 0;
-	
-}
-
 void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 {
 	// ToDo: Add EnemySpawnPoints to array from EnemySpawnPoint::BeginPlay() (beware execution order).
@@ -21,6 +13,14 @@ void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 
 void UEnemyWaveManagementSystem::SpawnWave()
 {
+
+	if(CurrentWave > Waves.Num() - 1)
+	{
+		// End game after all waves complete.
+		UKismetSystemLibrary::QuitGame(GetWorld(), UGameplayStatics::GetPlayerController(GetWorld(), 0), EQuitPreference::Quit, true);
+		return;
+	}
+	
 	for (TSubclassOf<ABaseEnemy> EnemyToSpawn : Waves[CurrentWave].EnemiesToSpawn)
 	{
 		FActorSpawnParameters SpawnParams;
@@ -35,6 +35,8 @@ void UEnemyWaveManagementSystem::SpawnWave()
 			RandomSpawnSelection = FMath::RandRange(0, EnemySpawnLocations.Num()-1);
 		}
 		while (RandomSpawnSelection == LastSpawnLocationElement);
+
+		LastSpawnLocationElement = RandomSpawnSelection;
 		
 		FVector Location = EnemySpawnLocations[RandomSpawnSelection]->GetActorLocation();
 		FRotator Rotation = EnemySpawnLocations[RandomSpawnSelection]->GetActorRotation();
@@ -44,16 +46,26 @@ void UEnemyWaveManagementSystem::SpawnWave()
 	}
 	
 	CurrentWave++;
-	if(CurrentWave > Waves.Num()-1)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "UEnemyWaveManagementSystem: Last Wave Complete - End Game");
-		// Note - For now I am just going to reset the wave counter.
-		CurrentWave = 0;
-	}
 }
 
 void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 {
 	if(ActiveEnemies.Contains(EnemyToRemove))
+	{
 		ActiveEnemies.Remove(EnemyToRemove);
+		
+		// Note - This is inside the if-contains to prevent placed enemies out of ActiveEnemies[]
+		// from spawning an unwanted wave.
+		if(ActiveEnemies.IsEmpty())
+		{
+			// Begin play is not called on this component so PlayerCharacter must be set here.
+			if(!PlayerCharacter)
+				PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+
+			// Open upgrade menu before spawning next wave
+			PlayerCharacter->GetUpgradeSystemComponent()->OpenUpgradeMenu();
+
+			SpawnWave();
+		}
+	}
 }

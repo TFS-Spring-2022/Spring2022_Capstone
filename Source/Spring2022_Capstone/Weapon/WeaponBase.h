@@ -80,6 +80,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
 		float ShotDamage = 35;
 
+	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
+		float CriticalHitMultiplier = 1.3f;
+
 	// Time between shots (seconds).
 	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
 		float FireRate = .5;
