@@ -50,7 +50,14 @@ void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
                 OverheatBar->SetPercent(CurrentWeapon->GetCurrentCharge() / 100);
         }
     }
-    
+}
+
+void UHUDWidget::SetWeaponIcons(UTexture2D* EquippedWeaponTexture2D, UTexture2D* StashedWeaponTexture2D) const
+{
+    if(EquippedWeaponTexture2D)
+        EquippedWeaponIcon->SetBrushFromTexture(EquippedWeaponTexture2D, false);
+    if(StashedWeaponTexture2D)
+        StashedWeaponIcon->SetBrushFromTexture(StashedWeaponTexture2D, false);
 }
 
 void UHUDWidget::OnHealthChanged(float HealthValue)
