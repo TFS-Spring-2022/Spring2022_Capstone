@@ -296,10 +296,15 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 		TargetLocation = HitResult.ImpactPoint;
 	}
 	GrappleComponent->Fire(TargetLocation);
+
+	// ToDo: Implement sound here (grapple shot)
 }
 
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
+	if(ActiveWeapon->GunChangeAudioComp)
+		ActiveWeapon->GunChangeAudioComp->Play();
+
 	ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 }
 

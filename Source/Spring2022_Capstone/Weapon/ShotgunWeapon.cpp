@@ -38,8 +38,15 @@ void AShotgunWeapon::Shoot()
 			// ToDo: UPROPERTY IN HEADER (Naming and Degrees/Radians)	//
 			float HalfAngle = 10;
 			HalfAngle = UKismetMathLibrary::DegreesToRadians(HalfAngle);
-			//															//
+			
+			//Play sound												
+			if(GunShotAudioComp)
+			{
+				GunShotAudioComp->Play();
+			}
 
+			
+			
 			for (int i = 0; i < PelletCount; i++)
 			{
 
@@ -51,6 +58,7 @@ void AShotgunWeapon::Shoot()
 				TraceParams->AddIgnoredComponent(PlayerCharacter->GetMesh());
 
 				if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
+
 				{
 					if (HitResult.GetActor()->Implements<UDamageableActor>())
 					{
@@ -88,9 +96,22 @@ void AShotgunWeapon::Shoot()
 				ShowHitMarker();
 				bPelletConnected = false;
 			}
-
+			//Plays the sound if first shot
+			if(CurrentCharge == 0)
+			{
+				OverheatAudioComp->Play();
+			}
+			
 			CurrentCharge += ShotCost;
+
+			
+			if(OverheatAudioComp)
+			{
+				OverheatAudioComp->SetPitchMultiplier((CurrentCharge/MaxChargeAmount));
+			}
 			PlayWeaponCameraShake();
+
+			
 
 			// Call recoil
 			if (RecoilComponent)
