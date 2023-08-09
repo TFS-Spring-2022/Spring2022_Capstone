@@ -31,6 +31,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UEnemyWaveManagementSystem* GetWaveManager();
 
+	UFUNCTION(BlueprintCallable)
+	UAIAttackSystemComponent* GetAttackSystemComponent();
+	
 	// Calls WaveManager's SpawnWave function.
 	UFUNCTION(BlueprintCallable)
 	void SpawnWave();
@@ -41,5 +44,10 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Wave Management")
 	float TimeBeforeFirstWave;
+	
+	// AIAttackSystemComp to handle level's enemies
+	// IMPORTANT - MUST BE ADDED TO GAME MODE'S BLUEPRINT
+	UPROPERTY()
+	UAIAttackSystemComponent* AIAttackSystemComp;
 	
 };

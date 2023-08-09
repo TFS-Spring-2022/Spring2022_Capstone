@@ -18,6 +18,8 @@ UGrappleComponent::UGrappleComponent()
 void UGrappleComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
 }
 
 void UGrappleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
@@ -69,10 +71,11 @@ void UGrappleComponent::Fire(FVector TargetLocation)
 	Cable->AttachToActor(GetOwner(), FAttachmentTransformRules::KeepWorldTransform);
 	Cable->CableComponent->EndLocation = FVector::ZeroVector;
 	Cable->CableComponent->SetAttachEndTo(_GrappleHook, TEXT(""));
-	Cable->CableComponent->CableWidth = 1.25f;
+	Cable->CableComponent->CableWidth = 1.f;
 	Cable->CableComponent->bEnableStiffness = false;
 	Cable->CableComponent->SubstepTime = 0.005f;
 	Cable->CableComponent->SetCollisionProfileName(TEXT("OverlapAll"));
+	
 }
 
 FVector UGrappleComponent::GetStartLocation()
@@ -85,7 +88,7 @@ FVector UGrappleComponent::GetStartLocation()
 void UGrappleComponent::DecrementGrappleCooldown(float Seconds)
 {
 	Cooldown -= Seconds;
-
+	
 	if(Cooldown <= MinimumGrappleCooldown)
 		Cooldown = MinimumGrappleCooldown;
 }
@@ -112,6 +115,11 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 		MovementComponent->Velocity = ToGrappleHookDirection * GrappleForce;
 		InitialHookDirection2D = FVector(ToGrappleHookDirection.X, ToGrappleHookDirection.Y, 0);
 		InitialHookDirection2D.Normalize();
+
+		if(SoundManagerSubSystem)
+		{
+			SoundManagerSubSystem->PlaySound(Hit.Location ,_GrappleHook->GrappleHitSound);
+		}
 	}
 }
 
@@ -122,6 +130,7 @@ void UGrappleComponent::MaxGrappleTimeReached()
 
 void UGrappleComponent::CancelGrapple(bool ShouldTriggerCooldown)
 {
+	//if (_GrappleHook && Cable)
 	if (_GrappleHook && Cable)
 	{
 		_GrappleHook->Destroy();

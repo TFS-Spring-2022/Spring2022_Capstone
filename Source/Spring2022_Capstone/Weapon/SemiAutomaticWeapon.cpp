@@ -3,8 +3,11 @@
 #include "SemiAutomaticWeapon.h"
 
 #include "DevTargets.h"
+
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Spring2022_Capstone/Spring2022_Capstone.h"
+
 
 ASemiAutomaticWeapon::ASemiAutomaticWeapon()
 {
@@ -37,6 +40,7 @@ void ASemiAutomaticWeapon::Shoot()
 			FVector EndTrace = ((ForwardVector * ShotDistance) + StartTrace);
 			FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
 			TraceParams->bReturnPhysicalMaterial = true;  // Hit must return a physical material to tell if the player has hit a headshot.
+			TraceParams->AddIgnoredComponent(PlayerCharacter->GetMesh());
 			
 			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
@@ -53,11 +57,11 @@ void ASemiAutomaticWeapon::Shoot()
 					{
 					case SURFACE_FleshDefault:
 						DamageableActor->DamageActor(this, ShotDamage);
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Default Shot");
+						GEngine->AddOnScreenDebugMessage(11, .5f, FColor::Black, "Default Shot");
 						break;
 					case SURFACE_FleshVulnerable:
 						DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier);
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Head Shot");
+						GEngine->AddOnScreenDebugMessage(10, .5f, FColor::Red, "Head Shot");
 						break;
 					default:
 						DamageableActor->DamageActor(this, ShotDamage);
@@ -67,10 +71,26 @@ void ASemiAutomaticWeapon::Shoot()
 				}
 				DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 			}
+			
+			if(CurrentCharge == 0)
+			{
+				OverheatAudioComp->Play();
+			}
 
 			CurrentCharge += ShotCost;
 			PlayWeaponCameraShake();
 
+			if(OverheatAudioComp)
+			{
+				OverheatAudioComp->SetPitchMultiplier((CurrentCharge/MaxChargeAmount));
+			}
+
+			//Play gun sound
+            if(GunShotAudioComp)
+            {
+            	GunShotAudioComp->Play();
+            }
+			
 			// Call recoil
 			if (RecoilComponent)
 				RecoilComponent->RecoilKick();

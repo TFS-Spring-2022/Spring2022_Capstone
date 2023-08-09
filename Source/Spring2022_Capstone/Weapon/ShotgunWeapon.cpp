@@ -4,7 +4,9 @@
 #include "DevTargets.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "Spring2022_Capstone/Spring2022_Capstone.h"
+
 
 AShotgunWeapon::AShotgunWeapon()
 {
@@ -32,23 +34,31 @@ void AShotgunWeapon::Shoot()
 			FVector StartTrace = PlayerCamera->GetCameraLocation();
 			StartTrace.Z -= 10; // TEMP: Offset to make debug draw lines visible without moving.
 			FVector ForwardVector = PlayerCamera->GetActorForwardVector();
-
+			
 			// ToDo: UPROPERTY IN HEADER (Naming and Degrees/Radians)	//
 			float HalfAngle = 10;
 			HalfAngle = UKismetMathLibrary::DegreesToRadians(HalfAngle);
-			//															//
+			
+			//Play sound												
+			if(GunShotAudioComp)
+			{
+				GunShotAudioComp->Play();
+			}
 
+			
+			
 			for (int i = 0; i < PelletCount; i++)
 			{
 
 				// Get random direction inside cone projected from player
 				ForwardVector = UKismetMathLibrary::RandomUnitVectorInConeInRadians(PlayerCamera->GetActorForwardVector(), HalfAngle);
-
 				FVector EndTrace = ((ForwardVector * ShotDistance) + StartTrace);
 				FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
 				TraceParams->bReturnPhysicalMaterial = true; // Hit must return a physical material to tell if the player has hit a headshot.
+				TraceParams->AddIgnoredComponent(PlayerCharacter->GetMesh());
 
-				if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
+				if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
+
 				{
 					if (HitResult.GetActor()->Implements<UDamageableActor>())
 					{
@@ -65,11 +75,11 @@ void AShotgunWeapon::Shoot()
 						{
 						case SURFACE_FleshDefault:
 							DamageableActor->DamageActor(this, ShotDamage);
-							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "Default Shot");
+							GEngine->AddOnScreenDebugMessage(11, .5f, FColor::Black, "Default Shot");
 							break;
 						case SURFACE_FleshVulnerable:
 							DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier);
-							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Head Shot");
+							GEngine->AddOnScreenDebugMessage(10, .5f, FColor::Red, "Head Shot");
 							break;
 						default:
 							DamageableActor->DamageActor(this, ShotDamage);
@@ -86,9 +96,22 @@ void AShotgunWeapon::Shoot()
 				ShowHitMarker();
 				bPelletConnected = false;
 			}
-
+			//Plays the sound if first shot
+			if(CurrentCharge == 0)
+			{
+				OverheatAudioComp->Play();
+			}
+			
 			CurrentCharge += ShotCost;
+
+			
+			if(OverheatAudioComp)
+			{
+				OverheatAudioComp->SetPitchMultiplier((CurrentCharge/MaxChargeAmount));
+			}
 			PlayWeaponCameraShake();
+
+			
 
 			// Call recoil
 			if (RecoilComponent)

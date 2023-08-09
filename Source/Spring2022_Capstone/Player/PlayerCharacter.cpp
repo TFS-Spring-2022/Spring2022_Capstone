@@ -283,9 +283,10 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 		return;
 	}
 	FHitResult HitResult;
-	FVector StartLocation = Camera->GetComponentLocation();
+	FVector StartLocation = Camera->GetComponentLocation() + Camera->GetForwardVector() * GRAPPLE_TRACE_START_FORWARD_BUFFER;
 	FVector EndLocation = Camera->GetForwardVector() * GrappleComponent->GrappleRange + StartLocation;
 	FCollisionQueryParams TraceParams;
+	TraceParams.AddIgnoredActor(this);
 
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility);
 	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.f);
@@ -295,10 +296,15 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 		TargetLocation = HitResult.ImpactPoint;
 	}
 	GrappleComponent->Fire(TargetLocation);
+
+	// ToDo: Implement sound here (grapple shot)
 }
 
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
+	if(ActiveWeapon->GunChangeAudioComp)
+		ActiveWeapon->GunChangeAudioComp->Play();
+
 	ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 }
 
