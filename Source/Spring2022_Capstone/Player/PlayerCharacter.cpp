@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "GrappleState.h"
 #include "MantleSystemComponent.h"
+#include "SAdvancedTransformInputBox.h"
 #include "Blueprint/UserWidget.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -92,6 +93,9 @@ void APlayerCharacter::BeginPlay()
 	}
 	
 	bDashBlurFadingIn = false;
+
+	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -129,6 +133,10 @@ void APlayerCharacter::Jump()
 		{
 			if(PlayerMantleSystemComponent->AttemptMantle())
 			{
+				if(SoundManagerSubSystem)
+				{
+					SoundManagerSubSystem->PlaySound(this->GetActorLocation(), MantleSC);
+				}
 				bIsMantleing = true;
 				return;
 			}
@@ -163,7 +171,11 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 
 			bDashBlurFadingIn = true;
 			GetWorld()->GetTimerManager().SetTimer(DashBlurTimerHandle, this, &APlayerCharacter::ClearDashBlur, DashBlurUpTime, false);
-			
+
+			if(SoundManagerSubSystem)
+			{
+				SoundManagerSubSystem->PlaySound(this->GetActorLocation(), DashSC);
+			}
 		}
 	}
 

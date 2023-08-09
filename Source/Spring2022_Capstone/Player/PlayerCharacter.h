@@ -248,18 +248,8 @@ private:
 
 	bool bIsMantleing;
 
-	//Sounds
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* GrappleShotSC;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* GrappleRetractSC;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* DashSC;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* VaultSC;
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
 
 public:
 	
@@ -303,5 +293,18 @@ public:
 	UUpgradeSystemComponent* GetUpgradeSystemComponent();
 
 	FORCEINLINE bool GetIsSprinting() const {return bIsSprinting;}
+
+	//Sounds
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* GrappleShotSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* GrappleRetractSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* DashSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* MantleSC;
 	
 };
