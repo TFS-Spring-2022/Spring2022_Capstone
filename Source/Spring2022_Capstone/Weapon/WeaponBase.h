@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/AudioComponent.h"
+#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "WeaponBase.generated.h"
 
 class APlayerCharacter;
@@ -29,6 +31,21 @@ public:
 
 	virtual void Shoot() PURE_VIRTUAL(AWeaponBase::Shoot());
 	
+	UPROPERTY(EditAnywhere)
+	USoundCue* HeatBuildUp;
+
+	UPROPERTY(EditAnywhere)
+	USoundCue* OverHeat;
+	
+	UPROPERTY(EditAnywhere)
+	UAudioComponent* OverheatAudioComp;
+
+	UPROPERTY(EditAnywhere)
+	UAudioComponent* GunShotAudioComp;
+	
+	UPROPERTY(EditAnywhere)
+	UAudioComponent* GunChangeAudioComp;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -62,6 +79,9 @@ protected:
 	// ToDo: Damage not implemented 
 	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
 		float ShotDamage = 35;
+
+	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
+		float CriticalHitMultiplier = 1.3f;
 
 	// Time between shots (seconds).
 	UPROPERTY(EditDefaultsOnly, Category="Weapon Stats")
@@ -130,6 +150,8 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Components")
 	UTexture2D* WeaponIcon;
+
+	
 
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
