@@ -248,6 +248,19 @@ private:
 
 	bool bIsMantleing;
 
+	//Sounds
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* GrappleShotSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* GrappleRetractSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* DashSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* VaultSC;
+
 public:
 	
 	UFUNCTION(BlueprintCallable)
