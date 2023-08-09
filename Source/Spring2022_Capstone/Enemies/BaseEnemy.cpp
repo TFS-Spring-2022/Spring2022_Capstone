@@ -129,37 +129,21 @@ void ABaseEnemy::ReleaseToken()
 
 void ABaseEnemy::Death()
 {
-	float TotalProbability = 0.f;
-	for (float Probability : SpawnProbabilities)
-	{
-		TotalProbability += Probability;
-	}
 
-	//  grabs the percentage
-	float RandomValue = FMath::FRandRange(0.f, 1.f);
-
-	
-	if (RandomValue <= TotalProbability)
+	// Drop Item
+	for (const FEnemyDrop DroppableItem : Drops)
 	{
-		// If drops are within chance this will make it drop
-		float CurrentProbability = 0.f;
-		for (int32 Index = 0; Index < SpawnableActors.Num(); Index++)
+		const float RandomValue = FMath::RandRange(0.0f, 100.0f);
+		// If the drop chance is hit, spawn the drop and break loop.
+		if(RandomValue < DroppableItem.DropChancePercentage)
 		{
-			CurrentProbability += SpawnProbabilities[Index];
-			if (RandomValue <= CurrentProbability)
-			{
-				// Spawn the chosen actor
-				UWorld* World = GetWorld();
-				if (World && SpawnableActors[Index])
-				{
-					FVector SpawnLocation = GetActorLocation();
-					FRotator SpawnRotation = GetActorRotation();
-					AActor* SpawnedActor = World->SpawnActor<AActor>(SpawnableActors[Index], SpawnLocation, SpawnRotation);
-				}
-				break;
-			}
+			const FVector DropLocation = GetActorLocation();
+			const FRotator DropRotation = GetActorRotation();
+			AActor* SpawnedPickup = GetWorld()->SpawnActor<ABasePickup>(DroppableItem.EnemyDrop, DropLocation, DropRotation);
+			break;
 		}
 	}
+
 	// ToDo: Rag doll enemy once new skeleton is implemented.
 	ReleaseToken();
 	if(CurrentAttackSystemComponent)
