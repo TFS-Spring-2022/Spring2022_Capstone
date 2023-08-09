@@ -106,7 +106,10 @@ void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount)
 	{
 		HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
 		if(HealthComp->GetHealth() <= 0)
+		{
+			
 			Death();
+		}
 	}
 }
 
@@ -126,6 +129,21 @@ void ABaseEnemy::ReleaseToken()
 
 void ABaseEnemy::Death()
 {
+
+	// Drop Item
+	for (const FEnemyDrop DroppableItem : Drops)
+	{
+		const float RandomValue = FMath::RandRange(0.0f, 100.0f);
+		// If the drop chance is hit, spawn the drop and break loop.
+		if(RandomValue < DroppableItem.DropChancePercentage)
+		{
+			const FVector DropLocation = GetActorLocation();
+			const FRotator DropRotation = GetActorRotation();
+			AActor* SpawnedPickup = GetWorld()->SpawnActor<ABasePickup>(DroppableItem.EnemyDrop, DropLocation, DropRotation);
+			break;
+		}
+	}
+
 	// ToDo: Rag doll enemy once new skeleton is implemented.
 	ReleaseToken();
 	if(CurrentAttackSystemComponent)
