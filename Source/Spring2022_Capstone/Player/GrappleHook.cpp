@@ -38,12 +38,9 @@ void AGrappleHook::BeginPlay()
 	Super::BeginPlay();
 	ProjectileMovementComp->SetVelocityInLocalSpace(FireVelocity);
 	
-	//Sounds
 	//Play Fire Sound
 	if(GrappleShotAudioComp)
-	{
 		GrappleShotAudioComp->Play();
-	}
 }
 
 // Called every frame
