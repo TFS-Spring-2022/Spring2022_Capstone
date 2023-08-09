@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GrappleState.h"
-#include "Spring2022_Capstone/GameplaySystems/SkyPirateGameMode.h"
 #include "Components/ActorComponent.h"
 #include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "GrappleComponent.generated.h"
