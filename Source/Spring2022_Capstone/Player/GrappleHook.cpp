@@ -3,6 +3,8 @@
 #include "GrappleHook.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 
 // Sets default values
 AGrappleHook::AGrappleHook()
@@ -24,6 +26,10 @@ AGrappleHook::AGrappleHook()
 	ProjectileMovementComp = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComp"));
 	ProjectileMovementComp->ProjectileGravityScale = 0;
 
+	GrappleShotAudioComp = CreateDefaultSubobject<UAudioComponent>("Audio Component");
+	GrappleShotAudioComp->SetupAttachment(SphereCollider);
+
+	
 }
 
 // Called when the game starts or when spawned
@@ -31,6 +37,10 @@ void AGrappleHook::BeginPlay()
 {
 	Super::BeginPlay();
 	ProjectileMovementComp->SetVelocityInLocalSpace(FireVelocity);
+	
+	//Play Fire Sound
+	if(GrappleShotAudioComp)
+		GrappleShotAudioComp->Play();
 }
 
 // Called every frame

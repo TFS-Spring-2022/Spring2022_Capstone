@@ -15,6 +15,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -282,9 +283,10 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 		return;
 	}
 	FHitResult HitResult;
-	FVector StartLocation = Camera->GetComponentLocation();
+	FVector StartLocation = Camera->GetComponentLocation() + Camera->GetForwardVector() * GRAPPLE_TRACE_START_FORWARD_BUFFER;
 	FVector EndLocation = Camera->GetForwardVector() * GrappleComponent->GrappleRange + StartLocation;
 	FCollisionQueryParams TraceParams;
+	TraceParams.AddIgnoredActor(this);
 
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility);
 	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.f);
@@ -294,10 +296,15 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 		TargetLocation = HitResult.ImpactPoint;
 	}
 	GrappleComponent->Fire(TargetLocation);
+
+	// ToDo: Implement sound here (grapple shot)
 }
 
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
+	if(ActiveWeapon->GunChangeAudioComp)
+		ActiveWeapon->GunChangeAudioComp->Play();
+
 	ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 }
 
@@ -386,6 +393,16 @@ void APlayerCharacter::UpdateHealthBar()
 	}
 }
 
+// Temporary
+void APlayerCharacter::DEBUG_SpawnWave()
+{
+	Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->SpawnWave();
+}
 
-	
-
+UUpgradeSystemComponent* APlayerCharacter::GetUpgradeSystemComponent()
+{
+	if(UpgradeSystemComponent)
+		return UpgradeSystemComponent;
+	else
+		return nullptr;
+}

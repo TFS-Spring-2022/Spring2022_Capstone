@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GrappleState.h"
 #include "Components/ActorComponent.h"
+#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "GrappleComponent.generated.h"
 
 class AGrappleCable;
@@ -22,11 +23,12 @@ class SPRING2022_CAPSTONE_API UGrappleComponent : public UActorComponent
 
 public:
 	UGrappleComponent();
-
 	FTimerHandle CooldownTimerHandle;
 	FOnGrappleActivated OnGrappleActivatedDelegate;
 	FOnGrappleCooldownStart OnGrappleCooldownStartDelegate;
 	FOnGrappleCooldownEnd OnGrappleCooldownEndDelegate;
+
+	
 
 protected:
 	virtual void BeginPlay() override;
@@ -66,18 +68,21 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Grapple")
 	float GrappleRange = 500.f;
 
-	UFUNCTION()    
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
+	UFUNCTION()
     void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit );
 	UFUNCTION()
 	void MaxGrappleTimeReached();
 	void CancelGrapple(bool ShouldTriggerCooldown = true);
 	UFUNCTION()
 	void ResetStatus();
-
+	
 	void Fire(FVector TargetLocation);
 	FVector GetStartLocation();
 
 	void DecrementGrappleCooldown(float Seconds);
 	FORCEINLINE float GetCooldown() const { return Cooldown; }
+	
 	
 };
