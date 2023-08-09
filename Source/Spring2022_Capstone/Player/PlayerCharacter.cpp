@@ -297,18 +297,15 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 	}
 	GrappleComponent->Fire(TargetLocation);
 
-	//Implement sound here (grapple shot)
+	// ToDo: Implement sound here (grapple shot)
 }
 
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
 	if(ActiveWeapon->GunChangeAudioComp)
-	{
-		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "Audio swap");
 		ActiveWeapon->GunChangeAudioComp->Play();
-	}
+
 	ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
-	
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)

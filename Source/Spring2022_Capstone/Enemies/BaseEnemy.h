@@ -5,9 +5,22 @@
 #include "CoreMinimal.h"
 #include "AttackSystemAgentInterface.h"
 #include "GameFramework/Character.h"
+#include "Spring2022_Capstone/BasePickup.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "BaseEnemy.generated.h"
+
+USTRUCT()
+struct FEnemyDrop
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ABasePickup> EnemyDrop;
+
+	UPROPERTY(EditDefaultsOnly, meta=(ClampMin = 0, ClampMax = 100));
+	float DropChancePercentage = 0;
+};
 
 class UBehaviorTree;
 class UHealthComponent;
@@ -34,6 +47,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Pawn, meta = (AllowPrivateAccess = "true"))
 	UBehaviorTree *BehaviorTree;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Drops", meta = (AllowPrivateAccess = true))
+	TArray<FEnemyDrop> Drops;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Pawn, meta = (AllowPrivateAccess = "true"))
 	bool bDidHide;
@@ -77,9 +93,7 @@ private:
 	// allow the holder's shot to hit the target.
 	UPROPERTY(EditAnywhere, Category = "Debug")
 	bool bHasAttackToken = false;
-
-
-
+	
 	UPROPERTY()
 	class UAIAttackSystemComponent* CurrentAttackSystemComponent;
 	
