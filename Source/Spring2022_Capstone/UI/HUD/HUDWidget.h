@@ -76,4 +76,10 @@ private:
 	FTimerHandle *GrappleTimerHandle;
 
 	void PlayHitMarkerAnimation();
+
+	// Temporary function to set weapon icons from NativeConstruct() after a delay.
+	// ToDo: Replace when finalize weapon selection/spawning.
+	UFUNCTION()
+	void SetWeaponIconFromCharacter() const;
+
 };

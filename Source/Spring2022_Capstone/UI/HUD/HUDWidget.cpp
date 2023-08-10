@@ -28,6 +28,16 @@ void UHUDWidget::NativeConstruct()
     }
 
     GrappleCooldownText->SetText(FText::GetEmpty());
+
+    // Set Weapon Icons once everything has been set up
+    FTimerHandle SetWeaponIconTimerHandle;
+    GetWorld()->GetTimerManager().SetTimer(SetWeaponIconTimerHandle, this, &UHUDWidget::SetWeaponIconFromCharacter, 0.1f, false);
+	
+}
+
+void UHUDWidget::SetWeaponIconFromCharacter() const
+{
+	SetWeaponIcons(PlayerCharacter->GetWeapon2()->GetWeaponIcon(), PlayerCharacter->GetWeapon1()->GetWeaponIcon());
 }
 
 void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
