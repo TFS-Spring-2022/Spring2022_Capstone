@@ -25,7 +25,7 @@ class SPRING2022_CAPSTONE_API ASemiAutomaticWeapon : public AWeaponBase
 	virtual void Shoot() override;
 
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category= "UI")
 	TSubclassOf<UDamageNumberWidget> DamageNumberWidgetClass;
 
 	UPROPERTY(EditAnywhere)
