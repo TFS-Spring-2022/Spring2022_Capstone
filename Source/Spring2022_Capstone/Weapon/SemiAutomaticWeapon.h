@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "RecoilComponent.h"
+#include "DamageNumberWidget.h"
 #include "WeaponBase.h"
 #include "SemiAutomaticWeapon.generated.h"
 
