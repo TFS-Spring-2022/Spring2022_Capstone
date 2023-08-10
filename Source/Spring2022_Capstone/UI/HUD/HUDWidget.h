@@ -49,7 +49,15 @@ public:
 	UProgressBar *GrappleCooldownBar;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UTextBlock *GrappleCooldownText;
+	// Weapon Icons
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* EquippedWeaponIcon;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* StashedWeaponIcon;
 
+	// Sets the EquippedWeaponIcon and StashedWeaponIcons to show the given Texture2Ds.
+	void SetWeaponIcons(UTexture2D* EquippedWeaponTexture2D, UTexture2D* StashedWeaponTexture2D) const;
+	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Grapple")
 	float GrappleCooldown;

@@ -147,6 +147,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TSubclassOf<UCameraShakeBase> FireCameraShake;
+	
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UTexture2D* WeaponIcon;
 
 	
 
@@ -159,5 +162,8 @@ public:
 	void SetDamage(float Value);
 
 	float GetCurrentCharge() const;
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE UTexture2D* GetWeaponIcon() {if(WeaponIcon) return WeaponIcon; else return nullptr;}
 	
 };

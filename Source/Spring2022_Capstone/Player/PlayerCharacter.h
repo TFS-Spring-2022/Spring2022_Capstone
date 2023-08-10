@@ -241,6 +241,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Player Inventory")
 	AWeaponBase *ActiveWeapon;
 
+	UPROPERTY(VisibleAnywhere, Category = "Player Inventory")
+	AWeaponBase* StashedWeapon;
+
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	bool bIsSprinting;
 
