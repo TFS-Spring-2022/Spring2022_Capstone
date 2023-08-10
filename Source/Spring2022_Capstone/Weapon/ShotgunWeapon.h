@@ -29,6 +29,9 @@ class SPRING2022_CAPSTONE_API AShotgunWeapon : public AWeaponBase
 	UFUNCTION(BlueprintCallable)
 	virtual void Shoot() override;
 
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UDamageNumberWidget> DamageNumberWidgetClass;
+
 	UPROPERTY(EditAnywhere)
 	URecoilComponent* RecoilComponent;
 

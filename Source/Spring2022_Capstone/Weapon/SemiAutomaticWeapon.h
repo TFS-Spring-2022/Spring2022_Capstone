@@ -23,6 +23,10 @@ class SPRING2022_CAPSTONE_API ASemiAutomaticWeapon : public AWeaponBase
 	UFUNCTION(BlueprintCallable)
 	virtual void Shoot() override;
 
+	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UDamageNumberWidget> DamageNumberWidgetClass;
+
 	UPROPERTY(EditAnywhere)
 	URecoilComponent* RecoilComponent;
 	

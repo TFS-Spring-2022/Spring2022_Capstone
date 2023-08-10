@@ -1,7 +1,10 @@
 // Created by Spring2022_Capstone team
 
 #include "ShotgunWeapon.h"
+
+#include "DamageNumberWidget.h"
 #include "DevTargets.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
@@ -85,6 +88,37 @@ void AShotgunWeapon::Shoot()
 							DamageableActor->DamageActor(this, ShotDamage);
 							break;
 						}
+						
+
+						// Calculate damage based on surface type
+						
+						float DamageDealt = (HitSurfaceType == SURFACE_FleshVulnerable) ? (ShotDamage * CriticalHitMultiplier) : ShotDamage;
+
+						// Spawn the damage number widget
+						if (UDamageNumberWidget* DamageNumberWidget = CreateWidget<UDamageNumberWidget>(GetWorld(), DamageNumberWidgetClass))
+						{
+							DamageNumberWidget->SetDamageText(FText::AsNumber(DamageDealt));
+							DamageNumberWidget->SetColorBySurfaceType(HitSurfaceType);
+							DamageNumberWidget->AddToViewport();
+
+							// You can set the widget's position based on the hit location
+
+							if (APlayerController* PlayerController = Cast<APlayerController>(PlayerCharacter->GetController()))
+							{
+								FVector2D ScreenPosition;
+								if (UGameplayStatics::ProjectWorldToScreen(PlayerController, HitResult.Location, ScreenPosition))
+								{
+									DamageNumberWidget->SetPositionInViewport(ScreenPosition);
+								}
+							}
+
+							// Schedule the widget to be removed after 2 seconds
+							DamageNumberWidget->GetWorld()->GetTimerManager().SetTimer(
+								DamageNumberWidget->DespawnTimerHandle, 
+								FTimerDelegate::CreateUObject(DamageNumberWidget, &UDamageNumberWidget::Despawn), 
+								2.0f, false);
+						}
+
 						
 					}
 
