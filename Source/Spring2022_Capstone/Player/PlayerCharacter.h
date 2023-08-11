@@ -267,6 +267,16 @@ private:
 	UPROPERTY()
 	class ASpring2022_CapstoneGameModeBase* CurrentGameMode;
 
+	bool bIsSwappingWeapon = false;
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetIsSwapping() {return bIsSwappingWeapon;}
+
+	FTimerHandle IsSwappingTimerHandle;
+
+	UFUNCTION()
+	FORCEINLINE void ToggleIsSwappingOff() {bIsSwappingWeapon = false;}
+
 public:
 	
 	UFUNCTION(BlueprintCallable)
