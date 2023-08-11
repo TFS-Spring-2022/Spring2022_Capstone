@@ -63,7 +63,7 @@ void ABaseEnemy::AttackHit()
 	DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, FColor::Red, false, .5f);
 	
 
-	if(GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Visibility, *TraceParams))
+	if(GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Camera, *TraceParams))
 	{
 		DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Red, false, .5f);
 		
@@ -89,8 +89,8 @@ void ABaseEnemy::AttackMiss()
 	DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, FColor::Black, false, .5f);
 
 	// ToDo: Implement weighting missed shots into objects/player view
-	//if(GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Visibility, *TraceParams))
-	//	DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Black, false, .5f); 
+	if(GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Camera, *TraceParams))
+		DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Black, false, .5f); 
 }
 
 // Called every frame
@@ -122,8 +122,7 @@ void ABaseEnemy::ReceiveToken()
 void ABaseEnemy::ReleaseToken()
 {
 	IAttackSystemAgentInterface::ReleaseToken();
-	if(CurrentAttackSystemComponent)
-		CurrentAttackSystemComponent->ReturnToken();
+	CurrentAttackSystemComponent->ReturnToken();
 	bHasAttackToken = false;
 }
 
