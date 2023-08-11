@@ -46,5 +46,5 @@ void ASpring2022_CapstoneGameModeBase::SpawnWave()
 void ASpring2022_CapstoneGameModeBase::EndRun() const
 {
 	// ToDo: Move to scoring/accolades end screen
-	UGameplayStatics::OpenLevel(this, "MainMenu");
+	UGameplayStatics::OpenLevel(this, "RunEndScreenLevel");
 }
