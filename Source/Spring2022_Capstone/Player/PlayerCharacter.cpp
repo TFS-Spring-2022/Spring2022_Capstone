@@ -313,11 +313,7 @@ void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 
 	if(ActiveWeapon->GunChangeAudioComp)
 		ActiveWeapon->GunChangeAudioComp->Play();
-
-	ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
-	StashedWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
-	PlayerHUDWidgetInstance->SetWeaponIcons(ActiveWeapon->GetWeaponIcon(), StashedWeapon->GetWeaponIcon());
-
+	
 	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
 	{
 		if(ActiveWeapon->GunChangeAudioComp)
@@ -325,9 +321,11 @@ void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 		
 		bIsSwappingWeapon = true;
 		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .5f, false);
-		ActiveWeapon->SetActorHiddenInGame(true);
 		ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+		StashedWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+		StashedWeapon->SetActorHiddenInGame(true);
 		ActiveWeapon->SetActorHiddenInGame(false);
+		PlayerHUDWidgetInstance->SetWeaponIcons(ActiveWeapon->GetWeaponIcon(), StashedWeapon->GetWeaponIcon());
 	}
 }
 
