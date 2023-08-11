@@ -4,6 +4,7 @@
 #include "EnemyWaveManagementSystem.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
 void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 {
@@ -16,8 +17,7 @@ void UEnemyWaveManagementSystem::SpawnWave()
 
 	if(CurrentWave > Waves.Num() - 1)
 	{
-		// End game after all waves complete.
-		UKismetSystemLibrary::QuitGame(GetWorld(), UGameplayStatics::GetPlayerController(GetWorld(), 0), EQuitPreference::Quit, true);
+		Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->EndRun(); 
 		return;
 	}
 	
