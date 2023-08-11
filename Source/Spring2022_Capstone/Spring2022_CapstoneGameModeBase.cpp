@@ -41,4 +41,13 @@ void ASpring2022_CapstoneGameModeBase::SpawnWave()
 {
 	if(EnemyWaveManagerInstance)
 		EnemyWaveManagerInstance->SpawnWave();
+	// Ensure token is not lost between waves.
+	if(AIAttackSystemComp)
+		AIAttackSystemComp->ReturnToken();
+}
+
+void ASpring2022_CapstoneGameModeBase::EndRun() const
+{
+	// ToDo: Move to scoring/accolades end screen
+	UGameplayStatics::OpenLevel(this, "RunEndScreenLevel");
 }
