@@ -10,7 +10,6 @@
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/HealthComponent.h"
@@ -92,6 +91,8 @@ void APlayerCharacter::BeginPlay()
 	}
 	
 	bDashBlurFadingIn = false;
+
+	CurrentGameMode = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -353,6 +354,10 @@ void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
 	
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
+
+	if(HealthComponent->GetHealth() <= 0)
+		CurrentGameMode->EndRun();
+		
 }
 
 void APlayerCharacter::ChangeCrosshair()
@@ -398,7 +403,8 @@ void APlayerCharacter::UpdateHealthBar()
 // Temporary
 void APlayerCharacter::DEBUG_SpawnWave()
 {
-	Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->SpawnWave();
+	if(CurrentGameMode)
+		CurrentGameMode->SpawnWave();
 }
 
 UUpgradeSystemComponent* APlayerCharacter::GetUpgradeSystemComponent()

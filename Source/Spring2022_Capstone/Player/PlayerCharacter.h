@@ -264,6 +264,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundCue* VaultSC;
 
+	UPROPERTY()
+	class ASpring2022_CapstoneGameModeBase* CurrentGameMode;
+
 public:
 	
 	UFUNCTION(BlueprintCallable)
