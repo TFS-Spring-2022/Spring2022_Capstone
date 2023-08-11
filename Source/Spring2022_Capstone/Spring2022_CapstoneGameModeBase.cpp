@@ -42,3 +42,9 @@ void ASpring2022_CapstoneGameModeBase::SpawnWave()
 	if(EnemyWaveManagerInstance)
 		EnemyWaveManagerInstance->SpawnWave();
 }
+
+void ASpring2022_CapstoneGameModeBase::EndRun() const
+{
+	// ToDo: Move to scoring/accolades end screen
+	UGameplayStatics::OpenLevel(this, "MainMenu");
+}
