@@ -33,7 +33,7 @@ void UMainMenuWidget::OnPlayButtonPressed()
 		PC->bEnableMouseOverEvents = false;
 	}
 
-	UGameplayStatics::OpenLevel(this, "Level");
+	UGameplayStatics::OpenLevel(this, "PirateIsland");
 }
 
 void UMainMenuWidget::OnSettingButtonPressed()
