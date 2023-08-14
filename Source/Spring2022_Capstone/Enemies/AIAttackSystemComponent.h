@@ -120,6 +120,7 @@ public:
 	
 	// The state of the Attack System's Token.
 	// true - no agent currently has the token, false - an agent is holding.
+	UPROPERTY(VisibleAnywhere, Category = "DEBUG")
 	bool bHoldingToken = true;
 	
 };

@@ -31,8 +31,10 @@ void UAIAttackSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if(Agents.IsEmpty())
+	if(Agents.IsEmpty() )
 		return;
+
+	
 	
 	// Start token timer
 	TokenTimer += DeltaTime;
@@ -226,12 +228,20 @@ void UAIAttackSystemComponent::AddNewAgent(AActor* NewAgent)
 void UAIAttackSystemComponent::RemoveAgent(AActor* AgentToRemove)
 {
 	if(Agents.Contains(AgentToRemove))
+	{
+		if(TokenHolder == AgentToRemove)
+			TokenHolder = nullptr;
+
 		Agents.Remove(AgentToRemove);
+
+		bHoldingToken = true;
+	}
 }
 
 void UAIAttackSystemComponent::ClearAgents()
 {
 	Agents.Empty();
+	bHoldingToken = true;
 }
 
 void UAIAttackSystemComponent::ReturnToken()

@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "Components/AudioComponent.h"
 #include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "WeaponBase.generated.h"
+
 
 class APlayerCharacter;
 
@@ -151,7 +154,31 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	UTexture2D* WeaponIcon;
 
+	UPROPERTY(EditAnywhere, Category = "Sockets")
+	FName WeaponSocketName;
+
+	const FName ShootingStartSocket = "Socket_ShootingStart";
 	
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UNiagaraSystem* BulletTracerNiagaraSystem;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UParticleSystem* MuzzleFlashParticleSystem;
+
+	void PlayTracerEffect(FVector TracerEndPoint);
+
+	// Impact Particle Effects
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UParticleSystem* FleshImpactParticleSystem;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UParticleSystem* RockImpactParticleSystem;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UParticleSystem* WaterImpactParticleSystem;
+
+	UPROPERTY()
+	UParticleSystem* ImpactEffectToPlay;
 
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
@@ -165,5 +192,16 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE UTexture2D* GetWeaponIcon() {if(WeaponIcon) return WeaponIcon; else return nullptr;}
+	
+	FORCEINLINE USkeletalMeshComponent* GetSkeletalMesh(){return SkeletalMesh;}
+
+	bool bIsFiring = false;
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetIsFiring() {return bIsFiring;}
+
+	FTimerHandle IsFiringToggleTimerHandle;
+	UFUNCTION()
+	FORCEINLINE void ToggleIsFiringOff() {bIsFiring = false;}
 	
 };
