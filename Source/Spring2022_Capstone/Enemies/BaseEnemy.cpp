@@ -47,11 +47,15 @@ void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount)
 		HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
 		if(HealthComp->GetHealth() <= 0)
 		{
-			Death();
 			APlayerCharacter* PlayerRef = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
-			if(PlayerRef)
+			if (PlayerRef)
+			{
 				PlayerRef->IncrementKills();
+				PlayerRef->AddAirboneKill();
+			}
+
+			Death();
 
 			//Checking to see if health is less than or equal to zero. if it is call increment kills function from player 
 			//as this denotes that the enemy is dead.

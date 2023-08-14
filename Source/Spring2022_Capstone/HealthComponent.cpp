@@ -30,6 +30,8 @@ void UHealthComponent::SetHealth(float NewHealth)
 		NewHealth = MaxHealth;
 	}
 	HealthPoints = NewHealth;
+
+
 }
 
 float UHealthComponent::GetMaxHealth()

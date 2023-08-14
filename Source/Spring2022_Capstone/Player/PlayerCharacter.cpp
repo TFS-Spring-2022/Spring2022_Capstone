@@ -106,6 +106,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	CheckIsUntouchable();
 	CheckIsLandLubber();
+	CheckIsSkyPirate();
 }
 
 void APlayerCharacter::CheckIsUntouchable()
@@ -117,6 +118,46 @@ void APlayerCharacter::CheckIsUntouchable()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, TEXT("Untouchable Accolade!!"));
 		bIsUntouchable = true;
+	}
+}
+
+void APlayerCharacter::CheckIsSkyPirate()
+{
+	bool IsOnGround = !GetCharacterMovement()->IsFalling();
+
+	if (IsOnGround)
+	{
+		TimeAtGrounded = UGameplayStatics::GetTimeSeconds(GetWorld());
+		bIsSkyPirate = false;
+	}
+	else
+	{
+		double TimeOnSky = UGameplayStatics::GetTimeSeconds(GetWorld()) - TimeAtGrounded;
+
+		if (TimeOnSky >= SkyPirateSeconds && bIsSkyPirate == false)
+		{
+			bIsSkyPirate = true;
+			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, TEXT("Sky Pirate accolade!!"));
+
+		}
+	}
+}
+void APlayerCharacter::AddAirboneKill()
+{
+	if (bIsLastShadow)
+	{
+		return;
+	}
+
+	if (GetCharacterMovement()->IsFalling())
+	{
+		AirboneKills++;
+		if (AirboneKills >= 6)
+		{
+			bIsLastShadow = true;
+			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, TEXT("Last Shadow accolade!!"));
+
+		}
 	}
 }
 
@@ -402,18 +443,42 @@ void APlayerCharacter::IncrementKills()
 	CurrentGameMode->IncrementKills();
 }
 
+void APlayerCharacter::CheckIsDeathDodger()
+{
+
+	if (!bIsDeathDodger)
+	{
+		if (HealthComponent->GetHealth() < (0.95 * HealthComponent->GetMaxHealth()))
+		{
+			DeathDodgerKills++;
+
+			if (DeathDodgerKills >= 2)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, TEXT("Death Dodger accolade!!"));
+				bIsDeathDodger = true;
+			}
+		}
+	}
+}
+
+
 void APlayerCharacter::Heal(int Value)
 {
 	if (!HealthComponent)
 		return;
+
+	CheckIsDeathDodger();
+
 	HealthComponent->SetHealth(HealthComponent->GetHealth() + Value);
 	UpdateHealthBar();
+
 }
 
 void APlayerCharacter::HealByPercentage(int Percentage)
 {
 	if (!HealthComponent)
 		return;
+	CheckIsDeathDodger();
 	HealthComponent->SetHealth(HealthComponent->GetHealth() + HealthComponent->GetMaxHealth() * Percentage / 100);
 	UpdateHealthBar();
 }

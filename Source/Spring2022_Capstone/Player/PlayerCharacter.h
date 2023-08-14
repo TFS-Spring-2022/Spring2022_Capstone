@@ -270,8 +270,14 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 		double LandLubberSeconds;
 
+	UPROPERTY(EditDefaultsOnly)
+		double SkyPirateSeconds;
+
 	UPROPERTY(BlueprintReadOnly)
 		double TimeAtFalling = 0.0f;
+
+	UPROPERTY(BlueprintReadOnly)
+		double TimeAtGrounded = 0.0f;
 
 	double TimeTaken;
 
@@ -279,11 +285,29 @@ public:
 
 	bool bIsLandLubber = false;
 
+	bool bIsSkyPirate = false;
+
+	bool bIsLastShadow = false;
+
+	bool bIsDeathDodger = false;
+
+	int DeathDodgerKills = 0;
+
+	int AirboneKills = 0;
+
 	UFUNCTION()
 		void CheckIsUntouchable();
+	UFUNCTION()
+		void CheckIsDeathDodger();
 
 	UFUNCTION()
 		void CheckIsLandLubber();
+
+	UFUNCTION()
+		void CheckIsSkyPirate();
+
+	UFUNCTION()
+		void AddAirboneKill();
 
 	UFUNCTION(BlueprintCallable)
 		void IncrementKills();
