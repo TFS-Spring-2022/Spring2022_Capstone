@@ -47,8 +47,13 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+<<<<<<< HEAD
 	UFUNCTION(BlueprintCallable)
 	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
+=======
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+>>>>>>> origin/tasks/ExplosionBarrel
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))

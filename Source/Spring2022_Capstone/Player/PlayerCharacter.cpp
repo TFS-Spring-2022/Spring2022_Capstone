@@ -249,6 +249,18 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 	PreviousDashDirection = Value.GetMagnitude();
 }
 
+/*float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue, FString::Printf(TEXT("Dealing damage")));
+
+	if (HealthComponent == nullptr) return 0.0f;
+
+	HealthComponent->TakeDamage(DamageAmount);
+
+	return 0.0f;
+
+}*/
+
 void APlayerCharacter::DashDirectionalLaunch()
 {
 	const float PreDashSpeed = GetVelocity().Length();
@@ -424,8 +436,6 @@ void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 	// Set DirectionalDamageIndicator to rotate
 	if(DirectionalDamageIndicatorWidget)
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
-	
-	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 }
 
 void APlayerCharacter::ChangeCrosshair()
