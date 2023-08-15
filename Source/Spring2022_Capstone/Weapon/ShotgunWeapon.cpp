@@ -52,7 +52,6 @@ void AShotgunWeapon::Shoot()
 				{
 					if (HitResult.GetActor()->Implements<UDamageableActor>())
 					{
-<<<<<<< HEAD
 
 						// We want to call ShowHitMarker() outside of every shot to prevent unnecessary repeated calls.
 
@@ -83,8 +82,6 @@ void AShotgunWeapon::Shoot()
 						}
 						
 					}
-
-=======
 						IDamageableActor* DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
 						DamageableActor->DamageActor(this, ShotDamage);	
 					
@@ -93,7 +90,6 @@ void AShotgunWeapon::Shoot()
 					//This gets called on every single actor that's being shot. It's bad for performance
 					//HitResult.GetActor()->TakeDamage(ShotDamage, FDamageEvent(), nullptr, nullptr);
 
->>>>>>> origin/tasks/ExplosionBarrel
 					DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 				}
 			}

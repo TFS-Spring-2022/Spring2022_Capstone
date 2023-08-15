@@ -22,6 +22,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
+	
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent *WeaponMesh;
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
@@ -47,13 +49,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-<<<<<<< HEAD
+
 	UFUNCTION(BlueprintCallable)
 	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
-=======
+
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
->>>>>>> origin/tasks/ExplosionBarrel
+	UFUNCTION(BlueprintCallable)
+	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
+
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))

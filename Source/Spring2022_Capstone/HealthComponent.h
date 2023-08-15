@@ -27,23 +27,19 @@ public:
 
 	UFUNCTION()
 	void SetHealth(float NewHealth);
-<<<<<<< HEAD
-	UFUNCTION(BlueprintCallable)
-	float GetHealth();
-	UFUNCTION(BlueprintCallable)
-=======
-
+	
 	UFUNCTION(BlueprintCallable)
 	float GetHealth();
 
-	UFUNCTION()
->>>>>>> origin/tasks/ExplosionBarrel
+
+	UFUNCTION(BlueprintCallable)
 	float GetMaxHealth();
+
 	UFUNCTION()
 	void SetMaxHealth(float value);
 
 	UFUNCTION(BlueprintCallable)
-		void TakeDamage(float DamageCaused);
+	void TakeDamage(float DamageCaused);
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Health")

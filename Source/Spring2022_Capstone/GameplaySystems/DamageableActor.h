@@ -7,7 +7,7 @@
 #include "DamageableActor.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI, Blueprintable)
+UINTERFACE(MinimalAPI, NotBlueprintable)
 class UDamageableActor : public UInterface
 {
 	GENERATED_BODY()
@@ -26,6 +26,7 @@ public:
 	 * @param DamagingActor Actor sending damage to implementing class.
 	 * @param DamageAmount  Damage value of calling actor.
 	 */
+	UFUNCTION(BlueprintCallable)
 	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) {}
 
 };

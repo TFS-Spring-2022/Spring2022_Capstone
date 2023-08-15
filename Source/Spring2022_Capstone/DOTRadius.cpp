@@ -14,12 +14,15 @@ ADOTRadius::ADOTRadius()
 	if (SphereCollision)
 	{
 		SphereCollision->SetupAttachment(RootComponent);
+
+		
 		SphereCollision->SetSphereRadius(1024.0f);
 	}
 	DamageAmount = 5;
 	DamageInterval = 1;
 	CloudSeconds = 15;
 	Radius = 500;
+
 
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -42,6 +45,9 @@ void ADOTRadius::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* 
 void ADOTRadius::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SphereCollision->SetSphereRadius(Radius);
+	
 	GetWorld()->GetTimerManager().SetTimer(DamagerTimerHandle, this, &ADOTRadius::CauseDamage, DamageInterval, true);
 }
 
@@ -49,7 +55,10 @@ void ADOTRadius::BeginPlay()
 void ADOTRadius::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime); 
+
 }
+
+
 
 void ADOTRadius::CauseDamage()
 {
@@ -61,5 +70,4 @@ void ADOTRadius::CauseDamage()
 			DamageableActor->DamageActor(this, DamageAmount);
 		}
 	}
-
 }
