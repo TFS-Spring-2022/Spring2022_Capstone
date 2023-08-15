@@ -21,8 +21,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent *WeaponMesh;
@@ -54,9 +52,6 @@ public:
 	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
-
-	UFUNCTION(BlueprintCallable)
-	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
 
 
 private:
