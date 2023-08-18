@@ -11,7 +11,6 @@
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/HealthComponent.h"
@@ -27,6 +26,9 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
 	Camera->bUsePawnControlRotation = true;
 
+	// Rotate with controller's pitch so player's arms/weapons move vertically.
+	bUseControllerRotationPitch = true;
+	
 	GrappleComponent = CreateDefaultSubobject<UGrappleComponent>(TEXT("Grapple"));
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
@@ -37,6 +39,7 @@ APlayerCharacter::APlayerCharacter()
 
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
+
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
@@ -94,8 +97,11 @@ void APlayerCharacter::BeginPlay()
 	
 	bDashBlurFadingIn = false;
 
+
 	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
 	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
+	CurrentGameMode = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -278,6 +284,9 @@ void APlayerCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo &OutResult)
 
 void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
+	if(bIsSwappingWeapon)
+		return;
+	
 	if (bIsSprinting)
 		return;
 	ActiveWeapon->Shoot();
@@ -314,10 +323,23 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
+
 	if(ActiveWeapon->GunChangeAudioComp)
 		ActiveWeapon->GunChangeAudioComp->Play();
-
-	ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+	
+	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
+	{
+		if(ActiveWeapon->GunChangeAudioComp)
+			ActiveWeapon->GunChangeAudioComp->Play();
+		
+		bIsSwappingWeapon = true;
+		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .5f, false);
+		ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+		StashedWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+		StashedWeapon->SetActorHiddenInGame(true);
+		ActiveWeapon->SetActorHiddenInGame(false);
+		PlayerHUDWidgetInstance->SetWeaponIcons(ActiveWeapon->GetWeaponIcon(), StashedWeapon->GetWeaponIcon());
+	}
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)
@@ -363,6 +385,10 @@ void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
 	
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
+
+	if(HealthComponent->GetHealth() <= 0)
+		CurrentGameMode->EndRun();
+		
 }
 
 void APlayerCharacter::ChangeCrosshair()
@@ -408,7 +434,8 @@ void APlayerCharacter::UpdateHealthBar()
 // Temporary
 void APlayerCharacter::DEBUG_SpawnWave()
 {
-	Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->SpawnWave();
+	if(CurrentGameMode)
+		CurrentGameMode->SpawnWave();
 }
 
 UUpgradeSystemComponent* APlayerCharacter::GetUpgradeSystemComponent()

@@ -37,6 +37,10 @@ public:
 	// Calls WaveManager's SpawnWave function.
 	UFUNCTION(BlueprintCallable)
 	void SpawnWave();
+	
+	// Called when a run ends. Moves the player to the scoring/accolades screen. 
+	UFUNCTION()
+	void EndRun() const;
 
 private:
 

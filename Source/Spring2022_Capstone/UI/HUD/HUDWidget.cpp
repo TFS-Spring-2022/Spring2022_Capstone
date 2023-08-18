@@ -28,6 +28,16 @@ void UHUDWidget::NativeConstruct()
     }
 
     GrappleCooldownText->SetText(FText::GetEmpty());
+
+    // Set Weapon Icons once everything has been set up
+    FTimerHandle SetWeaponIconTimerHandle;
+    GetWorld()->GetTimerManager().SetTimer(SetWeaponIconTimerHandle, this, &UHUDWidget::SetWeaponIconFromCharacter, 0.1f, false);
+	
+}
+
+void UHUDWidget::SetWeaponIconFromCharacter() const
+{
+	SetWeaponIcons(PlayerCharacter->GetWeapon2()->GetWeaponIcon(), PlayerCharacter->GetWeapon1()->GetWeaponIcon());
 }
 
 void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
@@ -50,7 +60,14 @@ void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
                 OverheatBar->SetPercent(CurrentWeapon->GetCurrentCharge() / 100);
         }
     }
-    
+}
+
+void UHUDWidget::SetWeaponIcons(UTexture2D* EquippedWeaponTexture2D, UTexture2D* StashedWeaponTexture2D) const
+{
+    if(EquippedWeaponTexture2D)
+        EquippedWeaponIcon->SetBrushFromTexture(EquippedWeaponTexture2D, false);
+    if(StashedWeaponTexture2D)
+        StashedWeaponIcon->SetBrushFromTexture(StashedWeaponTexture2D, false);
 }
 
 void UHUDWidget::OnHealthChanged(float HealthValue)

@@ -241,6 +241,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Player Inventory")
 	AWeaponBase *ActiveWeapon;
 
+	UPROPERTY(VisibleAnywhere, Category = "Player Inventory")
+	AWeaponBase* StashedWeapon;
+
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	bool bIsSprinting;
 
@@ -250,6 +253,19 @@ private:
 
 	UPROPERTY()
 	USoundManagerSubSystem* SoundManagerSubSystem;
+
+	UPROPERTY()
+	class ASpring2022_CapstoneGameModeBase* CurrentGameMode;
+
+	bool bIsSwappingWeapon = false;
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetIsSwapping() {return bIsSwappingWeapon;}
+
+	FTimerHandle IsSwappingTimerHandle;
+
+	UFUNCTION()
+	FORCEINLINE void ToggleIsSwappingOff() {bIsSwappingWeapon = false;}
 
 public:
 	
