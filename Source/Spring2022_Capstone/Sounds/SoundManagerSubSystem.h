@@ -26,6 +26,8 @@ public:
 	UFUNCTION()
 	void PlaysMusic(const USoundCue* Music) const;
 
+	
+
 	UPROPERTY(EditAnywhere, Category = "Menu Music")
 	USoundCue* MainMenuMusic;
 
