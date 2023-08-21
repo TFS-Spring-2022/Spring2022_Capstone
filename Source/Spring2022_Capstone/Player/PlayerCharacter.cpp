@@ -324,8 +324,7 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
 
-	if(ActiveWeapon->GunChangeAudioComp)
-		ActiveWeapon->GunChangeAudioComp->Play();
+	
 	
 	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
 	{
