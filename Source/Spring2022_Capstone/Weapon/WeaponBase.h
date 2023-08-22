@@ -179,6 +179,9 @@ protected:
 
 	UPROPERTY()
 	UParticleSystem* ImpactEffectToPlay;
+	
+	UPROPERTY(EditAnywhere, Category = "Components") 
+	UNiagaraSystem* FloatingDamageNumberParticleSystem;
 
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
@@ -203,5 +206,9 @@ public:
 	FTimerHandle IsFiringToggleTimerHandle;
 	UFUNCTION()
 	FORCEINLINE void ToggleIsFiringOff() {bIsFiring = false;}
+
+	// ToDo: Raise location of numbers to be above target.
+	UFUNCTION(BlueprintImplementableEvent)
+	void DisplayFloatingDamageNumbers(FVector Location, int DamageAmount, bool bIsCrit);
 	
 };
