@@ -43,6 +43,7 @@ void UEnemyWaveManagementSystem::SpawnWave()
 		
 		AActor* SpawnedEnemy = GetWorld()->SpawnActor(EnemyToSpawn, &Location, &Rotation, SpawnParams);
 		ActiveEnemies.Add(SpawnedEnemy);
+		EnemiesToDestroy.Add(SpawnedEnemy);
 	}
 	
 	CurrentWave++;
@@ -65,7 +66,20 @@ void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 			// Open upgrade menu before spawning next wave
 			PlayerCharacter->GetUpgradeSystemComponent()->OpenUpgradeMenu();
 
+			ClearDeadEnemies();
 			SpawnWave();
 		}
 	}
+}
+
+void UEnemyWaveManagementSystem::ClearDeadEnemies()
+{
+
+	for (AActor* DeadEnemy : EnemiesToDestroy)
+	{
+		DeadEnemy->Destroy();
+	}
+
+	// Without this line corpses will randomly not destroy.
+	EnemiesToDestroy.Empty(); 
 }

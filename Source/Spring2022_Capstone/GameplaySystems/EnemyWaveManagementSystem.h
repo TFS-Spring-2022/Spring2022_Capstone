@@ -55,4 +55,11 @@ public:
 	// Remove an ActiveEnemy from ActiveEnemies array.
 	void RemoveActiveEnemy(AActor* EnemyToRemove);
 
+	// All enemy corpses to be destroyed at the next rounds start.
+	UPROPERTY(VisibleAnywhere, Category = "Waves")
+	TArray<AActor*> EnemiesToDestroy;
+
+	// Destroys all enemy corpses in current wave
+	void ClearDeadEnemies();
+	
 };
