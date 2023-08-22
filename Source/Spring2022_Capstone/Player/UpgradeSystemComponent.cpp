@@ -5,6 +5,7 @@
 
 #include "GrappleComponent.h"
 #include "PlayerCharacter.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/HealthComponent.h"
 
@@ -106,9 +107,17 @@ void UUpgradeSystemComponent::OpenUpgradeMenu()
 {
 	if(UpgradeMenuWidgetInstance && UpgradeChoices.Num() > 0)
 	{
-		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		// Remove Player's movement and attacking.
+		PlayerController->SetIgnoreLookInput(true);
+		PlayerController->SetIgnoreMoveInput(true);
+		PlayerToUpgrade->SetCanAttack(false);
+		// Start slow motion
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), PausedTimeDilation);
 		PrepareUpgradeChoices();
+		// Show mouse cursor and set input to only effect UI.
 		PlayerController->bShowMouseCursor = true;
+		UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController, UpgradeMenuWidgetInstance, EMouseLockMode::LockAlways, false); // flush input false because want to maintain movement
+		// Open Upgrade Menu.
 		UpgradeMenuWidgetInstance->AddToViewport(0);
 		bIsMenuOpen = true;
 		PlayerToUpgrade->GetPlayerHUD()->SetVisibility(ESlateVisibility::Hidden);
@@ -121,11 +130,18 @@ void UUpgradeSystemComponent::CloseUpgradeMenu()
 {
 	if(UpgradeMenuWidgetInstance)
 	{
-		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		// Return Player's movement and attacking.
+		PlayerController->SetIgnoreLookInput(false);
+		PlayerController->SetIgnoreMoveInput(false);
+		PlayerToUpgrade->SetCanAttack(true);
+		// End slow motion.
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
+		// Hide mouse cursor and return InputMode to only effect Game.
 		PlayerController->bShowMouseCursor = false;
+		UWidgetBlueprintLibrary::SetInputMode_GameOnly(PlayerController, false);
+		// Close Upgrade Menu.
 		UpgradeMenuWidgetInstance->RemoveFromParent();
 		bIsMenuOpen = false;
-
 		// Clear from delegate's invocation list.
 		UpgradeMenuWidgetInstance->GetUpgrade1Button()->OnClicked.Clear();
 		UpgradeMenuWidgetInstance->GetUpgrade2Button()->OnClicked.Clear();

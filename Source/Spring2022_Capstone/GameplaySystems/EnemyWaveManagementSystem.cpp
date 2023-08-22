@@ -63,13 +63,17 @@ void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 			if(!PlayerCharacter)
 				PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
 
-			// Open upgrade menu before spawning next wave
-			PlayerCharacter->GetUpgradeSystemComponent()->OpenUpgradeMenu();
-
-			ClearDeadEnemies();
-			SpawnWave();
+			// Start next round after a delay, opens upgrade menu, clears enemy, and spawns next wave.
+			GetWorld()->GetTimerManager().SetTimer(TimeBeforeNextRoundStartTimerHandle, this, &UEnemyWaveManagementSystem::OpenUpgradeMenu, TimeBeforeNextRoundStart, false);
+			GetWorld()->GetTimerManager().SetTimer(TimeBeforeClearDeadEnemiesTimerHandle, this, &UEnemyWaveManagementSystem::ClearDeadEnemies, TimeBeforeNextRoundStart - 0.1, false);
+			GetWorld()->GetTimerManager().SetTimer(TimeBeforeUpgradeMenuTimerHandle, this, &UEnemyWaveManagementSystem::SpawnWave, TimeBeforeNextRoundStart, false);
 		}
 	}
+}
+
+void UEnemyWaveManagementSystem::OpenUpgradeMenu() const
+{
+	PlayerCharacter->GetUpgradeSystemComponent()->OpenUpgradeMenu();
 }
 
 void UEnemyWaveManagementSystem::ClearDeadEnemies()
