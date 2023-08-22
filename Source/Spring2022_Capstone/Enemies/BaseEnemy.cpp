@@ -6,6 +6,8 @@
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "AIController.h"
+#include "Components/CapsuleComponent.h"
+#include "Kismet/KismetMaterialLibrary.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
 // Sets default values
@@ -150,6 +152,13 @@ void ABaseEnemy::Death()
 	UEnemyWaveManagementSystem* WaveManager = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetWaveManager();
 	if(WaveManager)
 		WaveManager->RemoveActiveEnemy(this);
-	Destroy(false, true);
+
+	// Ragdoll Enemy
+	GetMesh()->SetSimulatePhysics(true);
+	GetCapsuleComponent()->DestroyComponent();
+	GetMesh()->SetCollisionProfileName("SkyPirateRagdoll");
+
+	// Note: Enemies are destroying in EnemyWaveManagementSystem.
+	
 }
 

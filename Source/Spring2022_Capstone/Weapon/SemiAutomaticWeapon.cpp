@@ -4,6 +4,7 @@
 
 #include "DevTargets.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetStringLibrary.h"
 
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
@@ -22,7 +23,6 @@ void ASemiAutomaticWeapon::Shoot()
 	if (!bIsOverheating && CurrentCharge > MaxChargeAmount)
 	{
 		Overheat();
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("OVERHEATING"));
 	}
 
 	if (bCanFire)
@@ -57,11 +57,13 @@ void ASemiAutomaticWeapon::Shoot()
 					{
 					case SURFACE_FleshDefault:
 						DamageableActor->DamageActor(this, ShotDamage);
-						GEngine->AddOnScreenDebugMessage(11, .5f, FColor::Black, "Default Shot");
+						if(FloatingDamageNumberParticleSystem)
+							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
 						break;
 					case SURFACE_FleshVulnerable:
 						DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier);
-						GEngine->AddOnScreenDebugMessage(10, .5f, FColor::Red, "Head Shot");
+						if(FloatingDamageNumberParticleSystem)
+							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
 						break;
 					default:
 						DamageableActor->DamageActor(this, ShotDamage);
@@ -69,6 +71,8 @@ void ASemiAutomaticWeapon::Shoot()
 					}
 					ShowHitMarker();
 
+					
+					
 				}
 				//DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 				PlayTracerEffect(HitResult.Location);
@@ -113,4 +117,6 @@ void ASemiAutomaticWeapon::Shoot()
 				RecoilComponent->RecoilKick();
 		}
 	}
+
+	
 }
