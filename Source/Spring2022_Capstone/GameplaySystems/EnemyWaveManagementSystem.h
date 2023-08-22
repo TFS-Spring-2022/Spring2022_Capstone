@@ -46,7 +46,7 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 
 	// Time in S before spawn wave is called after finishing a round.
 	UPROPERTY(EditAnywhere, Category = "Waves")
-	float TimeBeforeNextRoundStart;
+	float TimeBeforeNextRoundStart = 0.1;
 
 	FTimerHandle TimeBeforeNextRoundStartTimerHandle;
 	FTimerHandle TimeBeforeUpgradeMenuTimerHandle;
