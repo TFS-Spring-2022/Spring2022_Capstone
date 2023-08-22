@@ -58,13 +58,11 @@ void ASemiAutomaticWeapon::Shoot()
 					{
 					case SURFACE_FleshDefault:
 						DamageableActor->DamageActor(this, ShotDamage);
-						GEngine->AddOnScreenDebugMessage(11, .5f, FColor::Black, "Default Shot");
 						if(FloatingDamageNumberParticleSystem)
 							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
 						break;
 					case SURFACE_FleshVulnerable:
 						DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier);
-						GEngine->AddOnScreenDebugMessage(10, .5f, FColor::Red, "Head Shot");
 						if(FloatingDamageNumberParticleSystem)
 							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
 						break;
