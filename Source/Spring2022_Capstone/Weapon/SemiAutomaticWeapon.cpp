@@ -23,7 +23,6 @@ void ASemiAutomaticWeapon::Shoot()
 	if (!bIsOverheating && CurrentCharge > MaxChargeAmount)
 	{
 		Overheat();
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("OVERHEATING"));
 	}
 
 	if (bCanFire)
