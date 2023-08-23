@@ -271,12 +271,15 @@ void APlayerCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo &OutResult)
 
 void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
-	if(bIsSwappingWeapon)
-		return;
+	if(bCanAttack)
+	{
+		if(bIsSwappingWeapon)
+			return;
 	
-	if (bIsSprinting)
-		return;
-	ActiveWeapon->Shoot();
+		if (bIsSprinting)
+			return;
+		ActiveWeapon->Shoot();
+	}
 }
 
 void APlayerCharacter::Grapple(const FInputActionValue &Value)

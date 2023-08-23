@@ -81,6 +81,10 @@ protected:
 	UPROPERTY()
 	APlayerController* PlayerController;
 
+	// GlobalTimeDilation value when the Upgrade Menu is opened.
+	UPROPERTY(EditAnywhere, Category = "UI")
+	float PausedTimeDilation = 0.05;
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
