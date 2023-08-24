@@ -160,6 +160,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TSubclassOf<UCameraShakeBase> DashCameraShake;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Component")
+	float CameraBobbingSpeed = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Component")
+	float CameraBobbingAmount = 10.0f;
+
+	float CameraBobbingOffset = 0.0f;
 	/**
 	* @brief Dash cooldown in seconds
 	*/

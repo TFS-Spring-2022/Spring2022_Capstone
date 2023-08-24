@@ -114,6 +114,8 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
 {
 	
 	const FVector2D DirectionalValue = Value.Get<FVector2D>();
+
+	
 	if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
 	{
 		bIsMoving = true;
@@ -123,7 +125,28 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
 	}
 	else
 		bIsMoving = false;
+
+	if (bIsMoving && !bIsSprinting && GetVelocity().Size() < GetCharacterMovement()->MaxWalkSpeed)
+	{
+		// Calculate camera bobbing offset based on time and speed
+		float DeltaTime = GetWorld()->GetDeltaSeconds();
+		CameraBobbingOffset += DeltaTime * CameraBobbingSpeed;
+    
+		// Calculate vertical offset using sine function
+		float VerticalOffset = FMath::Sin(CameraBobbingOffset) * CameraBobbingAmount;
+    
+		// Apply the offset to the camera's Z position
+		FVector CameraLocation = Camera->GetComponentLocation();
+		CameraLocation.Z += VerticalOffset;
+		Camera->SetWorldLocation(CameraLocation);
+	}
+	else
+	{
+		// Reset camera bobbing offset when not moving or sprinting
+		CameraBobbingOffset = 0.0f;
+	}
 }
+
 
 void APlayerCharacter::Jump()
 {
