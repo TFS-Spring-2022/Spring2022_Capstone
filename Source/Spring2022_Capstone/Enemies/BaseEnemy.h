@@ -108,5 +108,8 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	bool bIsFiring;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TArray<UMaterial*> EnemyColors;
 	
 };
