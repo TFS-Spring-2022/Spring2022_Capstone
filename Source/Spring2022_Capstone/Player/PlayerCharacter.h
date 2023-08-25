@@ -162,6 +162,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TSubclassOf<UCameraShakeBase> DashCameraShake;
 
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TSubclassOf<UCameraShakeBase> DamageCameraShake;
+
 	/**
 	* @brief Dash cooldown in seconds
 	*/

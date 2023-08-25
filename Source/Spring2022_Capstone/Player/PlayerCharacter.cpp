@@ -369,6 +369,8 @@ void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 	
 	if (HealthComponent)
 	{
+		if(DamageCameraShake)
+			UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(DamageCameraShake);
 		HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 		UpdateHealthBar();
 	}
