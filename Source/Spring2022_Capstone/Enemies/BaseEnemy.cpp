@@ -37,6 +37,8 @@ void ABaseEnemy::BeginPlay()
 	// Add enemy to AttackSystem Agents[] array on spawn.
 	if(CurrentAttackSystemComponent)
 		CurrentAttackSystemComponent->AddNewAgent(this);
+
+	bIsFiring = false;	
 }
 
 void ABaseEnemy::Attack()
@@ -53,6 +55,8 @@ void ABaseEnemy::Attack()
 // Hits player and does damage (only called when enemy has token and then releases token)
 void ABaseEnemy::AttackHit()
 {
+	bIsFiring = true; // Set false via Skeleton Notify in Pistol_Shoot_Powerful.
+	
 	FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 	TraceParams->AddIgnoredActor(this);
 
@@ -78,6 +82,8 @@ void ABaseEnemy::AttackHit()
 // Misses player and does no damage (called when player does not have token))
 void ABaseEnemy::AttackMiss()
 {
+	bIsFiring = true; // Set false via Skeleton Notify in Pistol_Shoot_Powerful.
+
 	FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 	TraceParams->AddIgnoredActor(this);
 

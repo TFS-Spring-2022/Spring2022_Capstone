@@ -80,6 +80,11 @@ public:
 	// Called to set bHasAttackToken false and return logical token to Attack System Component.
 	virtual void ReleaseToken() override;
 
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetIsFiring() {return bIsFiring;}
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetIsFiring(bool NewState) {bIsFiring = NewState;}
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float Damage;
@@ -96,5 +101,8 @@ private:
 	
 	UPROPERTY()
 	class UAIAttackSystemComponent* CurrentAttackSystemComponent;
+	
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	bool bIsFiring;
 	
 };
