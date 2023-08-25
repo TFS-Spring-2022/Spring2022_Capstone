@@ -25,6 +25,7 @@ ABaseEnemy::ABaseEnemy()
 	ProjectileSpawnPoint->SetupAttachment(WeaponMesh);
 
 	PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+	
 }
 
 // Called when the game starts or when spawned
@@ -38,7 +39,11 @@ void ABaseEnemy::BeginPlay()
 	if(CurrentAttackSystemComponent)
 		CurrentAttackSystemComponent->AddNewAgent(this);
 
-	bIsFiring = false;	
+	bIsFiring = false;
+
+	if(!EnemyColors.IsEmpty())
+		GetMesh()->SetMaterial(0, EnemyColors[FMath::RandRange(0, EnemyColors.Num() - 1)]);
+
 }
 
 void ABaseEnemy::Attack()
