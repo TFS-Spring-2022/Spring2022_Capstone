@@ -359,7 +359,7 @@ void APlayerCharacter::SetIsMantleing(bool IsMantleingStatus)
 	bIsMantleing = IsMantleingStatus;
 }
 
-void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmount)
+void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName)
 {
 
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount);
