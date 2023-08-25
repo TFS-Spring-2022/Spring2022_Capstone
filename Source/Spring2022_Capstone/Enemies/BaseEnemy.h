@@ -111,5 +111,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TArray<UMaterial*> EnemyColors;
+
+	const FName WeaponSocket = "Grunt_RightHand_Pistol"; // Socket that holds the enemies weapon.
 	
 };

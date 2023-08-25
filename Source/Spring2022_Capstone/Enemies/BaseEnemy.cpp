@@ -19,8 +19,7 @@ ABaseEnemy::ABaseEnemy()
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
-	WeaponMesh->SetupAttachment(RootComponent);
-
+	
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPoint"));
 	ProjectileSpawnPoint->SetupAttachment(WeaponMesh);
 
@@ -32,6 +31,10 @@ ABaseEnemy::ABaseEnemy()
 void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Attach weapon to enemies hand socket
+	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true); 
+	WeaponMesh->AttachToComponent(GetMesh(), AttachmentRules, WeaponSocket);
 	
 	CurrentAttackSystemComponent = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetAttackSystemComponent();
 
@@ -43,6 +46,8 @@ void ABaseEnemy::BeginPlay()
 
 	if(!EnemyColors.IsEmpty())
 		GetMesh()->SetMaterial(0, EnemyColors[FMath::RandRange(0, EnemyColors.Num() - 1)]);
+
+	
 
 }
 
