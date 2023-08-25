@@ -109,6 +109,7 @@ void ABaseEnemy::Tick(float DeltaTime)
 
 void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
 {
+	PlayHitAnimation(HitBoneName);
 	
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount, HitBoneName);
 	if (HealthComp)

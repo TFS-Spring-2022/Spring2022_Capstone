@@ -84,6 +84,10 @@ public:
 	FORCEINLINE bool GetIsFiring() {return bIsFiring;}
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE void SetIsFiring(bool NewState) {bIsFiring = NewState;}
+	
+	// Plays a section in an anim montage holding all hit animations inside the enemy's blueprint.
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayHitAnimation(FName HitBone);
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
