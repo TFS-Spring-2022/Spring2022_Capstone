@@ -7,6 +7,7 @@
 #include "GrappleState.h"
 #include "MantleSystemComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
@@ -97,6 +98,8 @@ void APlayerCharacter::BeginPlay()
 	bDashBlurFadingIn = false;
 
 	CurrentGameMode = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController(), false);
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
