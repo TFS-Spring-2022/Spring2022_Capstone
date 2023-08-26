@@ -1,7 +1,7 @@
 // Created by Spring2022_Capstone team
 
 
-#include "Spring2022_Capstone/Enemies/BaseEnemyProjectile.h"
+#include "BaseEnemyProjectile.h"
 
 // Sets default values
 ABaseEnemyProjectile::ABaseEnemyProjectile()
