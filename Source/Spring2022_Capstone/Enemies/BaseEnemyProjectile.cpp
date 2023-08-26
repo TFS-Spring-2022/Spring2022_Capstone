@@ -1,27 +1,28 @@
 // Created by Spring2022_Capstone team
 
-
 #include "BaseEnemyProjectile.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
-// Sets default values
 ABaseEnemyProjectile::ABaseEnemyProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
+	RootComponent = ProjectileMesh;
+
+	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+	ProjectileMovementComponent->MaxSpeed = 1300.f;
+	ProjectileMovementComponent->InitialSpeed = 1300.f;
+	ProjectileMovementComponent->ProjectileGravityScale = .0f;
 }
 
-// Called when the game starts or when spawned
 void ABaseEnemyProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void ABaseEnemyProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
-

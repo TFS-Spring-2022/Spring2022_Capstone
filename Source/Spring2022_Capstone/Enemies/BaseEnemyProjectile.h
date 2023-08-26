@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "BaseEnemyProjectile.generated.h"
 
+class UProjectileMovementComponent;
 UCLASS()
 class SPRING2022_CAPSTONE_API ABaseEnemyProjectile : public AActor
 {
@@ -22,5 +23,11 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
+	UStaticMeshComponent *ProjectileMesh;
+	UPROPERTY(VisibleAnywhere, Category = "Movement")
+	UProjectileMovementComponent *ProjectileMovementComponent;
 
 };

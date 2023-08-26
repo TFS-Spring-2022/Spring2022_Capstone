@@ -13,5 +13,8 @@ UCLASS()
 class SPRING2022_CAPSTONE_API ARangerProjectile : public ABaseEnemyProjectile
 {
 	GENERATED_BODY()
-	
+
+private: 
+UFUNCTION() 
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalizedImpulse, const FHitResult& Hit);
 };
