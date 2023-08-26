@@ -17,7 +17,7 @@ class SPRING2022_CAPSTONE_API ARangedEnemy : public ABaseEnemy
 protected:
 
 	UFUNCTION(BlueprintCallable)
-	void RangerAttack();
+	void SpecialAttack();
 
 private:
 

@@ -5,7 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 
-void ARangedEnemy::RangerAttack()
+void ARangedEnemy::SpecialAttack()
 {
-    
+
 }
