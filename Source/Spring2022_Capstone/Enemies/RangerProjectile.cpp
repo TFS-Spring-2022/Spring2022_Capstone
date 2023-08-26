@@ -3,10 +3,27 @@
 #include "RangerProjectile.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
+#include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 void ARangerProjectile::BeginPlay()
 {
     Super::BeginPlay();
+
+    ProjectileMovementComponent->MaxSpeed = 300.f;
+	ProjectileMovementComponent->InitialSpeed = 300.f;
+	ProjectileMovementComponent->ProjectileGravityScale = .0f;
+	ProjectileMovementComponent->bRotationFollowsVelocity = true;
+	ProjectileMovementComponent->bIsHomingProjectile = true;
+	ProjectileMovementComponent->HomingAccelerationMagnitude = 300.f;
+
+    APawn *PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+
+    if (PlayerPawn)
+    {
+        ProjectileMovementComponent->HomingTargetComponent = PlayerPawn->GetRootComponent();
+    }
+
     ProjectileMesh->OnComponentHit.AddDynamic(this, &ARangerProjectile::OnHit);
 }
 
