@@ -138,6 +138,8 @@ protected:
 	// Switches ActiveWeapon between Weapon1 and Weapon2
 	void SwitchWeapon(const FInputActionValue &Value);
 
+	bool bCanAttack = true;
+
 	// Time between presses of a button to indicate a double tap
 	UPROPERTY(EditAnywhere, Category = "Input")
 	float DoubleTapActivationDelay = 0.5f;
@@ -267,6 +269,16 @@ private:
 	UPROPERTY()
 	class ASpring2022_CapstoneGameModeBase* CurrentGameMode;
 
+	bool bIsSwappingWeapon = false;
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetIsSwapping() {return bIsSwappingWeapon;}
+
+	FTimerHandle IsSwappingTimerHandle;
+
+	UFUNCTION()
+	FORCEINLINE void ToggleIsSwappingOff() {bIsSwappingWeapon = false;}
+
 public:
 	
 	UFUNCTION(BlueprintCallable)
@@ -309,5 +321,7 @@ public:
 	UUpgradeSystemComponent* GetUpgradeSystemComponent();
 
 	FORCEINLINE bool GetIsSprinting() const {return bIsSprinting;}
+
+	FORCEINLINE void SetCanAttack(bool Status) {bCanAttack = Status;}
 	
 };

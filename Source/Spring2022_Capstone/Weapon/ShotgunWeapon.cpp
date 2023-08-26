@@ -2,6 +2,7 @@
 
 #include "ShotgunWeapon.h"
 #include "DevTargets.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
@@ -38,14 +39,10 @@ void AShotgunWeapon::Shoot()
 			// ToDo: UPROPERTY IN HEADER (Naming and Degrees/Radians)	//
 			float HalfAngle = 10;
 			HalfAngle = UKismetMathLibrary::DegreesToRadians(HalfAngle);
-			
-			//Play sound												
-			if(GunShotAudioComp)
-			{
-				GunShotAudioComp->Play();
-			}
+			//															//
 
-			
+			if(MuzzleFlashParticleSystem)
+				UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, SkeletalMesh, ShootingStartSocket, SkeletalMesh->GetSocketLocation(ShootingStartSocket), SkeletalMesh->GetSocketRotation(ShootingStartSocket));
 			
 			for (int i = 0; i < PelletCount; i++)
 			{
@@ -58,8 +55,10 @@ void AShotgunWeapon::Shoot()
 				TraceParams->AddIgnoredComponent(PlayerCharacter->GetMesh());
 
 				if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
-
 				{
+					// Get Surface Type to check for headshot and impact material.
+					EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
+					
 					if (HitResult.GetActor()->Implements<UDamageableActor>())
 					{
 
@@ -68,27 +67,39 @@ void AShotgunWeapon::Shoot()
 
 						IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
 						
-						// Get Surface Type to check if headshot
-						EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
-					
 						switch (HitSurfaceType)
 						{
 						case SURFACE_FleshDefault:
 							DamageableActor->DamageActor(this, ShotDamage);
-							GEngine->AddOnScreenDebugMessage(11, .5f, FColor::Black, "Default Shot");
+							if(FloatingDamageNumberParticleSystem)
+								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
 							break;
 						case SURFACE_FleshVulnerable:
 							DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier);
-							GEngine->AddOnScreenDebugMessage(10, .5f, FColor::Red, "Head Shot");
+							if(FloatingDamageNumberParticleSystem)
+								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
 							break;
 						default:
 							DamageableActor->DamageActor(this, ShotDamage);
 							break;
 						}
-						
 					}
+					//DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
+					PlayTracerEffect(HitResult.Location);
 
-					DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
+					switch (HitSurfaceType)
+					{
+					case SURFACE_FleshDefault:
+					case SURFACE_FleshVulnerable:
+						ImpactEffectToPlay = FleshImpactParticleSystem;
+						break;
+					default:
+						ImpactEffectToPlay = RockImpactParticleSystem; // ToDo: Setup default once all custom Surface Types are made.
+						break;
+					}
+					if(ImpactEffectToPlay)
+						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffectToPlay, HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation());
+					
 				}
 			}
 			if (bPelletConnected)
@@ -96,22 +107,19 @@ void AShotgunWeapon::Shoot()
 				ShowHitMarker();
 				bPelletConnected = false;
 			}
-			//Plays the sound if first shot
-			if(CurrentCharge == 0)
-			{
-				OverheatAudioComp->Play();
-			}
-			
-			CurrentCharge += ShotCost;
-
-			
 			if(OverheatAudioComp)
 			{
 				OverheatAudioComp->SetPitchMultiplier((CurrentCharge/MaxChargeAmount));
 			}
-			PlayWeaponCameraShake();
 
-			
+			//Play gun sound
+			if(GunShotAudioComp)
+			{
+				GunShotAudioComp->Play();
+			}
+
+			CurrentCharge += ShotCost;
+			PlayWeaponCameraShake();
 
 			// Call recoil
 			if (RecoilComponent)

@@ -43,6 +43,18 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 	
 	UPROPERTY()
 	APlayerCharacter* PlayerCharacter;
+
+	// Time in S before spawn wave is called after finishing a round.
+	UPROPERTY(EditAnywhere, Category = "Waves")
+	float TimeBeforeNextRoundStart = 0.1;
+
+	FTimerHandle TimeBeforeNextRoundStartTimerHandle;
+	FTimerHandle TimeBeforeUpgradeMenuTimerHandle;
+	FTimerHandle TimeBeforeClearDeadEnemiesTimerHandle;
+
+	// Used to open the player's upgrade menu through a timer.
+	UFUNCTION()
+	void OpenUpgradeMenu() const;
 	
 public:
 
@@ -50,9 +62,18 @@ public:
 	// Grabs all EnemySpawnPoint actors in scene and adds them to EnemySpawnLocations.
 	void SetEnemySpawnLocations();
 
+	UFUNCTION()
 	void SpawnWave();
 
 	// Remove an ActiveEnemy from ActiveEnemies array.
 	void RemoveActiveEnemy(AActor* EnemyToRemove);
 
+	// All enemy corpses to be destroyed at the next rounds start.
+	UPROPERTY(VisibleAnywhere, Category = "Waves")
+	TArray<AActor*> EnemiesToDestroy;
+
+	// Destroys all enemy corpses in current wave
+	UFUNCTION()
+	void ClearDeadEnemies();
+	
 };

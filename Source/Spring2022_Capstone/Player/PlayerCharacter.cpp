@@ -25,6 +25,9 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
 	Camera->bUsePawnControlRotation = true;
 
+	// Rotate with controller's pitch so player's arms/weapons move vertically.
+	bUseControllerRotationPitch = true;
+	
 	GrappleComponent = CreateDefaultSubobject<UGrappleComponent>(TEXT("Grapple"));
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
@@ -35,6 +38,7 @@ APlayerCharacter::APlayerCharacter()
 
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
+
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
@@ -267,9 +271,15 @@ void APlayerCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo &OutResult)
 
 void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
-	if (bIsSprinting)
-		return;
-	ActiveWeapon->Shoot();
+	if(bCanAttack)
+	{
+		if(bIsSwappingWeapon)
+			return;
+	
+		if (bIsSprinting)
+			return;
+		ActiveWeapon->Shoot();
+	}
 }
 
 void APlayerCharacter::Grapple(const FInputActionValue &Value)
@@ -303,12 +313,23 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
+
 	if(ActiveWeapon->GunChangeAudioComp)
 		ActiveWeapon->GunChangeAudioComp->Play();
-
-	ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
-	StashedWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
-	PlayerHUDWidgetInstance->SetWeaponIcons(ActiveWeapon->GetWeaponIcon(), StashedWeapon->GetWeaponIcon());
+	
+	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
+	{
+		if(ActiveWeapon->GunChangeAudioComp)
+			ActiveWeapon->GunChangeAudioComp->Play();
+		
+		bIsSwappingWeapon = true;
+		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .5f, false);
+		ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+		StashedWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
+		StashedWeapon->SetActorHiddenInGame(true);
+		ActiveWeapon->SetActorHiddenInGame(false);
+		PlayerHUDWidgetInstance->SetWeaponIcons(ActiveWeapon->GetWeaponIcon(), StashedWeapon->GetWeaponIcon());
+	}
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)

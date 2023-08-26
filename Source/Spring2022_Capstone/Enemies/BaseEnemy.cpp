@@ -6,6 +6,8 @@
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "AIController.h"
+#include "Components/CapsuleComponent.h"
+#include "Kismet/KismetMaterialLibrary.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
 // Sets default values
@@ -63,7 +65,7 @@ void ABaseEnemy::AttackHit()
 	DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, FColor::Red, false, .5f);
 	
 
-	if(GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Visibility, *TraceParams))
+	if(GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Camera, *TraceParams))
 	{
 		DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Red, false, .5f);
 		
@@ -89,8 +91,8 @@ void ABaseEnemy::AttackMiss()
 	DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, FColor::Black, false, .5f);
 
 	// ToDo: Implement weighting missed shots into objects/player view
-	//if(GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Visibility, *TraceParams))
-	//	DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Black, false, .5f); 
+	if(GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Camera, *TraceParams))
+		DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Black, false, .5f); 
 }
 
 // Called every frame
@@ -122,8 +124,7 @@ void ABaseEnemy::ReceiveToken()
 void ABaseEnemy::ReleaseToken()
 {
 	IAttackSystemAgentInterface::ReleaseToken();
-	if(CurrentAttackSystemComponent)
-		CurrentAttackSystemComponent->ReturnToken();
+	CurrentAttackSystemComponent->ReturnToken();
 	bHasAttackToken = false;
 }
 
@@ -151,6 +152,13 @@ void ABaseEnemy::Death()
 	UEnemyWaveManagementSystem* WaveManager = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetWaveManager();
 	if(WaveManager)
 		WaveManager->RemoveActiveEnemy(this);
-	Destroy(false, true);
+
+	// Ragdoll Enemy
+	GetMesh()->SetSimulatePhysics(true);
+	GetCapsuleComponent()->DestroyComponent();
+	GetMesh()->SetCollisionProfileName("SkyPirateRagdoll");
+
+	// Note: Enemies are destroying in EnemyWaveManagementSystem.
+	
 }
 

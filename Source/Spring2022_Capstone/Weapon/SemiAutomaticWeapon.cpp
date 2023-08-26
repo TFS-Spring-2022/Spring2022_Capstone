@@ -3,6 +3,8 @@
 #include "SemiAutomaticWeapon.h"
 
 #include "DevTargets.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetStringLibrary.h"
 
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
@@ -21,7 +23,6 @@ void ASemiAutomaticWeapon::Shoot()
 	if (!bIsOverheating && CurrentCharge > MaxChargeAmount)
 	{
 		Overheat();
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("OVERHEATING"));
 	}
 
 	if (bCanFire)
@@ -44,41 +45,61 @@ void ASemiAutomaticWeapon::Shoot()
 			
 			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
+				// Get Surface Type to check for headshot and impact material type.
+				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 				
 				if (HitResult.GetActor()->Implements<UDamageableActor>())
 				{
 
 					IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
-
-					// Get Surface Type to check if headshot
-					EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 					
 					switch (HitSurfaceType)
 					{
 					case SURFACE_FleshDefault:
 						DamageableActor->DamageActor(this, ShotDamage);
-						GEngine->AddOnScreenDebugMessage(11, .5f, FColor::Black, "Default Shot");
+						if(FloatingDamageNumberParticleSystem)
+							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
 						break;
 					case SURFACE_FleshVulnerable:
 						DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier);
-						GEngine->AddOnScreenDebugMessage(10, .5f, FColor::Red, "Head Shot");
+						if(FloatingDamageNumberParticleSystem)
+							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
 						break;
 					default:
 						DamageableActor->DamageActor(this, ShotDamage);
 						break;
 					}
 					ShowHitMarker();
+
+					
+					
 				}
-				DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
+				//DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
+				PlayTracerEffect(HitResult.Location);
+
+				
+				switch (HitSurfaceType)
+				{
+				case SURFACE_FleshDefault:
+				case SURFACE_FleshVulnerable:
+					ImpactEffectToPlay = FleshImpactParticleSystem;
+					break;
+				default:
+					ImpactEffectToPlay = RockImpactParticleSystem; // ToDo: Setup default once all custom Surface Types are made.
+					break;
+				}
+				if(ImpactEffectToPlay)
+					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffectToPlay, HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation());
 			}
 			
-			if(CurrentCharge == 0)
-			{
-				OverheatAudioComp->Play();
-			}
-
+			if(MuzzleFlashParticleSystem)
+				UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, SkeletalMesh, ShootingStartSocket);
+			
 			CurrentCharge += ShotCost;
 			PlayWeaponCameraShake();
+
+			bIsFiring = true;
+			GetWorld()->GetTimerManager().SetTimer(IsFiringToggleTimerHandle, this, &AWeaponBase::ToggleIsFiringOff, 0.05, false);	
 
 			if(OverheatAudioComp)
 			{
@@ -86,14 +107,16 @@ void ASemiAutomaticWeapon::Shoot()
 			}
 
 			//Play gun sound
-            if(GunShotAudioComp)
-            {
-            	GunShotAudioComp->Play();
-            }
+			if(GunShotAudioComp)
+			{
+				GunShotAudioComp->Play();
+			}
 			
 			// Call recoil
 			if (RecoilComponent)
 				RecoilComponent->RecoilKick();
 		}
 	}
+
+	
 }
