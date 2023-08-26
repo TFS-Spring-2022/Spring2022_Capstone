@@ -8,5 +8,6 @@
 
 void ARangedEnemy::SpecialAttack()
 {
-    GetWorld()->SpawnActor<ABaseEnemyProjectile>(Projectile, GetActorLocation(), GetActorRotation());
+    if (!Projectile) { return; }
+    GetWorld()->SpawnActor<ABaseEnemyProjectile>(Projectile, ProjectileSpawnPoint->GetComponentLocation(), GetActorRotation());
 }

@@ -17,12 +17,10 @@ class SPRING2022_CAPSTONE_API ARangedEnemy : public ABaseEnemy
 	GENERATED_BODY()
 
 protected:
-
 	UFUNCTION(BlueprintCallable)
 	void SpecialAttack();
 
 private:
-
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile", meta = (AllowPrivateAccess = true))
 	TSubclassOf<ABaseEnemyProjectile> Projectile;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
