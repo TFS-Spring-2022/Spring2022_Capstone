@@ -7,6 +7,7 @@
 #include "GrappleState.h"
 #include "MantleSystemComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
@@ -97,6 +98,8 @@ void APlayerCharacter::BeginPlay()
 	bDashBlurFadingIn = false;
 
 	CurrentGameMode = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController(), false);
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -271,12 +274,15 @@ void APlayerCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo &OutResult)
 
 void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
-	if(bIsSwappingWeapon)
-		return;
+	if(bCanAttack)
+	{
+		if(bIsSwappingWeapon)
+			return;
 	
-	if (bIsSprinting)
-		return;
-	ActiveWeapon->Shoot();
+		if (bIsSprinting)
+			return;
+		ActiveWeapon->Shoot();
+	}
 }
 
 void APlayerCharacter::Grapple(const FInputActionValue &Value)
@@ -356,13 +362,15 @@ void APlayerCharacter::SetIsMantleing(bool IsMantleingStatus)
 	bIsMantleing = IsMantleingStatus;
 }
 
-void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmount)
+void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName)
 {
 
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount);
 	
 	if (HealthComponent)
 	{
+		if(DamageCameraShake)
+			UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(DamageCameraShake);
 		HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 		UpdateHealthBar();
 	}

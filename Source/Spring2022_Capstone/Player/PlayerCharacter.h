@@ -138,6 +138,8 @@ protected:
 	// Switches ActiveWeapon between Weapon1 and Weapon2
 	void SwitchWeapon(const FInputActionValue &Value);
 
+	bool bCanAttack = true;
+
 	// Time between presses of a button to indicate a double tap
 	UPROPERTY(EditAnywhere, Category = "Input")
 	float DoubleTapActivationDelay = 0.5f;
@@ -159,6 +161,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TSubclassOf<UCameraShakeBase> DashCameraShake;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TSubclassOf<UCameraShakeBase> DamageCameraShake;
 
 	/**
 	* @brief Dash cooldown in seconds
@@ -305,7 +310,7 @@ public:
 	FORCEINLINE AWeaponBase* GetActiveWeapon() {return ActiveWeapon;}
 
 	UFUNCTION(BlueprintCallable)
-	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
+	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
 
 	// ToDo: Handle Grapple Indicator in here
 	void ChangeCrosshair();
@@ -319,5 +324,7 @@ public:
 	UUpgradeSystemComponent* GetUpgradeSystemComponent();
 
 	FORCEINLINE bool GetIsSprinting() const {return bIsSprinting;}
+
+	FORCEINLINE void SetCanAttack(bool Status) {bCanAttack = Status;}
 	
 };

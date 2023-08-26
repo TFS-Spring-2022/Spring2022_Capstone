@@ -5,6 +5,7 @@
 
 #include "GrappleComponent.h"
 #include "PlayerCharacter.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/HealthComponent.h"
 
@@ -106,9 +107,17 @@ void UUpgradeSystemComponent::OpenUpgradeMenu()
 {
 	if(UpgradeMenuWidgetInstance && UpgradeChoices.Num() > 0)
 	{
-		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		// Remove Player's movement and attacking.
+		PlayerController->SetIgnoreLookInput(true);
+		PlayerController->SetIgnoreMoveInput(true);
+		PlayerToUpgrade->SetCanAttack(false);
+		// Start slow motion
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), PausedTimeDilation);
 		PrepareUpgradeChoices();
+		// Show mouse cursor and set input to only effect UI.
 		PlayerController->bShowMouseCursor = true;
+		UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController, UpgradeMenuWidgetInstance, EMouseLockMode::LockAlways, false); // flush input false because want to maintain movement
+		// Open Upgrade Menu.
 		UpgradeMenuWidgetInstance->AddToViewport(0);
 		bIsMenuOpen = true;
 		PlayerToUpgrade->GetPlayerHUD()->SetVisibility(ESlateVisibility::Hidden);
@@ -121,11 +130,18 @@ void UUpgradeSystemComponent::CloseUpgradeMenu()
 {
 	if(UpgradeMenuWidgetInstance)
 	{
-		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		// Return Player's movement and attacking.
+		PlayerController->SetIgnoreLookInput(false);
+		PlayerController->SetIgnoreMoveInput(false);
+		PlayerToUpgrade->SetCanAttack(true);
+		// End slow motion.
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
+		// Hide mouse cursor and return InputMode to only effect Game.
 		PlayerController->bShowMouseCursor = false;
+		UWidgetBlueprintLibrary::SetInputMode_GameOnly(PlayerController, false);
+		// Close Upgrade Menu.
 		UpgradeMenuWidgetInstance->RemoveFromParent();
 		bIsMenuOpen = false;
-
 		// Clear from delegate's invocation list.
 		UpgradeMenuWidgetInstance->GetUpgrade1Button()->OnClicked.Clear();
 		UpgradeMenuWidgetInstance->GetUpgrade2Button()->OnClicked.Clear();
@@ -143,15 +159,15 @@ void UUpgradeSystemComponent::PrepareUpgradeChoices()
 	{
 		// Set UpgradeChoices
 		UpgradeChoice1 = GetUpgradeChoice();
-		const FString UpgradeChoice1FString = FString::Printf(TEXT("%s + %s"), *GetUpgradeEnumValueText(UpgradeChoice1.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice1.UpgradeValue, 1));
+		const FString UpgradeChoice1FString = FString::Printf(TEXT("%s  %s"), *GetUpgradeEnumValueText(UpgradeChoice1.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice1.UpgradeValue, 1));
 		UpgradeMenuWidgetInstance->SetUpgradeTextBox(1, FText::FromString(UpgradeChoice1FString));
 		// Upgrade 2
 		UpgradeChoice2 = GetUpgradeChoice();
-		const FString UpgradeChoice2FString = FString::Printf(TEXT("%s + %s"), *GetUpgradeEnumValueText(UpgradeChoice2.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice2.UpgradeValue, 1));
+		const FString UpgradeChoice2FString = FString::Printf(TEXT("%s  %s"), *GetUpgradeEnumValueText(UpgradeChoice2.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice2.UpgradeValue, 1));
 		UpgradeMenuWidgetInstance->SetUpgradeTextBox(2, FText::FromString(UpgradeChoice2FString));
 		// Upgrade3
 		UpgradeChoice3 = GetUpgradeChoice();
-		const FString UpgradeChoice3FString = FString::Printf(TEXT("%s + %s"), *GetUpgradeEnumValueText(UpgradeChoice3.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice3.UpgradeValue, 1));
+		const FString UpgradeChoice3FString = FString::Printf(TEXT("%s  %s"), *GetUpgradeEnumValueText(UpgradeChoice3.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice3.UpgradeValue, 1));
 		UpgradeMenuWidgetInstance->SetUpgradeTextBox(3, FText::FromString(UpgradeChoice3FString));
 
 		UpgradeMenuWidgetInstance->GetUpgrade1Button()->OnClicked.AddDynamic(this, &UUpgradeSystemComponent::ApplyUpgrade1);
@@ -163,11 +179,11 @@ void UUpgradeSystemComponent::PrepareUpgradeChoices()
 		// When there are only two available upgrades, hid the third button and text.
 		// Upgrade 1
 		UpgradeChoice1 = GetUpgradeChoice();
-		const FString UpgradeChoice1FString = FString::Printf(TEXT("%s + %s"), *GetUpgradeEnumValueText(UpgradeChoice1.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice1.UpgradeValue, 1));
+		const FString UpgradeChoice1FString = FString::Printf(TEXT("%s  %s"), *GetUpgradeEnumValueText(UpgradeChoice1.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice1.UpgradeValue, 1));
 		UpgradeMenuWidgetInstance->SetUpgradeTextBox(1, FText::FromString(UpgradeChoice1FString));
 		// Upgrade 2
 		UpgradeChoice2 = GetUpgradeChoice();
-		const FString UpgradeChoice2FString = FString::Printf(TEXT("%s + %s"), *GetUpgradeEnumValueText(UpgradeChoice2.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice2.UpgradeValue, 1));
+		const FString UpgradeChoice2FString = FString::Printf(TEXT("%s  %s"), *GetUpgradeEnumValueText(UpgradeChoice2.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice2.UpgradeValue, 1));
 		UpgradeMenuWidgetInstance->SetUpgradeTextBox(2, FText::FromString(UpgradeChoice2FString));
 		UpgradeMenuWidgetInstance->GetUpgrade1Button()->OnClicked.AddDynamic(this, &UUpgradeSystemComponent::ApplyUpgrade1);
 		UpgradeMenuWidgetInstance->GetUpgrade2Button()->OnClicked.AddDynamic(this, &UUpgradeSystemComponent::ApplyUpgrade2);
@@ -180,7 +196,7 @@ void UUpgradeSystemComponent::PrepareUpgradeChoices()
 		// When there is only one available upgrades, hid the second button and text.
 		// Upgrade 1
 		UpgradeChoice1 = GetUpgradeChoice();
-		const FString UpgradeChoice1FString = FString::Printf(TEXT("%s + %s"), *GetUpgradeEnumValueText(UpgradeChoice1.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice1.UpgradeValue, 1));
+		const FString UpgradeChoice1FString = FString::Printf(TEXT("%s  %s"), *GetUpgradeEnumValueText(UpgradeChoice1.TypeOfUpgrade), *FString::SanitizeFloat(UpgradeChoice1.UpgradeValue, 1));
 		UpgradeMenuWidgetInstance->SetUpgradeTextBox(1, FText::FromString(UpgradeChoice1FString));
 		UpgradeMenuWidgetInstance->GetUpgrade1Button()->OnClicked.AddDynamic(this, &UUpgradeSystemComponent::ApplyUpgrade1);
 		//Remove Upgrade2Button as it has no upgrade choice. ToDo/Note: Using collapsed will allow us to automatically reposition upgrade cards when the art is added.
