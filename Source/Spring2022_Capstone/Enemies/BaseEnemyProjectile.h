@@ -11,23 +11,22 @@ UCLASS()
 class SPRING2022_CAPSTONE_API ABaseEnemyProjectile : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
+
+public:
 	ABaseEnemyProjectile();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
+	float Damage;
 
-private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent *ProjectileMesh;
 	UPROPERTY(VisibleAnywhere, Category = "Movement")
 	UProjectileMovementComponent *ProjectileMovementComponent;
 
+public:
+	virtual void Tick(float DeltaTime) override;
+	
 };
