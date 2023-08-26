@@ -14,6 +14,11 @@ class SPRING2022_CAPSTONE_API ARangedEnemy : public ABaseEnemy
 {
 	GENERATED_BODY()
 
+protected:
+
+	UFUNCTION(BlueprintCallable)
+	void RangerAttack();
+
 private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
