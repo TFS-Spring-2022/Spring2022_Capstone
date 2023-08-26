@@ -72,13 +72,22 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
+	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
 
 	// Called from the AttackSystem to set bHasAttackToken true;
 	virtual void ReceiveToken() override;
 
 	// Called to set bHasAttackToken false and return logical token to Attack System Component.
 	virtual void ReleaseToken() override;
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetIsFiring() {return bIsFiring;}
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetIsFiring(bool NewState) {bIsFiring = NewState;}
+	
+	// Plays a section in an anim montage holding all hit animations inside the enemy's blueprint.
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayHitAnimation(FName HitBone);
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
@@ -96,5 +105,11 @@ private:
 	
 	UPROPERTY()
 	class UAIAttackSystemComponent* CurrentAttackSystemComponent;
+	
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	bool bIsFiring;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TArray<UMaterial*> EnemyColors;
 	
 };
