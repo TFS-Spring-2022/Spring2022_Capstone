@@ -69,6 +69,11 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
+
+	SoundManagerSubSystem->PlaySoundEvent();
+	
 	if (APlayerController *PlayerController = Cast<APlayerController>(GetController()))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem *Subsystem = ULocalPlayer::GetSubsystem<
@@ -96,10 +101,6 @@ void APlayerCharacter::BeginPlay()
 	}
 	
 	bDashBlurFadingIn = false;
-
-
-	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
-	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
 	CurrentGameMode = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 
 }

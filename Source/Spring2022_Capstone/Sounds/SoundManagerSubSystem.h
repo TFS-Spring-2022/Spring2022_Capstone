@@ -25,7 +25,49 @@ public:
 
 	UFUNCTION()
 	void PlaysMusic(const USoundCue* Music) const;
+	
+	UFUNCTION()
+	void PlaySoundEvent()const;
 
+	UFUNCTION()
+	void ImplementToken(int stk1, int ptk2, int gtk3, int sntk, int ntk);
+
+private:
+
+	UPROPERTY()
+	TArray<USoundCue*> GruntVoiceLines;
+	
+	UPROPERTY()
+	TArray<USoundCue*> PlayerVoiceLines;
+
+	UPROPERTY()
+	TArray<USoundCue*> SniperVoiceLines;
+
+	UPROPERTY()
+	TArray<USoundCue*> NarratorVoiceLines;
+	
+	UPROPERTY()
+	int SoundEventToken;
+
+	UPROPERTY()
+	int GruntSoundEventToken;
+
+	UPROPERTY()
+	int SniperSoundEventToken;
+
+	UPROPERTY()
+	int NarratorSoundEventToken;
+
+	UPROPERTY()
+	int PlayerSoundEventToken;
+
+ 
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
+	UPROPERTY()
+	USoundCue* PlayerDeathSC;
+	
+	
 	
 
 	UPROPERTY(EditAnywhere, Category = "Menu Music")
@@ -37,5 +79,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Menu sounds")
 	USoundCue* ClickButtonSound;
 
-	
+	UPROPERTY(EditAnywhere, Category = "Audio C")
+	UAudioComponent* SubSystemAudio;
 };
