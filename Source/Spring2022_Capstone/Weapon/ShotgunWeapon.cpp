@@ -70,15 +70,17 @@ void AShotgunWeapon::Shoot()
 						switch (HitSurfaceType)
 						{
 						case SURFACE_FleshDefault:
-							DamageableActor->DamageActor(this, ShotDamage);
-							GEngine->AddOnScreenDebugMessage(11, .5f, FColor::Black, "Default Shot");
+							DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
+							if(FloatingDamageNumberParticleSystem)
+								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
 							break;
 						case SURFACE_FleshVulnerable:
-							DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier);
-							GEngine->AddOnScreenDebugMessage(10, .5f, FColor::Red, "Head Shot");
+							DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier,HitResult.BoneName);
+							if(FloatingDamageNumberParticleSystem)
+								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
 							break;
 						default:
-							DamageableActor->DamageActor(this, ShotDamage);
+							DamageableActor->DamageActor(this, ShotDamage,HitResult.BoneName);
 							break;
 						}
 					}

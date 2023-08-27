@@ -6,6 +6,8 @@
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "AIController.h"
+#include "Components/CapsuleComponent.h"
+#include "Kismet/KismetMaterialLibrary.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
 // Sets default values
@@ -17,24 +19,36 @@ ABaseEnemy::ABaseEnemy()
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
-	WeaponMesh->SetupAttachment(RootComponent);
-
+	
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPoint"));
 	ProjectileSpawnPoint->SetupAttachment(WeaponMesh);
 
 	PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+	
 }
 
 // Called when the game starts or when spawned
 void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Attach weapon to enemies hand socket
+	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true); 
+	WeaponMesh->AttachToComponent(GetMesh(), AttachmentRules, WeaponSocket);
 	
 	CurrentAttackSystemComponent = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetAttackSystemComponent();
 
 	// Add enemy to AttackSystem Agents[] array on spawn.
 	if(CurrentAttackSystemComponent)
 		CurrentAttackSystemComponent->AddNewAgent(this);
+
+	bIsFiring = false;
+
+	if(!EnemyColors.IsEmpty())
+		GetMesh()->SetMaterial(0, EnemyColors[FMath::RandRange(0, EnemyColors.Num() - 1)]);
+
+	
+
 }
 
 void ABaseEnemy::Attack()
@@ -51,6 +65,8 @@ void ABaseEnemy::Attack()
 // Hits player and does damage (only called when enemy has token and then releases token)
 void ABaseEnemy::AttackHit()
 {
+	bIsFiring = true; // Set false via Skeleton Notify in Pistol_Shoot_Powerful.
+	
 	FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 	TraceParams->AddIgnoredActor(this);
 
@@ -76,6 +92,8 @@ void ABaseEnemy::AttackHit()
 // Misses player and does no damage (called when player does not have token))
 void ABaseEnemy::AttackMiss()
 {
+	bIsFiring = true; // Set false via Skeleton Notify in Pistol_Shoot_Powerful.
+
 	FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 	TraceParams->AddIgnoredActor(this);
 
@@ -99,15 +117,16 @@ void ABaseEnemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount)
+void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
 {
-	IDamageableActor::DamageActor(DamagingActor, DamageAmount);
+	PlayHitAnimation(HitBoneName);
+	
+	IDamageableActor::DamageActor(DamagingActor, DamageAmount, HitBoneName);
 	if (HealthComp)
 	{
 		HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
 		if(HealthComp->GetHealth() <= 0)
 		{
-			
 			Death();
 		}
 	}
@@ -150,6 +169,13 @@ void ABaseEnemy::Death()
 	UEnemyWaveManagementSystem* WaveManager = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetWaveManager();
 	if(WaveManager)
 		WaveManager->RemoveActiveEnemy(this);
-	Destroy(false, true);
+
+	// Ragdoll Enemy
+	GetMesh()->SetSimulatePhysics(true);
+	GetCapsuleComponent()->DestroyComponent();
+	GetMesh()->SetCollisionProfileName("SkyPirateRagdoll");
+
+	// Note: Enemies are destroying in EnemyWaveManagementSystem.
+	
 }
 

@@ -76,6 +76,7 @@ void UGrappleComponent::Fire(FVector TargetLocation)
 	Cable->CableComponent->bEnableStiffness = false;
 	Cable->CableComponent->SubstepTime = 0.005f;
 	Cable->CableComponent->SetCollisionProfileName(TEXT("OverlapAll"));
+	Cable->SetActorHiddenInGame(true);
 	
 }
 
