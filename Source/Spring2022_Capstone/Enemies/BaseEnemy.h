@@ -41,6 +41,9 @@ protected:
 	UStaticMeshComponent *WeaponMesh;
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	USceneComponent *ProjectileSpawnPoint;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+	UTextRenderComponent* NameTextRenderer;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Pawn, meta = (AllowPrivateAccess = "true"))
 	UHealthComponent *HealthComp;
@@ -113,5 +116,6 @@ private:
 	TArray<UMaterial*> EnemyColors;
 
 	const FName WeaponSocket = "Grunt_RightHand_Pistol"; // Socket that holds the enemies weapon.
+	const float NameTextRenderVerticalBuffer = 20.0f; // Number subtracted from NameTextRenderer's vertical position.
 	
 };

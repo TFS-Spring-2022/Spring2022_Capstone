@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "AIController.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/TextRenderComponent.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
@@ -24,6 +25,13 @@ ABaseEnemy::ABaseEnemy()
 	ProjectileSpawnPoint->SetupAttachment(WeaponMesh);
 
 	PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	NameTextRenderer = CreateDefaultSubobject<UTextRenderComponent>("Enemy Name Text");
+	NameTextRenderer->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
+	NameTextRenderer->SetupAttachment(RootComponent);
+	NameTextRenderer->SetRelativeLocation(FVector(0,0, GetDefaultHalfHeight() - NameTextRenderVerticalBuffer));
+	NameTextRenderer->SetVisibility(false);
+	
 }
 
 // Called when the game starts or when spawned
@@ -45,6 +53,7 @@ void ABaseEnemy::BeginPlay()
 
 	if (!EnemyColors.IsEmpty())
 		GetMesh()->SetMaterial(0, EnemyColors[FMath::RandRange(0, EnemyColors.Num() - 1)]);
+    
 }
 
 void ABaseEnemy::Attack()
