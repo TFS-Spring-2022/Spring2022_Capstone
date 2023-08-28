@@ -52,10 +52,10 @@ void ABaseEnemy::BeginPlay()
 
 	if (!EnemyColors.IsEmpty())
 		GetMesh()->SetMaterial(0, EnemyColors[FMath::RandRange(0, EnemyColors.Num() - 1)]);
-
+	
 	// ToDo: Delete after testing
 	PromoteToElite();
-	
+
 }
 
 void ABaseEnemy::Attack()
@@ -152,9 +152,20 @@ void ABaseEnemy::ReleaseToken()
 
 void ABaseEnemy::PromoteToElite()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, "Promoted " + GetName());
-	// ToDo: Generate and display random name
-	NameTextRenderer->SetVisibility(true);
+	// Generate random name
+	if(NameGenerator)
+	{
+		URandomNameGenerator* NameGeneratorInstance = NewObject<URandomNameGenerator>(this, NameGenerator);
+		FText EliteName;
+		
+		if(FMath::RandBool())
+			EliteName = NameGeneratorInstance->GetRandomFullName();
+		else
+			EliteName = FText::FromString(NameGeneratorInstance->GetRandomFirstName().ToString() + " " + NameGeneratorInstance->GetRandomLastName().ToString()); 
+		
+		NameTextRenderer->SetText(EliteName);
+		NameTextRenderer->SetVisibility(true);
+	}
 	// ToDo: Improve health.
 	// ToDo: Improve damage.
 	// ToDo: Increase scale.
