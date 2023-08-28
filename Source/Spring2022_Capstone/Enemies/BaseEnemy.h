@@ -102,6 +102,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	UNiagaraSystem* EliteParticleNiagaraSystem;
 
+	UPROPERTY()
+	UNiagaraComponent* EliteParticleInstance;
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float Damage;

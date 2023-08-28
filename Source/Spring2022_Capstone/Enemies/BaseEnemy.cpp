@@ -180,7 +180,7 @@ void ABaseEnemy::PromoteToElite()
 	// Create elite particles
 	if(EliteParticleNiagaraSystem)
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAttached(EliteParticleNiagaraSystem, RootComponent, NAME_None, FVector(0,0,0),
+		EliteParticleInstance = UNiagaraFunctionLibrary::SpawnSystemAttached(EliteParticleNiagaraSystem, RootComponent, NAME_None, FVector(0,0,0),
 	FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true, true);
 	}
 
@@ -218,5 +218,10 @@ void ABaseEnemy::Death()
 	GetCapsuleComponent()->DestroyComponent();
 	GetMesh()->SetCollisionProfileName("SkyPirateRagdoll");
 
-	// Note: Enemies are destroying in EnemyWaveManagementSystem.
+	// Disable elite effects.
+	NameTextRenderer->SetVisibility(false);
+	if(EliteParticleInstance)
+		EliteParticleInstance->DestroyInstance();
+	
+	// Note: Enemies are destroyed in EnemyWaveManagementSystem.
 }
