@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "AIController.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/TextRenderComponent.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
@@ -24,6 +25,12 @@ ABaseEnemy::ABaseEnemy()
 	ProjectileSpawnPoint->SetupAttachment(WeaponMesh);
 
 	PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	NameTextRenderer = CreateDefaultSubobject<UTextRenderComponent>("Enemy Name Text");
+	NameTextRenderer->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
+	NameTextRenderer->SetupAttachment(RootComponent);
+	NameTextRenderer->SetRelativeLocation(FVector(0,0, GetDefaultHalfHeight() - NameTextRenderVerticalBuffer));
+	NameTextRenderer->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned
@@ -45,6 +52,7 @@ void ABaseEnemy::BeginPlay()
 
 	if (!EnemyColors.IsEmpty())
 		GetMesh()->SetMaterial(0, EnemyColors[FMath::RandRange(0, EnemyColors.Num() - 1)]);
+	
 }
 
 void ABaseEnemy::Attack()
@@ -139,6 +147,44 @@ void ABaseEnemy::ReleaseToken()
 	bHasAttackToken = false;
 }
 
+void ABaseEnemy::PromoteToElite()
+{
+	// Generate random name
+	if(NameGenerator)
+	{
+		URandomNameGenerator* NameGeneratorInstance = NewObject<URandomNameGenerator>(this, NameGenerator);
+		FText EliteName;
+		
+		if(FMath::RandBool())
+			EliteName = NameGeneratorInstance->GetRandomFullName();
+		else
+			EliteName = FText::FromString(NameGeneratorInstance->GetRandomFirstName().ToString() + " " + NameGeneratorInstance->GetRandomLastName().ToString()); 
+		
+		NameTextRenderer->SetText(EliteName);
+		NameTextRenderer->SetVisibility(true);
+	}
+	// Improve health.
+	if(HealthComp)
+	{
+		const float NewMaxHealth = HealthComp->GetMaxHealth() * EliteMultiplier;
+		HealthComp->SetMaxHealth(NewMaxHealth);
+		HealthComp->SetHealth(NewMaxHealth);
+	}
+	// Improve damage.
+	Damage *= EliteMultiplier;
+	// Increase scale.
+	SetActorRelativeScale3D(GetActorScale() * EliteMultiplier);
+	// Create elite particles
+	if(EliteParticleNiagaraSystem)
+	{
+		EliteParticleInstance = UNiagaraFunctionLibrary::SpawnSystemAttached(EliteParticleNiagaraSystem, GetMesh(), EliteParticleSocketName, FVector(0,0,0),
+	FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true, true);
+	}
+
+
+	// ToDo: Play voice line.
+}
+
 void ABaseEnemy::Death()
 {
 
@@ -169,5 +215,10 @@ void ABaseEnemy::Death()
 	GetCapsuleComponent()->DestroyComponent();
 	GetMesh()->SetCollisionProfileName("SkyPirateRagdoll");
 
-	// Note: Enemies are destroying in EnemyWaveManagementSystem.
+	// Disable elite effects.
+	NameTextRenderer->SetVisibility(false);
+	if(EliteParticleInstance)
+		EliteParticleInstance->DestroyInstance();
+	
+	// Note: Enemies are destroyed in EnemyWaveManagementSystem.
 }
