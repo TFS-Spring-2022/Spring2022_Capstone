@@ -32,6 +32,7 @@ public:
 	UFUNCTION()
 	void ImplementToken(int stk1, int ptk2, int gtk3, int sntk, int ntk);
 
+	
 private:
 
 	UPROPERTY()
@@ -45,6 +46,45 @@ private:
 
 	UPROPERTY()
 	TArray<USoundCue*> NarratorVoiceLines;
+
+#pragma region PlayerVoices
+	
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerDeathSC;
+
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerHurtSC;
+	
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerRampageSC;
+
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerCritSC;
+
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerHealedSC;
+
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerHeavyHurtSC;
+
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerWaveStartSC;
+
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerSniperHitSC;
+
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerAFKSC;
+
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerGrapplingSC;
+
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerArialSC;
+
+#pragma endregion
+
+#pragma 
 	
 	UPROPERTY()
 	int SoundEventToken;
@@ -60,12 +100,9 @@ private:
 
 	UPROPERTY()
 	int PlayerSoundEventToken;
+	
 
- 
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-
-	UPROPERTY()
-	USoundCue* PlayerDeathSC;
+	
 	
 	
 	

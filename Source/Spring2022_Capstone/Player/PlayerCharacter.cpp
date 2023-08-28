@@ -73,6 +73,8 @@ void APlayerCharacter::BeginPlay()
 	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
 	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
 
+
+	//Temp
 	SoundManagerSubSystem->PlaySoundEvent();
 	
 	if (APlayerController *PlayerController = Cast<APlayerController>(GetController()))
