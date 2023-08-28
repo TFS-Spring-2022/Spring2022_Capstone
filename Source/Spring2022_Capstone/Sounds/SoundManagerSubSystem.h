@@ -147,13 +147,13 @@ private:
 #pragma region Grunt Voices
 	
 	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
-	USoundCue* GruntHurtSound;
+	USoundCue* GruntHurtSC;
 
 	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
-	USoundCue* GruntJumpSound;
+	USoundCue* GruntJumpSC;
 
 	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
-	USoundCue* GruntWaveStart;
+	USoundCue* GruntWaveStartSC;
 
 	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
 	USoundCue* GruntBarrelSC;

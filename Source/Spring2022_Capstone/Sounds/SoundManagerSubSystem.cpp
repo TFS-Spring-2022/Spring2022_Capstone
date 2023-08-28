@@ -138,6 +138,34 @@ USoundManagerSubSystem::USoundManagerSubSystem()
 	if (RangerRandomLoaded.Succeeded())
 		RangerRandomSC = RangerRandomLoaded.Object;
 	
+#pragma endregion
+#pragma region Grunt Voice Lines
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>GruntArialHitLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Grunt/SC_GruntArielHit.SC_GruntArielHit'"));
+	if (GruntArialHitLoaded.Succeeded())
+		GruntArialHitSC = GruntArialHitLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>GruntBarrelLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Grunt/SC_GruntBarrel.SC_GruntBarrel'"));
+	if (GruntBarrelLoaded.Succeeded())
+		GruntBarrelSC = GruntBarrelLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>GruntGrappelLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Grunt/SC_GruntGrapple.SC_GruntGrapple'"));
+	if (GruntGrappelLoaded.Succeeded())
+		GruntGrappleSC = GruntGrappelLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>GruntHurtLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Grunt/SC_GruntHurt.SC_GruntHurt'"));
+	if (GruntHurtLoaded.Succeeded())
+		GruntHurtSC = GruntHurtLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>GruntWaveStartLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Grunt/SC_GruntJump.SC_GruntJump'"));
+	if (GruntWaveStartLoaded.Succeeded())
+		GruntWaveStartSC = GruntWaveStartLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>GruntNumbersLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Grunt/SC_GruntNumbers.SC_GruntNumbers'"));
+	if (GruntNumbersLoaded.Succeeded())
+		GruntNumbersSC = GruntNumbersLoaded.Object;
+
+	
 #pragma endregion 
 	
 }
