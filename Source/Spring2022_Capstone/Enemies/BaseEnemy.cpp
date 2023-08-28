@@ -169,6 +169,13 @@ void ABaseEnemy::PromoteToElite()
 	// ToDo: Improve health.
 	// ToDo: Improve damage.
 	// ToDo: Increase scale.
+	// Improve health.
+	if(HealthComp)
+	{
+		const float NewMaxHealth = HealthComp->GetMaxHealth() * EliteMultiplier;
+		HealthComp->SetMaxHealth(NewMaxHealth);
+		HealthComp->SetHealth(NewMaxHealth);
+	}
 	// ToDo: Elite particle effect.
 	// ToDo: Play voice line.
 }

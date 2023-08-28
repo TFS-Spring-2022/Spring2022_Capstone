@@ -95,6 +95,10 @@ public:
 
 	void PromoteToElite();
 
+	// Amount the enemy's stats are multiplied by when promoted.
+	UPROPERTY(EditAnywhere, Category = "Stats")
+	float EliteMultiplier = 1.3f;
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float Damage;
