@@ -166,7 +166,6 @@ void ABaseEnemy::PromoteToElite()
 		NameTextRenderer->SetText(EliteName);
 		NameTextRenderer->SetVisibility(true);
 	}
-	// ToDo: Increase scale.
 	// Improve health.
 	if(HealthComp)
 	{
@@ -176,6 +175,8 @@ void ABaseEnemy::PromoteToElite()
 	}
 	// Improve damage.
 	Damage *= EliteMultiplier;
+	// Increase scale.
+	SetActorRelativeScale3D(GetActorScale() * EliteMultiplier);
 	// ToDo: Elite particle effect.
 	// ToDo: Play voice line.
 }
