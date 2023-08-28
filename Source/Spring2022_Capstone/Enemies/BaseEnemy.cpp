@@ -31,7 +31,6 @@ ABaseEnemy::ABaseEnemy()
 	NameTextRenderer->SetupAttachment(RootComponent);
 	NameTextRenderer->SetRelativeLocation(FVector(0,0, GetDefaultHalfHeight() - NameTextRenderVerticalBuffer));
 	NameTextRenderer->SetVisibility(false);
-	
 }
 
 // Called when the game starts or when spawned
@@ -53,7 +52,10 @@ void ABaseEnemy::BeginPlay()
 
 	if (!EnemyColors.IsEmpty())
 		GetMesh()->SetMaterial(0, EnemyColors[FMath::RandRange(0, EnemyColors.Num() - 1)]);
-    
+
+	// ToDo: Delete after testing
+	PromoteToElite();
+	
 }
 
 void ABaseEnemy::Attack()
@@ -150,7 +152,9 @@ void ABaseEnemy::ReleaseToken()
 
 void ABaseEnemy::PromoteToElite()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, "Promoted " + GetName());
 	// ToDo: Generate and display random name
+	NameTextRenderer->SetVisibility(true);
 	// ToDo: Improve health.
 	// ToDo: Improve damage.
 	// ToDo: Increase scale.
