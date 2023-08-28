@@ -92,6 +92,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayHitAnimation(FName HitBone);
 
+	void PromoteToElite();
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float Damage;

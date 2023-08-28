@@ -148,6 +148,16 @@ void ABaseEnemy::ReleaseToken()
 	bHasAttackToken = false;
 }
 
+void ABaseEnemy::PromoteToElite()
+{
+	// ToDo: Generate and display random name
+	// ToDo: Improve health.
+	// ToDo: Improve damage.
+	// ToDo: Increase scale.
+	// ToDo: Elite particle effect.
+	// ToDo: Play voice line.
+}
+
 void ABaseEnemy::Death()
 {
 
