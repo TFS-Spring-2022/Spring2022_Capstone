@@ -16,4 +16,10 @@ class SPRING2022_CAPSTONE_API ASniperEnemy : public ABaseEnemy
 	
 protected:
 	void Attack() override;
+
+	UFUNCTION(BlueprintCallable)
+	void SpecialAttack();
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
+	float ChargeTime;
 };

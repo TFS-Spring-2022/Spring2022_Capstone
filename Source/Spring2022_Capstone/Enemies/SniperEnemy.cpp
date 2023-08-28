@@ -8,3 +8,8 @@ void ASniperEnemy::Attack()
     //TODO: Implementation
     UE_LOG(LogTemp, Display, TEXT("ATTACK"));
 }
+
+void ASniperEnemy::SpecialAttack()
+{
+    
+}
