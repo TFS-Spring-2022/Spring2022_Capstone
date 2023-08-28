@@ -177,7 +177,14 @@ void ABaseEnemy::PromoteToElite()
 	Damage *= EliteMultiplier;
 	// Increase scale.
 	SetActorRelativeScale3D(GetActorScale() * EliteMultiplier);
-	// ToDo: Elite particle effect.
+	// Create elite particles
+	if(EliteParticleNiagaraSystem)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAttached(EliteParticleNiagaraSystem, RootComponent, NAME_None, FVector(0,0,0),
+	FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true, true);
+	}
+
+
 	// ToDo: Play voice line.
 }
 

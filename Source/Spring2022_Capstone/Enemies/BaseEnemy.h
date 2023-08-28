@@ -99,6 +99,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Stats")
 	float EliteMultiplier = 1.3f;
 
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UNiagaraSystem* EliteParticleNiagaraSystem;
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float Damage;
