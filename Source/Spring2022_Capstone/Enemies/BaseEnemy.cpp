@@ -53,9 +53,6 @@ void ABaseEnemy::BeginPlay()
 	if (!EnemyColors.IsEmpty())
 		GetMesh()->SetMaterial(0, EnemyColors[FMath::RandRange(0, EnemyColors.Num() - 1)]);
 	
-	// ToDo: Delete after testing
-	PromoteToElite();
-
 }
 
 void ABaseEnemy::Attack()
