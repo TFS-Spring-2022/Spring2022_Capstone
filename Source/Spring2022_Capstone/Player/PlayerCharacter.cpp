@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "GrappleState.h"
 #include "MantleSystemComponent.h"
+#include "SAdvancedTransformInputBox.h"
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
@@ -69,6 +70,13 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
+
+
+	//Temp
+	SoundManagerSubSystem->PlaySoundEvent();
+	
 	if (APlayerController *PlayerController = Cast<APlayerController>(GetController()))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem *Subsystem = ULocalPlayer::GetSubsystem<
@@ -96,10 +104,11 @@ void APlayerCharacter::BeginPlay()
 	}
 	
 	bDashBlurFadingIn = false;
-
 	CurrentGameMode = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 
+
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController(), false);
+
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -137,6 +146,10 @@ void APlayerCharacter::Jump()
 		{
 			if(PlayerMantleSystemComponent->AttemptMantle())
 			{
+				if(SoundManagerSubSystem)
+				{
+					SoundManagerSubSystem->PlaySound(this->GetActorLocation(), MantleSC);
+				}
 				bIsMantleing = true;
 				return;
 			}
@@ -171,7 +184,11 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 
 			bDashBlurFadingIn = true;
 			GetWorld()->GetTimerManager().SetTimer(DashBlurTimerHandle, this, &APlayerCharacter::ClearDashBlur, DashBlurUpTime, false);
-			
+
+			if(SoundManagerSubSystem)
+			{
+				SoundManagerSubSystem->PlaySound(this->GetActorLocation(), DashSC);
+			}
 		}
 	}
 
@@ -317,8 +334,7 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
 
-	if(ActiveWeapon->GunChangeAudioComp)
-		ActiveWeapon->GunChangeAudioComp->Play();
+	
 	
 	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
 	{

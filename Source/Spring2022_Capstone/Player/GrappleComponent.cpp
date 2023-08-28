@@ -20,6 +20,7 @@ void UGrappleComponent::BeginPlay()
 	Super::BeginPlay();
 	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
 	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
+
 }
 
 void UGrappleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
