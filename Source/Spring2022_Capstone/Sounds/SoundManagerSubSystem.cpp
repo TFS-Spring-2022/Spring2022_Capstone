@@ -114,7 +114,7 @@ USoundManagerSubSystem::USoundManagerSubSystem()
 	if (RangerAirHitLoaded.Succeeded())
 		RangerAirHitSC = RangerAirHitLoaded.Object;
 
-	static ConstructorHelpers::FObjectFinder<USoundCue>RangerDeathLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerDeath.SC_RangerDeath''"));
+	static ConstructorHelpers::FObjectFinder<USoundCue>RangerDeathLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerDeath.SC_RangerDeath'"));
 	if (RangerDeathLoaded.Succeeded())
 		RangerDeathSC = RangerDeathLoaded.Object;
 
