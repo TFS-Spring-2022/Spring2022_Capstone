@@ -63,6 +63,48 @@ USoundManagerSubSystem::USoundManagerSubSystem()
 #pragma endregion
 #pragma region Narrator Voice lines
 	
+	//Narrator voice lines SoundCues
+	static ConstructorHelpers::FObjectFinder<USoundCue>NarratorDJumpLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorDoubleJump.SC_NarratorDoubleJump'"));
+	if (NarratorDJumpLoaded.Succeeded())
+		NarratorUpgradeDoubleJumpSC = NarratorDJumpLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>NarratorAFKUpgradeLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorAFKUpgrade.SC_NarratorAFKUpgrade'"));
+	if (NarratorAFKUpgradeLoaded.Succeeded())
+		NarratorAFKUpgradeSC = NarratorAFKUpgradeLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>NarratorHeavyHitLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorHeavyHit.SC_NarratorHeavyHit'"));
+	if (NarratorHeavyHitLoaded.Succeeded())
+		NarratorHeavyHitSC = NarratorHeavyHitLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>NarratorMaxGrappleLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorMaxGrapple.SC_NarratorMaxGrapple'"));
+	if (NarratorMaxGrappleLoaded.Succeeded())
+		NarratorMaxGrappleSC = NarratorMaxGrappleLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>NarratorMaxSpeedLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorMaxSpeed.SC_NarratorMaxSpeed'"));
+	if (NarratorMaxSpeedLoaded.Succeeded())
+		NarratorMaxSpeedSC = NarratorMaxSpeedLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>NarratorRampageLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorRampage.SC_NarratorRampage'"));
+	if (NarratorRampageLoaded.Succeeded())
+		NarratorRampageSC = NarratorRampageLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>NarratorRandomLoadedLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorRandom.SC_NarratorRandom'"));
+	if (NarratorRandomLoadedLoaded.Succeeded())
+		NarratorRampageSC = NarratorRandomLoadedLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>NarratorUpgradeOpenLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorUpgradeOpen.SC_NarratorUpgradeOpen'"));
+	if (NarratorUpgradeOpenLoaded.Succeeded())
+		NarratorUpgradeOpenSC = NarratorUpgradeOpenLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>NarratorUpgradeSelectLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorUpgradeSelect.SC_NarratorUpgradeSelect'"));
+	if (NarratorUpgradeSelectLoaded.Succeeded())
+		NarratorUpgradeSelectSC = NarratorUpgradeSelectLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>NarratorWaveStartLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorWaveStart.SC_NarratorWaveStart'"));
+	if (NarratorWaveStartLoaded.Succeeded())
+		NarratorWaveStartSC = NarratorWaveStartLoaded.Object;
+	
+	
 #pragma endregion 
 	
 }

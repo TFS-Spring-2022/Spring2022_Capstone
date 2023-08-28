@@ -83,7 +83,7 @@ private:
 	USoundCue* PlayerArialSC;
 
 #pragma endregion
-	
+
 #pragma region Narrator Voices
 	
 	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
