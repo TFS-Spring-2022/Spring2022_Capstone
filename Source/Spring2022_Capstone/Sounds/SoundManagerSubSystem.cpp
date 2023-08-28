@@ -61,7 +61,7 @@ USoundManagerSubSystem::USoundManagerSubSystem()
 
 	
 #pragma endregion
-#pragma region Narrator Voice lines
+#pragma region Narrator Voice Lines
 	
 	//Narrator voice lines SoundCues
 	static ConstructorHelpers::FObjectFinder<USoundCue>NarratorDJumpLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorDoubleJump.SC_NarratorDoubleJump'"));
@@ -104,6 +104,39 @@ USoundManagerSubSystem::USoundManagerSubSystem()
 	if (NarratorWaveStartLoaded.Succeeded())
 		NarratorWaveStartSC = NarratorWaveStartLoaded.Object;
 	
+	
+#pragma endregion
+#pragma region Ranger Voice Lines
+	
+	//Ranger Voice Lines
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>RangerAirHitLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerAirHit.SC_RangerAirHit'"));
+	if (RangerAirHitLoaded.Succeeded())
+		RangerAirHitSC = RangerAirHitLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>RangerDeathLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerDeath.SC_RangerDeath''"));
+	if (RangerDeathLoaded.Succeeded())
+		RangerDeathSC = RangerDeathLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>RangerHurtLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerHurt.SC_RangerHurt'"));
+	if (RangerHurtLoaded.Succeeded())
+		RangerHurtSC = RangerHurtLoaded.Object;
+	
+	static ConstructorHelpers::FObjectFinder<USoundCue>RangerJumpLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerJump.SC_RangerJump'"));
+	if (RangerJumpLoaded.Succeeded())
+		RangerJumpSC = RangerJumpLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>RangerKillLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerKill.SC_RangerKill'"));
+	if (RangerKillLoaded.Succeeded())
+		RangerKillsPlayerSC = RangerKillLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>RangerLockOnLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerLockOn.SC_RangerLockOn'"));
+	if (RangerLockOnLoaded.Succeeded())
+		RangerLockOnSC = RangerLockOnLoaded.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>RangerRandomLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerRandom.SC_RangerRandom'"));
+	if (RangerRandomLoaded.Succeeded())
+		RangerRandomSC = RangerRandomLoaded.Object;
 	
 #pragma endregion 
 	

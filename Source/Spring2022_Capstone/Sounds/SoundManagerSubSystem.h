@@ -140,7 +140,7 @@ private:
 	USoundCue* RangerAirHitSC;
 
 	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
-	USoundCue* RangerDeath;
+	USoundCue* RangerDeathSC;
 	
 #pragma endregion
 
