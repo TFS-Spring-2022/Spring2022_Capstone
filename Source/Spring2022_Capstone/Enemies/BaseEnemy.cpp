@@ -180,7 +180,7 @@ void ABaseEnemy::PromoteToElite()
 	// Create elite particles
 	if(EliteParticleNiagaraSystem)
 	{
-		EliteParticleInstance = UNiagaraFunctionLibrary::SpawnSystemAttached(EliteParticleNiagaraSystem, RootComponent, NAME_None, FVector(0,0,0),
+		EliteParticleInstance = UNiagaraFunctionLibrary::SpawnSystemAttached(EliteParticleNiagaraSystem, GetMesh(), EliteParticleSocketName, FVector(0,0,0),
 	FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true, true);
 	}
 

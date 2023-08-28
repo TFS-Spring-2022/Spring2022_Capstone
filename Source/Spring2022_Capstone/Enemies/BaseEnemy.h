@@ -133,5 +133,6 @@ private:
 	
 	const FName WeaponSocket = "Grunt_RightHand_Pistol"; // Socket that holds the enemies weapon.
 	const float NameTextRenderVerticalBuffer = 20.0f; // Number subtracted from NameTextRenderer's vertical position.
+	const FName EliteParticleSocketName = "EliteParticleSocket"; // Socket the elite particle system is attached to.
 	
 };
