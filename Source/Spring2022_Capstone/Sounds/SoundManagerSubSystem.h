@@ -47,7 +47,7 @@ private:
 	UPROPERTY()
 	TArray<USoundCue*> NarratorVoiceLines;
 
-#pragma region PlayerVoices
+#pragma region Player Voices
 	
 	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
 	USoundCue* PlayerDeathSC;
@@ -83,6 +83,91 @@ private:
 	USoundCue* PlayerArialSC;
 
 #pragma endregion
+	
+#pragma region Narrator Voices
+	
+	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
+	USoundCue* NarratorWaveStartSC;
+
+	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
+	USoundCue* NarratorHeavyHitSC;
+
+	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
+	USoundCue* NarratorRampageSC;
+
+	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
+	USoundCue* NarratorUpgradeOpenSC;
+
+	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
+	USoundCue* NarratorUpgradeSelectSC;
+
+	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
+	USoundCue* NarratorUpgradeDoubleJumpSC;
+
+	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
+	USoundCue* NarratorMaxGrappleSC;
+
+	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
+	USoundCue* NarratorRandomSC;
+
+	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
+	USoundCue* NarratorAFKUpgradeSC;
+
+	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
+	USoundCue* NarratorMaxSpeedSC;
+
+	
+#pragma endregion
+
+#pragma region Ranger Voices
+
+	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
+	USoundCue* RangerLockOnSC;
+
+	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
+	USoundCue* RangerHurtSC;
+
+	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
+	USoundCue* RangerJumpSC;
+
+	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
+	USoundCue* RangerKillsPlayerSC;
+
+	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
+	USoundCue* RangerRandomSC;
+
+	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
+	USoundCue* RangerAirHitSC;
+
+	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
+	USoundCue* RangerDeath;
+	
+#pragma endregion
+
+#pragma region Grunt Voices
+	
+	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
+	USoundCue* GruntHurtSound;
+
+	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
+	USoundCue* GruntJumpSound;
+
+	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
+	USoundCue* GruntWaveStart;
+
+	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
+	USoundCue* GruntBarrelSC;
+
+	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
+	USoundCue* GruntGrappleSC;
+
+	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
+	USoundCue* GruntNumbersSC;
+	
+	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
+	USoundCue* GruntArialHitSC;
+	
+#pragma endregion 
 
 #pragma 
 	

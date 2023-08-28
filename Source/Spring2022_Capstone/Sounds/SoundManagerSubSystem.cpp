@@ -12,7 +12,7 @@ USoundManagerSubSystem::USoundManagerSubSystem()
 	SubSystemAudio = CreateDefaultSubobject<UAudioComponent>("GrappleShotAC");
 
 
-#pragma region PlayerVoiceLines
+#pragma region Player Voice Lines
 
 	//Player voice lines SoundCues 
 	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerDeathSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerDeath.SC_PlayerDeath'"));
@@ -61,6 +61,9 @@ USoundManagerSubSystem::USoundManagerSubSystem()
 
 	
 #pragma endregion
+#pragma region Narrator Voice lines
+	
+#pragma endregion 
 	
 }
 
