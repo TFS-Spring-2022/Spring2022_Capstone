@@ -25,6 +25,9 @@ protected:
 	UStaticMeshComponent *ProjectileMesh;
 	UPROPERTY(VisibleAnywhere, Category = "Movement")
 	UProjectileMovementComponent *ProjectileMovementComponent;
+	
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	UAudioComponent *TrackingSoundComponent;
 
 public:
 	virtual void Tick(float DeltaTime) override;

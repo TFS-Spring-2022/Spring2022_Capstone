@@ -2,6 +2,8 @@
 
 #include "BaseEnemyProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
 
 ABaseEnemyProjectile::ABaseEnemyProjectile()
 {
@@ -11,11 +13,15 @@ ABaseEnemyProjectile::ABaseEnemyProjectile()
 	RootComponent = ProjectileMesh;
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+	TrackingSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Tracking audio Comp"));
+	
 }
 
 void ABaseEnemyProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+	TrackingSoundComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	TrackingSoundComponent->Play();
 }
 
 // Called every frame

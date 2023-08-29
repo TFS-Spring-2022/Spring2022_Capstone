@@ -17,6 +17,8 @@ void ARangerProjectile::BeginPlay()
 	ProjectileMovementComponent->bIsHomingProjectile = true;
 	ProjectileMovementComponent->HomingAccelerationMagnitude = 300.f;
 
+    
+    
     APawn *PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 
     if (PlayerPawn)
