@@ -19,7 +19,13 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void SpecialAttack();
+	UFUNCTION(BlueprintCallable)
+	void StartCharge();
+	UFUNCTION(BlueprintCallable)
+	void StopCharge();
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float ChargeTime;
+	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
+	bool bIsCharging;
 };

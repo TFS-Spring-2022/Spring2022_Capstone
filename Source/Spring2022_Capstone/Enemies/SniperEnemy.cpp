@@ -13,3 +13,13 @@ void ASniperEnemy::SpecialAttack()
 {
     
 }
+
+void ASniperEnemy::StartCharge()
+{
+    
+}
+
+void ASniperEnemy::StopCharge()
+{
+
+}
