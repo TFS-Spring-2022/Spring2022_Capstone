@@ -118,7 +118,7 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 		InitialHookDirection2D = FVector(ToGrappleHookDirection.X, ToGrappleHookDirection.Y, 0);
 		InitialHookDirection2D.Normalize();
 
-		if(SoundManagerSubSystem)
+		if(SoundManagerSubSystem && _GrappleHook->GrappleHitSound)
 		{
 			SoundManagerSubSystem->PlaySound(Hit.Location ,_GrappleHook->GrappleHitSound);
 		}
