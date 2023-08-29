@@ -68,7 +68,7 @@ void ABaseEnemy::Attack()
 	else
 		AttackMiss();
 
-	GunShotComp->Play();
+	
 }
 
 // Hits player and does damage (only called when enemy has token and then releases token)
@@ -94,6 +94,7 @@ void ABaseEnemy::AttackHit()
 		if (PlayerHitResult.GetActor()->Implements<UDamageableActor>() && PlayerHitResult.GetActor()->IsA(APlayerCharacter::StaticClass())) // Question: Do we want them to be able to do damage to other enemies?
 			Cast<APlayerCharacter>(PlayerHitResult.GetActor())->DamageActor(this, Damage);
 	}
+	GunShotComp->Play();
 }
 
 // Misses player and does no damage (called when player does not have token))
@@ -116,6 +117,8 @@ void ABaseEnemy::AttackMiss()
 	// ToDo: Implement weighting missed shots into objects/player view
 	if (GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Camera, *TraceParams))
 		DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Black, false, .5f);
+	
+	GunShotComp->Play();
 }
 
 // Called every frame
@@ -192,7 +195,8 @@ void ABaseEnemy::PromoteToElite()
 
 void ABaseEnemy::Death()
 {
-
+	GunShotComp->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+	GunShotComp->DestroyComponent();
 	// Drop Item
 	for (const FEnemyDrop DroppableItem : Drops)
 	{
