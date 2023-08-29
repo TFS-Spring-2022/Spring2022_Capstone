@@ -162,6 +162,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TSubclassOf<UCameraShakeBase> DashCameraShake;
 
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TSubclassOf<UCameraShakeBase> DamageCameraShake;
+
 	/**
 	* @brief Dash cooldown in seconds
 	*/
@@ -253,18 +256,8 @@ private:
 
 	bool bIsMantleing;
 
-	//Sounds
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* GrappleShotSC;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* GrappleRetractSC;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* DashSC;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* VaultSC;
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
 
 	UPROPERTY()
 	class ASpring2022_CapstoneGameModeBase* CurrentGameMode;
@@ -307,7 +300,7 @@ public:
 	FORCEINLINE AWeaponBase* GetActiveWeapon() {return ActiveWeapon;}
 
 	UFUNCTION(BlueprintCallable)
-	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
+	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
 
 	// ToDo: Handle Grapple Indicator in here
 	void ChangeCrosshair();
@@ -322,6 +315,21 @@ public:
 
 	FORCEINLINE bool GetIsSprinting() const {return bIsSprinting;}
 
+
+	//Sounds
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* GrappleShotSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* GrappleRetractSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* DashSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* MantleSC;
+
 	FORCEINLINE void SetCanAttack(bool Status) {bCanAttack = Status;}
+
 	
 };
