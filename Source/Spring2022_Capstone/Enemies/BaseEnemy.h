@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AttackSystemAgentInterface.h"
+#include "RandomNameGenerator.h"
 #include "GameFramework/Character.h"
 #include "Spring2022_Capstone/BasePickup.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
@@ -41,6 +42,9 @@ protected:
 	UStaticMeshComponent *WeaponMesh;
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	USceneComponent *ProjectileSpawnPoint;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+	UTextRenderComponent* NameTextRenderer;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Pawn, meta = (AllowPrivateAccess = "true"))
 	UHealthComponent *HealthComp;
@@ -89,6 +93,18 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayHitAnimation(FName HitBone);
 
+	void PromoteToElite();
+
+	// Amount the enemy's stats are multiplied by when promoted.
+	UPROPERTY(EditAnywhere, Category = "Stats")
+	float EliteMultiplier = 1.3f;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UNiagaraSystem* EliteParticleNiagaraSystem;
+
+	UPROPERTY()
+	UNiagaraComponent* EliteParticleInstance;
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float Damage;
@@ -112,6 +128,11 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TArray<UMaterial*> EnemyColors;
 
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TSubclassOf<URandomNameGenerator> NameGenerator;
+	
 	const FName WeaponSocket = "Grunt_RightHand_Pistol"; // Socket that holds the enemies weapon.
+	const float NameTextRenderVerticalBuffer = 20.0f; // Number subtracted from NameTextRenderer's vertical position.
+	const FName EliteParticleSocketName = "EliteParticleSocket"; // Socket the elite particle system is attached to.
 	
 };

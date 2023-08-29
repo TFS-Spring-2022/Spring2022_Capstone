@@ -256,18 +256,8 @@ private:
 
 	bool bIsMantleing;
 
-	//Sounds
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* GrappleShotSC;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* GrappleRetractSC;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* DashSC;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* VaultSC;
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
 
 	UPROPERTY()
 	class ASpring2022_CapstoneGameModeBase* CurrentGameMode;
@@ -325,6 +315,21 @@ public:
 
 	FORCEINLINE bool GetIsSprinting() const {return bIsSprinting;}
 
+
+	//Sounds
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* GrappleShotSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* GrappleRetractSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* DashSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* MantleSC;
+
 	FORCEINLINE void SetCanAttack(bool Status) {bCanAttack = Status;}
+
 	
 };

@@ -40,10 +40,10 @@ public:
 	USoundCue* GrappleHitSound;
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
-	UAudioComponent* GrappleShotAudioComp;
+	UAudioComponent* GShotAudioComp;
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
-	UAudioComponent* GrappleRetractAudioComp;
+	UAudioComponent* GRetractAudioComp;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))

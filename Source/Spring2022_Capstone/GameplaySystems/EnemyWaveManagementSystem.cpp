@@ -14,7 +14,8 @@ void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 
 void UEnemyWaveManagementSystem::SpawnWave()
 {
-
+	bool bEliteEnemySpawned = false;
+	
 	if(CurrentWave > Waves.Num() - 1)
 	{
 		Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->EndRun(); 
@@ -44,6 +45,16 @@ void UEnemyWaveManagementSystem::SpawnWave()
 		AActor* SpawnedEnemy = GetWorld()->SpawnActor(EnemyToSpawn, &Location, &Rotation, SpawnParams);
 		ActiveEnemies.Add(SpawnedEnemy);
 		EnemiesToDestroy.Add(SpawnedEnemy);
+
+		// Elite spawning
+		if(CurrentWave > 0 && !bEliteEnemySpawned)
+		{
+			if(ABaseEnemy* EnemyToPromote = Cast<ABaseEnemy>(SpawnedEnemy))
+			{
+				EnemyToPromote->PromoteToElite();
+				bEliteEnemySpawned = true;
+			}
+		}
 	}
 	
 	CurrentWave++;
