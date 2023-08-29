@@ -24,6 +24,9 @@ ABaseEnemy::ABaseEnemy()
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPoint"));
 	ProjectileSpawnPoint->SetupAttachment(WeaponMesh);
 
+	GunShotComp = CreateDefaultSubobject<UAudioComponent>(TEXT("GunAudioComp"));
+	GunShotComp->SetupAttachment(WeaponMesh);
+	
 	PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	NameTextRenderer = CreateDefaultSubobject<UTextRenderComponent>("Enemy Name Text");
@@ -41,7 +44,7 @@ void ABaseEnemy::BeginPlay()
 	// Attach weapon to enemies hand socket
 	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 	WeaponMesh->AttachToComponent(GetMesh(), AttachmentRules, WeaponSocket);
-
+	GunShotComp->AttachToComponent(WeaponMesh, AttachmentRules);
 	CurrentAttackSystemComponent = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetAttackSystemComponent();
 
 	// Add enemy to AttackSystem Agents[] array on spawn.
@@ -64,6 +67,8 @@ void ABaseEnemy::Attack()
 	}
 	else
 		AttackMiss();
+
+	GunShotComp->Play();
 }
 
 // Hits player and does damage (only called when enemy has token and then releases token)

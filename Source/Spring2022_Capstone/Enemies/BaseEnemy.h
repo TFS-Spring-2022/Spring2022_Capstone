@@ -42,6 +42,9 @@ protected:
 	UStaticMeshComponent *WeaponMesh;
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	USceneComponent *ProjectileSpawnPoint;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UAudioComponent *GunShotComp;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UTextRenderComponent* NameTextRenderer;
@@ -70,6 +73,9 @@ protected:
 	// Called when the enemy runs out of health. Removes enemy from WaveManager ActiveEnemies[] and destroys itself.
 	UFUNCTION(BlueprintCallable)
 	void Death();
+
+	
+	
 
 public:
 	// Called every frame
@@ -104,6 +110,9 @@ public:
 
 	UPROPERTY()
 	UNiagaraComponent* EliteParticleInstance;
+
+	
+	
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
