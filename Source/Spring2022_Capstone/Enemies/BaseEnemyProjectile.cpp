@@ -3,6 +3,7 @@
 #include "BaseEnemyProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 
 ABaseEnemyProjectile::ABaseEnemyProjectile()
@@ -20,8 +21,16 @@ ABaseEnemyProjectile::ABaseEnemyProjectile()
 void ABaseEnemyProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	//Sounds
+	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
+	
 	TrackingSoundComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	TrackingSoundComponent->Play();
+	if(TrackingSoundComponent->GetSound())
+	{
+		TrackingSoundComponent->Play();
+	}
 }
 
 // Called every frame
