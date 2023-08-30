@@ -1,7 +1,13 @@
 // Created by Spring2022_Capstone team
 
-
 #include "SniperEnemy.h"
+#include "NiagaraComponent.h"
+
+ASniperEnemy::ASniperEnemy()
+{
+    LaserComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LaserComponent"));
+	LaserComponent->SetupAttachment(WeaponMesh);
+}
 
 void ASniperEnemy::Attack()
 {

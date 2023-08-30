@@ -6,13 +6,15 @@
 #include "BaseEnemy.h"
 #include "SniperEnemy.generated.h"
 
-/**
- * 
- */
+class UNiagaraComponent;
+
 UCLASS()
 class SPRING2022_CAPSTONE_API ASniperEnemy : public ABaseEnemy
 {
 	GENERATED_BODY()
+
+public:
+	ASniperEnemy();
 	
 protected:
 	void Attack() override;
@@ -28,4 +30,6 @@ protected:
 	float ChargeTime;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	bool bIsCharging;
+	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = true))
+	UNiagaraComponent* LaserComponent;
 };
