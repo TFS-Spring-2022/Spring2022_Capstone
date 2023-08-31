@@ -111,5 +111,10 @@ class SPRING2022_CAPSTONE_API UScoreSystemManager : public UObject
 	int MostShotsFiredInAWave = 0;
 	// Least shots fired in a wave.
 	int LeastShotsFiredInAWave = 0;
+
+public:
+
+	// Clears all accolades, scores, and stats.
+	void ResetScoreSystem();
 	
 };
