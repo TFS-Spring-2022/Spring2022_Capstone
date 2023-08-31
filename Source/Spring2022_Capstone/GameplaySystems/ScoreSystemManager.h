@@ -59,25 +59,18 @@ class SPRING2022_CAPSTONE_API UScoreSystemManager : public UObject
 	
 	// Score:
 	float TotalScore = 0.0f;
-	
 	// Enemies killed.
 	int EnemiesKilled = 0;
-	
 	// Enemies killed by headshot.
 	int EnemiesKilledWithHeadshot = 0; 
-
 	// Enemies killed while airborne.
 	int EnemiesKilledWhileAirborne = 0;
-	
 	// Enemies killed with hazards.
 	int EnemiesKilledWithHazards = 0;
-	
 	// Number of elites killed.
 	int ElitesKilled = 0;
-	
 	// Number of snipers/towers disabled.
 	int SnipersDisabled = 0;
-	
 	// Run completion time.
 	float RunCompletionTime = 0.0f;
 
@@ -105,5 +98,8 @@ public:
 
 	// Clears all accolades, scores, and stats.
 	void ResetScoreSystem();
+
+	// Increments the counter for the given accolade.
+	void IncrementAccoladeCount(EAccolades Accolade);
 	
 };

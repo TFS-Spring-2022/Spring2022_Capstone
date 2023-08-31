@@ -46,3 +46,64 @@ void UScoreSystemManager::ResetScoreSystem()
 	MostShotsFiredInAWave = 0;
 	LeastShotsFiredInAWave = 0;
 }
+
+void UScoreSystemManager::IncrementAccoladeCount(const EAccolades Accolade)
+{
+	switch (Accolade)
+	{
+	case SkullNCrosshair:
+		Accolade_SkullNCrosshairCount++;
+		break;
+	case CaptainOfWar:
+		Accolade_CaptainOfWarCount++;
+		break;
+	case SkyPirate:
+		Accolade_SkyPirateCount++;
+		break;
+	case LandLubber:
+		Accolade_LandLubberCount++;
+		break;
+	case CloseCallCorsair:
+		Accolade_CloseCallCorsairCount++;
+		break;
+	case Opportunist:
+		Accolade_OpportunistCount++;
+		break;
+	case CaptainsCoup:
+		Accolade_CaptainsCoupCount++;
+		break;
+	case DoubleAerialPlunder:
+		Accolade_DoubleAerialPlunderCount++;
+		break;
+	case BlunderBlast:
+		Accolade_BlunderBlastCount++;
+		break;
+	case SkyBuccaneer:
+		Accolade_SkyBuccaneerCount++;
+		break;
+	case CoolHeaded:
+		Accolade_CoolHeadedCount++;
+		break;
+	case NimbleBones:
+		Accolade_NimbleBonesCount++;
+		break;
+	case DeathDodger:
+		Accolade_DeathDodgerCount++;
+		break;
+	case PiratesFortitude:
+		Accolade_PiratesFortitudeCount++;
+		break;
+	case PlunderersProwess:
+		Accolade_PlunderersProwessCount++;
+		break;
+	case IPreferTreasure:
+		Accolade_IPreferTreasureCount++;
+		break;
+	case PirateBlitz:
+		Accolade_PirateBlitz++;
+		break;
+	default:;
+	}
+
+	TotalAccoladesCount++;
+}
