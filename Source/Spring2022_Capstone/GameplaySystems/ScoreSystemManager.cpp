@@ -7,23 +7,23 @@ void UScoreSystemManager::ResetScoreSystem()
 {
 	// Accolades:
 	TotalAccoladesCount = 0;
-	Accolade_BrainSurgeonCount = 0;
-	Accolade_LordOfWarCount = 0;
+	Accolade_SkullNCrosshairCount = 0;
+	Accolade_CaptainOfWarCount = 0;
 	Accolade_SkyPirateCount = 0;
 	Accolade_LandLubberCount = 0;
-	Accolade_BulletSpongeCount = 0;
+	Accolade_CloseCallCorsairCount = 0;
 	Accolade_OpportunistCount = 0;
-	Accolade_GiantSlayerCount = 0;
-	Accolade_LastShadowCount = 0;
+	Accolade_CaptainsCoupCount = 0;
+	Accolade_DoubleAerialPlunderCount = 0;
 	Accolade_BlunderBlastCount = 0;
-	Accolade_ThunderClapCount = 0;
+	Accolade_SkyBuccaneerCount = 0;
 	Accolade_CoolHeadedCount = 0;
 	Accolade_NimbleBonesCount = 0;
 	Accolade_DeathDodgerCount = 0;
-	Accolade_NoSweatCount = 0;
-	Accolade_2EZCount = 0;
+	Accolade_PiratesFortitudeCount = 0;
+	Accolade_PlunderersProwessCount = 0;
 	Accolade_IPreferTreasureCount = 0;
-	Accolade_BulletStormCount = 0;
+	Accolade_PirateBlitz = 0;
 	
 	// Score:
 	TotalScore = 0.0f;

@@ -6,6 +6,29 @@
 #include "UObject/NoExportTypes.h"
 #include "ScoreSystemManager.generated.h"
 
+// All the accolades the player can earn during gameplay.
+UENUM()
+enum EAccolades
+{
+	SkullNCrosshair,		// SkullNCrosshair: 3 Headshots in 5 seconds.
+	CaptainOfWar,			// CaptainOfWar: 5 Kills in 5 seconds.
+	SkyPirate,				// Sky Pirate: 15 seconds since last touched the ground.
+	LandLubber,				// Land Lubber: 30 seconds spent consecutively on the ground.
+	CloseCallCorsair,		// CloseCallCorsair: Lose over 60% max health in 3 seconds.
+	Opportunist,			// Opportunist: 4 enemies damaged by a single exploding hazard.
+	CaptainsCoup,			// CaptainsCoup: Elite killed in under 6 seconds (after first hit).
+	DoubleAerialPlunder,	// DoubleAerialPlunder: 2 enemies killed while airborne.
+	BlunderBlast,			// Blunder Blast: More then 1 enemy killed with a shotgun blast on the ground.
+	SkyBuccaneer,			// Sky Buccaneer: More then 1 enemy killed with a shotgun blast while airborne.
+	CoolHeaded,				// Cool Headed: 1 minute spent between overheats.
+	NimbleBones,			// Nimble Bones: 3 Sniper Shots avoided (zero damage).
+	DeathDodger,			// Death Dodger: Recovered from less then 20% health 2 times in one wave.
+	PiratesFortitude,		// PiratesFortitude: Spent more then half the wave duration at over 50% health.
+	PlunderersProwess,		// PlunderersProwess: Spent more then half the wave duration at over 80% health.
+	IPreferTreasure,		// I Prefer Treasure: More then 4 pickups not collected at the end of a wave.
+	PirateBlitz,			// PirateBlitz: Wave completed in less then 2 minutes.
+};
+
 /**
  * A class used to handle the score and accolades earned by a player through a run.
  */
@@ -16,57 +39,23 @@ class SPRING2022_CAPSTONE_API UScoreSystemManager : public UObject
 	
 	// Accolades:
 	int TotalAccoladesCount = 0;
-	
-	// Brain Surgeon: 3 Headshots in 5 seconds.
-	int Accolade_BrainSurgeonCount = 0;
-
-	// Lord of War: 5 Kills in 5 seconds.
-	int Accolade_LordOfWarCount = 0;
-	
-	// Sky Pirate: 15 seconds since last touched the ground.
+	int Accolade_SkullNCrosshairCount = 0;
+	int Accolade_CaptainOfWarCount = 0;
 	int Accolade_SkyPirateCount = 0;
-	
-	// Land Lubber: 30 seconds spent consecutively on the ground.
 	int Accolade_LandLubberCount = 0;
-	
-	// Bullet Sponge: Love over 60% max health in 3 seconds.
-	int Accolade_BulletSpongeCount = 0;
-	
-	// Opportunist: 4 enemies damaged by a single exploding hazard.
+	int Accolade_CloseCallCorsairCount = 0;
 	int Accolade_OpportunistCount = 0;
-
-	// Giant Slayer: Elite killed in under 6 seconds (after first hit).
-	int Accolade_GiantSlayerCount = 0;
-	
-	// Last Shadow: 2 enemies killed while airborne.
-	int Accolade_LastShadowCount = 0;
-	
-	// Blunder Blast: More then 1 enemy killed with a shotgun blast on the ground.
+	int Accolade_CaptainsCoupCount = 0;
+	int Accolade_DoubleAerialPlunderCount = 0;
 	int Accolade_BlunderBlastCount = 0;
-	
-	// Thunder Clap: More then 1 enemy killed with a shotgun blast while airborne.
-	int Accolade_ThunderClapCount = 0;
-	
-	// Cool Headed: 1 minute spent between overheats.
+	int Accolade_SkyBuccaneerCount = 0;
 	int Accolade_CoolHeadedCount = 0;
-	
-	// Nimble Bones: 3 Sniper Shots avoided (zero damage).
 	int Accolade_NimbleBonesCount = 0;
-	
-	// Death Dodger: Recovered from less then 20% health 2 times in one wave.
 	int Accolade_DeathDodgerCount = 0;
-	
-	// No Sweat: Spent more then half the wave duration at over 50% health.
-	int Accolade_NoSweatCount = 0;
-	
-	// 2EZ: Spent more then half the wave duration at over 80% health.
-	int Accolade_2EZCount = 0;
-	
-	// I Prefer Treasure: More then 4 pickups not collected at the end of a wave.
+	int Accolade_PiratesFortitudeCount = 0;
+	int Accolade_PlunderersProwessCount = 0;
 	int Accolade_IPreferTreasureCount = 0;
-	
-	// Bullet Storm: Wave completed in less then 2 minutes.
-	int Accolade_BulletStormCount = 0;
+	int Accolade_PirateBlitz = 0;
 	
 	// Score:
 	float TotalScore = 0.0f;
