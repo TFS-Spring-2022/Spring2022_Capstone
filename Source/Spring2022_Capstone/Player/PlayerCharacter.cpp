@@ -118,6 +118,24 @@ void APlayerCharacter::Tick(float DeltaTime)
 	float CrouchInterpTime = FMath::Min(1.f, CrouchSpeed * DeltaTime);
 	CrouchEyeOffset = (1.f - CrouchInterpTime) * CrouchEyeOffset;
 
+	if(ScoreManagerTimerSubSystem)
+	{
+		if(GetMovementComponent()->IsFalling())
+		{
+			ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::LandLubber);
+			
+			if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::SkyPirate) == false)
+				ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::SkyPirate);
+		}
+		if(GetMovementComponent()->IsMovingOnGround())
+		{
+			ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::SkyPirate);
+
+			if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::LandLubber) == false)
+				ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::LandLubber);
+		}
+	}
+	
 	if(bDashBlurFadingIn)
 		Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight = FMath::FInterpTo(Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight, 1, DeltaTime, DASH_BLUR_FADEIN_SPEED);
 	
@@ -158,7 +176,7 @@ void APlayerCharacter::Jump()
 	}
 
 	Super::Jump();
-	ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::SkyPirate);
+
 }
 
 void APlayerCharacter::Landed(const FHitResult& Hit)
@@ -167,6 +185,7 @@ void APlayerCharacter::Landed(const FHitResult& Hit)
 
 	if(ScoreManagerTimerSubSystem)
 		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::SkyPirate);
+		
 }
 
 void APlayerCharacter::Dash(const FInputActionValue &Value)

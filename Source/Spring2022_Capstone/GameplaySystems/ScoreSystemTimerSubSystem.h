@@ -44,9 +44,13 @@ public:
 	bool bSkyPirateTimerStarted;
 	float SkyPirateTimer = 0.0f;
 
+	bool bLandLubberTimerStarted;
+	float LandLubberTimer = 0.0f;
+
 private:
 
 	// Accolade Time Requirements:
 	const float SKY_PIRATE_TIME_REQUIREMENT = 5.0f; // ToDo: 10/15 in actuality just going to put 5.0f for testing/showing.
+	const float LAND_LUBBER_TIME_REQUIREMENT = 15.0f;
 	
 };

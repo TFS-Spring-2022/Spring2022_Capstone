@@ -23,13 +23,22 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 	// Land Lubber Accolade
 	if(bSkyPirateTimerStarted)
 	{
-		SkyPirateTimer+=DeltaTime;
+		SkyPirateTimer += DeltaTime;
 		if(SkyPirateTimer >= SKY_PIRATE_TIME_REQUIREMENT)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKY PIRATE!");
 			ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::SkyPirate);
-			bSkyPirateTimerStarted = false;
 			StopAccoladeTimer(EAccolades::SkyPirate);
+		}
+	}
+	if(bLandLubberTimerStarted)
+	{
+		LandLubberTimer += DeltaTime;
+		if(LandLubberTimer >= LAND_LUBBER_TIME_REQUIREMENT)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "LAND LUBBER!");
+			ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::LandLubber);
+			StopAccoladeTimer(EAccolades::LandLubber);
 		}
 	}
 
@@ -44,7 +53,9 @@ void UScoreSystemTimerSubSystem::StartAccoladeTimer(EAccolades Accolade)
 	case SkyPirate: 
 		bSkyPirateTimerStarted = true;
 		break;
-	case LandLubber: break;
+	case LandLubber:
+		bLandLubberTimerStarted = true;
+		break;
 	case CloseCallCorsair: break;
 	case Opportunist: break;
 	case CaptainsCoup: break;
@@ -72,7 +83,10 @@ void UScoreSystemTimerSubSystem::StopAccoladeTimer(EAccolades Accolade)
 		bSkyPirateTimerStarted = false;
 		SkyPirateTimer = 0.0f;
 		break;
-	case LandLubber: break;
+	case LandLubber:
+		bLandLubberTimerStarted = false;
+		LandLubberTimer = 0.0f;
+		break;
 	case CloseCallCorsair: break;
 	case Opportunist: break;
 	case CaptainsCoup: break;
