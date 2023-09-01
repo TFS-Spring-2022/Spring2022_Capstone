@@ -38,6 +38,8 @@ public:
 	void StartAccoladeTimer(EAccolades Accolade);
 	// Stops and clears the timer for the given accolade.
 	void StopAccoladeTimer(EAccolades Accolade);
+	// Returns the status of the accolade timer.
+	bool IsAccoladeTimerRunning(EAccolades Accolade);
 
 	bool bSkyPirateTimerStarted;
 	float SkyPirateTimer = 0.0f;

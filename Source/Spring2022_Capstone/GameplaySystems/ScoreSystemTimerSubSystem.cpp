@@ -89,3 +89,33 @@ void UScoreSystemTimerSubSystem::StopAccoladeTimer(EAccolades Accolade)
 	default: ;
 	}
 }
+
+bool UScoreSystemTimerSubSystem::IsAccoladeTimerRunning(EAccolades Accolade)
+{
+	switch (Accolade)
+	{
+	case SkullNCrosshair: break;
+	case CaptainOfWar: break;
+	case SkyPirate:
+		return bSkyPirateTimerStarted;
+		break;
+	case LandLubber:
+		return bLandLubberTimerStarted;
+		break;
+	case CloseCallCorsair: break;
+	case Opportunist: break;
+	case CaptainsCoup: break;
+	case DoubleAerialPlunder: break;
+	case BlunderBlast: break;
+	case SkyBuccaneer: break;
+	case CoolHeaded: break;
+	case NimbleBones: break;
+	case DeathDodger: break;
+	case PiratesFortitude: break;
+	case PlunderersProwess: break;
+	case IPreferTreasure: break;
+	case PirateBlitz: break;
+	default:;
+	}
+	return false;
+}
