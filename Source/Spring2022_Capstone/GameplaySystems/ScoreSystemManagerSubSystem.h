@@ -29,6 +29,18 @@ enum EAccolades
 	PirateBlitz,			// PirateBlitz: Wave completed in less then 2 minutes.
 };
 
+UENUM()
+enum EScoreCounters
+{
+	Hits,
+	EnemiesKilled,
+	HeadshotHits,
+	HitsWhileAirborne,
+	EnemiesKilledWithHazards,
+	ElitesKilled,
+	SnipersDisabled,
+};
+
 /**
  * A class used to handle the score and accolades earned by a player through a run.
  */
@@ -62,6 +74,9 @@ class SPRING2022_CAPSTONE_API UScoreSystemManagerSubSystem : public UGameInstanc
 	
 	// Score:
 	float TotalScore = 0.0f;
+
+	// Counters
+	int Hits;
 	int EnemiesKilled = 0;
 	int HeadshotHits = 0; 
 	int HitsWhileAirborne = 0;
@@ -101,6 +116,8 @@ public:
 	UFUNCTION()
 	void IncrementAccoladeCount(EAccolades Accolade);
 
-	int GetTestCount(); // const {return Accolade_SkullNCrosshairCount;}
+	// Increments the counter for the given score counter.
+	UFUNCTION()
+	void IncrementScoreCounter(EScoreCounters ScoreCounter);
 	
 };

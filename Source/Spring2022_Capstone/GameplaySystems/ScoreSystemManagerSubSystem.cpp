@@ -34,6 +34,7 @@ void UScoreSystemManagerSubSystem::ResetScoreSystem()
 	
 	// Score:
 	TotalScore = 0.0f;
+	Hits = 0;
 	EnemiesKilled = 0;
 	HeadshotHits = 0;
 	HitsWhileAirborne = 0;
@@ -115,7 +116,31 @@ void UScoreSystemManagerSubSystem::IncrementAccoladeCount(const EAccolades Accol
 	TotalAccoladesCount++;
 }
 
-int UScoreSystemManagerSubSystem::GetTestCount()
+void UScoreSystemManagerSubSystem::IncrementScoreCounter(EScoreCounters ScoreCounter)
 {
-	return Accolade_SkullNCrosshairCount;
+	switch (ScoreCounter)
+	{
+	case EScoreCounters::EnemiesKilled:
+		EnemiesKilled++;
+		break;
+	case EScoreCounters::HeadshotHits:
+		HeadshotHits++;
+		break;
+	case EScoreCounters::HitsWhileAirborne:
+		HitsWhileAirborne++;
+		break;
+	case EScoreCounters::EnemiesKilledWithHazards:
+		EnemiesKilledWithHazards++;
+		break;
+	case EScoreCounters::ElitesKilled:
+		ElitesKilled++;
+		break;
+	case EScoreCounters::SnipersDisabled:
+		SnipersDisabled++;
+		break;
+	case EScoreCounters::Hits: 
+		Hits++;
+		break;
+	default: ;
+	}
 }
