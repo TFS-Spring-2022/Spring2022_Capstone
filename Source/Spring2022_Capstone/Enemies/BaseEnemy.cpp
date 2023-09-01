@@ -199,6 +199,12 @@ void ABaseEnemy::PromoteToElite()
 
 void ABaseEnemy::Death()
 {
+
+	// Prevent the shotgun from causing an enemy to call multiple Death multiple times.
+	if(bIsDying)
+		return;
+
+	bIsDying = true;
 	GunShotComp->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
 	GunShotComp->DestroyComponent();
 	// Drop Item
