@@ -3,6 +3,13 @@
 
 #include "ScoreSystemManager.h"
 
+void UScoreSystemManager::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+
+	ResetScoreSystem();
+}
+
 void UScoreSystemManager::ResetScoreSystem()
 {
 	// Accolades:

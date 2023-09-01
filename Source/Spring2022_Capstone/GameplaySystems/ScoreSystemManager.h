@@ -33,10 +33,13 @@ enum EAccolades
  * A class used to handle the score and accolades earned by a player through a run.
  */
 UCLASS()
-class SPRING2022_CAPSTONE_API UScoreSystemManager : public UObject
+class SPRING2022_CAPSTONE_API UScoreSystemManager : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
-	
+
+	// Called when subsystem is first loaded.
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
 	// Accolades:
 	int TotalAccoladesCount = 0;
 	int Accolade_SkullNCrosshairCount = 0;
