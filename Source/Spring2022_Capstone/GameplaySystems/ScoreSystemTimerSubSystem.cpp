@@ -29,10 +29,10 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKY PIRATE!");
 			ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::SkyPirate);
 			bSkyPirateTimerStarted = false;
+			StopAccoladeTimer(EAccolades::SkyPirate);
 		}
 	}
-	else
-		SkyPirateTimer = 0.0f;
+
 }
 
 void UScoreSystemTimerSubSystem::StartAccoladeTimer(EAccolades Accolade)
