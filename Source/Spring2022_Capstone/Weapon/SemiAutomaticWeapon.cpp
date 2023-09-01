@@ -74,8 +74,18 @@ void ASemiAutomaticWeapon::Shoot()
 						DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier, HitResult.BoneName);
 						if(FloatingDamageNumberParticleSystem)
 							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
+
+						// Score 
 						if(ScoreManagerSubSystem)
 							ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
+						// Skull N Crosshair Accolade
+						if(ScoreManagerTimerSubSystem)
+						{
+							if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::SkullNCrosshair))
+								ScoreManagerTimerSubSystem->IncrementScullNCrosshairHeadshotHits();
+							else
+								ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::SkullNCrosshair);
+						}
 						break;
 					default:
 						DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);

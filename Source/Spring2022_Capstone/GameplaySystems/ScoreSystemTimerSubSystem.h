@@ -58,6 +58,11 @@ public:
 	bool bCaptainsCoupTimerStarted = false;
 	float CaptainsCoupTimer = 0.0f;
 
+	bool bSkullNCrosshairTimerStarted = false;
+	float SkullNCrosshairTimer = 0.0f;
+	int SkullNCrosshairHeadshotHits = 0;
+	void IncrementScullNCrosshairHeadshotHits();
+
 private:
 
 	// ToDo: Remove after changing parent.
@@ -66,9 +71,11 @@ private:
 	void ResetScoreSystemTimerSubSystem();
 
 	// Accolade Time Requirements:
-	const float SKY_PIRATE_TIME_REQUIREMENT = 5.0f; // ToDo: 10/15 in actuality just going to put 5.0f for testing/showing.
-	const float LAND_LUBBER_TIME_REQUIREMENT = 15.0f;
-	const float PIRATE_BLITZ_TIME_REQUIREMENT = 100.0f; // Player must clear the wave before this time(s) elapses.
-	const float CAPTAINS_COUP_TIME_REQUIREMENT = 6.0f; // Player must kill an enemy elite in under this time(s) after their first hit.
+	const float SKY_PIRATE_TIME_REQUIREMENT = 5.0f;				// Player must stay in the air for this amount of time(s). ToDo: 10/15 in actuality just 5.0f for testing/showing.
+	const float LAND_LUBBER_TIME_REQUIREMENT = 15.0f;			// Player must remain on the ground for this amount of time(s).
+	const float PIRATE_BLITZ_TIME_REQUIREMENT = 100.0f;			// Player must clear the wave before this time(s) elapses.
+	const float CAPTAINS_COUP_TIME_REQUIREMENT = 6.0f;			// Player must kill an enemy elite in under this time(s) after their first hit.
+	const float SKULL_N_CROSSHAIR_TIME_REQUIREMENT = 5.0f;		// Player must hit SKULL_N_CROSSHAIR_HEADSHOT_REQUIREMENT headshots before this time elapses.
+	const int SKULL_N_CROSSHAIR_HEADSHOT_REQUIREMENT = 3.0f;	// Player must hit this many headshots before SKULL_N_CROSSHAIR_TIME_REQUIREMENT has elapsed.  
 	
 };

@@ -59,6 +59,7 @@ void AWeaponBase::BeginPlay()
 	}
 
 	ScoreManagerSubSystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
+	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
 	
 }
 

@@ -8,6 +8,7 @@
 #include "NiagaraComponent.h"
 #include "Components/AudioComponent.h"
 #include "Spring2022_Capstone/GameplaySystems/ScoreSystemManagerSubSystem.h"
+#include "Spring2022_Capstone/GameplaySystems/ScoreSystemTimerSubSystem.h"
 #include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "WeaponBase.generated.h"
 
@@ -186,6 +187,8 @@ protected:
 
 	UPROPERTY()
 	UScoreSystemManagerSubSystem* ScoreManagerSubSystem;
+	UPROPERTY()
+	UScoreSystemTimerSubSystem* ScoreManagerTimerSubSystem;
 
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]

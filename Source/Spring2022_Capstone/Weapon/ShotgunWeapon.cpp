@@ -43,10 +43,12 @@ void AShotgunWeapon::Shoot()
 
 			if(MuzzleFlashParticleSystem)
 				UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, SkeletalMesh, ShootingStartSocket, SkeletalMesh->GetSocketLocation(ShootingStartSocket), SkeletalMesh->GetSocketRotation(ShootingStartSocket));
+
+			bool bHeadshotHit = false; // Used to ensure shotgun headshots don't call for every pellet.
 			
 			for (int i = 0; i < PelletCount; i++)
 			{
-
+				
 				// Get random direction inside cone projected from player
 				ForwardVector = UKismetMathLibrary::RandomUnitVectorInConeInRadians(PlayerCamera->GetActorForwardVector(), HalfAngle);
 				FVector EndTrace = ((ForwardVector * ShotDistance) + StartTrace);
@@ -90,6 +92,7 @@ void AShotgunWeapon::Shoot()
 								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
 							if(ScoreManagerSubSystem)
 								ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
+							bHeadshotHit = true;
 							break;
 						default:
 							DamageableActor->DamageActor(this, ShotDamage,HitResult.BoneName);
@@ -112,6 +115,16 @@ void AShotgunWeapon::Shoot()
 					if(ImpactEffectToPlay)
 						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffectToPlay, HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation());
 					
+				}
+			}
+			if(bHeadshotHit)
+			{
+				if(ScoreManagerTimerSubSystem)
+				{
+					if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::SkullNCrosshair))
+						ScoreManagerTimerSubSystem->IncrementScullNCrosshairHeadshotHits();
+					else
+						ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::SkullNCrosshair);
 				}
 			}
 			if (bPelletConnected)

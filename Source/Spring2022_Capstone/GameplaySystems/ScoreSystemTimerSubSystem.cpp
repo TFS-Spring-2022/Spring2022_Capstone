@@ -15,6 +15,20 @@ void UScoreSystemTimerSubSystem::SetScoreManagerSubSystem(UScoreSystemManagerSub
 	ScoreManagerSubSystem = SubSystem;
 }
 
+void UScoreSystemTimerSubSystem::IncrementScullNCrosshairHeadshotHits()
+{
+	if(bSkullNCrosshairTimerStarted)
+	{
+		SkullNCrosshairHeadshotHits++;
+		if(SkullNCrosshairHeadshotHits >= SKULL_N_CROSSHAIR_HEADSHOT_REQUIREMENT)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKULL N CROSSHAIR");
+			ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::SkullNCrosshair);
+			StopAccoladeTimer(EAccolades::SkullNCrosshair);
+		}
+	}
+}
+
 void UScoreSystemTimerSubSystem::ResetScoreSystemTimerSubSystem()
 {
 	bSkyPirateTimerStarted = false;
@@ -64,6 +78,13 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 		if(CaptainsCoupTimer >= CAPTAINS_COUP_TIME_REQUIREMENT)
 			StopAccoladeTimer(EAccolades::CaptainsCoup);
 	}
+	// SkullNCrosshair Accolade
+	if(bSkullNCrosshairTimerStarted)
+	{
+		SkullNCrosshairTimer += DeltaTime;
+		if(SkullNCrosshairTimer >= SKULL_N_CROSSHAIR_TIME_REQUIREMENT)
+			StopAccoladeTimer(EAccolades::SkullNCrosshair);
+	}
 		
 	
 }
@@ -72,7 +93,10 @@ void UScoreSystemTimerSubSystem::StartAccoladeTimer(EAccolades Accolade)
 {
 	switch (Accolade)
 	{
-	case SkullNCrosshair: break;
+	case SkullNCrosshair:
+		bSkullNCrosshairTimerStarted = true;
+		IncrementScullNCrosshairHeadshotHits(); // Called to ensure first hit is recorded.
+		break;
 	case CaptainOfWar: break;
 	case SkyPirate: 
 		bSkyPirateTimerStarted = true;
@@ -105,7 +129,11 @@ void UScoreSystemTimerSubSystem::StopAccoladeTimer(EAccolades Accolade)
 {
 	switch (Accolade)
 	{
-	case SkullNCrosshair: break;
+	case SkullNCrosshair:
+		bSkullNCrosshairTimerStarted = false;
+		SkullNCrosshairTimer = 0.0f;
+		SkullNCrosshairHeadshotHits = 0;
+		break;
 	case CaptainOfWar: break;
 	case SkyPirate:
 		bSkyPirateTimerStarted = false;
@@ -142,7 +170,8 @@ bool UScoreSystemTimerSubSystem::IsAccoladeTimerRunning(EAccolades Accolade)
 {
 	switch (Accolade)
 	{
-	case SkullNCrosshair: break;
+	case SkullNCrosshair:
+		return bSkullNCrosshairTimerStarted;
 	case CaptainOfWar: break;
 	case SkyPirate:
 		return bSkyPirateTimerStarted;
