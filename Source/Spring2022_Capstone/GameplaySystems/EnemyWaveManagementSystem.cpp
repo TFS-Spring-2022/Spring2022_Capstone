@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
+
 void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 {
 	// ToDo: Add EnemySpawnPoints to array from EnemySpawnPoint::BeginPlay() (beware execution order).
@@ -14,6 +15,19 @@ void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 
 void UEnemyWaveManagementSystem::SpawnWave()
 {
+	// Assigning here due to execution order.
+	if(!ScoreSystemTimerSubSystem)
+		ScoreSystemTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
+
+	// Check for Pirate Blitz Accolade
+	if(ScoreSystemTimerSubSystem)
+	{
+		if(ScoreSystemTimerSubSystem->IsAccoladeTimerRunning(EAccolades::PirateBlitz))
+			ScoreSystemTimerSubSystem->FinishWave();
+		else
+			ScoreSystemTimerSubSystem->StartAccoladeTimer(EAccolades::PirateBlitz);
+	}
+	
 	bool bEliteEnemySpawned = false;
 	
 	if(CurrentWave > Waves.Num() - 1)

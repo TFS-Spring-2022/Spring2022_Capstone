@@ -41,11 +41,19 @@ public:
 	// Returns the status of the accolade timer.
 	bool IsAccoladeTimerRunning(EAccolades Accolade);
 
-	bool bSkyPirateTimerStarted;
+	bool bSkyPirateTimerStarted = false;
 	float SkyPirateTimer = 0.0f;
 
-	bool bLandLubberTimerStarted;
+	bool bLandLubberTimerStarted = false;
 	float LandLubberTimer = 0.0f;
+
+	bool bPirateBlitzTimerStarted = false;
+	float PirateBlitzTimer = 0.0f;
+	/**
+	 * @brief Called from EnemyWaveManagementSystem at the end of a wave. Checks if the player has beat the
+	 * wave before PIRATE_BLITZ_TIME_REQUIREMENT.
+	 */
+	void FinishWave();
 
 private:
 
@@ -57,5 +65,6 @@ private:
 	// Accolade Time Requirements:
 	const float SKY_PIRATE_TIME_REQUIREMENT = 5.0f; // ToDo: 10/15 in actuality just going to put 5.0f for testing/showing.
 	const float LAND_LUBBER_TIME_REQUIREMENT = 15.0f;
+	const float PIRATE_BLITZ_TIME_REQUIREMENT = 100.0f; // Player must clear the wave before this time(s) elapses.
 	
 };

@@ -23,7 +23,7 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable)
 class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponent 
 {
 	GENERATED_BODY()
-	
+
 	// Set of enemies to be spawned at the start of a new wave.
 	UPROPERTY(EditAnywhere, Category = "Waves")
 	TArray<FEnemyWave> Waves;
@@ -55,6 +55,9 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 	// Used to open the player's upgrade menu through a timer.
 	UFUNCTION()
 	void OpenUpgradeMenu() const;
+
+	UPROPERTY()
+	UScoreSystemTimerSubSystem* ScoreSystemTimerSubSystem;
 	
 public:
 

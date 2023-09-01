@@ -54,7 +54,10 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 			StopAccoladeTimer(EAccolades::LandLubber);
 		}
 	}
-
+	// Pirate Blitz Accolade
+	if(bPirateBlitzTimerStarted)
+		PirateBlitzTimer += DeltaTime;
+	
 }
 
 void UScoreSystemTimerSubSystem::StartAccoladeTimer(EAccolades Accolade)
@@ -81,7 +84,9 @@ void UScoreSystemTimerSubSystem::StartAccoladeTimer(EAccolades Accolade)
 	case PiratesFortitude: break;
 	case PlunderersProwess: break;
 	case IPreferTreasure: break;
-	case PirateBlitz: break;
+	case PirateBlitz:
+		bPirateBlitzTimerStarted = true;
+		break;
 	default: ;
 	}
 }
@@ -112,7 +117,10 @@ void UScoreSystemTimerSubSystem::StopAccoladeTimer(EAccolades Accolade)
 	case PiratesFortitude: break;
 	case PlunderersProwess: break;
 	case IPreferTreasure: break;
-	case PirateBlitz: break;
+	case PirateBlitz:
+		PirateBlitzTimer = false;
+		PirateBlitzTimer = 0.0f;
+		break;
 	default: ;
 	}
 }
@@ -125,10 +133,8 @@ bool UScoreSystemTimerSubSystem::IsAccoladeTimerRunning(EAccolades Accolade)
 	case CaptainOfWar: break;
 	case SkyPirate:
 		return bSkyPirateTimerStarted;
-		break;
 	case LandLubber:
 		return bLandLubberTimerStarted;
-		break;
 	case CloseCallCorsair: break;
 	case Opportunist: break;
 	case CaptainsCoup: break;
@@ -141,8 +147,24 @@ bool UScoreSystemTimerSubSystem::IsAccoladeTimerRunning(EAccolades Accolade)
 	case PiratesFortitude: break;
 	case PlunderersProwess: break;
 	case IPreferTreasure: break;
-	case PirateBlitz: break;
+	case PirateBlitz:
+		return bPirateBlitzTimerStarted;
 	default:;
 	}
 	return false;
 }
+
+void UScoreSystemTimerSubSystem::FinishWave()
+{
+	// Pirate Blitz Accolade Check
+	if(PirateBlitzTimer < PIRATE_BLITZ_TIME_REQUIREMENT)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "PIRATE BLITZ");
+		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::PirateBlitz);
+		StopAccoladeTimer(EAccolades::PirateBlitz);
+	}
+	else
+		StopAccoladeTimer(EAccolades::PirateBlitz);
+}
+
+
