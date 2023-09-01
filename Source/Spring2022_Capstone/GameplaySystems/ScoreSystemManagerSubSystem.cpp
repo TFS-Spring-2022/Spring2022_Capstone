@@ -156,7 +156,7 @@ void UScoreSystemManagerSubSystem::IncrementScoreCounter(EScoreCounters ScoreCou
 
 void UScoreSystemManagerSubSystem::CheckWaveEndAccolades()
 {
-	// I Prefer Treasure Accolade ToDo: FIX ENEMY DROPS SPAWNING MULTIPLE COPIES EVERY TIME THEY SPAWN.
+	// I Prefer Treasure Accolade
 	TArray<AActor*> PickupsInScene;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABasePickup::StaticClass(), PickupsInScene);
 	if(PickupsInScene.Num() - 1 >= I_PREFER_TREASURE_PICKUP_AMOUNT)
@@ -164,6 +164,5 @@ void UScoreSystemManagerSubSystem::CheckWaveEndAccolades()
 		IncrementAccoladeCount(EAccolades::IPreferTreasure);
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "I PREFER TREASURE");
 	}
-		
 	PickupsInScene.Empty();
 }

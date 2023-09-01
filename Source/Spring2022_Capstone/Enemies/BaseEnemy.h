@@ -114,7 +114,10 @@ public:
 	UPROPERTY()
 	UNiagaraComponent* EliteParticleInstance;
 
+	UPROPERTY()
 	UScoreSystemManagerSubSystem* ScoreManagerSubSystem;
+	UPROPERTY()
+	UScoreSystemTimerSubSystem* ScoreManagerTimerSubSystem;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))

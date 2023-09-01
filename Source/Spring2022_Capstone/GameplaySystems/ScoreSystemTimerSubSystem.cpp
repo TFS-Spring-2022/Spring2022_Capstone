@@ -57,6 +57,14 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 	// Pirate Blitz Accolade
 	if(bPirateBlitzTimerStarted)
 		PirateBlitzTimer += DeltaTime;
+	// Captains Coup Accolade
+	if(bCaptainsCoupTimerStarted)
+	{
+		CaptainsCoupTimer += DeltaTime;
+		if(CaptainsCoupTimer >= CAPTAINS_COUP_TIME_REQUIREMENT)
+			StopAccoladeTimer(EAccolades::CaptainsCoup);
+	}
+		
 	
 }
 
@@ -74,7 +82,9 @@ void UScoreSystemTimerSubSystem::StartAccoladeTimer(EAccolades Accolade)
 		break;
 	case CloseCallCorsair: break;
 	case Opportunist: break;
-	case CaptainsCoup: break;
+	case CaptainsCoup:
+		bCaptainsCoupTimerStarted = true;
+		break;
 	case DoubleAerialPlunder: break;
 	case BlunderBlast: break;
 	case SkyBuccaneer: break;
@@ -107,7 +117,10 @@ void UScoreSystemTimerSubSystem::StopAccoladeTimer(EAccolades Accolade)
 		break;
 	case CloseCallCorsair: break;
 	case Opportunist: break;
-	case CaptainsCoup: break;
+	case CaptainsCoup:
+		bCaptainsCoupTimerStarted = false;
+		CaptainsCoupTimer = 0.0f;
+		break;
 	case DoubleAerialPlunder: break;
 	case BlunderBlast: break;
 	case SkyBuccaneer: break;
@@ -137,7 +150,8 @@ bool UScoreSystemTimerSubSystem::IsAccoladeTimerRunning(EAccolades Accolade)
 		return bLandLubberTimerStarted;
 	case CloseCallCorsair: break;
 	case Opportunist: break;
-	case CaptainsCoup: break;
+	case CaptainsCoup:
+		return bCaptainsCoupTimerStarted;
 	case DoubleAerialPlunder: break;
 	case BlunderBlast: break;
 	case SkyBuccaneer: break;

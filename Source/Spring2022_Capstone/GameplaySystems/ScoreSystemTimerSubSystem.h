@@ -55,6 +55,9 @@ public:
 	 */
 	void FinishWave();
 
+	bool bCaptainsCoupTimerStarted = false;
+	float CaptainsCoupTimer = 0.0f;
+
 private:
 
 	// ToDo: Remove after changing parent.
@@ -66,5 +69,6 @@ private:
 	const float SKY_PIRATE_TIME_REQUIREMENT = 5.0f; // ToDo: 10/15 in actuality just going to put 5.0f for testing/showing.
 	const float LAND_LUBBER_TIME_REQUIREMENT = 15.0f;
 	const float PIRATE_BLITZ_TIME_REQUIREMENT = 100.0f; // Player must clear the wave before this time(s) elapses.
+	const float CAPTAINS_COUP_TIME_REQUIREMENT = 6.0f; // Player must kill an enemy elite in under this time(s) after their first hit.
 	
 };

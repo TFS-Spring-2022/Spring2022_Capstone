@@ -57,6 +57,7 @@ void ABaseEnemy::BeginPlay()
 		GetMesh()->SetMaterial(0, EnemyColors[FMath::RandRange(0, EnemyColors.Num() - 1)]);
 
 	ScoreManagerSubSystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
+	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
 	
 }
 
@@ -138,6 +139,10 @@ void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FN
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount, HitBoneName);
 	if (HealthComp)
 	{
+		// Start Captains Coup Accolade Timer
+		if(ScoreManagerTimerSubSystem && bIsElite)
+			ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CaptainsCoup);
+			
 		HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
 		if (HealthComp->GetHealth() <= 0)
 		{
@@ -205,6 +210,15 @@ void ABaseEnemy::Death()
 		return;
 
 	bIsDying = true;
+
+	// Captains Coup Accolade
+	if(bIsElite && ScoreManagerTimerSubSystem && ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::CaptainsCoup))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Captains Coup");
+		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::CaptainsCoup);
+		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::CaptainsCoup);
+	}
+	
 	GunShotComp->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
 	GunShotComp->DestroyComponent();
 	// Drop Item
