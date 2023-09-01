@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "ScoreSystemManager.generated.h"
+#include "ScoreSystemManagerSubSystem.generated.h"
 
 // All the accolades the player can earn during gameplay.
 UENUM()
@@ -33,7 +33,7 @@ enum EAccolades
  * A class used to handle the score and accolades earned by a player through a run.
  */
 UCLASS()
-class SPRING2022_CAPSTONE_API UScoreSystemManager : public UGameInstanceSubsystem
+class SPRING2022_CAPSTONE_API UScoreSystemManagerSubSystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
@@ -103,6 +103,9 @@ public:
 	void ResetScoreSystem();
 
 	// Increments the counter for the given accolade.
+	UFUNCTION()
 	void IncrementAccoladeCount(EAccolades Accolade);
+
+	int GetTestCount(); // const {return Accolade_SkullNCrosshairCount;}
 	
 };

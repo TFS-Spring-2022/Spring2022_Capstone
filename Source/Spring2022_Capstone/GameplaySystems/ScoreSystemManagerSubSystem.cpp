@@ -1,16 +1,16 @@
 // Created by Spring2022_Capstone team
 
 
-#include "ScoreSystemManager.h"
+#include "ScoreSystemManagerSubSystem.h"
 
-void UScoreSystemManager::Initialize(FSubsystemCollectionBase& Collection)
+void UScoreSystemManagerSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
 	ResetScoreSystem();
 }
 
-void UScoreSystemManager::ResetScoreSystem()
+void UScoreSystemManagerSubSystem::ResetScoreSystem()
 {
 	// Accolades:
 	TotalAccoladesCount = 0;
@@ -54,7 +54,7 @@ void UScoreSystemManager::ResetScoreSystem()
 	LeastShotsFiredInAWave = 0;
 }
 
-void UScoreSystemManager::IncrementAccoladeCount(const EAccolades Accolade)
+void UScoreSystemManagerSubSystem::IncrementAccoladeCount(const EAccolades Accolade)
 {
 	switch (Accolade)
 	{
@@ -113,4 +113,9 @@ void UScoreSystemManager::IncrementAccoladeCount(const EAccolades Accolade)
 	}
 
 	TotalAccoladesCount++;
+}
+
+int UScoreSystemManagerSubSystem::GetTestCount()
+{
+	return Accolade_SkullNCrosshairCount;
 }
