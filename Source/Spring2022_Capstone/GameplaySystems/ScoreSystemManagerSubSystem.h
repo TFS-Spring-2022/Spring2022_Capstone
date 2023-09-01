@@ -62,18 +62,13 @@ class SPRING2022_CAPSTONE_API UScoreSystemManagerSubSystem : public UGameInstanc
 	
 	// Score:
 	float TotalScore = 0.0f;
-	// Enemies killed.
 	int EnemiesKilled = 0;
-	// Hits in enemies heads.
 	int HeadshotHits = 0; 
-	// Hits while airborne.
 	int HitsWhileAirborne = 0;
-	// Enemies killed with hazards.
 	int EnemiesKilledWithHazards = 0;
-	// Number of elites killed.
 	int ElitesKilled = 0;
-	// Number of snipers/towers disabled.
 	int SnipersDisabled = 0;
+	
 	// Run completion time.
 	float RunCompletionTime = 0.0f;
 
