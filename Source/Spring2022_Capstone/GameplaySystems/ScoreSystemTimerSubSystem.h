@@ -6,7 +6,7 @@
 #include "ScoreSystemManagerSubSystem.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "ScoreSystemTimerSubSystem.generated.h"
-
+// ToDo: Make not a SubSystem (see ResetScoreSystemTimerSubSystem() comment).
 /**
  * A TickableWorldSubsystem used to communicate with the ScoreSystemManagerSubsystem and handle awarding
  * time based accolades.
