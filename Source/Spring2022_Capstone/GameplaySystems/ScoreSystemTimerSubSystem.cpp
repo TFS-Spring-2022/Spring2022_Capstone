@@ -21,28 +21,28 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 		return;
 
 	// Land Lubber Accolade
-	if(bLandLubberTimerStarted)
+	if(bSkyPirateTimerStarted)
 	{
-		LandLubberTimer+=DeltaTime;
-		if(LandLubberTimer >= LAND_LUBBER_TIME_REQUIREMENT)
+		SkyPirateTimer+=DeltaTime;
+		if(SkyPirateTimer >= SKY_PIRATE_TIME_REQUIREMENT)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "LAND LUBBER!");
-			ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::LandLubber);
-			bLandLubberTimerStarted = false;
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKY PIRATE!");
+			ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::SkyPirate);
+			bSkyPirateTimerStarted = false;
 		}
 	}
 	else
-		LandLubberTimer = 0.0f;
+		SkyPirateTimer = 0.0f;
 }
 
 
-void UScoreSystemTimerSubSystem::StartLandLubberTimer()
+void UScoreSystemTimerSubSystem::StartSkyPirateTimer()
 {
-	bLandLubberTimerStarted = true;
+	bSkyPirateTimerStarted = true;
 }
 
-void UScoreSystemTimerSubSystem::StopLandLubberTImer()
+void UScoreSystemTimerSubSystem::StopSkyPirateTimer()
 {
-	bLandLubberTimerStarted = false;
-	LandLubberTimer = 0.0f;
+	bSkyPirateTimerStarted = false;
+	SkyPirateTimer = 0.0f;
 }

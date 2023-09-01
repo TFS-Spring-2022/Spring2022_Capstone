@@ -34,14 +34,14 @@ public:
 
 	void SetScoreManagerSubSystem(UScoreSystemManagerSubSystem* SubSystem);
 
-	void StartLandLubberTimer();
-	void StopLandLubberTImer();
-	bool bLandLubberTimerStarted;
-	float LandLubberTimer = 0.0f;
+	void StartSkyPirateTimer();
+	void StopSkyPirateTimer();
+	bool bSkyPirateTimerStarted;
+	float SkyPirateTimer = 0.0f;
 
 private:
 
 	// Accolade time requirements:
-	const float LAND_LUBBER_TIME_REQUIREMENT = 5.0f; // ToDo: 20/30 in actuality just going to put 5.0f for testing/showing
+	const float SKY_PIRATE_TIME_REQUIREMENT = 5.0f; // ToDo: 10/15 in actuality just going to put 5.0f for testing/showing.
 	
 };
