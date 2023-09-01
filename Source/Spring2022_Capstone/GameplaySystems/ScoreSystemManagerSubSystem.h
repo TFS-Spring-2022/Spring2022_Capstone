@@ -80,9 +80,9 @@ class SPRING2022_CAPSTONE_API UScoreSystemManagerSubSystem : public UGameInstanc
 	int EnemiesKilled = 0;
 	int HeadshotHits = 0; 
 	int HitsWhileAirborne = 0;
-	int EnemiesKilledWithHazards = 0;
+	int EnemiesKilledWithHazards = 0; // ToDo: Implement when hazards are merged.
 	int ElitesKilled = 0;
-	int SnipersDisabled = 0;
+	int SnipersDisabled = 0; // ToDo: Implement when Sniper Disabled in merged.
 	
 	// Run completion time.
 	float RunCompletionTime = 0.0f;

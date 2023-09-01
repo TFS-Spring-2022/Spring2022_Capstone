@@ -57,8 +57,8 @@ void AWeaponBase::BeginPlay()
 		PlayerCharacter->SetWeapon2(this);
 		AttachWeapon(PlayerCharacter);
 	}
-	
-	
+
+	ScoreManagerSubSystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
 	
 }
 

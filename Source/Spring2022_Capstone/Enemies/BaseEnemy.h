@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "Spring2022_Capstone/BasePickup.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
+#include "Spring2022_Capstone/GameplaySystems/ScoreSystemManagerSubSystem.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "BaseEnemy.generated.h"
 
@@ -101,6 +102,8 @@ public:
 
 	void PromoteToElite();
 
+	bool bIsElite = false;
+
 	// Amount the enemy's stats are multiplied by when promoted.
 	UPROPERTY(EditAnywhere, Category = "Stats")
 	float EliteMultiplier = 1.3f;
@@ -111,8 +114,7 @@ public:
 	UPROPERTY()
 	UNiagaraComponent* EliteParticleInstance;
 
-	
-	
+	UScoreSystemManagerSubSystem* ScoreManagerSubSystem;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))

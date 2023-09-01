@@ -56,6 +56,16 @@ void AShotgunWeapon::Shoot()
 
 				if(GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 				{
+					if(ScoreManagerSubSystem)
+					{
+						// Increment hit counter
+						ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::Hits);
+				
+						// If player is in the air, increment counter
+						if(!PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+							ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HitsWhileAirborne);
+					}
+
 					// Get Surface Type to check for headshot and impact material.
 					EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 					
@@ -78,6 +88,8 @@ void AShotgunWeapon::Shoot()
 							DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier,HitResult.BoneName);
 							if(FloatingDamageNumberParticleSystem)
 								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
+							if(ScoreManagerSubSystem)
+								ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
 							break;
 						default:
 							DamageableActor->DamageActor(this, ShotDamage,HitResult.BoneName);

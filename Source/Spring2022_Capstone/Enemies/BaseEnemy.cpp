@@ -55,6 +55,8 @@ void ABaseEnemy::BeginPlay()
 
 	if (!EnemyColors.IsEmpty())
 		GetMesh()->SetMaterial(0, EnemyColors[FMath::RandRange(0, EnemyColors.Num() - 1)]);
+
+	ScoreManagerSubSystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
 	
 }
 
@@ -191,7 +193,7 @@ void ABaseEnemy::PromoteToElite()
 	FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true, true);
 	}
 
-
+	bIsElite = true;
 	// ToDo: Play voice line.
 }
 
@@ -230,6 +232,13 @@ void ABaseEnemy::Death()
 	NameTextRenderer->SetVisibility(false);
 	if(EliteParticleInstance)
 		EliteParticleInstance->DestroyInstance();
+
+	if(ScoreManagerSubSystem)
+	{
+		ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::EnemiesKilled);
+		if(bIsElite)
+			ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::EnemiesKilled);
+	}
 	
 	// Note: Enemies are destroyed in EnemyWaveManagementSystem.
 }
