@@ -479,7 +479,6 @@ void APlayerCharacter::CheckGround()
 			{
 				// Get Surface Type to check for headshot and impact material type.
 				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
-				GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Purple, HitResult.PhysMaterial->GetName());
 					if(CurrentGroundMat != Cast<UPhysicalMaterial>(HitResult.PhysMaterial.Get()))
 					{
 						CurrentGroundMat = Cast<UPhysicalMaterial>(HitResult.PhysMaterial.Get());
