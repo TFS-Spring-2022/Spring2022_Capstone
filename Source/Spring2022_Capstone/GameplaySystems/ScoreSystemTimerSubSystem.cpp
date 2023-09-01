@@ -20,7 +20,7 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 	if(!ScoreManagerSubSystem)
 		return;
 
-	// Land Lubber Accolade
+	// Sky Pirate Accolade
 	if(bSkyPirateTimerStarted)
 	{
 		SkyPirateTimer += DeltaTime;
@@ -31,6 +31,7 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 			StopAccoladeTimer(EAccolades::SkyPirate);
 		}
 	}
+	// Land Lubber Accolade
 	if(bLandLubberTimerStarted)
 	{
 		LandLubberTimer += DeltaTime;
