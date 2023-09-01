@@ -24,6 +24,9 @@ ABaseEnemy::ABaseEnemy()
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPoint"));
 	ProjectileSpawnPoint->SetupAttachment(WeaponMesh);
 
+	GunShotComp = CreateDefaultSubobject<UAudioComponent>(TEXT("GunAudioComp"));
+	GunShotComp->SetupAttachment(WeaponMesh);
+	
 	PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	NameTextRenderer = CreateDefaultSubobject<UTextRenderComponent>("Enemy Name Text");
@@ -41,7 +44,7 @@ void ABaseEnemy::BeginPlay()
 	// Attach weapon to enemies hand socket
 	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 	WeaponMesh->AttachToComponent(GetMesh(), AttachmentRules, WeaponSocket);
-
+	GunShotComp->AttachToComponent(WeaponMesh, AttachmentRules);
 	CurrentAttackSystemComponent = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetAttackSystemComponent();
 
 	// Add enemy to AttackSystem Agents[] array on spawn.
@@ -64,6 +67,8 @@ void ABaseEnemy::Attack()
 	}
 	else
 		AttackMiss();
+
+	
 }
 
 // Hits player and does damage (only called when enemy has token and then releases token)
@@ -89,6 +94,8 @@ void ABaseEnemy::AttackHit()
 		if (PlayerHitResult.GetActor()->Implements<UDamageableActor>() && PlayerHitResult.GetActor()->IsA(APlayerCharacter::StaticClass())) // Question: Do we want them to be able to do damage to other enemies?
 			Cast<APlayerCharacter>(PlayerHitResult.GetActor())->DamageActor(this, Damage);
 	}
+	if(GunShotComp)
+		GunShotComp->Play();
 }
 
 // Misses player and does no damage (called when player does not have token))
@@ -111,6 +118,9 @@ void ABaseEnemy::AttackMiss()
 	// ToDo: Implement weighting missed shots into objects/player view
 	if (GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Camera, *TraceParams))
 		DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Black, false, .5f);
+
+	if(GunShotComp)
+		GunShotComp->Play();
 }
 
 // Called every frame
@@ -187,7 +197,8 @@ void ABaseEnemy::PromoteToElite()
 
 void ABaseEnemy::Death()
 {
-
+	GunShotComp->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+	GunShotComp->DestroyComponent();
 	// Drop Item
 	for (const FEnemyDrop DroppableItem : Drops)
 	{

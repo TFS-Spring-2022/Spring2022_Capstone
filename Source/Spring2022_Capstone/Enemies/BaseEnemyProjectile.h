@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
+#include "Sound/SoundCue.h"
+#include "Subsystems/Subsystem.h"
 #include "BaseEnemyProjectile.generated.h"
 
 class UProjectileMovementComponent;
@@ -25,6 +28,15 @@ protected:
 	UStaticMeshComponent *ProjectileMesh;
 	UPROPERTY(VisibleAnywhere, Category = "Movement")
 	UProjectileMovementComponent *ProjectileMovementComponent;
+
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
+	
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	UAudioComponent *TrackingSoundComponent;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundCue *ExplodingSound;
 
 public:
 	virtual void Tick(float DeltaTime) override;

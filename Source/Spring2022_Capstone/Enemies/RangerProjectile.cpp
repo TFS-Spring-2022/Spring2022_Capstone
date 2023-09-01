@@ -17,6 +17,8 @@ void ARangerProjectile::BeginPlay()
 	ProjectileMovementComponent->bIsHomingProjectile = true;
 	ProjectileMovementComponent->HomingAccelerationMagnitude = 300.f;
 
+    
+    
     APawn *PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 
     if (PlayerPawn)
@@ -31,5 +33,11 @@ void ARangerProjectile::OnHit(UPrimitiveComponent *HitComp, AActor *OtherActor, 
 {
     if (OtherActor->Implements<UDamageableActor>() && OtherActor->IsA(APlayerCharacter::StaticClass())) // Question: Do we want them to be able to do damage to other enemies?
         Cast<APlayerCharacter>(OtherActor)->DamageActor(this, Damage);
+
+    TrackingSoundComponent->SetSound(ExplodingSound);
+    if(ExplodingSound)
+    {
+        SoundManagerSubSystem->PlaySound(OtherActor->GetActorLocation(), ExplodingSound);
+    }
     Destroy();
 }
