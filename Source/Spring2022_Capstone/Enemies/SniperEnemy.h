@@ -16,6 +16,8 @@ class SPRING2022_CAPSTONE_API ASniperEnemy : public ABaseEnemy
 public:
 	ASniperEnemy();
 	
+	virtual void Tick(float DeltaTime) override;
+	
 protected:
 	void Attack() override;
 
