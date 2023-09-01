@@ -8,6 +8,7 @@
 #include "MantleSystemComponent.h"
 #include "UpgradeSystemComponent.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
+#include "Spring2022_Capstone/GameplaySystems/ScoreSystemTimerSubSystem.h"
 #include "Spring2022_Capstone/UI/HUD/DirectionalDamageIndicatorWidget.h"
 #include "Spring2022_Capstone/UI/HUD/HUDWidget.h"
 #include "PlayerCharacter.generated.h"
@@ -53,6 +54,10 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputMappingContext *CharacterMappingContext;
+
+	// Scoring/Accolades
+	UScoreSystemManagerSubSystem* ScoreManagerSubsystem;
+	UScoreSystemTimerSubSystem* ScoreManagerTimerSubSystem;
 
 	//// HUD Related
 	
@@ -128,6 +133,7 @@ protected:
 	
 	void Move(const FInputActionValue &Value);
 	virtual void Jump() override;
+	virtual void Landed(const FHitResult& Hit) override;
 	
 	void Dash(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);

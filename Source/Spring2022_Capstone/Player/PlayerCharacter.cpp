@@ -105,7 +105,9 @@ void APlayerCharacter::BeginPlay()
 	bDashBlurFadingIn = false;
 	CurrentGameMode = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 
-
+	ScoreManagerSubsystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
+	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
+	
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController(), false);
 
 }
@@ -156,6 +158,15 @@ void APlayerCharacter::Jump()
 	}
 
 	Super::Jump();
+	ScoreManagerTimerSubSystem->StartLandLubberTimer();
+}
+
+void APlayerCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	if(ScoreManagerTimerSubSystem)
+		ScoreManagerTimerSubSystem->StopLandLubberTImer();
 }
 
 void APlayerCharacter::Dash(const FInputActionValue &Value)
