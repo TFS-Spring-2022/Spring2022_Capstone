@@ -6,11 +6,23 @@
 void UScoreSystemTimerSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+
+	ResetScoreSystemTimerSubSystem();
 }
 
 void UScoreSystemTimerSubSystem::SetScoreManagerSubSystem(UScoreSystemManagerSubSystem* SubSystem)
 {
 	ScoreManagerSubSystem = SubSystem;
+}
+
+void UScoreSystemTimerSubSystem::ResetScoreSystemTimerSubSystem()
+{
+	bSkyPirateTimerStarted = false;
+	SkyPirateTimer = 0.0f;
+	bLandLubberTimerStarted = false;
+	LandLubberTimer = 0.0f;
+	bPirateBlitzTimerStarted = false;
+	PirateBlitzTimer = 0.0f;
 }
 
 void UScoreSystemTimerSubSystem::Tick(float DeltaTime)

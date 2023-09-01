@@ -49,6 +49,11 @@ public:
 
 private:
 
+	// ToDo: Remove after changing parent.
+	// Resets timer values. Called every time the ScoreSystemTimer is loaded. It is not necessary to
+	// maintain information as it is passed to the ScoreSystemManagerSubSystem.
+	void ResetScoreSystemTimerSubSystem();
+
 	// Accolade Time Requirements:
 	const float SKY_PIRATE_TIME_REQUIREMENT = 5.0f; // ToDo: 10/15 in actuality just going to put 5.0f for testing/showing.
 	const float LAND_LUBBER_TIME_REQUIREMENT = 15.0f;
