@@ -10,11 +10,13 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Spring2022_Capstone/Spring2022_Capstone.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
 APlayerCharacter::APlayerCharacter()
@@ -36,6 +38,9 @@ APlayerCharacter::APlayerCharacter()
 	UpgradeSystemComponent = CreateDefaultSubobject<UUpgradeSystemComponent>("Upgrades System");
 
 	PlayerMantleSystemComponent = CreateDefaultSubobject<UMantleSystemComponent>(TEXT("Mantle"));
+
+	FootStepAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Foot Steps"));
+	LandingAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Landing Steps"));
 
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
@@ -72,9 +77,9 @@ void APlayerCharacter::BeginPlay()
 	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
 	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
 
-
-	//Temp
-	SoundManagerSubSystem->PlaySoundEvent();
+	FootStepAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	LandingAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	
 	
 	if (APlayerController *PlayerController = Cast<APlayerController>(GetController()))
 	{
@@ -123,7 +128,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 void APlayerCharacter::Move(const FInputActionValue &Value)
 {
-	
 	const FVector2D DirectionalValue = Value.Get<FVector2D>();
 	if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
 	{
@@ -454,4 +458,62 @@ UUpgradeSystemComponent* APlayerCharacter::GetUpgradeSystemComponent()
 		return UpgradeSystemComponent;
 	else
 		return nullptr;
+}
+
+void APlayerCharacter::CheckGround()
+{
+
+			FHitResult HitResult;
+
+			FVector StartTrace = Camera->GetComponentLocation();
+			StartTrace.Z -= 10; // TEMP: Offset to make debug draw lines visible without moving.
+			FVector DownVector = Camera->GetUpVector();
+			FVector EndTrace = ((DownVector * 500.f * -1) + StartTrace);
+			FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
+			TraceParams->bReturnPhysicalMaterial = true;  // Hit must return a physical material to tell if the player has hit a headshot.
+			TraceParams->AddIgnoredComponent(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetMesh());
+			
+			
+			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
+			{
+				// Get Surface Type to check for headshot and impact material type.
+				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
+				
+					if(CurrentGroundMat != Cast<UPhysicalMaterial>(HitResult.PhysMaterial.Get()))
+					{
+						switch (HitSurfaceType)
+						{
+						case SURFACE_Rock:
+							if(RockStepSound)
+								FootStepAudioComp->SetSound(RockStepSound);
+							if(RockLandSound)
+								LandingAudioComp->SetSound(RockLandSound);
+							break;
+						case SURFACE_Wood:
+							if(WoodStepSound)
+								FootStepAudioComp->SetSound(WoodStepSound);
+							if(WoodLandSound)
+								LandingAudioComp->SetSound(WoodLandSound);
+							break;
+						case SURFACE_Grass:
+							if(GrassStepSound)
+								FootStepAudioComp->SetSound(GrassStepSound);
+							if(GrassLandSound)
+								LandingAudioComp->SetSound(GrassLandSound);
+							break;
+						case SURFACE_Water:
+							if(WaterStepSound)
+								FootStepAudioComp->SetSound(WaterStepSound);
+							if(WaterLandSound)
+								LandingAudioComp->SetSound(WaterLandSound);
+							break;
+						default:
+							if(RockStepSound)
+								FootStepAudioComp->SetSound(RockStepSound);
+							if(RockLandSound)
+								LandingAudioComp->SetSound(RockLandSound);
+							break;
+						}
+					}
+			}
 }

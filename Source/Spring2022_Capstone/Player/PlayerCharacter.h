@@ -317,6 +317,12 @@ public:
 
 
 	//Sounds
+	UFUNCTION()
+	void CheckGround();
+
+	UPROPERTY()
+	UPhysicalMaterial* CurrentGroundMat;
+	
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundCue* GrappleShotSC;
 
@@ -328,6 +334,36 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundCue* MantleSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* WoodStepSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* WoodLandSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* RockStepSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* RockLandSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* WaterStepSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* WaterLandSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* GrassStepSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* GrassLandSound;
+	
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	UAudioComponent* FootStepAudioComp;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	UAudioComponent* LandingAudioComp;
 
 	FORCEINLINE void SetCanAttack(bool Status) {bCanAttack = Status;}
 
