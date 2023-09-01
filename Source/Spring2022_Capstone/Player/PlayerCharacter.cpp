@@ -158,7 +158,7 @@ void APlayerCharacter::Jump()
 	}
 
 	Super::Jump();
-	ScoreManagerTimerSubSystem->StartSkyPirateTimer();
+	ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::SkyPirate);
 }
 
 void APlayerCharacter::Landed(const FHitResult& Hit)
@@ -166,7 +166,7 @@ void APlayerCharacter::Landed(const FHitResult& Hit)
 	Super::Landed(Hit);
 
 	if(ScoreManagerTimerSubSystem)
-		ScoreManagerTimerSubSystem->StopSkyPirateTimer();
+		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::SkyPirate);
 }
 
 void APlayerCharacter::Dash(const FInputActionValue &Value)

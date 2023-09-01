@@ -34,14 +34,17 @@ public:
 
 	void SetScoreManagerSubSystem(UScoreSystemManagerSubSystem* SubSystem);
 
-	void StartSkyPirateTimer();
-	void StopSkyPirateTimer();
+	// Starts the timer for the given accolade.
+	void StartAccoladeTimer(EAccolades Accolade);
+	// Stops and clears the timer for the given accolade.
+	void StopAccoladeTimer(EAccolades Accolade);
+
 	bool bSkyPirateTimerStarted;
 	float SkyPirateTimer = 0.0f;
 
 private:
 
-	// Accolade time requirements:
+	// Accolade Time Requirements:
 	const float SKY_PIRATE_TIME_REQUIREMENT = 5.0f; // ToDo: 10/15 in actuality just going to put 5.0f for testing/showing.
 	
 };

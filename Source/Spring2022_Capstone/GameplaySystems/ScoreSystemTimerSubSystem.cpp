@@ -35,14 +35,57 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 		SkyPirateTimer = 0.0f;
 }
 
-
-void UScoreSystemTimerSubSystem::StartSkyPirateTimer()
+void UScoreSystemTimerSubSystem::StartAccoladeTimer(EAccolades Accolade)
 {
-	bSkyPirateTimerStarted = true;
+	switch (Accolade)
+	{
+	case SkullNCrosshair: break;
+	case CaptainOfWar: break;
+	case SkyPirate: 
+		bSkyPirateTimerStarted = true;
+		break;
+	case LandLubber: break;
+	case CloseCallCorsair: break;
+	case Opportunist: break;
+	case CaptainsCoup: break;
+	case DoubleAerialPlunder: break;
+	case BlunderBlast: break;
+	case SkyBuccaneer: break;
+	case CoolHeaded: break;
+	case NimbleBones: break;
+	case DeathDodger: break;
+	case PiratesFortitude: break;
+	case PlunderersProwess: break;
+	case IPreferTreasure: break;
+	case PirateBlitz: break;
+	default: ;
+	}
 }
 
-void UScoreSystemTimerSubSystem::StopSkyPirateTimer()
+void UScoreSystemTimerSubSystem::StopAccoladeTimer(EAccolades Accolade)
 {
-	bSkyPirateTimerStarted = false;
-	SkyPirateTimer = 0.0f;
+	switch (Accolade)
+	{
+	case SkullNCrosshair: break;
+	case CaptainOfWar: break;
+	case SkyPirate:
+		bSkyPirateTimerStarted = false;
+		SkyPirateTimer = 0.0f;
+		break;
+	case LandLubber: break;
+	case CloseCallCorsair: break;
+	case Opportunist: break;
+	case CaptainsCoup: break;
+	case DoubleAerialPlunder: break;
+	case BlunderBlast: break;
+	case SkyBuccaneer: break;
+	case CoolHeaded: break;
+	case NimbleBones: break;
+	case DeathDodger: break;
+	case PiratesFortitude: break;
+	case PlunderersProwess: break;
+	case IPreferTreasure: break;
+	case PirateBlitz: break;
+	default: ;
+	}
 }
