@@ -77,7 +77,7 @@ class SPRING2022_CAPSTONE_API UScoreSystemManagerSubSystem : public UGameInstanc
 	// Run completion time.
 	float RunCompletionTime = 0.0f;
 
-	// Assorted Fun Stats:
+	// ToDo: Assorted Fun Stats:
 	// Fastest wave.
 	float FastestWaveTime = 0.0f;
 	// Slowest wave.
