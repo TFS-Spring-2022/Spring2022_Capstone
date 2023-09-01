@@ -58,6 +58,9 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 
 	UPROPERTY()
 	UScoreSystemTimerSubSystem* ScoreSystemTimerSubSystem;
+
+	UPROPERTY()
+	UScoreSystemManagerSubSystem* ScoreSystemManagerSubSystem;
 	
 public:
 
@@ -78,5 +81,8 @@ public:
 	// Destroys all enemy corpses in current wave
 	UFUNCTION()
 	void ClearDeadEnemies();
+
+	// Used to call checks for accolades and start the next round after a delay.
+	void StartNextRound();
 	
 };

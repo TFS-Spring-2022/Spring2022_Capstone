@@ -91,7 +91,7 @@ void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 			// Start next round after a delay, opens upgrade menu, clears enemy, and spawns next wave.
 			GetWorld()->GetTimerManager().SetTimer(TimeBeforeNextRoundStartTimerHandle, this, &UEnemyWaveManagementSystem::OpenUpgradeMenu, TimeBeforeNextRoundStart, false);
 			GetWorld()->GetTimerManager().SetTimer(TimeBeforeClearDeadEnemiesTimerHandle, this, &UEnemyWaveManagementSystem::ClearDeadEnemies, TimeBeforeNextRoundStart - 0.1, false);
-			GetWorld()->GetTimerManager().SetTimer(TimeBeforeUpgradeMenuTimerHandle, this, &UEnemyWaveManagementSystem::SpawnWave, TimeBeforeNextRoundStart, false);
+			StartNextRound();
 		}
 	}
 }
@@ -111,4 +111,17 @@ void UEnemyWaveManagementSystem::ClearDeadEnemies()
 
 	// Without this line corpses will randomly not destroy.
 	EnemiesToDestroy.Empty(); 
+}
+
+void UEnemyWaveManagementSystem::StartNextRound()
+{
+	// Assigning here due to execution order.
+	if(!ScoreSystemManagerSubSystem)
+		ScoreSystemManagerSubSystem = GetWorld()->GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
+
+	// Check for wave end accolades
+	if(ScoreSystemManagerSubSystem)
+		ScoreSystemManagerSubSystem->CheckWaveEndAccolades();
+	
+	GetWorld()->GetTimerManager().SetTimer(TimeBeforeUpgradeMenuTimerHandle, this, &UEnemyWaveManagementSystem::SpawnWave, TimeBeforeNextRoundStart, false);
 }

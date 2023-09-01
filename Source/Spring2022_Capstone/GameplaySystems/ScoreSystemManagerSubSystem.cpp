@@ -4,6 +4,8 @@
 #include "ScoreSystemManagerSubSystem.h"
 
 #include "ScoreSystemTimerSubSystem.h"
+#include "Kismet/GameplayStatics.h"
+#include "Spring2022_Capstone/BasePickup.h"
 
 void UScoreSystemManagerSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -150,4 +152,18 @@ void UScoreSystemManagerSubSystem::IncrementScoreCounter(EScoreCounters ScoreCou
 		break;
 	default: ;
 	}
+}
+
+void UScoreSystemManagerSubSystem::CheckWaveEndAccolades()
+{
+	// I Prefer Treasure Accolade ToDo: FIX ENEMY DROPS SPAWNING MULTIPLE COPIES EVERY TIME THEY SPAWN.
+	TArray<AActor*> PickupsInScene;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABasePickup::StaticClass(), PickupsInScene);
+	if(PickupsInScene.Num() - 1 >= I_PREFER_TREASURE_PICKUP_AMOUNT)
+	{
+		IncrementAccoladeCount(EAccolades::IPreferTreasure);
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "I PREFER TREASURE");
+	}
+		
+	PickupsInScene.Empty();
 }

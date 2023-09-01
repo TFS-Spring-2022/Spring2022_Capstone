@@ -119,5 +119,12 @@ public:
 	// Increments the counter for the given score counter.
 	UFUNCTION()
 	void IncrementScoreCounter(EScoreCounters ScoreCounter);
+
+	// Called at the end of a wave to check the status of wave based accolades.
+	void CheckWaveEndAccolades();
+
+private:
+
+	const int I_PREFER_TREASURE_PICKUP_AMOUNT = 4; // Number of pickups that must remain on the scene at wave end for accolade.
 	
 };
