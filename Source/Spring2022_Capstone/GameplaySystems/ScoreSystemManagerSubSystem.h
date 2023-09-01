@@ -64,10 +64,10 @@ class SPRING2022_CAPSTONE_API UScoreSystemManagerSubSystem : public UGameInstanc
 	float TotalScore = 0.0f;
 	// Enemies killed.
 	int EnemiesKilled = 0;
-	// Enemies killed by headshot.
-	int EnemiesKilledWithHeadshot = 0; 
-	// Enemies killed while airborne.
-	int EnemiesKilledWhileAirborne = 0;
+	// Hits in enemies heads.
+	int HeadshotHits = 0; 
+	// Hits while airborne.
+	int HitsWhileAirborne = 0;
 	// Enemies killed with hazards.
 	int EnemiesKilledWithHazards = 0;
 	// Number of elites killed.

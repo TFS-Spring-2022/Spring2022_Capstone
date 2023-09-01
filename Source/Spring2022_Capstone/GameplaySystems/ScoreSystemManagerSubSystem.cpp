@@ -35,8 +35,8 @@ void UScoreSystemManagerSubSystem::ResetScoreSystem()
 	// Score:
 	TotalScore = 0.0f;
 	EnemiesKilled = 0;
-	EnemiesKilledWithHeadshot = 0;
-	EnemiesKilledWhileAirborne = 0;
+	HeadshotHits = 0;
+	HitsWhileAirborne = 0;
 	EnemiesKilledWithHazards = 0;
 	ElitesKilled = 0;
 	SnipersDisabled = 0;
