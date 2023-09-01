@@ -320,7 +320,7 @@ public:
 	UFUNCTION()
 	void CheckGround();
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = Sounds)
 	UPhysicalMaterial* CurrentGroundMat;
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
