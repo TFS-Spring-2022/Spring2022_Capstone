@@ -457,6 +457,11 @@ float APlayerCharacter::GetMaxHealth() const
 	return HealthComponent->GetMaxHealth();
 }
 
+float APlayerCharacter::GetCurrentHealth() const
+{
+	return HealthComponent->GetHealth();
+}
+
 UGrappleComponent *APlayerCharacter::GetGrappleComponent()
 {
 	return GrappleComponent;

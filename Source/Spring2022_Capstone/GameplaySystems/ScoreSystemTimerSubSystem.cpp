@@ -3,6 +3,9 @@
 
 #include "ScoreSystemTimerSubSystem.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
+
 void UScoreSystemTimerSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
