@@ -73,6 +73,11 @@ public:
 	float CloseCallCorsairHealthTarget = 0.0f;
 	float CloseCallCorsairHealthEntryPoint = 0.0f;
 
+	bool bCaptainOfWarTimerStarted = false;
+	float CaptainOfWarTimer = 0.0f;
+	int CaptainOfWarKills = 0;
+	void IncrementCaptainOfWarKills();
+
 private:
 
 	// ToDo: Remove after changing parent.
@@ -86,8 +91,10 @@ private:
 	const float PIRATE_BLITZ_TIME_REQUIREMENT = 100.0f;			// Player must clear the wave before this time(s) elapses.
 	const float CAPTAINS_COUP_TIME_REQUIREMENT = 6.0f;			// Player must kill an enemy elite in under this time(s) after their first hit.
 	const float SKULL_N_CROSSHAIR_TIME_REQUIREMENT = 5.0f;		// Player must hit SKULL_N_CROSSHAIR_HEADSHOT_REQUIREMENT headshots before this time elapses.
-	const int SKULL_N_CROSSHAIR_HEADSHOT_REQUIREMENT = 3.0f;	// Player must hit this many headshots before SKULL_N_CROSSHAIR_TIME_REQUIREMENT has elapsed.  
+	const int SKULL_N_CROSSHAIR_HEADSHOT_REQUIREMENT = 3;		// Player must hit this many headshots before SKULL_N_CROSSHAIR_TIME_REQUIREMENT has elapsed.  
 	const float CLOSE_CALL_CORSAIR_HEALTH_PERCENTAGE = 60.0f;	// Percentage of max health the player must lose before CLOSE_CALL_CORSAIR_TIME_REQUIREMENT has elapsed.
 	const float CLOSE_CALL_CORSAIR_TIME_REQUIREMENT = 3.0f;		// Player must lose CLOSE_CALL_CORSAIR_HEALTH_PERCENTAGE of their max health before this time(s) has elapsed.
+	const int CAPTAIN_OF_WAR_KILL_REQUIREMENT = 3;				// Player must kill this many enemies before CAPTAIN_OF_WAR_TIME_REQUIREMENT has elapsed. ToDo: 2.0 is a test value regular should be 5
+	const float CAPTAIN_OF_WAR_TIME_REQUIREMENT = 5.0f;			// Player must kill CAPTAIN_OF_WAR_KILL_REQUIREMENT enemies before this time has elapsed.
 	
 };

@@ -25,7 +25,7 @@ void UScoreSystemTimerSubSystem::IncrementScullNCrosshairHeadshotHits()
 		SkullNCrosshairHeadshotHits++;
 		if(SkullNCrosshairHeadshotHits >= SKULL_N_CROSSHAIR_HEADSHOT_REQUIREMENT)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKULL N CROSSHAIR");
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKULL N CROSSHAIR!");
 			ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::SkullNCrosshair);
 			StopAccoladeTimer(EAccolades::SkullNCrosshair);
 		}
@@ -35,6 +35,17 @@ void UScoreSystemTimerSubSystem::IncrementScullNCrosshairHeadshotHits()
 void UScoreSystemTimerSubSystem::SetPlayerReference(APlayerCharacter* Player)
 {
 	PlayerCharacter = Player;
+}
+
+void UScoreSystemTimerSubSystem::IncrementCaptainOfWarKills()
+{
+	CaptainOfWarKills++;
+	if(IsAccoladeTimerRunning(EAccolades::CaptainOfWar) && CaptainOfWarKills >= CAPTAIN_OF_WAR_KILL_REQUIREMENT)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "CAPTAIN OF WAR!");
+		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::CaptainOfWar);
+		StopAccoladeTimer(EAccolades::CaptainOfWar);
+	}
 }
 
 void UScoreSystemTimerSubSystem::ResetScoreSystemTimerSubSystem()
@@ -108,6 +119,13 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 		if(CloseCallCorsairTimer >= CLOSE_CALL_CORSAIR_TIME_REQUIREMENT)
 			StopAccoladeTimer(EAccolades::CloseCallCorsair);
 	}
+	// Captain Of War Accolade
+	if(bCaptainOfWarTimerStarted)
+	{
+		CaptainOfWarTimer += DeltaTime;
+		if(CaptainOfWarTimer >= CAPTAIN_OF_WAR_TIME_REQUIREMENT)
+			StopAccoladeTimer(EAccolades::CaptainOfWar);
+	}
 		
 	
 }
@@ -120,7 +138,10 @@ void UScoreSystemTimerSubSystem::StartAccoladeTimer(EAccolades Accolade)
 		bSkullNCrosshairTimerStarted = true;
 		IncrementScullNCrosshairHeadshotHits(); // Called to ensure first hit is recorded.
 		break;
-	case CaptainOfWar: break;
+	case CaptainOfWar:
+		bCaptainOfWarTimerStarted = true;
+		IncrementCaptainOfWarKills(); // Called to ensure first kill is recorded. ToDo: Can probably remove this when refactored.
+		break;
 	case SkyPirate: 
 		bSkyPirateTimerStarted = true;
 		break;
@@ -161,7 +182,11 @@ void UScoreSystemTimerSubSystem::StopAccoladeTimer(EAccolades Accolade)
 		SkullNCrosshairTimer = 0.0f;
 		SkullNCrosshairHeadshotHits = 0;
 		break;
-	case CaptainOfWar: break;
+	case CaptainOfWar:
+		bCaptainOfWarTimerStarted = false;
+		CaptainOfWarTimer = 0.0f;
+		CaptainOfWarKills = 0;
+		break;
 	case SkyPirate:
 		bSkyPirateTimerStarted = false;
 		SkyPirateTimer = 0.0f;
@@ -203,7 +228,8 @@ bool UScoreSystemTimerSubSystem::IsAccoladeTimerRunning(EAccolades Accolade)
 	{
 	case SkullNCrosshair:
 		return bSkullNCrosshairTimerStarted;
-	case CaptainOfWar: break;
+	case CaptainOfWar: 
+		return bCaptainOfWarTimerStarted;
 	case SkyPirate:
 		return bSkyPirateTimerStarted;
 	case LandLubber:
