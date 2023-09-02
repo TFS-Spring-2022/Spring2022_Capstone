@@ -254,6 +254,8 @@ private:
 
 	bool bIsMoving;
 
+	bool isGrounded;
+
 	bool bIsMantleing;
 
 	UPROPERTY()

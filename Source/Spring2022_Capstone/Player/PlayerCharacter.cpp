@@ -133,12 +133,23 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
 	if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
 	{
 		bIsMoving = true;
+		if(isGrounded)
+		{
+			if(FootStepAudioComp->GetSound())
+				if(!FootStepAudioComp->IsPlaying())
+					FootStepAudioComp->Play();
+		}
 		GetCharacterMovement()->MaxWalkSpeed = bIsSprinting ? Speed * SprintMultiplier : Speed;
 		AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * 100);
 		AddMovementInput(GetActorRightVector(), DirectionalValue.X * 100);
 	}
 	else
+	{
 		bIsMoving = false;
+		FootStepAudioComp->Stop();
+		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Blue,"We are not moving");
+	}
+		
 }
 
 void APlayerCharacter::Jump()
@@ -248,6 +259,14 @@ void APlayerCharacter::Look(const FInputActionValue &Value)
 
 void APlayerCharacter::Sprint(const FInputActionValue &Value)
 {
+	if(Value.Get<bool>())
+	{
+		FootStepAudioComp->SetPitchMultiplier(2.f);
+	}
+	else
+	{
+		FootStepAudioComp->SetPitchMultiplier(1.4f);
+	}
 	bIsSprinting = Value.Get<bool>();
 }
 
@@ -468,16 +487,22 @@ void APlayerCharacter::CheckGround()
 
 			FVector StartTrace = this->GetActorLocation();
 			StartTrace.Z -= 10; // TEMP: Offset to make debug draw lines visible without moving.
-			FVector DownVector = this->GetActorUpVector();
-			FVector EndTrace = ((DownVector * 100.f * -1) + StartTrace);
+			FVector DownVector = FVector(0,0,1);
+			FVector EndTrace = ((DownVector * 120.f * -1) + StartTrace);
 			FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
 			TraceParams->bReturnPhysicalMaterial = true;  // Hit must return a physical material to tell if the player has hit a headshot.
 			TraceParams->AddIgnoredComponent(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetMesh());
+
 			
 			
 			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
-				// Get Surface Type to check for headshot and impact material type.
+				if(!isGrounded)
+				{
+					LandingAudioComp->Play();
+					GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "We just Landed");
+					isGrounded = true;
+				}
 				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 					if(CurrentGroundMat != Cast<UPhysicalMaterial>(HitResult.PhysMaterial.Get()))
 					{
@@ -546,5 +571,14 @@ void APlayerCharacter::CheckGround()
 							break;
 						}
 					}
+			}
+			else
+			{
+				if(isGrounded)
+				{
+					isGrounded = false;	
+					FootStepAudioComp->Stop();
+					GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "We are not grounded");
+				}
 			}
 }
