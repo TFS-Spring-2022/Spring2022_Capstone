@@ -24,6 +24,10 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 {
 	GENERATED_BODY()
 
+	UEnemyWaveManagementSystem();
+
+	virtual void BeginPlay() override;
+	
 	// Set of enemies to be spawned at the start of a new wave.
 	UPROPERTY(EditAnywhere, Category = "Waves")
 	TArray<FEnemyWave> Waves;
@@ -61,6 +65,14 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 
 	UPROPERTY()
 	UScoreSystemManagerSubSystem* ScoreSystemManagerSubSystem;
+
+	UPROPERTY(VisibleAnywhere)
+	float ElapsedWaveTime = 0.0f; // Total seconds the round has been active for.
+
+	// Converts the round timer from seconds to minutes:seconds and prints to screen.
+	void ConvertWaveTime(float DTime);
+	float WaveTimerSeconds = 0.0f; // Used for converting total seconds to minutes:seconds
+	int WaveTimerMinutes = 0.0f;	// Used for converting total seconds to minutes:seconds
 	
 public:
 
@@ -84,5 +96,10 @@ public:
 
 	// Used to call checks for accolades and start the next round after a delay.
 	void StartNextRound();
+
+	// Called every Tick
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	float GetElapsedWaveTime() const;
 	
 };

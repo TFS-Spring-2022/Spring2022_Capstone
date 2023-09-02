@@ -7,6 +7,22 @@
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
 
+UEnemyWaveManagementSystem::UEnemyWaveManagementSystem()
+{
+	RegisterComponent();
+}
+
+void UEnemyWaveManagementSystem::BeginPlay()
+{
+	Super::BeginPlay();
+
+	PrimaryComponentTick.Target = this;
+	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.SetTickFunctionEnable(true);
+	PrimaryComponentTick.RegisterTickFunction(GetComponentLevel());
+}
+
+
 void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 {
 	// ToDo: Add EnemySpawnPoints to array from EnemySpawnPoint::BeginPlay() (beware execution order).
@@ -94,6 +110,34 @@ void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 			StartNextRound();
 		}
 	}
+}
+
+void UEnemyWaveManagementSystem::ConvertWaveTime(float DTime)
+{
+	WaveTimerSeconds += DTime;
+	if(WaveTimerSeconds >= 60)
+	{
+		WaveTimerMinutes++;
+		WaveTimerSeconds = 0;
+	}
+
+	FString TimeString = FString::Printf(TEXT("%d:%.2f"),WaveTimerMinutes, WaveTimerSeconds);
+	if(GEngine)
+		GEngine->AddOnScreenDebugMessage(2,10.f,FColor::White, TimeString); 
+}
+
+void UEnemyWaveManagementSystem::TickComponent(float DeltaTime, ELevelTick TickType,
+                                               FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	ElapsedWaveTime += DeltaTime;
+	ConvertWaveTime(DeltaTime);
+}
+
+float UEnemyWaveManagementSystem::GetElapsedWaveTime() const
+{
+	return ElapsedWaveTime;
 }
 
 void UEnemyWaveManagementSystem::OpenUpgradeMenu() const
