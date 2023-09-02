@@ -32,6 +32,11 @@ void UScoreSystemTimerSubSystem::IncrementScullNCrosshairHeadshotHits()
 	}
 }
 
+void UScoreSystemTimerSubSystem::SetPlayerReference(APlayerCharacter* Player)
+{
+	PlayerCharacter = Player;
+}
+
 void UScoreSystemTimerSubSystem::ResetScoreSystemTimerSubSystem()
 {
 	bSkyPirateTimerStarted = false;
@@ -46,7 +51,7 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(!ScoreManagerSubSystem)
+	if(!ScoreManagerSubSystem || !PlayerCharacter)
 		return;
 
 	// Sky Pirate Accolade
@@ -88,6 +93,21 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 		if(SkullNCrosshairTimer >= SKULL_N_CROSSHAIR_TIME_REQUIREMENT)
 			StopAccoladeTimer(EAccolades::SkullNCrosshair);
 	}
+	// Close Call Corsair Accolade
+	if(bCloseCallCorsairTimerStarted)
+	{
+		CloseCallCorsairTimer += DeltaTime;
+		float PlayersCurrentHealth = PlayerCharacter->GetCurrentHealth();
+		float TotalHealthLost = CloseCallCorsairHealthEntryPoint - PlayersCurrentHealth;
+		if(TotalHealthLost >= CloseCallCorsairHealthTarget)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "CLOSE CALL CORSAIR!");
+			ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::CloseCallCorsair);
+			StopAccoladeTimer(EAccolades::CloseCallCorsair);
+		}
+		if(CloseCallCorsairTimer >= CLOSE_CALL_CORSAIR_TIME_REQUIREMENT)
+			StopAccoladeTimer(EAccolades::CloseCallCorsair);
+	}
 		
 	
 }
@@ -107,7 +127,11 @@ void UScoreSystemTimerSubSystem::StartAccoladeTimer(EAccolades Accolade)
 	case LandLubber:
 		bLandLubberTimerStarted = true;
 		break;
-	case CloseCallCorsair: break;
+	case CloseCallCorsair:
+		CloseCallCorsairHealthTarget = CLOSE_CALL_CORSAIR_HEALTH_PERCENTAGE / 100 * PlayerCharacter->GetMaxHealth();
+		CloseCallCorsairHealthEntryPoint = PlayerCharacter->GetCurrentHealth();
+		bCloseCallCorsairTimerStarted = true;
+		break;
 	case Opportunist: break;
 	case CaptainsCoup:
 		bCaptainsCoupTimerStarted = true;
@@ -146,7 +170,11 @@ void UScoreSystemTimerSubSystem::StopAccoladeTimer(EAccolades Accolade)
 		bLandLubberTimerStarted = false;
 		LandLubberTimer = 0.0f;
 		break;
-	case CloseCallCorsair: break;
+	case CloseCallCorsair:
+		bCloseCallCorsairTimerStarted = false;
+		CloseCallCorsairTimer = 0.0f;
+		// ToDo: What exactly do I clear here?
+		break;
 	case Opportunist: break;
 	case CaptainsCoup:
 		bCaptainsCoupTimerStarted = false;
@@ -180,7 +208,8 @@ bool UScoreSystemTimerSubSystem::IsAccoladeTimerRunning(EAccolades Accolade)
 		return bSkyPirateTimerStarted;
 	case LandLubber:
 		return bLandLubberTimerStarted;
-	case CloseCallCorsair: break;
+	case CloseCallCorsair:
+		return bCloseCallCorsairTimerStarted;
 	case Opportunist: break;
 	case CaptainsCoup:
 		return bCaptainsCoupTimerStarted;

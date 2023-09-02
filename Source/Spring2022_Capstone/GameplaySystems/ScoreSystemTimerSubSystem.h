@@ -20,6 +20,9 @@ class SPRING2022_CAPSTONE_API UScoreSystemTimerSubSystem : public UTickableWorld
 
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY()
+	class APlayerCharacter* PlayerCharacter;
+
 	// Required to run
 	virtual TStatId GetStatId() const override
 	{
@@ -33,6 +36,8 @@ class SPRING2022_CAPSTONE_API UScoreSystemTimerSubSystem : public UTickableWorld
 public:
 
 	void SetScoreManagerSubSystem(UScoreSystemManagerSubSystem* SubSystem);
+
+	void SetPlayerReference(class APlayerCharacter* Player);
 
 	// Starts the timer for the given accolade.
 	void StartAccoladeTimer(EAccolades Accolade);
@@ -63,6 +68,11 @@ public:
 	int SkullNCrosshairHeadshotHits = 0;
 	void IncrementScullNCrosshairHeadshotHits();
 
+	bool bCloseCallCorsairTimerStarted = false;
+	float CloseCallCorsairTimer = 0.0f;
+	float CloseCallCorsairHealthTarget = 0.0f;
+	float CloseCallCorsairHealthEntryPoint = 0.0f;
+
 private:
 
 	// ToDo: Remove after changing parent.
@@ -77,5 +87,7 @@ private:
 	const float CAPTAINS_COUP_TIME_REQUIREMENT = 6.0f;			// Player must kill an enemy elite in under this time(s) after their first hit.
 	const float SKULL_N_CROSSHAIR_TIME_REQUIREMENT = 5.0f;		// Player must hit SKULL_N_CROSSHAIR_HEADSHOT_REQUIREMENT headshots before this time elapses.
 	const int SKULL_N_CROSSHAIR_HEADSHOT_REQUIREMENT = 3.0f;	// Player must hit this many headshots before SKULL_N_CROSSHAIR_TIME_REQUIREMENT has elapsed.  
+	const float CLOSE_CALL_CORSAIR_HEALTH_PERCENTAGE = 60.0f;	// Percentage of max health the player must lose before CLOSE_CALL_CORSAIR_TIME_REQUIREMENT has elapsed.
+	const float CLOSE_CALL_CORSAIR_TIME_REQUIREMENT = 3.0f;		// Player must lose CLOSE_CALL_CORSAIR_HEALTH_PERCENTAGE of their max health before this time(s) has elapsed.
 	
 };

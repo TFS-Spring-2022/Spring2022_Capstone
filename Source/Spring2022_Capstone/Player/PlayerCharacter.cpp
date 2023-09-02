@@ -107,6 +107,8 @@ void APlayerCharacter::BeginPlay()
 
 	ScoreManagerSubsystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
 	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
+	if(ScoreManagerTimerSubSystem)
+		ScoreManagerTimerSubSystem->SetPlayerReference(this);
 	
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController(), false);
 
@@ -414,6 +416,9 @@ void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 	
 	if (HealthComponent)
 	{
+		if(ScoreManagerTimerSubSystem && ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(CloseCallCorsair) == false) // ToDo: Remove the IsAccolade running when cleaning up the process
+			ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CloseCallCorsair);
+		
 		if(DamageCameraShake)
 			UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(DamageCameraShake);
 		UpdateHealthBar();
