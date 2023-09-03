@@ -138,11 +138,13 @@ private:
 	const float DEATH_DODGER_HEALTH_PERCENTAGE = 20.0f;	// Player must recover from this health amount DEATH_DODGER_AMOUNT times in a wave.
 	const int DEATH_DODGER_AMOUNT = 2;					// Player must recover DEATH_DODGER_HEALTH_PERCENTAGE this many times in a wave.
 	const int BLUNDER_BLAST_KILL_AMOUNT = 2;			// Player must kill this many enemies in a single shotgun shot.
+	const int DOUBLE_AERIAL_PLUNDER_KILL_AMOUNT = 2;	// Player must kill this many enemies in a single shotgun shot while airborne.
 	
 public:
 
 	FORCEINLINE float GetDeathDodgerHealthPercentage() const {return DEATH_DODGER_HEALTH_PERCENTAGE;}
 	FORCEINLINE int GetBlunderBlastKillAmount() const {return BLUNDER_BLAST_KILL_AMOUNT;}
+	FORCEINLINE int GetDoubleAerialPlunderKillAmount() const {return DOUBLE_AERIAL_PLUNDER_KILL_AMOUNT;}
 	
 	void CheckHotHeaded();
 };

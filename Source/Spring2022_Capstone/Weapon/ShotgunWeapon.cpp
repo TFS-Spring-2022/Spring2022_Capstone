@@ -197,9 +197,10 @@ void AShotgunWeapon::Shoot()
 			
 			if(ScoreManagerSubSystem && EnemiesKilledFromAttack >= ScoreManagerSubSystem->GetBlunderBlastKillAmount())
 			{
-				if(ActorsKilledWhilePlayerAirborneIDs.Num() > 1)
+				
+				if(ActorsKilledWhilePlayerAirborneIDs.Num() >= ScoreManagerSubSystem->GetBlunderBlastKillAmount())
 					ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::DoubleAerialPlunder);
-				if(ActorsKilledWhilePlayerGroundedIDs.Num() > 1)
+				if(ActorsKilledWhilePlayerGroundedIDs.Num() >= ScoreManagerSubSystem->GetDoubleAerialPlunderKillAmount())
 					ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::BlunderBlast);
 			}
 
