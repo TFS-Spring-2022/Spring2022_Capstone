@@ -429,7 +429,7 @@ void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
 	
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
-
+	
 	if(HealthComponent->GetHealth() <= 0)
 		CurrentGameMode->EndRun();
 		
@@ -443,10 +443,20 @@ void APlayerCharacter::ChangeCrosshair()
 
 void APlayerCharacter::Heal(int Value)
 {
+
+	bool bIsBelowDeathDodgerPercentage = false;
+	
 	if (!HealthComponent)
 		return;
+
+	if(GetCurrentHealth() < ScoreManagerSubsystem->GetDeathDodgerHealthPercentage() / 100 * GetMaxHealth())
+		bIsBelowDeathDodgerPercentage = true;
+	
 	HealthComponent->SetHealth(HealthComponent->GetHealth() + Value);
 	UpdateHealthBar();
+
+	if(GetCurrentHealth() > ScoreManagerSubsystem->GetDeathDodgerHealthPercentage() / 100 * GetMaxHealth() && bIsBelowDeathDodgerPercentage)
+		ScoreManagerSubsystem->IncrementDeathDodgerCount();
 }
 
 void APlayerCharacter::HealByPercentage(int Percentage)

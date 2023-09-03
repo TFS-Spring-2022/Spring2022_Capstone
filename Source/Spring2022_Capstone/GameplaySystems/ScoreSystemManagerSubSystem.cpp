@@ -162,7 +162,19 @@ void UScoreSystemManagerSubSystem::CheckWaveEndAccolades()
 	if(PickupsInScene.Num() - 1 >= I_PREFER_TREASURE_PICKUP_AMOUNT)
 	{
 		IncrementAccoladeCount(EAccolades::IPreferTreasure);
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "I PREFER TREASURE");
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "I PREFER TREASURE!");
 	}
 	PickupsInScene.Empty();
+	// Death Dodger Accolade
+	if(DeathDodgerCount >= DEATH_DODGER_AMOUNT)
+	{
+		GEngine->AddOnScreenDebugMessage(-1 ,2.f, FColor::Green, "DEATH DODGER!");
+		IncrementAccoladeCount(EAccolades::DeathDodger);
+	}
+	DeathDodgerCount = 0;
+}
+
+void UScoreSystemManagerSubSystem::IncrementDeathDodgerCount()
+{
+	DeathDodgerCount++;
 }

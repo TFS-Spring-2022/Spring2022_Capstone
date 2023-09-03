@@ -123,8 +123,17 @@ public:
 	// Called at the end of a wave to check the status of wave based accolades.
 	void CheckWaveEndAccolades();
 
+	int DeathDodgerCount = 0;
+	void IncrementDeathDodgerCount();
+
 private:
 
-	const int I_PREFER_TREASURE_PICKUP_AMOUNT = 4; // Number of pickups that must remain on the scene at wave end for accolade.
+	const int I_PREFER_TREASURE_PICKUP_AMOUNT =	4;		// Number of pickups that must remain on the scene at wave end for accolade.
+	const float DEATH_DODGER_HEALTH_PERCENTAGE = 20.0f;	// Player must recover from this health amount DEATH_DODGER_AMOUNT times in a wave.
+	const int DEATH_DODGER_AMOUNT = 2;					// Player must recover DEATH_DODGER_HEALTH_PERCENTAGE this many times in a wave.
+
+public:
+
+	FORCEINLINE float GetDeathDodgerHealthPercentage() const {return DEATH_DODGER_HEALTH_PERCENTAGE;}
 	
 };
