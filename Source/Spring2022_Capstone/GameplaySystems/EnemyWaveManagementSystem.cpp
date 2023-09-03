@@ -33,6 +33,8 @@ void UEnemyWaveManagementSystem::SpawnWave()
 {
 	// Restart wave timer on new wave.
 	ElapsedWaveTime = 0.0f;
+	WaveTimerMinutes = 0;
+	WaveTimerSeconds = 0.0f;
 	
 	// Assigning here due to execution order.
 	if(!ScoreSystemTimerSubSystem)
