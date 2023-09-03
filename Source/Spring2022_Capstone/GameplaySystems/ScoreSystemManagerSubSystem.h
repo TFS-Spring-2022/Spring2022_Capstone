@@ -137,10 +137,12 @@ private:
 	const int I_PREFER_TREASURE_PICKUP_AMOUNT =	4;		// Number of pickups that must remain on the scene at wave end for accolade.
 	const float DEATH_DODGER_HEALTH_PERCENTAGE = 20.0f;	// Player must recover from this health amount DEATH_DODGER_AMOUNT times in a wave.
 	const int DEATH_DODGER_AMOUNT = 2;					// Player must recover DEATH_DODGER_HEALTH_PERCENTAGE this many times in a wave.
-
+	const int BLUNDER_BLAST_KILL_AMOUNT = 2;			// Player must kill this many enemies in a single shotgun shot.
+	
 public:
 
 	FORCEINLINE float GetDeathDodgerHealthPercentage() const {return DEATH_DODGER_HEALTH_PERCENTAGE;}
-
+	FORCEINLINE int GetBlunderBlastKillAmount() const {return BLUNDER_BLAST_KILL_AMOUNT;}
+	
 	void CheckHotHeaded();
 };

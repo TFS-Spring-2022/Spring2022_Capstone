@@ -16,7 +16,6 @@ AShotgunWeapon::AShotgunWeapon()
 
 void AShotgunWeapon::Shoot()
 {
-
 	if (!bIsOverheating && CurrentCharge > MaxChargeAmount)
 	{
 		Overheat();
@@ -25,8 +24,12 @@ void AShotgunWeapon::Shoot()
 	if (bCanFire)
 	{
 
+		// Enemies killed from a single attack.
+		int EnemiesKilledFromAttack = 0;
+		
 		if (!GetWorldTimerManager().IsTimerActive(FireTimerHandle))
 		{
+			TArray<uint32> DeadActorIDs;
 			// Start timer the fire rate timer (after it runs for FireRate (time between shots in seconds) it will be cleared
 			GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AShotgunWeapon::ClearFireTimerHandle, FireRate, false);
 
@@ -48,7 +51,6 @@ void AShotgunWeapon::Shoot()
 			
 			for (int i = 0; i < PelletCount; i++)
 			{
-				
 				// Get random direction inside cone projected from player
 				ForwardVector = UKismetMathLibrary::RandomUnitVectorInConeInRadians(PlayerCamera->GetActorForwardVector(), HalfAngle);
 				FVector EndTrace = ((ForwardVector * ShotDistance) + StartTrace);
@@ -82,12 +84,29 @@ void AShotgunWeapon::Shoot()
 						switch (HitSurfaceType)
 						{
 						case SURFACE_FleshDefault:
-							DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
+							if(DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName)) 
+							{
+								// Enemy has died
+								if(!DeadActorIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+								{
+									DeadActorIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+									EnemiesKilledFromAttack++;
+								}
+
+							}
 							if(FloatingDamageNumberParticleSystem)
 								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
 							break;
 						case SURFACE_FleshVulnerable:
-							DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier,HitResult.BoneName);
+							if(DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier,HitResult.BoneName))
+							{
+								// Enemy has died
+								if(!DeadActorIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+								{
+									DeadActorIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+									EnemiesKilledFromAttack++;
+								}
+							}
 							if(FloatingDamageNumberParticleSystem)
 								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
 							if(ScoreManagerSubSystem)
@@ -96,6 +115,14 @@ void AShotgunWeapon::Shoot()
 							break;
 						default:
 							DamageableActor->DamageActor(this, ShotDamage,HitResult.BoneName);
+							{
+								// Enemy has died
+								if(!DeadActorIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+								{
+									DeadActorIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+									EnemiesKilledFromAttack++;
+								}
+							}
 							break;
 						}
 					}
@@ -149,6 +176,11 @@ void AShotgunWeapon::Shoot()
 			// Call recoil
 			if (RecoilComponent)
 				RecoilComponent->RecoilKick();
+
+			if(ScoreManagerSubSystem && EnemiesKilledFromAttack >= ScoreManagerSubSystem->GetBlunderBlastKillAmount())
+				ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::BlunderBlast);
+
+			DeadActorIDs.Empty();
 		}
 	}
 }
