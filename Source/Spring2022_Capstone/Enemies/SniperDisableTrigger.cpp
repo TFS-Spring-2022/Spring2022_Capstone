@@ -17,7 +17,6 @@ void ASniperDisableTrigger::OnOverlapBegin(AActor* OverlappedActor, AActor* Othe
 		APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor);
 		if(Player->GetHasSniperDisableObject())
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Disabled"), *SniperToDisable->GetName()));
 			SniperToDisable->DisableSniperEnemy();
 			Player->SetHasSniperDisableObject(false);
 		}

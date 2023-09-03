@@ -37,7 +37,7 @@ void ASniperEnemy::BeginPlay()
 
 void ASniperEnemy::DisableSniperEnemy()
 {
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Sniper Enemy Disabled");
+    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Disabled");
     bCanAttack = false;
     StopCharge();
     LaserComponent->Deactivate();
@@ -46,7 +46,7 @@ void ASniperEnemy::DisableSniperEnemy()
 
 void ASniperEnemy::EnableSniperEnemy()
 {
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Sniper Enemy Enabled");
+    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Enabled");
     bCanAttack = true;
     LaserComponent->Activate();
 }
