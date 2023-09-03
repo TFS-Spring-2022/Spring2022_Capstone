@@ -486,21 +486,17 @@ void APlayerCharacter::CheckGround()
 			FHitResult HitResult;
 
 			FVector StartTrace = this->GetActorLocation();
-			StartTrace.Z -= 10; // TEMP: Offset to make debug draw lines visible without moving.
 			FVector DownVector = FVector(0,0,1);
 			FVector EndTrace = ((DownVector * 120.f * -1) + StartTrace);
 			FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
-			TraceParams->bReturnPhysicalMaterial = true;  // Hit must return a physical material to tell if the player has hit a headshot.
+			TraceParams->bReturnPhysicalMaterial = true; 
 			TraceParams->AddIgnoredComponent(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetMesh());
-
-			
 			
 			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
 				if(!isGrounded)
 				{
 					LandingAudioComp->Play();
-					GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "We just Landed");
 					isGrounded = true;
 				}
 				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
@@ -511,63 +507,32 @@ void APlayerCharacter::CheckGround()
 						{
 						case SURFACE_Rock:
 							if(RockStepSound)
-							{
 								FootStepAudioComp->SetSound(RockStepSound);
-								GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Purple,"StepSound is now Rock");
-							}
 							if(RockLandSound)
-							{
 								LandingAudioComp->SetSound(RockLandSound);
-								GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Purple,"LandSound is now Rock");
-							}
 							break;
 						case SURFACE_Wood:
 							if(WoodStepSound)
-							{
 								FootStepAudioComp->SetSound(WoodStepSound);
-								GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Purple,"StepSound is now Wood");
-							}
 							if(WoodLandSound)
-							{
 								LandingAudioComp->SetSound(WoodLandSound);
-								GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Purple,"LandSound is now Wood");
-							}
 							break;
 						case SURFACE_Grass:
-							if(GrassStepSound)
-							{
 								FootStepAudioComp->SetSound(GrassStepSound);
-								GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Purple,"StepSound is now Grass");
-							}
 							if(GrassLandSound)
-							{
 								LandingAudioComp->SetSound(GrassLandSound);
-								GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Purple,"LandSound is now Grass");
-							}
 							break;
 						case SURFACE_Water:
 							if(WaterStepSound)
-							{
 								FootStepAudioComp->SetSound(WaterStepSound);
-								GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Purple,"StepSound is now Water");
-							}
 							if(WaterLandSound)
-							{
 								LandingAudioComp->SetSound(WaterLandSound);
-								GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Purple,"LandSound is now Water");
-							}
 							break;
 						default:
 							if(RockStepSound)
-							{
-								FootStepAudioComp->SetSound(RockStepSound);
-								GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Purple,"StepSound is now Rock");
-							}
+							FootStepAudioComp->SetSound(RockStepSound);
 							if(RockLandSound)
-							{
-								LandingAudioComp->SetSound(RockLandSound);
-								GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Purple,"LandSound is now Rock");
-							}
+							LandingAudioComp->SetSound(RockLandSound);
 							break;
 						}
 					}

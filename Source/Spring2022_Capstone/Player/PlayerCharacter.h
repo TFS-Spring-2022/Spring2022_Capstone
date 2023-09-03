@@ -367,6 +367,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UAudioComponent* LandingAudioComp;
 
+	
+
 	FORCEINLINE void SetCanAttack(bool Status) {bCanAttack = Status;}
 
 	
