@@ -33,11 +33,26 @@ class SPRING2022_CAPSTONE_API UScoreSystemTimerSubSystem : public UTickableWorld
 	UPROPERTY()
 	UScoreSystemManagerSubSystem* ScoreManagerSubSystem;
 
+	UPROPERTY()
+	class UEnemyWaveManagementSystem* WaveManager;
+
 public:
 
 	void SetScoreManagerSubSystem(UScoreSystemManagerSubSystem* SubSystem);
 
+	/**
+	 * @brief Set's the ScoreSystemTimerSubSystem's reference to the player's character.
+	 * @note Called from APlayerCharacter::BeginPlay() due to execution order.
+	 * @param Player 
+	 */
 	void SetPlayerReference(class APlayerCharacter* Player);
+
+	/**
+	 * @brief 
+	 * @note Called from EnemyWaveManagementSystem::SpawnWave() due to execution order.
+	 * @param WaveManagerInstance 
+	 */
+	void SetWaveManagerReference(class UEnemyWaveManagementSystem* WaveManagerInstance);
 
 	// Starts the timer for the given accolade.
 	void StartAccoladeTimer(EAccolades Accolade);
@@ -55,8 +70,8 @@ public:
 	bool bPirateBlitzTimerStarted = false;
 	float PirateBlitzTimer = 0.0f;
 	/**
-	 * @brief Called from EnemyWaveManagementSystem at the end of a wave. Checks if the player has beat the
-	 * wave before PIRATE_BLITZ_TIME_REQUIREMENT.
+	 * @brief Called from EnemyWaveManagementSystem at the end of a wave. Checks accolades that
+	 * reference round time.
 	 */
 	void FinishWave();
 
@@ -78,6 +93,10 @@ public:
 	int CaptainOfWarKills = 0;
 	void IncrementCaptainOfWarKills();
 
+	void StartWave();
+	bool bWaveStarted = false;
+	float PiratesFortitudeTimeInRange = 0.0f;
+
 private:
 
 	// ToDo: Remove after changing parent.
@@ -96,5 +115,6 @@ private:
 	const float CLOSE_CALL_CORSAIR_TIME_REQUIREMENT = 3.0f;		// Player must lose CLOSE_CALL_CORSAIR_HEALTH_PERCENTAGE of their max health before this time(s) has elapsed.
 	const int CAPTAIN_OF_WAR_KILL_REQUIREMENT = 3;				// Player must kill this many enemies before CAPTAIN_OF_WAR_TIME_REQUIREMENT has elapsed. ToDo: 2.0 is a test value regular should be 5
 	const float CAPTAIN_OF_WAR_TIME_REQUIREMENT = 5.0f;			// Player must kill CAPTAIN_OF_WAR_KILL_REQUIREMENT enemies before this time has elapsed.
+	const float PIRATES_FORTITUDE_HEALTH_PERCENTAGE = 50.0f;	// Player must keep health above this percentage for more then half the wave duration.
 	
 };

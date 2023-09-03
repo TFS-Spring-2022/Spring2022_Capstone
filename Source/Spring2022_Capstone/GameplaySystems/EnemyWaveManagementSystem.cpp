@@ -37,13 +37,14 @@ void UEnemyWaveManagementSystem::SpawnWave()
 	// Assigning here due to execution order.
 	if(!ScoreSystemTimerSubSystem)
 		ScoreSystemTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
-
+	
 	// Check for Pirate Blitz Accolade
 	if(ScoreSystemTimerSubSystem)
 	{
-		if(ScoreSystemTimerSubSystem->IsAccoladeTimerRunning(EAccolades::PirateBlitz))
-			ScoreSystemTimerSubSystem->FinishWave();
-		else
+		ScoreSystemTimerSubSystem->SetWaveManagerReference(this);
+		ScoreSystemTimerSubSystem->StartWave();
+		
+		if(ScoreSystemTimerSubSystem->IsAccoladeTimerRunning(EAccolades::PirateBlitz) == false)
 			ScoreSystemTimerSubSystem->StartAccoladeTimer(EAccolades::PirateBlitz);
 	}
 	
@@ -162,6 +163,9 @@ void UEnemyWaveManagementSystem::ClearDeadEnemies()
 
 void UEnemyWaveManagementSystem::StartNextRound()
 {
+	if(ScoreSystemTimerSubSystem)
+		ScoreSystemTimerSubSystem->FinishWave();
+	
 	// Assigning here due to execution order.
 	if(!ScoreSystemManagerSubSystem)
 		ScoreSystemManagerSubSystem = GetWorld()->GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();

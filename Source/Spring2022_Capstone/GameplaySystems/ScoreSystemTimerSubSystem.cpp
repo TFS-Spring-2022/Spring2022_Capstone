@@ -3,6 +3,7 @@
 
 #include "ScoreSystemTimerSubSystem.h"
 
+#include "EnemyWaveManagementSystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 
@@ -37,6 +38,11 @@ void UScoreSystemTimerSubSystem::SetPlayerReference(APlayerCharacter* Player)
 	PlayerCharacter = Player;
 }
 
+void UScoreSystemTimerSubSystem::SetWaveManagerReference(UEnemyWaveManagementSystem* WaveManagerInstance)
+{
+	WaveManager = WaveManagerInstance;
+}
+
 void UScoreSystemTimerSubSystem::IncrementCaptainOfWarKills()
 {
 	CaptainOfWarKills++;
@@ -46,6 +52,11 @@ void UScoreSystemTimerSubSystem::IncrementCaptainOfWarKills()
 		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::CaptainOfWar);
 		StopAccoladeTimer(EAccolades::CaptainOfWar);
 	}
+}
+
+void UScoreSystemTimerSubSystem::StartWave()
+{
+	bWaveStarted = true;
 }
 
 void UScoreSystemTimerSubSystem::ResetScoreSystemTimerSubSystem()
@@ -65,6 +76,14 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 	if(!ScoreManagerSubSystem || !PlayerCharacter)
 		return;
 
+		
+	// Wave Time Based Accolades
+	if(bWaveStarted)
+	{
+		// Pirates Fortitude Accolade
+		if(PlayerCharacter->GetCurrentHealth() >= PIRATES_FORTITUDE_HEALTH_PERCENTAGE / 100 * PlayerCharacter->GetMaxHealth())
+			PiratesFortitudeTimeInRange += DeltaTime;
+	}
 	// Sky Pirate Accolade
 	if(bSkyPirateTimerStarted)
 	{
@@ -126,8 +145,6 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 		if(CaptainOfWarTimer >= CAPTAIN_OF_WAR_TIME_REQUIREMENT)
 			StopAccoladeTimer(EAccolades::CaptainOfWar);
 	}
-		
-	
 }
 
 void UScoreSystemTimerSubSystem::StartAccoladeTimer(EAccolades Accolade)
@@ -266,6 +283,16 @@ void UScoreSystemTimerSubSystem::FinishWave()
 	}
 	else
 		StopAccoladeTimer(EAccolades::PirateBlitz);
+	// Pirates Fortitude Accolade Check
+	if(PiratesFortitudeTimeInRange >= WaveManager->GetElapsedWaveTime() / 2)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, "PIRATES FORTITUDE!");
+		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::PiratesFortitude);
+	}
+
+	// Reset wave timer based accolade properties.
+	bWaveStarted = false;
+	PiratesFortitudeTimeInRange = 0.0f;
 }
 
 
