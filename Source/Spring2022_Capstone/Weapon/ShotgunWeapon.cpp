@@ -29,7 +29,8 @@ void AShotgunWeapon::Shoot()
 		
 		if (!GetWorldTimerManager().IsTimerActive(FireTimerHandle))
 		{
-			TArray<uint32> DeadActorIDs;
+			TArray<uint32> ActorsKilledWhilePlayerGroundedIDs;
+			TArray<uint32> ActorsKilledWhilePlayerAirborneIDs;
 			// Start timer the fire rate timer (after it runs for FireRate (time between shots in seconds) it will be cleared
 			GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AShotgunWeapon::ClearFireTimerHandle, FireRate, false);
 
@@ -86,13 +87,18 @@ void AShotgunWeapon::Shoot()
 						case SURFACE_FleshDefault:
 							if(DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName)) 
 							{
-								// Enemy has died
-								if(!DeadActorIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+								//Enemy has died
+								EnemiesKilledFromAttack++;
+								if(PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
 								{
-									DeadActorIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-									EnemiesKilledFromAttack++;
+									if(!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+										ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
 								}
-
+								else
+								{
+									if(!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+										ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+								}
 							}
 							if(FloatingDamageNumberParticleSystem)
 								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
@@ -100,11 +106,17 @@ void AShotgunWeapon::Shoot()
 						case SURFACE_FleshVulnerable:
 							if(DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier,HitResult.BoneName))
 							{
-								// Enemy has died
-								if(!DeadActorIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+								//Enemy has died
+								EnemiesKilledFromAttack++;
+								if(PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
 								{
-									DeadActorIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-									EnemiesKilledFromAttack++;
+									if(!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+										ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+								}
+								else
+								{
+									if(!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+										ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
 								}
 							}
 							if(FloatingDamageNumberParticleSystem)
@@ -114,13 +126,19 @@ void AShotgunWeapon::Shoot()
 							bHeadshotHit = true;
 							break;
 						default:
-							DamageableActor->DamageActor(this, ShotDamage,HitResult.BoneName);
+							if(DamageableActor->DamageActor(this, ShotDamage,HitResult.BoneName))
 							{
-								// Enemy has died
-								if(!DeadActorIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+								//Enemy has died
+								EnemiesKilledFromAttack++;
+								if(PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
 								{
-									DeadActorIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-									EnemiesKilledFromAttack++;
+									if(!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+										ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+								}
+								else
+								{
+									if(!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+										ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
 								}
 							}
 							break;
@@ -176,11 +194,17 @@ void AShotgunWeapon::Shoot()
 			// Call recoil
 			if (RecoilComponent)
 				RecoilComponent->RecoilKick();
-
+			
 			if(ScoreManagerSubSystem && EnemiesKilledFromAttack >= ScoreManagerSubSystem->GetBlunderBlastKillAmount())
-				ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::BlunderBlast);
+			{
+				if(ActorsKilledWhilePlayerAirborneIDs.Num() > 1)
+					ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::DoubleAerialPlunder);
+				if(ActorsKilledWhilePlayerGroundedIDs.Num() > 1)
+					ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::BlunderBlast);
+			}
 
-			DeadActorIDs.Empty();
+			ActorsKilledWhilePlayerGroundedIDs.Empty();
+			ActorsKilledWhilePlayerAirborneIDs.Empty();
 		}
 	}
 }
