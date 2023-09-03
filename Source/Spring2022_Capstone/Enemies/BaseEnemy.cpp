@@ -214,7 +214,6 @@ void ABaseEnemy::Death()
 	// Captains Coup Accolade
 	if(bIsElite && ScoreManagerTimerSubSystem && ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::CaptainsCoup))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Captains Coup");
 		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::CaptainsCoup);
 		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::CaptainsCoup);
 	}

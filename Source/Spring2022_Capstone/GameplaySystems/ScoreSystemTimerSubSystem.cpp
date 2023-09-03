@@ -26,7 +26,6 @@ void UScoreSystemTimerSubSystem::IncrementScullNCrosshairHeadshotHits()
 		SkullNCrosshairHeadshotHits++;
 		if(SkullNCrosshairHeadshotHits >= SKULL_N_CROSSHAIR_HEADSHOT_REQUIREMENT)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKULL N CROSSHAIR!");
 			ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::SkullNCrosshair);
 			StopAccoladeTimer(EAccolades::SkullNCrosshair);
 		}
@@ -48,7 +47,6 @@ void UScoreSystemTimerSubSystem::IncrementCaptainOfWarKills()
 	CaptainOfWarKills++;
 	if(IsAccoladeTimerRunning(EAccolades::CaptainOfWar) && CaptainOfWarKills >= CAPTAIN_OF_WAR_KILL_REQUIREMENT)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "CAPTAIN OF WAR!");
 		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::CaptainOfWar);
 		StopAccoladeTimer(EAccolades::CaptainOfWar);
 	}
@@ -93,7 +91,6 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 		SkyPirateTimer += DeltaTime;
 		if(SkyPirateTimer >= SKY_PIRATE_TIME_REQUIREMENT)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKY PIRATE!");
 			ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::SkyPirate);
 			StopAccoladeTimer(EAccolades::SkyPirate);
 		}
@@ -104,7 +101,6 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 		LandLubberTimer += DeltaTime;
 		if(LandLubberTimer >= LAND_LUBBER_TIME_REQUIREMENT)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "LAND LUBBER!");
 			ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::LandLubber);
 			StopAccoladeTimer(EAccolades::LandLubber);
 		}
@@ -134,7 +130,6 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 		float TotalHealthLost = CloseCallCorsairHealthEntryPoint - PlayersCurrentHealth;
 		if(TotalHealthLost >= CloseCallCorsairHealthTarget)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "CLOSE CALL CORSAIR!");
 			ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::CloseCallCorsair);
 			StopAccoladeTimer(EAccolades::CloseCallCorsair);
 		}
@@ -218,7 +213,6 @@ void UScoreSystemTimerSubSystem::StopAccoladeTimer(EAccolades Accolade)
 	case CloseCallCorsair:
 		bCloseCallCorsairTimerStarted = false;
 		CloseCallCorsairTimer = 0.0f;
-		// ToDo: What exactly do I clear here?
 		break;
 	case Opportunist: break;
 	case CaptainsCoup:
@@ -280,7 +274,6 @@ void UScoreSystemTimerSubSystem::FinishWave()
 	// Pirate Blitz Accolade Check
 	if(PirateBlitzTimer < PIRATE_BLITZ_TIME_REQUIREMENT)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "PIRATE BLITZ");
 		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::PirateBlitz);
 		StopAccoladeTimer(EAccolades::PirateBlitz);
 	}
@@ -288,16 +281,11 @@ void UScoreSystemTimerSubSystem::FinishWave()
 		StopAccoladeTimer(EAccolades::PirateBlitz);
 	// Pirates Fortitude Accolade Check
 	if(PiratesFortitudeTimeInRange >= WaveManager->GetElapsedWaveTime() / 2)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "PIRATES FORTITUDE!");
 		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::PiratesFortitude);
-	}
+	
 	// Plunderers Prowess Accolade Check
 	if(PlunderersProwessTimeInRange >= WaveManager->GetElapsedWaveTime() / 2)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "PLUNDERERS PROWESS!");
 		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::PlunderersProwess);
-	}
 
 	// Reset wave timer based accolade properties.
 	bWaveStarted = false;

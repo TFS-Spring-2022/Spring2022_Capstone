@@ -76,54 +76,71 @@ void UScoreSystemManagerSubSystem::IncrementAccoladeCount(const EAccolades Accol
 	{
 	case SkullNCrosshair:
 		Accolade_SkullNCrosshairCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKULL N CROSSHAIR!");
 		break;
 	case CaptainOfWar:
 		Accolade_CaptainOfWarCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "CAPTAIN OF WAR!");
 		break;
 	case SkyPirate:
 		Accolade_SkyPirateCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKY PIRATE!");
 		break;
 	case LandLubber:
 		Accolade_LandLubberCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "LANDLUBBER!");
 		break;
 	case CloseCallCorsair:
 		Accolade_CloseCallCorsairCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "CLOSE CALL CORSAIR!");
 		break;
 	case Opportunist:
 		Accolade_OpportunistCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "OPPORTUNIST!");
 		break;
 	case CaptainsCoup:
 		Accolade_CaptainsCoupCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "CAPTAINS COUP");
 		break;
 	case DoubleAerialPlunder:
 		Accolade_DoubleAerialPlunderCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "DOUBLE AERIAL PLUNDER!");
 		break;
 	case BlunderBlast:
 		Accolade_BlunderBlastCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "BLUNDER BLAST!");
 		break;
 	case SkyBuccaneer:
 		Accolade_SkyBuccaneerCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKY BUCCANEER!");
 		break;
 	case HotHeaded:
 		Accolade_HotHeadedCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "HOT HEADED!");
 		break;
 	case NimbleBones:
 		Accolade_NimbleBonesCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "NIMBLE BONES!");
 		break;
 	case DeathDodger:
 		Accolade_DeathDodgerCount++;
+		GEngine->AddOnScreenDebugMessage(-1 ,2.f, FColor::Green, "DEATH DODGER!");
 		break;
 	case PiratesFortitude:
 		Accolade_PiratesFortitudeCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "PIRATES FORTITUDE!");
 		break;
 	case PlunderersProwess:
 		Accolade_PlunderersProwessCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "PLUNDERERS PROWESS!");
 		break;
 	case IPreferTreasure:
 		Accolade_IPreferTreasureCount++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "I PREFER TREASURE!");
 		break;
 	case PirateBlitz:
 		Accolade_PirateBlitz++;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "PIRATE BLITZ!");
 		break;
 	default:;
 	}
@@ -166,17 +183,12 @@ void UScoreSystemManagerSubSystem::CheckWaveEndAccolades()
 	TArray<AActor*> PickupsInScene;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABasePickup::StaticClass(), PickupsInScene);
 	if(PickupsInScene.Num() - 1 >= I_PREFER_TREASURE_PICKUP_AMOUNT)
-	{
 		IncrementAccoladeCount(EAccolades::IPreferTreasure);
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "I PREFER TREASURE!");
-	}
 	PickupsInScene.Empty();
+
 	// Death Dodger Accolade
 	if(DeathDodgerCount >= DEATH_DODGER_AMOUNT)
-	{
-		GEngine->AddOnScreenDebugMessage(-1 ,2.f, FColor::Green, "DEATH DODGER!");
 		IncrementAccoladeCount(EAccolades::DeathDodger);
-	}
 	DeathDodgerCount = 0;
 }
 
@@ -188,8 +200,5 @@ void UScoreSystemManagerSubSystem::IncrementDeathDodgerCount()
 void UScoreSystemManagerSubSystem::CheckHotHeaded()
 {
 		if(PlayerCharacter->GetWeapon1()->GetIsOverheating() && PlayerCharacter->GetWeapon2()->GetIsOverheating())
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "HOT HEADED!");
 			IncrementAccoladeCount(EAccolades::HotHeaded);
-		}
 }
