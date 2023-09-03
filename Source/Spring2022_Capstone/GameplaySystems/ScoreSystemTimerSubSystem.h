@@ -96,6 +96,7 @@ public:
 	void StartWave();
 	bool bWaveStarted = false;
 	float PiratesFortitudeTimeInRange = 0.0f;
+	float PlunderersProwessTimeInRange = 0.0f;
 
 private:
 
@@ -115,6 +116,7 @@ private:
 	const float CLOSE_CALL_CORSAIR_TIME_REQUIREMENT = 3.0f;		// Player must lose CLOSE_CALL_CORSAIR_HEALTH_PERCENTAGE of their max health before this time(s) has elapsed.
 	const int CAPTAIN_OF_WAR_KILL_REQUIREMENT = 3;				// Player must kill this many enemies before CAPTAIN_OF_WAR_TIME_REQUIREMENT has elapsed. ToDo: 2.0 is a test value regular should be 5
 	const float CAPTAIN_OF_WAR_TIME_REQUIREMENT = 5.0f;			// Player must kill CAPTAIN_OF_WAR_KILL_REQUIREMENT enemies before this time has elapsed.
-	const float PIRATES_FORTITUDE_HEALTH_PERCENTAGE = 50.0f;	// Player must keep health above this percentage for more then half the wave duration.
+	const float PIRATES_FORTITUDE_HEALTH_PERCENTAGE = 50.0f;	// Player must keep their health above this percentage for more then half the wave duration.
+	const float PLUNDERERS_PROWESS_HEALTH_PERCENTAGE = 80.0f;	// Player must keep their health above this percentage for more then half the wave duration.
 	
 };

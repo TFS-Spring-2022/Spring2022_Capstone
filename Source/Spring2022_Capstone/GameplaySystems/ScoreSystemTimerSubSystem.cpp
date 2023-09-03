@@ -83,6 +83,9 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 		// Pirates Fortitude Accolade
 		if(PlayerCharacter->GetCurrentHealth() >= PIRATES_FORTITUDE_HEALTH_PERCENTAGE / 100 * PlayerCharacter->GetMaxHealth())
 			PiratesFortitudeTimeInRange += DeltaTime;
+		// Plunderers Prowess Accolade
+		if(PlayerCharacter->GetCurrentHealth() >= PLUNDERERS_PROWESS_HEALTH_PERCENTAGE / 100 * PlayerCharacter->GetMaxHealth())
+			PlunderersProwessTimeInRange += DeltaTime;
 	}
 	// Sky Pirate Accolade
 	if(bSkyPirateTimerStarted)
@@ -286,13 +289,20 @@ void UScoreSystemTimerSubSystem::FinishWave()
 	// Pirates Fortitude Accolade Check
 	if(PiratesFortitudeTimeInRange >= WaveManager->GetElapsedWaveTime() / 2)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, "PIRATES FORTITUDE!");
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "PIRATES FORTITUDE!");
 		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::PiratesFortitude);
+	}
+	// Plunderers Prowess Accolade Check
+	if(PlunderersProwessTimeInRange >= WaveManager->GetElapsedWaveTime() / 2)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "PLUNDERERS PROWESS!");
+		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::PlunderersProwess);
 	}
 
 	// Reset wave timer based accolade properties.
 	bWaveStarted = false;
 	PiratesFortitudeTimeInRange = 0.0f;
+	PlunderersProwessTimeInRange = 0.0f;
 }
 
 
