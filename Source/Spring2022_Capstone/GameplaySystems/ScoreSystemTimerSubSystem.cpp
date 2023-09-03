@@ -180,7 +180,7 @@ void UScoreSystemTimerSubSystem::StartAccoladeTimer(EAccolades Accolade)
 	case DoubleAerialPlunder: break;
 	case BlunderBlast: break;
 	case SkyBuccaneer: break;
-	case CoolHeaded: break;
+	case HotHeaded: break;
 	case NimbleBones: break;
 	case DeathDodger: break;
 	case PiratesFortitude: break;
@@ -228,7 +228,7 @@ void UScoreSystemTimerSubSystem::StopAccoladeTimer(EAccolades Accolade)
 	case DoubleAerialPlunder: break;
 	case BlunderBlast: break;
 	case SkyBuccaneer: break;
-	case CoolHeaded: break;
+	case HotHeaded: break;
 	case NimbleBones: break;
 	case DeathDodger: break;
 	case PiratesFortitude: break;
@@ -262,7 +262,7 @@ bool UScoreSystemTimerSubSystem::IsAccoladeTimerRunning(EAccolades Accolade)
 	case DoubleAerialPlunder: break;
 	case BlunderBlast: break;
 	case SkyBuccaneer: break;
-	case CoolHeaded: break;
+	case HotHeaded: break;
 	case NimbleBones: break;
 	case DeathDodger: break;
 	case PiratesFortitude: break;

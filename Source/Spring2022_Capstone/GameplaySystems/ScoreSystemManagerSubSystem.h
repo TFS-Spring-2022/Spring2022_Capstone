@@ -20,7 +20,7 @@ enum EAccolades
 	DoubleAerialPlunder,	// DoubleAerialPlunder: 2 enemies killed while airborne.
 	BlunderBlast,			// Blunder Blast: More then 1 enemy killed with a shotgun blast on the ground.
 	SkyBuccaneer,			// Sky Buccaneer: More then 1 enemy killed with a shotgun blast while airborne.
-	CoolHeaded,				// Cool Headed: 1 minute spent between overheats.
+	HotHeaded,				// Hot Headed: Have both weapons overheating simultaneously.
 	NimbleBones,			// Nimble Bones: 3 Sniper Shots avoided (zero damage).
 	DeathDodger,			// Death Dodger: Recovered from less then 20% health 2 times in one wave.
 	PiratesFortitude,		// PiratesFortitude: Spent more then half the wave duration at over 50% health.
@@ -64,7 +64,7 @@ class SPRING2022_CAPSTONE_API UScoreSystemManagerSubSystem : public UGameInstanc
 	int Accolade_DoubleAerialPlunderCount = 0;
 	int Accolade_BlunderBlastCount = 0;
 	int Accolade_SkyBuccaneerCount = 0;
-	int Accolade_CoolHeadedCount = 0;
+	int Accolade_HotHeadedCount = 0;
 	int Accolade_NimbleBonesCount = 0;
 	int Accolade_DeathDodgerCount = 0;
 	int Accolade_PiratesFortitudeCount = 0;

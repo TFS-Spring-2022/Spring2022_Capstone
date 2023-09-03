@@ -33,7 +33,7 @@ void UScoreSystemManagerSubSystem::ResetScoreSystem()
 	Accolade_DoubleAerialPlunderCount = 0;
 	Accolade_BlunderBlastCount = 0;
 	Accolade_SkyBuccaneerCount = 0;
-	Accolade_CoolHeadedCount = 0;
+	Accolade_HotHeadedCount = 0;
 	Accolade_NimbleBonesCount = 0;
 	Accolade_DeathDodgerCount = 0;
 	Accolade_PiratesFortitudeCount = 0;
@@ -98,8 +98,8 @@ void UScoreSystemManagerSubSystem::IncrementAccoladeCount(const EAccolades Accol
 	case SkyBuccaneer:
 		Accolade_SkyBuccaneerCount++;
 		break;
-	case CoolHeaded:
-		Accolade_CoolHeadedCount++;
+	case HotHeaded:
+		Accolade_HotHeadedCount++;
 		break;
 	case NimbleBones:
 		Accolade_NimbleBonesCount++;
