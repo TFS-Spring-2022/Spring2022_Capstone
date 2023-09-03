@@ -108,6 +108,7 @@ void APlayerCharacter::BeginPlay()
 
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController(), false);
 
+	bHasSniperDisableObject = false;
 }
 
 void APlayerCharacter::Tick(float DeltaTime)

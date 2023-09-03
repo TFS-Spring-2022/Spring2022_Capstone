@@ -13,14 +13,19 @@ class SPRING2022_CAPSTONE_API ASniperEnemy : public ABaseEnemy
 {
 	GENERATED_BODY()
 
-public:
 	ASniperEnemy();
-	
+
+protected:
+
 	virtual void Tick(float DeltaTime) override;
 	
+	virtual void BeginPlay() override;
+	
 protected:
-	void Attack() override;
+	virtual void Attack() override;
 
+	bool bCanAttack = true;
+	
 	UFUNCTION(BlueprintCallable)
 	void SpecialAttack();
 	UFUNCTION(BlueprintCallable)
@@ -34,4 +39,12 @@ protected:
 	bool bIsCharging;
 	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UNiagaraComponent* LaserComponent;
+
+public:
+
+	void DisableSniperEnemy();
+
+	void EnableSniperEnemy();
+
+
 };

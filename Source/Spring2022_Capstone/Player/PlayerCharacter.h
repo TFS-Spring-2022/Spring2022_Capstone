@@ -272,6 +272,9 @@ private:
 	UFUNCTION()
 	FORCEINLINE void ToggleIsSwappingOff() {bIsSwappingWeapon = false;}
 
+	// Sniper disabling
+	bool bHasSniperDisableObject = false;
+
 public:
 	
 	UFUNCTION(BlueprintCallable)
@@ -331,5 +334,7 @@ public:
 
 	FORCEINLINE void SetCanAttack(bool Status) {bCanAttack = Status;}
 
+	FORCEINLINE void SetHasSniperDisableObject(bool Status) {bHasSniperDisableObject = Status;}
+	FORCEINLINE bool GetHasSniperDisableObject() const {return bHasSniperDisableObject;}
 	
 };

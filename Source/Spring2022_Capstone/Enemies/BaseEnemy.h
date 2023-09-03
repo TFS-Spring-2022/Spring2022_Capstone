@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AttackSystemAgentInterface.h"
 #include "RandomNameGenerator.h"
+#include "SniperDisablePickup.h"
 #include "GameFramework/Character.h"
 #include "Spring2022_Capstone/BasePickup.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
@@ -101,6 +102,8 @@ public:
 
 	void PromoteToElite();
 
+	bool bIsElite = false;
+
 	// Amount the enemy's stats are multiplied by when promoted.
 	UPROPERTY(EditAnywhere, Category = "Stats")
 	float EliteMultiplier = 1.3f;
@@ -110,9 +113,6 @@ public:
 
 	UPROPERTY()
 	UNiagaraComponent* EliteParticleInstance;
-
-	
-	
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
@@ -143,5 +143,9 @@ private:
 	const FName WeaponSocket = "Grunt_RightHand_Pistol"; // Socket that holds the enemies weapon.
 	const float NameTextRenderVerticalBuffer = 20.0f; // Number subtracted from NameTextRenderer's vertical position.
 	const FName EliteParticleSocketName = "EliteParticleSocket"; // Socket the elite particle system is attached to.
+
+	// Used to create the sniper disable object that an elite enemy drops on death.
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	TSubclassOf<ASniperDisablePickup> SniperDisableDropBP;
 	
 };
