@@ -411,7 +411,7 @@ void APlayerCharacter::SetIsMantleing(bool IsMantleingStatus)
 	bIsMantleing = IsMantleingStatus;
 }
 
-void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName)
+bool APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName)
 {
 
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount);
@@ -433,8 +433,12 @@ void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 	
 	if(HealthComponent->GetHealth() <= 0)
+	{
 		CurrentGameMode->EndRun();
+		return true;
+	}
 		
+		return false;
 }
 
 void APlayerCharacter::ChangeCrosshair()

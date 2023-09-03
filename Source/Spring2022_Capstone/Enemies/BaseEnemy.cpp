@@ -132,7 +132,7 @@ void ABaseEnemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
+bool ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
 {
 	PlayHitAnimation(HitBoneName);
 
@@ -147,8 +147,10 @@ void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FN
 		if (HealthComp->GetHealth() <= 0)
 		{
 			Death();
+			return true;
 		}
 	}
+	return false;
 }
 
 void ABaseEnemy::ReceiveToken()
