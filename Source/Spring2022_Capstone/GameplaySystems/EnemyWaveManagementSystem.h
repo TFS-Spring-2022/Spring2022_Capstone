@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "EnemySpawnPoint.h"
 #include "Spring2022_Capstone/Enemies/BaseEnemy.h"
+#include "Spring2022_Capstone/Enemies/SniperEnemy.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "EnemyWaveManagementSystem.generated.h"
 
@@ -35,6 +36,10 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 	// All available spawn points in current level
 	UPROPERTY(EditAnywhere, Category = "Waves")
 	TArray<AActor*> EnemySpawnLocations;
+
+	// All Snipers in the current level
+	UPROPERTY(VisibleAnywhere, Category = "Waves")
+	TArray<AActor*> SniperEnemies;
 
 	// The last element of EnemySpawnLocations an enemy was created at.
 	int LastSpawnLocationElement;

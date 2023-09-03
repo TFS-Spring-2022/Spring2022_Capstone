@@ -27,6 +27,7 @@ void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 {
 	// ToDo: Add EnemySpawnPoints to array from EnemySpawnPoint::BeginPlay() (beware execution order).
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemySpawnPoint::StaticClass(), EnemySpawnLocations);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASniperEnemy::StaticClass(), SniperEnemies);
 }
 
 void UEnemyWaveManagementSystem::SpawnWave()
@@ -91,6 +92,12 @@ void UEnemyWaveManagementSystem::SpawnWave()
 				bEliteEnemySpawned = true;
 			}
 		}
+	}
+
+	// Enable all snipers
+	for (AActor* Sniper : SniperEnemies)
+	{
+		Cast<ASniperEnemy>(Sniper)->EnableSniperEnemy();
 	}
 	
 	CurrentWave++;
