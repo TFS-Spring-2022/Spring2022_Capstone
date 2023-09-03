@@ -137,6 +137,10 @@ void AWeaponBase::Overheat()
 	}
 	
 	GetWorldTimerManager().SetTimer(OverheatTimerHandle, this, &AWeaponBase::WeaponCooldown, OverheatTime, false, -1);
+
+	// Check the status of the 'Hot Headed' accolade.
+	if(ScoreManagerSubSystem)
+		ScoreManagerSubSystem->CheckHotHeaded();
 }
 
 void AWeaponBase::WeaponCooldown()

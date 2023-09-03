@@ -52,6 +52,9 @@ class SPRING2022_CAPSTONE_API UScoreSystemManagerSubSystem : public UGameInstanc
 	// Called when subsystem is first loaded.
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
+	UPROPERTY()
+	class APlayerCharacter* PlayerCharacter;
+
 	// Accolades:
 	int TotalAccoladesCount = 0;
 	int Accolade_SkullNCrosshairCount = 0;
@@ -109,6 +112,9 @@ class SPRING2022_CAPSTONE_API UScoreSystemManagerSubSystem : public UGameInstanc
 
 public:
 
+	// Sets the reference to the Player Character. Called from APlayerCharacter::BeginPlay().
+	void SetPlayerReference(class APlayerCharacter* Player);
+
 	// Clears all accolades, scores, and stats.
 	void ResetScoreSystem();
 
@@ -135,5 +141,6 @@ private:
 public:
 
 	FORCEINLINE float GetDeathDodgerHealthPercentage() const {return DEATH_DODGER_HEALTH_PERCENTAGE;}
-	
+
+	void CheckHotHeaded();
 };

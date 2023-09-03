@@ -106,6 +106,8 @@ void APlayerCharacter::BeginPlay()
 	CurrentGameMode = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 
 	ScoreManagerSubsystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
+	if(ScoreManagerSubsystem)
+		ScoreManagerSubsystem->SetPlayerReference(this);
 	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
 	if(ScoreManagerTimerSubSystem)
 		ScoreManagerTimerSubSystem->SetPlayerReference(this);

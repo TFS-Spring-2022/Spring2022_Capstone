@@ -217,5 +217,7 @@ public:
 	// ToDo: Raise location of numbers to be above target.
 	UFUNCTION(BlueprintImplementableEvent)
 	void DisplayFloatingDamageNumbers(FVector Location, int DamageAmount, bool bIsCrit);
+
+	FORCEINLINE bool GetIsOverheating(){return bIsOverheating;}
 	
 };

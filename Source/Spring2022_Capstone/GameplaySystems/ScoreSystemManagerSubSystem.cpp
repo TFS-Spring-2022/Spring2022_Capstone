@@ -6,6 +6,7 @@
 #include "ScoreSystemTimerSubSystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/BasePickup.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 
 void UScoreSystemManagerSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -17,6 +18,11 @@ void UScoreSystemManagerSubSystem::Initialize(FSubsystemCollectionBase& Collecti
 	if(UScoreSystemTimerSubSystem* UScoreSystemTimerSubSystem = GetWorld()->GetSubsystem<class UScoreSystemTimerSubSystem>())
 		UScoreSystemTimerSubSystem->SetScoreManagerSubSystem(this);
 	
+}
+
+void UScoreSystemManagerSubSystem::SetPlayerReference(APlayerCharacter* Player)
+{
+	PlayerCharacter = Player;
 }
 
 void UScoreSystemManagerSubSystem::ResetScoreSystem()
@@ -177,4 +183,13 @@ void UScoreSystemManagerSubSystem::CheckWaveEndAccolades()
 void UScoreSystemManagerSubSystem::IncrementDeathDodgerCount()
 {
 	DeathDodgerCount++;
+}
+
+void UScoreSystemManagerSubSystem::CheckHotHeaded()
+{
+		if(PlayerCharacter->GetWeapon1()->GetIsOverheating() && PlayerCharacter->GetWeapon2()->GetIsOverheating())
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "HOT HEADED!");
+			IncrementAccoladeCount(EAccolades::HotHeaded);
+		}
 }
