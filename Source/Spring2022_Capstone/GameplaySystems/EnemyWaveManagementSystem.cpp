@@ -6,6 +6,23 @@
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
+
+UEnemyWaveManagementSystem::UEnemyWaveManagementSystem()
+{
+	RegisterComponent();
+}
+
+void UEnemyWaveManagementSystem::BeginPlay()
+{
+	Super::BeginPlay();
+
+	PrimaryComponentTick.Target = this;
+	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.SetTickFunctionEnable(true);
+	PrimaryComponentTick.RegisterTickFunction(GetComponentLevel());
+}
+
+
 void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 {
 	// ToDo: Add EnemySpawnPoints to array from EnemySpawnPoint::BeginPlay() (beware execution order).
@@ -15,6 +32,25 @@ void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 
 void UEnemyWaveManagementSystem::SpawnWave()
 {
+	// Restart wave timer on new wave.
+	ElapsedWaveTime = 0.0f;
+	WaveTimerMinutes = 0;
+	WaveTimerSeconds = 0.0f;
+	
+	// Assigning here due to execution order.
+	if(!ScoreSystemTimerSubSystem)
+		ScoreSystemTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
+	
+	// Check for Pirate Blitz Accolade
+	if(ScoreSystemTimerSubSystem)
+	{
+		ScoreSystemTimerSubSystem->SetWaveManagerReference(this);
+		ScoreSystemTimerSubSystem->StartWave();
+		
+		if(ScoreSystemTimerSubSystem->IsAccoladeTimerRunning(EAccolades::PirateBlitz) == false)
+			ScoreSystemTimerSubSystem->StartAccoladeTimer(EAccolades::PirateBlitz);
+	}
+	
 	bool bEliteEnemySpawned = false;
 	
 	if(CurrentWave > Waves.Num() - 1)
@@ -84,9 +120,37 @@ void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 			// Start next round after a delay, opens upgrade menu, clears enemy, and spawns next wave.
 			GetWorld()->GetTimerManager().SetTimer(TimeBeforeNextRoundStartTimerHandle, this, &UEnemyWaveManagementSystem::OpenUpgradeMenu, TimeBeforeNextRoundStart, false);
 			GetWorld()->GetTimerManager().SetTimer(TimeBeforeClearDeadEnemiesTimerHandle, this, &UEnemyWaveManagementSystem::ClearDeadEnemies, TimeBeforeNextRoundStart - 0.1, false);
-			GetWorld()->GetTimerManager().SetTimer(TimeBeforeUpgradeMenuTimerHandle, this, &UEnemyWaveManagementSystem::SpawnWave, TimeBeforeNextRoundStart, false);
+			StartNextRound();
 		}
 	}
+}
+
+void UEnemyWaveManagementSystem::ConvertWaveTime(float DTime)
+{
+	WaveTimerSeconds += DTime;
+	if(WaveTimerSeconds >= 60)
+	{
+		WaveTimerMinutes++;
+		WaveTimerSeconds = 0;
+	}
+
+	FString TimeString = FString::Printf(TEXT("%d:%.2f"),WaveTimerMinutes, WaveTimerSeconds);
+	if(GEngine)
+		GEngine->AddOnScreenDebugMessage(2,10.f,FColor::White, TimeString); 
+}
+
+void UEnemyWaveManagementSystem::TickComponent(float DeltaTime, ELevelTick TickType,
+                                               FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	ElapsedWaveTime += DeltaTime;
+	ConvertWaveTime(DeltaTime);
+}
+
+float UEnemyWaveManagementSystem::GetElapsedWaveTime() const
+{
+	return ElapsedWaveTime;
 }
 
 void UEnemyWaveManagementSystem::OpenUpgradeMenu() const
@@ -104,4 +168,20 @@ void UEnemyWaveManagementSystem::ClearDeadEnemies()
 
 	// Without this line corpses will randomly not destroy.
 	EnemiesToDestroy.Empty(); 
+}
+
+void UEnemyWaveManagementSystem::StartNextRound()
+{
+	if(ScoreSystemTimerSubSystem)
+		ScoreSystemTimerSubSystem->FinishWave();
+	
+	// Assigning here due to execution order.
+	if(!ScoreSystemManagerSubSystem)
+		ScoreSystemManagerSubSystem = GetWorld()->GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
+
+	// Check for wave end accolades
+	if(ScoreSystemManagerSubSystem)
+		ScoreSystemManagerSubSystem->CheckWaveEndAccolades();
+	
+	GetWorld()->GetTimerManager().SetTimer(TimeBeforeUpgradeMenuTimerHandle, this, &UEnemyWaveManagementSystem::SpawnWave, TimeBeforeNextRoundStart, false);
 }

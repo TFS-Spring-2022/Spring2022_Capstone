@@ -9,6 +9,7 @@
 #include "GameFramework/Character.h"
 #include "Spring2022_Capstone/BasePickup.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
+#include "Spring2022_Capstone/GameplaySystems/ScoreSystemManagerSubSystem.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "BaseEnemy.generated.h"
 
@@ -74,16 +75,18 @@ protected:
 	// Called when the enemy runs out of health. Removes enemy from WaveManager ActiveEnemies[] and destroys itself.
 	UFUNCTION(BlueprintCallable)
 	void Death();
-
 	
-	
+	UPROPERTY()
+	UScoreSystemManagerSubSystem* ScoreManagerSubSystem;
+	UPROPERTY()
+	UScoreSystemTimerSubSystem* ScoreManagerTimerSubSystem;
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
+	virtual bool DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
 
 	// Called from the AttackSystem to set bHasAttackToken true;
 	virtual void ReceiveToken() override;
@@ -143,6 +146,9 @@ private:
 	const FName WeaponSocket = "Grunt_RightHand_Pistol"; // Socket that holds the enemies weapon.
 	const float NameTextRenderVerticalBuffer = 20.0f; // Number subtracted from NameTextRenderer's vertical position.
 	const FName EliteParticleSocketName = "EliteParticleSocket"; // Socket the elite particle system is attached to.
+	
+	// Used to prevent the shotgun from causing an enemy to call Death() multiple times.
+	bool bIsDying = false;
 
 	// Used to create the sniper disable object that an elite enemy drops on death.
 	UPROPERTY(EditDefaultsOnly, Category = "Components")

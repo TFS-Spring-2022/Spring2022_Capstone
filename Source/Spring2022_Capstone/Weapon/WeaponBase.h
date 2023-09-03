@@ -7,6 +7,8 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "Components/AudioComponent.h"
+#include "Spring2022_Capstone/GameplaySystems/ScoreSystemManagerSubSystem.h"
+#include "Spring2022_Capstone/GameplaySystems/ScoreSystemTimerSubSystem.h"
 #include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "WeaponBase.generated.h"
 
@@ -183,6 +185,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Components") 
 	UNiagaraSystem* FloatingDamageNumberParticleSystem;
 
+	UPROPERTY()
+	UScoreSystemManagerSubSystem* ScoreManagerSubSystem;
+	UPROPERTY()
+	UScoreSystemTimerSubSystem* ScoreManagerTimerSubSystem;
+
 public:
 	// ToDo: I think we can get rid of Tick [PrimaryActorTick.bCanEverTick = true;]
 	// Called every frame
@@ -210,5 +217,7 @@ public:
 	// ToDo: Raise location of numbers to be above target.
 	UFUNCTION(BlueprintImplementableEvent)
 	void DisplayFloatingDamageNumbers(FVector Location, int DamageAmount, bool bIsCrit);
+
+	FORCEINLINE bool GetIsOverheating(){return bIsOverheating;}
 	
 };

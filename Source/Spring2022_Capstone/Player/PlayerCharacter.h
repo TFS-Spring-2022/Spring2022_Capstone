@@ -8,6 +8,7 @@
 #include "MantleSystemComponent.h"
 #include "UpgradeSystemComponent.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
+#include "Spring2022_Capstone/GameplaySystems/ScoreSystemTimerSubSystem.h"
 #include "Spring2022_Capstone/UI/HUD/DirectionalDamageIndicatorWidget.h"
 #include "Spring2022_Capstone/UI/HUD/HUDWidget.h"
 #include "PlayerCharacter.generated.h"
@@ -53,6 +54,10 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputMappingContext *CharacterMappingContext;
+
+	// Scoring/Accolades
+	UScoreSystemManagerSubSystem* ScoreManagerSubsystem;
+	UScoreSystemTimerSubSystem* ScoreManagerTimerSubSystem;
 
 	//// HUD Related
 	
@@ -128,6 +133,7 @@ protected:
 	
 	void Move(const FInputActionValue &Value);
 	virtual void Jump() override;
+	virtual void Landed(const FHitResult& Hit) override;
 	
 	void Dash(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
@@ -282,6 +288,7 @@ public:
 
 	void HealByPercentage(int Percentage);
 	float GetMaxHealth() const;
+	float GetCurrentHealth() const;
 	UGrappleComponent* GetGrappleComponent();
 
 	// Sets Weapon references and sets to ActiveWeapon
@@ -303,7 +310,7 @@ public:
 	FORCEINLINE AWeaponBase* GetActiveWeapon() {return ActiveWeapon;}
 
 	UFUNCTION(BlueprintCallable)
-	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
+	virtual bool DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
 
 	// ToDo: Handle Grapple Indicator in here
 	void ChangeCrosshair();

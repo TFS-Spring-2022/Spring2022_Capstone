@@ -55,6 +55,9 @@ void ABaseEnemy::BeginPlay()
 
 	if (!EnemyColors.IsEmpty())
 		GetMesh()->SetMaterial(0, EnemyColors[FMath::RandRange(0, EnemyColors.Num() - 1)]);
+
+	ScoreManagerSubSystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
+	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
 	
 }
 
@@ -129,19 +132,25 @@ void ABaseEnemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
+bool ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
 {
 	PlayHitAnimation(HitBoneName);
 
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount, HitBoneName);
 	if (HealthComp)
 	{
+		// Start Captains Coup Accolade Timer
+		if(ScoreManagerTimerSubSystem && bIsElite)
+			ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CaptainsCoup);
+			
 		HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
 		if (HealthComp->GetHealth() <= 0)
 		{
 			Death();
+			return true;
 		}
 	}
+	return false;
 }
 
 void ABaseEnemy::ReceiveToken()
@@ -192,12 +201,33 @@ void ABaseEnemy::PromoteToElite()
 	}
 
 	bIsElite = true;
-	
 	// ToDo: Play voice line.
 }
 
 void ABaseEnemy::Death()
 {
+
+	// Prevent the shotgun from causing an enemy to call multiple Death multiple times.
+	if(bIsDying)
+		return;
+
+	bIsDying = true;
+
+	// Captains Coup Accolade
+	if(bIsElite && ScoreManagerTimerSubSystem && ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::CaptainsCoup))
+	{
+		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::CaptainsCoup);
+		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::CaptainsCoup);
+	}
+	// Captain Of War Accolade
+	if(ScoreManagerTimerSubSystem)
+	{
+		if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::CaptainOfWar) == false)
+			ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CaptainOfWar);
+		else
+			ScoreManagerTimerSubSystem->IncrementCaptainOfWarKills();
+	}
+	
 	GunShotComp->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
 	GunShotComp->DestroyComponent();
 	
@@ -245,6 +275,13 @@ void ABaseEnemy::Death()
 	NameTextRenderer->SetVisibility(false);
 	if(EliteParticleInstance)
 		EliteParticleInstance->DestroyInstance();
+
+	if(ScoreManagerSubSystem)
+	{
+		ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::EnemiesKilled);
+		if(bIsElite)
+			ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::EnemiesKilled);
+	}
 	
 	// Note: Enemies are destroyed in EnemyWaveManagementSystem.
 }
