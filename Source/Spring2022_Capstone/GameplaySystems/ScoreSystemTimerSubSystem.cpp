@@ -168,23 +168,13 @@ void UScoreSystemTimerSubSystem::StartAccoladeTimer(EAccolades Accolade)
 		CloseCallCorsairHealthEntryPoint = PlayerCharacter->GetCurrentHealth();
 		bCloseCallCorsairTimerStarted = true;
 		break;
-	case Opportunist: break;
 	case CaptainsCoup:
 		bCaptainsCoupTimerStarted = true;
 		break;
-	case DoubleAerialPlunder: break;
-	case BlunderBlast: break;
-	case SkyBuccaneer: break;
-	case HotHeaded: break;
-	case NimbleBones: break;
-	case DeathDodger: break;
-	case PiratesFortitude: break;
-	case PlunderersProwess: break;
-	case IPreferTreasure: break;
 	case PirateBlitz:
 		bPirateBlitzTimerStarted = true;
 		break;
-	default: ;
+	default: GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Accolade does not require a Timer");;
 	}
 }
 
@@ -214,25 +204,15 @@ void UScoreSystemTimerSubSystem::StopAccoladeTimer(EAccolades Accolade)
 		bCloseCallCorsairTimerStarted = false;
 		CloseCallCorsairTimer = 0.0f;
 		break;
-	case Opportunist: break;
 	case CaptainsCoup:
 		bCaptainsCoupTimerStarted = false;
 		CaptainsCoupTimer = 0.0f;
 		break;
-	case DoubleAerialPlunder: break;
-	case BlunderBlast: break;
-	case SkyBuccaneer: break;
-	case HotHeaded: break;
-	case NimbleBones: break;
-	case DeathDodger: break;
-	case PiratesFortitude: break;
-	case PlunderersProwess: break;
-	case IPreferTreasure: break;
 	case PirateBlitz:
 		PirateBlitzTimer = false;
 		PirateBlitzTimer = 0.0f;
 		break;
-	default: ;
+	default: GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Accolade does not require a timer");;
 	}
 }
 
@@ -250,21 +230,11 @@ bool UScoreSystemTimerSubSystem::IsAccoladeTimerRunning(EAccolades Accolade)
 		return bLandLubberTimerStarted;
 	case CloseCallCorsair:
 		return bCloseCallCorsairTimerStarted;
-	case Opportunist: break;
 	case CaptainsCoup:
 		return bCaptainsCoupTimerStarted;
-	case DoubleAerialPlunder: break;
-	case BlunderBlast: break;
-	case SkyBuccaneer: break;
-	case HotHeaded: break;
-	case NimbleBones: break;
-	case DeathDodger: break;
-	case PiratesFortitude: break;
-	case PlunderersProwess: break;
-	case IPreferTreasure: break;
 	case PirateBlitz:
 		return bPirateBlitzTimerStarted;
-	default:;
+	default: GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Accolade does not require a timer");
 	}
 	return false;
 }
