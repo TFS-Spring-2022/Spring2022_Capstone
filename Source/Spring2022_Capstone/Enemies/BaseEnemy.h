@@ -34,6 +34,7 @@ public:
 	// Sets default values for this character's properties
 	ABaseEnemy();
 
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -73,6 +74,7 @@ protected:
 	// Called when the enemy runs out of health. Removes enemy from WaveManager ActiveEnemies[] and destroys itself.
 	UFUNCTION(BlueprintCallable)
 	void Death();
+
 
 	
 	
