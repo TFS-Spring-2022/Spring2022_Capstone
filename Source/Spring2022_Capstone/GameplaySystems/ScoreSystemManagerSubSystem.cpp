@@ -197,6 +197,28 @@ void UScoreSystemManagerSubSystem::IncrementDeathDodgerCount()
 	DeathDodgerCount++;
 }
 
+float UScoreSystemManagerSubSystem::GetCounterValue(EScoreCounters Counter)
+{
+	switch (Counter)
+	{
+	case EScoreCounters::Hits: 
+		return Hits;
+	case EScoreCounters::EnemiesKilled:
+		return EnemiesKilled;
+	case EScoreCounters::HeadshotHits:
+		return HeadshotHits;
+	case EScoreCounters::HitsWhileAirborne:
+		return HitsWhileAirborne;
+	case EScoreCounters::EnemiesKilledWithHazards:
+		return EnemiesKilledWithHazards;
+	case EScoreCounters::ElitesKilled:
+		return ElitesKilled;
+	case EScoreCounters::SnipersDisabled:
+		return SnipersDisabled;
+	default: return 9999;
+	}
+}
+
 void UScoreSystemManagerSubSystem::CheckHotHeaded()
 {
 		if(PlayerCharacter->GetWeapon1()->GetIsOverheating() && PlayerCharacter->GetWeapon2()->GetIsOverheating())

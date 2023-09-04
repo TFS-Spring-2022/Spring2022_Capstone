@@ -132,6 +132,8 @@ public:
 	int DeathDodgerCount = 0;
 	void IncrementDeathDodgerCount();
 
+	float GetCounterValue(EScoreCounters Counter);
+	
 private:
 
 	const int I_PREFER_TREASURE_PICKUP_AMOUNT =	4;		// Number of pickups that must remain on the scene at wave end for accolade.

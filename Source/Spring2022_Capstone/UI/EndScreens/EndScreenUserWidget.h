@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Spring2022_Capstone/GameplaySystems/ScoreSystemManagerSubSystem.h"
 #include "EndScreenUserWidget.generated.h"
 
 class UPanelWidget;
@@ -45,10 +46,22 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ExitButtonText;
-
-	// Displays EScoreCounters value
+	
+	// Score Counters
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* ScoreStatsTextBox;
+	UTextBlock* HitsTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* HeadshotsTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* HitsWhileAirborneTextBlock; 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* EnemiesKilledTextBlock; 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* EnemiesKilledWithHazardsTextBlock; 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ElitesKilledTextBlock; 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* SnipersDisabledTextBlock; 
 
 private: 
 
@@ -57,4 +70,14 @@ private:
 
 	UFUNCTION()
 		void OnExitButtonPressed();
+
+	/**
+	 * @brief Takes EScoreCounters values from ScoreSystemManagerSubSystem and
+	 * displays them in their respective text blocks.
+	 */
+	void SetScoreStatsTextBox();
+
+	UPROPERTY()
+	UScoreSystemManagerSubSystem* ScoreSystemManager;
+	
 };
