@@ -139,16 +139,20 @@ bool ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FN
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount, HitBoneName);
 	if (HealthComp)
 	{
-		// Start Captains Coup Accolade Timer
-		if(ScoreManagerTimerSubSystem && bIsElite)
-			ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CaptainsCoup);
-			
-		HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
-		if (HealthComp->GetHealth() <= 0)
+		if(HealthComp->GetHealth() > 0)
 		{
-			Death();
-			return true;
+			// Start Captains Coup Accolade Timer
+			if(ScoreManagerTimerSubSystem && bIsElite)
+				ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CaptainsCoup);
+			
+			HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
+			if (HealthComp->GetHealth() <= 0)
+			{
+				Death();
+				return true;
+			}
 		}
+		
 	}
 	return false;
 }
@@ -206,7 +210,7 @@ void ABaseEnemy::PromoteToElite()
 
 void ABaseEnemy::Death()
 {
-
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Killed"), *GetName()));
 	// Prevent the shotgun from causing an enemy to call multiple Death multiple times.
 	if(bIsDying)
 		return;
@@ -280,7 +284,7 @@ void ABaseEnemy::Death()
 	{
 		ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::EnemiesKilled);
 		if(bIsElite)
-			ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::EnemiesKilled);
+			ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::ElitesKilled);
 	}
 	
 	// Note: Enemies are destroyed in EnemyWaveManagementSystem.
