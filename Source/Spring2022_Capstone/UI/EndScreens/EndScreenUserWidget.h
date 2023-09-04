@@ -24,27 +24,31 @@ protected:
 public:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		UPanelWidget* RootPanel;
+	UPanelWidget* RootPanel;
 
 	//BackgroundImage
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		UImage* BackgroundImage;
+	UImage* BackgroundImage;
 
 	// Title
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		UTextBlock* VictoryText;
+	UTextBlock* VictoryText;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		UButton* ReturnToMainMenuButton;
+	UButton* ReturnToMainMenuButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		UTextBlock* ReturnToMainMenuText;
+	UTextBlock* ReturnToMainMenuText;
 	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		UButton* ExitButton;
+	UButton* ExitButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		UTextBlock* ExitButtonText;
+	UTextBlock* ExitButtonText;
+
+	// Displays EScoreCounters value
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ScoreStatsTextBox;
 
 private: 
 
