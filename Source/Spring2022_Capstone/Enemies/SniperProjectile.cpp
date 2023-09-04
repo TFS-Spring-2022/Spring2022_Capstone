@@ -5,6 +5,13 @@
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/SphereComponent.h"
+
+ASniperProjectile::ASniperProjectile()
+{
+    SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
+    SphereCollider->SetupAttachment(RootComponent);
+}
 
 void ASniperProjectile::BeginPlay()
 {

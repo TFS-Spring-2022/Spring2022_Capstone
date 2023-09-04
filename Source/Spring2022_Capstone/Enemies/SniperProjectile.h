@@ -6,16 +6,21 @@
 #include "BaseEnemyProjectile.h"
 #include "SniperProjectile.generated.h"
 
-/**
- * 
- */
+class USphereComponent;
+
 UCLASS()
 class SPRING2022_CAPSTONE_API ASniperProjectile : public ABaseEnemyProjectile
 {
 	GENERATED_BODY()
+    
+public:
+    ASniperProjectile();
 	
 protected:
 	virtual void BeginPlay() override;
+    
+    UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+    USphereComponent *SphereCollider;
 
 private:
 	UFUNCTION()
