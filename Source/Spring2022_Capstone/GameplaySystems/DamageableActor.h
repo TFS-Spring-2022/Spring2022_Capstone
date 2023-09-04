@@ -25,7 +25,9 @@ public:
 	 * @brief 
 	 * @param DamagingActor Actor sending damage to implementing class.
 	 * @param DamageAmount  Damage value of calling actor.
+	 * @param HitBoneName Bone hit by the damaging actor.
+	 * @return True - Actor has died.
 	 */
-	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) {}
+	virtual bool DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") {return false;}
 
 };

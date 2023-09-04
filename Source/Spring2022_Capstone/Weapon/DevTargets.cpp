@@ -27,9 +27,10 @@ void ADevTargets::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ADevTargets::DamageActor(AActor* DamagingActor, const float DamageAmount)
+bool ADevTargets::DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName)
 {
-	ToggleMaterial();	
+	ToggleMaterial();
+	return false;
 }
 
 void ADevTargets::ToggleMaterial()

@@ -35,6 +35,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
+	virtual bool DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
 
 };

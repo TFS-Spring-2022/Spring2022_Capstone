@@ -26,8 +26,11 @@ AGrappleHook::AGrappleHook()
 	ProjectileMovementComp = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComp"));
 	ProjectileMovementComp->ProjectileGravityScale = 0;
 
-	GrappleShotAudioComp = CreateDefaultSubobject<UAudioComponent>("Audio Component");
-	GrappleShotAudioComp->SetupAttachment(SphereCollider);
+	GShotAudioComp = CreateDefaultSubobject<UAudioComponent>("GrappleShotAC");
+	GShotAudioComp->SetupAttachment(SphereCollider);
+	
+	GRetractAudioComp = CreateDefaultSubobject<UAudioComponent>("GrappleRetractAC");
+	GRetractAudioComp->SetupAttachment(SphereCollider);
 
 	
 }
@@ -38,9 +41,11 @@ void AGrappleHook::BeginPlay()
 	Super::BeginPlay();
 	ProjectileMovementComp->SetVelocityInLocalSpace(FireVelocity);
 	
-	//Play Fire Sound
-	if(GrappleShotAudioComp)
-		GrappleShotAudioComp->Play();
+	//Play  Sound
+	if(GShotAudioComp)
+		GShotAudioComp->Play();
+	if(GRetractAudioComp)
+		GRetractAudioComp->Play();
 }
 
 // Called every frame
@@ -49,4 +54,6 @@ void AGrappleHook::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+
 

@@ -7,6 +7,7 @@
 #include "GrappleState.h"
 #include "MantleSystemComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
@@ -68,6 +69,13 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
+
+
+	//Temp
+	SoundManagerSubSystem->PlaySoundEvent();
+	
 	if (APlayerController *PlayerController = Cast<APlayerController>(GetController()))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem *Subsystem = ULocalPlayer::GetSubsystem<
@@ -95,8 +103,18 @@ void APlayerCharacter::BeginPlay()
 	}
 	
 	bDashBlurFadingIn = false;
-
 	CurrentGameMode = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	ScoreManagerSubsystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
+	if(ScoreManagerSubsystem)
+		ScoreManagerSubsystem->SetPlayerReference(this);
+	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
+	if(ScoreManagerTimerSubSystem)
+		ScoreManagerTimerSubSystem->SetPlayerReference(this);
+	
+	UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController(), false);
+
+	bHasSniperDisableObject = false;
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -105,6 +123,24 @@ void APlayerCharacter::Tick(float DeltaTime)
 	float CrouchInterpTime = FMath::Min(1.f, CrouchSpeed * DeltaTime);
 	CrouchEyeOffset = (1.f - CrouchInterpTime) * CrouchEyeOffset;
 
+	if(ScoreManagerTimerSubSystem)
+	{
+		if(GetMovementComponent()->IsFalling())
+		{
+			ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::LandLubber);
+			
+			if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::SkyPirate) == false)
+				ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::SkyPirate);
+		}
+		if(GetMovementComponent()->IsMovingOnGround())
+		{
+			ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::SkyPirate);
+
+			if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::LandLubber) == false)
+				ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::LandLubber);
+		}
+	}
+	
 	if(bDashBlurFadingIn)
 		Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight = FMath::FInterpTo(Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight, 1, DeltaTime, DASH_BLUR_FADEIN_SPEED);
 	
@@ -134,6 +170,10 @@ void APlayerCharacter::Jump()
 		{
 			if(PlayerMantleSystemComponent->AttemptMantle())
 			{
+				if(SoundManagerSubSystem)
+				{
+					SoundManagerSubSystem->PlaySound(this->GetActorLocation(), MantleSC);
+				}
 				bIsMantleing = true;
 				return;
 			}
@@ -141,6 +181,16 @@ void APlayerCharacter::Jump()
 	}
 
 	Super::Jump();
+
+}
+
+void APlayerCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	if(ScoreManagerTimerSubSystem)
+		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::SkyPirate);
+		
 }
 
 void APlayerCharacter::Dash(const FInputActionValue &Value)
@@ -168,7 +218,11 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 
 			bDashBlurFadingIn = true;
 			GetWorld()->GetTimerManager().SetTimer(DashBlurTimerHandle, this, &APlayerCharacter::ClearDashBlur, DashBlurUpTime, false);
-			
+
+			if(SoundManagerSubSystem)
+			{
+				SoundManagerSubSystem->PlaySound(this->GetActorLocation(), DashSC);
+			}
 		}
 	}
 
@@ -314,8 +368,7 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
 {
 
-	if(ActiveWeapon->GunChangeAudioComp)
-		ActiveWeapon->GunChangeAudioComp->Play();
+	
 	
 	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
 	{
@@ -359,14 +412,18 @@ void APlayerCharacter::SetIsMantleing(bool IsMantleingStatus)
 	bIsMantleing = IsMantleingStatus;
 }
 
-void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmount)
+bool APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName)
 {
 
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount);
 	
 	if (HealthComponent)
 	{
-		HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
+		if(ScoreManagerTimerSubSystem && ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(CloseCallCorsair) == false) // ToDo: Remove the IsAccolade running when cleaning up the process
+			ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CloseCallCorsair);
+		
+		if(DamageCameraShake)
+			UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(DamageCameraShake);
 		UpdateHealthBar();
 	}
 
@@ -375,10 +432,14 @@ void APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
 	
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
-
+	
 	if(HealthComponent->GetHealth() <= 0)
+	{
 		CurrentGameMode->EndRun();
+		return true;
+	}
 		
+		return false;
 }
 
 void APlayerCharacter::ChangeCrosshair()
@@ -389,10 +450,20 @@ void APlayerCharacter::ChangeCrosshair()
 
 void APlayerCharacter::Heal(int Value)
 {
+
+	bool bIsBelowDeathDodgerPercentage = false;
+	
 	if (!HealthComponent)
 		return;
+
+	if(GetCurrentHealth() < ScoreManagerSubsystem->GetDeathDodgerHealthPercentage() / 100 * GetMaxHealth())
+		bIsBelowDeathDodgerPercentage = true;
+	
 	HealthComponent->SetHealth(HealthComponent->GetHealth() + Value);
 	UpdateHealthBar();
+
+	if(GetCurrentHealth() > ScoreManagerSubsystem->GetDeathDodgerHealthPercentage() / 100 * GetMaxHealth() && bIsBelowDeathDodgerPercentage)
+		ScoreManagerSubsystem->IncrementDeathDodgerCount();
 }
 
 void APlayerCharacter::HealByPercentage(int Percentage)
@@ -406,6 +477,11 @@ void APlayerCharacter::HealByPercentage(int Percentage)
 float APlayerCharacter::GetMaxHealth() const
 {
 	return HealthComponent->GetMaxHealth();
+}
+
+float APlayerCharacter::GetCurrentHealth() const
+{
+	return HealthComponent->GetHealth();
 }
 
 UGrappleComponent *APlayerCharacter::GetGrappleComponent()

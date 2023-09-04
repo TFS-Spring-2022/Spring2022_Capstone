@@ -8,6 +8,7 @@
 #include "MantleSystemComponent.h"
 #include "UpgradeSystemComponent.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
+#include "Spring2022_Capstone/GameplaySystems/ScoreSystemTimerSubSystem.h"
 #include "Spring2022_Capstone/UI/HUD/DirectionalDamageIndicatorWidget.h"
 #include "Spring2022_Capstone/UI/HUD/HUDWidget.h"
 #include "PlayerCharacter.generated.h"
@@ -53,6 +54,10 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UInputMappingContext *CharacterMappingContext;
+
+	// Scoring/Accolades
+	UScoreSystemManagerSubSystem* ScoreManagerSubsystem;
+	UScoreSystemTimerSubSystem* ScoreManagerTimerSubSystem;
 
 	//// HUD Related
 	
@@ -128,6 +133,7 @@ protected:
 	
 	void Move(const FInputActionValue &Value);
 	virtual void Jump() override;
+	virtual void Landed(const FHitResult& Hit) override;
 	
 	void Dash(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
@@ -161,6 +167,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TSubclassOf<UCameraShakeBase> DashCameraShake;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TSubclassOf<UCameraShakeBase> DamageCameraShake;
 
 	/**
 	* @brief Dash cooldown in seconds
@@ -253,18 +262,8 @@ private:
 
 	bool bIsMantleing;
 
-	//Sounds
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* GrappleShotSC;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* GrappleRetractSC;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* DashSC;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundCue* VaultSC;
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
 
 	UPROPERTY()
 	class ASpring2022_CapstoneGameModeBase* CurrentGameMode;
@@ -279,6 +278,9 @@ private:
 	UFUNCTION()
 	FORCEINLINE void ToggleIsSwappingOff() {bIsSwappingWeapon = false;}
 
+	// Sniper disabling
+	bool bHasSniperDisableObject = false;
+
 public:
 	
 	UFUNCTION(BlueprintCallable)
@@ -286,6 +288,7 @@ public:
 
 	void HealByPercentage(int Percentage);
 	float GetMaxHealth() const;
+	float GetCurrentHealth() const;
 	UGrappleComponent* GetGrappleComponent();
 
 	// Sets Weapon references and sets to ActiveWeapon
@@ -307,7 +310,7 @@ public:
 	FORCEINLINE AWeaponBase* GetActiveWeapon() {return ActiveWeapon;}
 
 	UFUNCTION(BlueprintCallable)
-	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
+	virtual bool DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
 
 	// ToDo: Handle Grapple Indicator in here
 	void ChangeCrosshair();
@@ -322,6 +325,23 @@ public:
 
 	FORCEINLINE bool GetIsSprinting() const {return bIsSprinting;}
 
+
+	//Sounds
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* GrappleShotSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* GrappleRetractSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* DashSC;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundCue* MantleSC;
+
 	FORCEINLINE void SetCanAttack(bool Status) {bCanAttack = Status;}
+
+	FORCEINLINE void SetHasSniperDisableObject(bool Status) {bHasSniperDisableObject = Status;}
+	FORCEINLINE bool GetHasSniperDisableObject() const {return bHasSniperDisableObject;}
 	
 };

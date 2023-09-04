@@ -20,6 +20,7 @@ void UGrappleComponent::BeginPlay()
 	Super::BeginPlay();
 	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
 	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
+
 }
 
 void UGrappleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
@@ -75,6 +76,7 @@ void UGrappleComponent::Fire(FVector TargetLocation)
 	Cable->CableComponent->bEnableStiffness = false;
 	Cable->CableComponent->SubstepTime = 0.005f;
 	Cable->CableComponent->SetCollisionProfileName(TEXT("OverlapAll"));
+	Cable->SetActorHiddenInGame(true);
 	
 }
 
@@ -116,7 +118,7 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 		InitialHookDirection2D = FVector(ToGrappleHookDirection.X, ToGrappleHookDirection.Y, 0);
 		InitialHookDirection2D.Normalize();
 
-		if(SoundManagerSubSystem)
+		if(SoundManagerSubSystem && _GrappleHook->GrappleHitSound)
 		{
 			SoundManagerSubSystem->PlaySound(Hit.Location ,_GrappleHook->GrappleHitSound);
 		}

@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "AttackSystemAgentInterface.h"
+#include "RandomNameGenerator.h"
+#include "SniperDisablePickup.h"
 #include "GameFramework/Character.h"
 #include "Spring2022_Capstone/BasePickup.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
+#include "Spring2022_Capstone/GameplaySystems/ScoreSystemManagerSubSystem.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "BaseEnemy.generated.h"
 
@@ -42,6 +45,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	USceneComponent *ProjectileSpawnPoint;
 
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UAudioComponent *GunShotComp;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+	UTextRenderComponent* NameTextRenderer;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Pawn, meta = (AllowPrivateAccess = "true"))
 	UHealthComponent *HealthComp;
 
@@ -66,19 +75,47 @@ protected:
 	// Called when the enemy runs out of health. Removes enemy from WaveManager ActiveEnemies[] and destroys itself.
 	UFUNCTION(BlueprintCallable)
 	void Death();
+	
+	UPROPERTY()
+	UScoreSystemManagerSubSystem* ScoreManagerSubSystem;
+	UPROPERTY()
+	UScoreSystemTimerSubSystem* ScoreManagerTimerSubSystem;
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void DamageActor(AActor* DamagingActor, const float DamageAmount) override;
+	virtual bool DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
 
 	// Called from the AttackSystem to set bHasAttackToken true;
 	virtual void ReceiveToken() override;
 
 	// Called to set bHasAttackToken false and return logical token to Attack System Component.
 	virtual void ReleaseToken() override;
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetIsFiring() {return bIsFiring;}
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetIsFiring(bool NewState) {bIsFiring = NewState;}
+	
+	// Plays a section in an anim montage holding all hit animations inside the enemy's blueprint.
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayHitAnimation(FName HitBone);
+
+	void PromoteToElite();
+
+	bool bIsElite = false;
+
+	// Amount the enemy's stats are multiplied by when promoted.
+	UPROPERTY(EditAnywhere, Category = "Stats")
+	float EliteMultiplier = 1.3f;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UNiagaraSystem* EliteParticleNiagaraSystem;
+
+	UPROPERTY()
+	UNiagaraComponent* EliteParticleInstance;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
@@ -96,5 +133,25 @@ private:
 	
 	UPROPERTY()
 	class UAIAttackSystemComponent* CurrentAttackSystemComponent;
+	
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	bool bIsFiring;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TArray<UMaterial*> EnemyColors;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TSubclassOf<URandomNameGenerator> NameGenerator;
+	
+	const FName WeaponSocket = "Grunt_RightHand_Pistol"; // Socket that holds the enemies weapon.
+	const float NameTextRenderVerticalBuffer = 20.0f; // Number subtracted from NameTextRenderer's vertical position.
+	const FName EliteParticleSocketName = "EliteParticleSocket"; // Socket the elite particle system is attached to.
+	
+	// Used to prevent the shotgun from causing an enemy to call Death() multiple times.
+	bool bIsDying = false;
+
+	// Used to create the sniper disable object that an elite enemy drops on death.
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	TSubclassOf<ASniperDisablePickup> SniperDisableDropBP;
 	
 };

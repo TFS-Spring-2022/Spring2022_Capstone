@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "AIController.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/TextRenderComponent.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
@@ -19,80 +20,110 @@ ABaseEnemy::ABaseEnemy()
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
-	WeaponMesh->SetupAttachment(RootComponent);
 
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPoint"));
 	ProjectileSpawnPoint->SetupAttachment(WeaponMesh);
 
-	PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+	GunShotComp = CreateDefaultSubobject<UAudioComponent>(TEXT("GunAudioComp"));
+	GunShotComp->SetupAttachment(WeaponMesh);
+	
+	PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	NameTextRenderer = CreateDefaultSubobject<UTextRenderComponent>("Enemy Name Text");
+	NameTextRenderer->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
+	NameTextRenderer->SetupAttachment(RootComponent);
+	NameTextRenderer->SetRelativeLocation(FVector(0,0, GetDefaultHalfHeight() - NameTextRenderVerticalBuffer));
+	NameTextRenderer->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned
 void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// Attach weapon to enemies hand socket
+	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+	WeaponMesh->AttachToComponent(GetMesh(), AttachmentRules, WeaponSocket);
+	GunShotComp->AttachToComponent(WeaponMesh, AttachmentRules);
 	CurrentAttackSystemComponent = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetAttackSystemComponent();
 
 	// Add enemy to AttackSystem Agents[] array on spawn.
-	if(CurrentAttackSystemComponent)
+	if (CurrentAttackSystemComponent)
 		CurrentAttackSystemComponent->AddNewAgent(this);
+
+	bIsFiring = false;
+
+	if (!EnemyColors.IsEmpty())
+		GetMesh()->SetMaterial(0, EnemyColors[FMath::RandRange(0, EnemyColors.Num() - 1)]);
+
+	ScoreManagerSubSystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
+	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
+	
 }
 
 void ABaseEnemy::Attack()
 {
-	if(bHasAttackToken)
+	if (bHasAttackToken)
 	{
 		AttackHit();
 		ReleaseToken();
 	}
 	else
 		AttackMiss();
+
+	
 }
 
 // Hits player and does damage (only called when enemy has token and then releases token)
 void ABaseEnemy::AttackHit()
 {
-	FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
+	bIsFiring = true; // Set false via Skeleton Notify in Pistol_Shoot_Powerful.
+
+	FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
 	TraceParams->AddIgnoredActor(this);
 
 	// We want to hit the player's head as this is where the camera sits and will always hit the player if they can see the enemy (not behind cover)
 	FHitResult PlayerHitResult;
 
-	FVector StartPlayerAttackHitTrace = GetActorLocation(); // ProjectileSpawnPoint();
+	FVector StartPlayerAttackHitTrace = GetActorLocation();								   // ProjectileSpawnPoint();
 	FVector EndPlayerAttachHitTrace = PlayerCharacter->GetMesh()->GetBoneLocation("head"); // ToDo: const string HeadBone could be useful here once skeleton added
 
 	DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, FColor::Red, false, .5f);
-	
 
-	if(GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Camera, *TraceParams))
+	if (GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Camera, *TraceParams))
 	{
 		DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Red, false, .5f);
-		
+
 		if (PlayerHitResult.GetActor()->Implements<UDamageableActor>() && PlayerHitResult.GetActor()->IsA(APlayerCharacter::StaticClass())) // Question: Do we want them to be able to do damage to other enemies?
 			Cast<APlayerCharacter>(PlayerHitResult.GetActor())->DamageActor(this, Damage);
 	}
-	
+	if(GunShotComp)
+		GunShotComp->Play();
 }
 
 // Misses player and does no damage (called when player does not have token))
 void ABaseEnemy::AttackMiss()
 {
-	FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
+	bIsFiring = true; // Set false via Skeleton Notify in Pistol_Shoot_Powerful.
+
+	FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
 	TraceParams->AddIgnoredActor(this);
 
 	// We want to hit the player's head as this is where the camera sits and will always hit the player if they can see the enemy (not behind cover)
 	FHitResult PlayerHitResult;
 
-	FVector StartPlayerAttackHitTrace = GetActorLocation(); // ToDo: ProjectileSpawnPoint();
+	FVector StartPlayerAttackHitTrace = GetActorLocation();								   // ToDo: ProjectileSpawnPoint();
 	FVector EndPlayerAttachHitTrace = PlayerCharacter->GetMesh()->GetBoneLocation("head"); // ToDo: const string HeadBone could be useful here once skeleton added
 	EndPlayerAttachHitTrace.Z += 100;
-	
+
 	DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, FColor::Black, false, .5f);
 
 	// ToDo: Implement weighting missed shots into objects/player view
-	if(GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Camera, *TraceParams))
-		DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Black, false, .5f); 
+	if (GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Camera, *TraceParams))
+		DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Black, false, .5f);
+
+	if(GunShotComp)
+		GunShotComp->Play();
 }
 
 // Called every frame
@@ -101,18 +132,25 @@ void ABaseEnemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount)
+bool ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
 {
-	IDamageableActor::DamageActor(DamagingActor, DamageAmount);
+	PlayHitAnimation(HitBoneName);
+
+	IDamageableActor::DamageActor(DamagingActor, DamageAmount, HitBoneName);
 	if (HealthComp)
 	{
-		HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
-		if(HealthComp->GetHealth() <= 0)
-		{
+		// Start Captains Coup Accolade Timer
+		if(ScoreManagerTimerSubSystem && bIsElite)
+			ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CaptainsCoup);
 			
+		HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
+		if (HealthComp->GetHealth() <= 0)
+		{
 			Death();
+			return true;
 		}
 	}
+	return false;
 }
 
 void ABaseEnemy::ReceiveToken()
@@ -128,29 +166,104 @@ void ABaseEnemy::ReleaseToken()
 	bHasAttackToken = false;
 }
 
+void ABaseEnemy::PromoteToElite()
+{
+	// Generate random name
+	if(NameGenerator)
+	{
+		URandomNameGenerator* NameGeneratorInstance = NewObject<URandomNameGenerator>(this, NameGenerator);
+		FText EliteName;
+		
+		if(FMath::RandBool())
+			EliteName = NameGeneratorInstance->GetRandomFullName();
+		else
+			EliteName = FText::FromString(NameGeneratorInstance->GetRandomFirstName().ToString() + " " + NameGeneratorInstance->GetRandomLastName().ToString()); 
+		
+		NameTextRenderer->SetText(EliteName);
+		NameTextRenderer->SetVisibility(true);
+	}
+	// Improve health.
+	if(HealthComp)
+	{
+		const float NewMaxHealth = HealthComp->GetMaxHealth() * EliteMultiplier;
+		HealthComp->SetMaxHealth(NewMaxHealth);
+		HealthComp->SetHealth(NewMaxHealth);
+	}
+	// Improve damage.
+	Damage *= EliteMultiplier;
+	// Increase scale.
+	SetActorRelativeScale3D(GetActorScale() * EliteMultiplier);
+	// Create elite particles
+	if(EliteParticleNiagaraSystem)
+	{
+		EliteParticleInstance = UNiagaraFunctionLibrary::SpawnSystemAttached(EliteParticleNiagaraSystem, GetMesh(), EliteParticleSocketName, FVector(0,0,0),
+	FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true, true);
+	}
+
+	bIsElite = true;
+	// ToDo: Play voice line.
+}
+
 void ABaseEnemy::Death()
 {
 
-	// Drop Item
-	for (const FEnemyDrop DroppableItem : Drops)
+	// Prevent the shotgun from causing an enemy to call multiple Death multiple times.
+	if(bIsDying)
+		return;
+
+	bIsDying = true;
+
+	// Captains Coup Accolade
+	if(bIsElite && ScoreManagerTimerSubSystem && ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::CaptainsCoup))
 	{
-		const float RandomValue = FMath::RandRange(0.0f, 100.0f);
-		// If the drop chance is hit, spawn the drop and break loop.
-		if(RandomValue < DroppableItem.DropChancePercentage)
+		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::CaptainsCoup);
+		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::CaptainsCoup);
+	}
+	// Captain Of War Accolade
+	if(ScoreManagerTimerSubSystem)
+	{
+		if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::CaptainOfWar) == false)
+			ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CaptainOfWar);
+		else
+			ScoreManagerTimerSubSystem->IncrementCaptainOfWarKills();
+	}
+	
+	GunShotComp->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+	GunShotComp->DestroyComponent();
+	
+	if(!bIsElite)
+	{
+		// Drop health pack
+		for (const FEnemyDrop DroppableItem : Drops)
+		{
+			const float RandomValue = FMath::RandRange(0.0f, 100.0f);
+			// If the drop chance is hit, spawn the drop and break loop.
+			if (RandomValue < DroppableItem.DropChancePercentage)
+			{
+				const FVector DropLocation = GetActorLocation();
+				const FRotator DropRotation = GetActorRotation();
+				AActor *SpawnedPickup = GetWorld()->SpawnActor<ABasePickup>(DroppableItem.EnemyDrop, DropLocation, DropRotation);
+				break;
+			}
+		}
+	}
+	else
+	{
+		if(SniperDisableDropBP)
 		{
 			const FVector DropLocation = GetActorLocation();
 			const FRotator DropRotation = GetActorRotation();
-			AActor* SpawnedPickup = GetWorld()->SpawnActor<ABasePickup>(DroppableItem.EnemyDrop, DropLocation, DropRotation);
-			break;
+			AActor *SpawnedPickup = GetWorld()->SpawnActor<ASniperDisablePickup>(SniperDisableDropBP, DropLocation, DropRotation);
 		}
 	}
 
+
 	// ToDo: Rag doll enemy once new skeleton is implemented.
 	ReleaseToken();
-	if(CurrentAttackSystemComponent)
+	if (CurrentAttackSystemComponent)
 		CurrentAttackSystemComponent->RemoveAgent(this);
-	UEnemyWaveManagementSystem* WaveManager = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetWaveManager();
-	if(WaveManager)
+	UEnemyWaveManagementSystem *WaveManager = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetWaveManager();
+	if (WaveManager)
 		WaveManager->RemoveActiveEnemy(this);
 
 	// Ragdoll Enemy
@@ -158,7 +271,17 @@ void ABaseEnemy::Death()
 	GetCapsuleComponent()->DestroyComponent();
 	GetMesh()->SetCollisionProfileName("SkyPirateRagdoll");
 
-	// Note: Enemies are destroying in EnemyWaveManagementSystem.
-	
-}
+	// Disable elite effects.
+	NameTextRenderer->SetVisibility(false);
+	if(EliteParticleInstance)
+		EliteParticleInstance->DestroyInstance();
 
+	if(ScoreManagerSubSystem)
+	{
+		ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::EnemiesKilled);
+		if(bIsElite)
+			ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::EnemiesKilled);
+	}
+	
+	// Note: Enemies are destroyed in EnemyWaveManagementSystem.
+}

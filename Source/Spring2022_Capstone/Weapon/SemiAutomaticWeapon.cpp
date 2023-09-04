@@ -45,6 +45,16 @@ void ASemiAutomaticWeapon::Shoot()
 			
 			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
+				if(ScoreManagerSubSystem)
+				{
+					// Increment hit counter
+					ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::Hits);
+				
+					// If player is in the air, increment counter
+					if(!PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+						ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HitsWhileAirborne);
+				}
+				
 				// Get Surface Type to check for headshot and impact material type.
 				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 				
@@ -56,17 +66,29 @@ void ASemiAutomaticWeapon::Shoot()
 					switch (HitSurfaceType)
 					{
 					case SURFACE_FleshDefault:
-						DamageableActor->DamageActor(this, ShotDamage);
+						DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
 						if(FloatingDamageNumberParticleSystem)
 							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
 						break;
 					case SURFACE_FleshVulnerable:
-						DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier);
+						DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier, HitResult.BoneName);
 						if(FloatingDamageNumberParticleSystem)
 							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
+
+						// Score 
+						if(ScoreManagerSubSystem)
+							ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
+						// Skull N Crosshair Accolade
+						if(ScoreManagerTimerSubSystem)
+						{
+							if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::SkullNCrosshair))
+								ScoreManagerTimerSubSystem->IncrementScullNCrosshairHeadshotHits();
+							else
+								ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::SkullNCrosshair);
+						}
 						break;
 					default:
-						DamageableActor->DamageActor(this, ShotDamage);
+						DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
 						break;
 					}
 					ShowHitMarker();
