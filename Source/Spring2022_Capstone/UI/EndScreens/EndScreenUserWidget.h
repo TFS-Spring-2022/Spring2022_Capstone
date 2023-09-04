@@ -61,7 +61,44 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ElitesKilledTextBlock; 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* SnipersDisabledTextBlock; 
+	UTextBlock* SnipersDisabledTextBlock;
+
+	// ToDo: Set Tool Tip Explanations
+	// Accolades
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* SkullNCrosshairTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* CaptainOfWarTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* SkyPirateTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* LandLubberTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* CloseCallCorsairTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* OpportunistTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* CaptainsCoupTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* DoubleAerialPlunderTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* BlunderBlastTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* SkyBuccaneerTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* HotHeadedTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* NimbleBonesTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* DeathDodgerTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* PiratesFortitudeTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* PlunderersProwessTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* IPreferTreasureTextBlock;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* PirateBlitzTextBlock;
 
 private: 
 
@@ -75,7 +112,13 @@ private:
 	 * @brief Takes EScoreCounters values from ScoreSystemManagerSubSystem and
 	 * displays them in their respective text blocks.
 	 */
-	void SetScoreStatsTextBox();
+	void SetScoreStatTextBoxes();
+
+	/**
+	 * @brief Takes EAccolade counts from ScoreSystemManagerSubSystem and
+	 * displays them in their respective text blocks.
+	 */
+	void SetAccoladeTextBoxes();
 
 	UPROPERTY()
 	UScoreSystemManagerSubSystem* ScoreSystemManager;

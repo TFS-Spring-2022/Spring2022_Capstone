@@ -219,6 +219,49 @@ float UScoreSystemManagerSubSystem::GetCounterValue(EScoreCounters Counter)
 	}
 }
 
+int UScoreSystemManagerSubSystem::GetAccoladeCount(EAccolades Accolade)
+{
+	switch (Accolade)
+	{
+	case SkullNCrosshair: 
+		return Accolade_SkullNCrosshairCount;
+	case CaptainOfWar: 
+		return Accolade_CaptainOfWarCount;
+	case SkyPirate:
+		return Accolade_SkyPirateCount;
+	case LandLubber: 
+		return Accolade_LandLubberCount;
+	case CloseCallCorsair:
+		return Accolade_CloseCallCorsairCount;
+	case Opportunist:
+		return Accolade_OpportunistCount;
+	case CaptainsCoup:
+		return Accolade_CaptainsCoupCount;
+	case DoubleAerialPlunder:
+		return Accolade_DoubleAerialPlunderCount;
+	case BlunderBlast:
+		return Accolade_BlunderBlastCount;
+	case SkyBuccaneer:
+		return Accolade_SkyBuccaneerCount;
+	case HotHeaded:
+		return Accolade_HotHeadedCount;
+	case NimbleBones:
+		return Accolade_NimbleBonesCount;
+	case DeathDodger:
+		return Accolade_DeathDodgerCount;
+	case PiratesFortitude:
+		return Accolade_PiratesFortitudeCount;
+	case PlunderersProwess:
+		return Accolade_PlunderersProwessCount;
+	case IPreferTreasure:
+		return Accolade_IPreferTreasureCount;
+	case PirateBlitz:
+		return Accolade_PirateBlitz;
+	default: GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Could not find accolade count");
+		return 9999;
+	}
+}
+
 void UScoreSystemManagerSubSystem::CheckHotHeaded()
 {
 		if(PlayerCharacter->GetWeapon1()->GetIsOverheating() && PlayerCharacter->GetWeapon2()->GetIsOverheating())

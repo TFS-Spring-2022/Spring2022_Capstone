@@ -133,6 +133,8 @@ public:
 	void IncrementDeathDodgerCount();
 
 	float GetCounterValue(EScoreCounters Counter);
+
+	int GetAccoladeCount(EAccolades Accolade);
 	
 private:
 
