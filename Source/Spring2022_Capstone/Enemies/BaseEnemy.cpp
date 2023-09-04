@@ -223,6 +223,7 @@ void ABaseEnemy::Death()
 		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::CaptainsCoup);
 		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::CaptainsCoup);
 	}
+	
 	// Captain Of War Accolade
 	if(ScoreManagerTimerSubSystem)
 	{
@@ -232,8 +233,12 @@ void ABaseEnemy::Death()
 			ScoreManagerTimerSubSystem->IncrementCaptainOfWarKills();
 	}
 	
-	GunShotComp->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
-	GunShotComp->DestroyComponent();
+	if(GunShotComp)
+	{
+		GunShotComp->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+		GunShotComp->DestroyComponent();
+	}
+
 	
 	if(!bIsElite)
 	{
