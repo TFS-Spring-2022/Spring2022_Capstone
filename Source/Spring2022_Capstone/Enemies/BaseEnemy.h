@@ -59,6 +59,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Drops", meta = (AllowPrivateAccess = true))
 	TArray<FEnemyDrop> Drops;
+    
+    UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
+    float Damage;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Pawn, meta = (AllowPrivateAccess = "true"))
 	bool bDidHide;
@@ -118,8 +121,6 @@ public:
 	UNiagaraComponent* EliteParticleInstance;
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
-	float Damage;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float AttackSpeed;
 
