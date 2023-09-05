@@ -4,6 +4,7 @@
 #include "Spring2022_Capstone/UI/MainMenu/MainMenuManager.h"
 #include "Components/Button.h"
 #include "GameFramework/GameUserSettings.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void USettingsMenuWidget::NativeConstruct()
 {
@@ -14,6 +15,8 @@ void USettingsMenuWidget::NativeConstruct()
 	GraphicsButton->OnClicked.AddUniqueDynamic(this, &USettingsMenuWidget::OnGraphicsButtonPressed);
 	AudioButton->OnClicked.AddUniqueDynamic(this, &USettingsMenuWidget::OnAudioButtonPressed);
 	ControlsButton->OnClicked.AddUniqueDynamic(this, &USettingsMenuWidget::OnControlsButtonPressed);
+	RestartConfirmButton->OnClicked.AddUniqueDynamic(this, &USettingsMenuWidget::OnRestartConfirmButtonPressed);
+	RestartIgnoreButton->OnClicked.AddUniqueDynamic(this, &USettingsMenuWidget::RestartIgnoreButtonPressed);
 	WindowModeComboBox->AddOption("Full Screen");
 	WindowModeComboBox->AddOption("Borderless Full Screen");
 	WindowModeComboBox->AddOption("Windowed");
@@ -41,6 +44,7 @@ void USettingsMenuWidget::OnWindowModeSelected(FString SelectedOption, ESelectIn
 		GameUserSettings->SetScreenResolution(FIntPoint(1280, 720));
 		GameUserSettings->SetFullscreenMode(EWindowMode::Windowed);
 	}
+	RestartPanel->SetVisibility(ESlateVisibility::Visible);
 }
 
 void USettingsMenuWidget::OnBackButtonPressed()
@@ -72,11 +76,20 @@ void USettingsMenuWidget::OnAudioButtonPressed()
 	AudioPanel->SetVisibility(ESlateVisibility::Visible);
 }
 
-
 void USettingsMenuWidget::ClearPanels()
 {
 	GeneralPanel->SetVisibility(ESlateVisibility::Hidden);
 	GraphicsPanel->SetVisibility(ESlateVisibility::Hidden);
 	ControlsPanel->SetVisibility(ESlateVisibility::Hidden);
 	AudioPanel->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void USettingsMenuWidget::OnRestartConfirmButtonPressed()
+{
+	UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
+}
+
+void USettingsMenuWidget::RestartIgnoreButtonPressed()
+{
+	RestartPanel->SetVisibility(ESlateVisibility::Hidden);
 }
