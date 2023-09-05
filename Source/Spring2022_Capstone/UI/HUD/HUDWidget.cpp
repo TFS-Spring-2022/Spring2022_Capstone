@@ -70,6 +70,21 @@ void UHUDWidget::SetWeaponIcons(UTexture2D* EquippedWeaponTexture2D, UTexture2D*
         StashedWeaponIcon->SetBrushFromTexture(StashedWeaponTexture2D, false);
 }
 
+void UHUDWidget::SetWaveTimerText(int Minutes, float Seconds)
+{
+    FText TimeString;
+    if(Minutes < 10 && Seconds < 10)
+        TimeString = FText::FromString(FString::Printf(TEXT("0%d:0%.0f"), Minutes, Seconds));
+    else if(Minutes > 9 && Seconds < 10)
+        TimeString = FText::FromString(FString::Printf(TEXT("%d:0%.0f"), Minutes, Seconds));
+    else if(Minutes < 10 && Seconds > 10)
+        TimeString = FText::FromString(FString::Printf(TEXT("0%d:%.0f"), Minutes, Seconds));
+    else
+        TimeString = FText::FromString(FString::Printf(TEXT("%d:%.0f"), Minutes, Seconds));
+      
+    WaveTimerTextBlock->SetText(TimeString);
+}
+
 void UHUDWidget::OnHealthChanged(float HealthValue)
 {
     HealthBar->SetPercent(HealthValue / MaxHealth);
