@@ -48,9 +48,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 
 	if (UEnhancedInputComponent *EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Pause);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Dash);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
@@ -75,7 +75,8 @@ void APlayerCharacter::BeginPlay()
 	//Temp
 	SoundManagerSubSystem->PlaySoundEvent();
 	
-	if (APlayerController *PlayerController = Cast<APlayerController>(GetController()))
+	PlayerController = Cast<APlayerController>(GetController());
+	if(PlayerController)
 	{
 		if (UEnhancedInputLocalPlayerSubsystem *Subsystem = ULocalPlayer::GetSubsystem<
 				UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -146,6 +147,28 @@ void APlayerCharacter::Tick(float DeltaTime)
 	if(bDashBlurFadingIn)
 		Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight = FMath::FInterpTo(Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight, 1, DeltaTime, DASH_BLUR_FADEIN_SPEED);
 	
+}
+
+void APlayerCharacter::Pause(const FInputActionValue& Value)
+{
+	if(!UGameplayStatics::IsGamePaused(GetWorld()))// && PauseMenuWidgetInstance)
+	{
+		PlayerController->SetIgnoreLookInput(true);
+		PlayerController->SetIgnoreMoveInput(true);
+		SetCanAttack(false);
+		PlayerController->bShowMouseCursor = true;
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+	}
+	else
+	{
+		PlayerController->SetIgnoreLookInput(false);
+		PlayerController->SetIgnoreMoveInput(false);
+		SetCanAttack(true);
+		PlayerController->bShowMouseCursor = false;
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		UWidgetBlueprintLibrary::SetInputMode_GameOnly(PlayerController, false);
+	}
+
 }
 
 void APlayerCharacter::Move(const FInputActionValue &Value)

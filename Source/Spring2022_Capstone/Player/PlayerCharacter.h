@@ -36,6 +36,8 @@ class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter, public IDama
 public:
 	APlayerCharacter();
 
+	APlayerController *PlayerController;
+
 	FOnHealthChanged OnHealthChangedDelegate;
 	FOnDamaged OnDamagedDelegate;
 
@@ -67,6 +69,12 @@ protected:
 
 	UPROPERTY()
 	UHUDWidget* PlayerHUDWidgetInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget> PauseMenuWidgetBP;
+
+	UPROPERTY()
+	UWidget* PauseMenuWidgetInstance;
 	
 	// Directional Damage UUSerWidget To Create.
 	UPROPERTY(EditAnywhere, Category = "HUD")
@@ -124,12 +132,20 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *DashAction;
+	/**
+	 * @brief Holds the Pause Input Action
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* PauseAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UGrappleComponent *GrappleComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UMantleSystemComponent* PlayerMantleSystemComponent;
+
+	void Pause(const FInputActionValue &Value);
+	
 	
 	void Move(const FInputActionValue &Value);
 	virtual void Jump() override;
