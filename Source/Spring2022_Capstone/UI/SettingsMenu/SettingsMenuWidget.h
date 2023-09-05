@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/ComboBox.h"
+#include "Components/ComboBoxString.h"
 #include "Components/Slider.h"
 #include "SettingsMenuWidget.generated.h"
 
@@ -54,6 +56,10 @@ public:
 	UButton *GraphicsButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UPanelWidget *GraphicsPanel;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UComboBoxString* WindowModeComboBox;
+	UFUNCTION()
+	void OnWindowModeSelected(FString SelectedOption, ESelectInfo::Type SelectInfo);
 
 	// Audio
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
