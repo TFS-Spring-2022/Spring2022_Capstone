@@ -46,6 +46,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UAudioComponent *GunShotComp;
+
+	
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UTextRenderComponent* NameTextRenderer;
@@ -102,7 +104,10 @@ public:
 	void PlayHitAnimation(FName HitBone);
 
 	void PromoteToElite();
-
+	
+	UPROPERTY()
+	USoundBase* FootStepSound;
+	
 	// Amount the enemy's stats are multiplied by when promoted.
 	UPROPERTY(EditAnywhere, Category = "Stats")
 	float EliteMultiplier = 1.3f;

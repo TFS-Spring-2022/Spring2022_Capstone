@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify_PlaySound.h"
+#include "Spring2022_Capstone/Enemies/BaseEnemy.h"
 #include "FootSoundAnimNotify.generated.h"
 
 /**
@@ -33,6 +34,15 @@ public:
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UPhysicalMaterial* CurrentGroundMat;
 
+	UPROPERTY()
+	ABaseEnemy* EOwner;
+
+	UPROPERTY()
+	UWorld* WorldReference;
+
 	UFUNCTION()
 	void CheckGround(USkeletalMeshComponent* MeshComp);
+
+	UFUNCTION()
+	void PlaySound(USkeletalMeshComponent* MeshComp) const;
 };
