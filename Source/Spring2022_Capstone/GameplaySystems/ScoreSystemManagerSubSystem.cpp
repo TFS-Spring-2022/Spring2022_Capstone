@@ -14,10 +14,6 @@ void UScoreSystemManagerSubSystem::Initialize(FSubsystemCollectionBase& Collecti
 
 	ResetScoreSystem();
 
-	// As the score system manager subsystem is loaded, set a reference to it inside the score system timer subsystem.
-	if(UScoreSystemTimerSubSystem* UScoreSystemTimerSubSystem = GetWorld()->GetSubsystem<class UScoreSystemTimerSubSystem>())
-		UScoreSystemTimerSubSystem->SetScoreManagerSubSystem(this);
-	
 }
 
 void UScoreSystemManagerSubSystem::SetPlayerReference(APlayerCharacter* Player)

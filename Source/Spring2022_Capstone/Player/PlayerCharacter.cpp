@@ -71,8 +71,7 @@ void APlayerCharacter::BeginPlay()
 
 	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
 	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
-
-
+	
 	//Temp
 	SoundManagerSubSystem->PlaySoundEvent();
 	
@@ -110,7 +109,10 @@ void APlayerCharacter::BeginPlay()
 		ScoreManagerSubsystem->SetPlayerReference(this);
 	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
 	if(ScoreManagerTimerSubSystem)
+	{
 		ScoreManagerTimerSubSystem->SetPlayerReference(this);
+		ScoreManagerTimerSubSystem->SetScoreManagerSubSystem(ScoreManagerSubsystem);
+	}
 	
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController(), false);
 
