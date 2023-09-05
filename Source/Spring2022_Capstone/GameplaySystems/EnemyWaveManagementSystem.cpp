@@ -134,16 +134,20 @@ void UEnemyWaveManagementSystem::ConvertWaveTime(float DTime)
 		WaveTimerSeconds = 0;
 	}
 
-	FString TimeString = FString::Printf(TEXT("%d:%.2f"),WaveTimerMinutes, WaveTimerSeconds);
-	if(GEngine)
-		GEngine->AddOnScreenDebugMessage(2,10.f,FColor::White, TimeString); 
+	if(!PlayerCharacter)
+	{
+		PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+		return;
+	}
+	
+	PlayerCharacter->GetPlayerHUD()->SetWaveTimerText(WaveTimerMinutes, WaveTimerSeconds);
+	
 }
 
 void UEnemyWaveManagementSystem::TickComponent(float DeltaTime, ELevelTick TickType,
                                                FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 	ElapsedWaveTime += DeltaTime;
 	ConvertWaveTime(DeltaTime);
 }

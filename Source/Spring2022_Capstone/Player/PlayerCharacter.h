@@ -11,6 +11,7 @@
 #include "Spring2022_Capstone/GameplaySystems/ScoreSystemTimerSubSystem.h"
 #include "Spring2022_Capstone/UI/HUD/DirectionalDamageIndicatorWidget.h"
 #include "Spring2022_Capstone/UI/HUD/HUDWidget.h"
+#include "Spring2022_Capstone/UI/PauseMenu/PauseMenuWidget.h"
 #include "PlayerCharacter.generated.h"
 
 class AWeaponBase;
@@ -35,6 +36,8 @@ class SPRING2022_CAPSTONE_API APlayerCharacter : public ACharacter, public IDama
 
 public:
 	APlayerCharacter();
+
+	APlayerController *PlayerController;
 
 	FOnHealthChanged OnHealthChangedDelegate;
 	FOnDamaged OnDamagedDelegate;
@@ -67,6 +70,12 @@ protected:
 
 	UPROPERTY()
 	UHUDWidget* PlayerHUDWidgetInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget> PauseMenuWidgetBP;
+
+	UPROPERTY()
+	UPauseMenuWidget* PauseMenuWidgetInstance;
 	
 	// Directional Damage UUSerWidget To Create.
 	UPROPERTY(EditAnywhere, Category = "HUD")
@@ -124,6 +133,11 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction *DashAction;
+	/**
+	 * @brief Holds the Pause Input Action
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* PauseAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UGrappleComponent *GrappleComponent;
@@ -343,5 +357,9 @@ public:
 
 	FORCEINLINE void SetHasSniperDisableObject(bool Status) {bHasSniperDisableObject = Status;}
 	FORCEINLINE bool GetHasSniperDisableObject() const {return bHasSniperDisableObject;}
+
+	void Pause(const FInputActionValue &Value);
+	void UnPause();
+	
 	
 };
