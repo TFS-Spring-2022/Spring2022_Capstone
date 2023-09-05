@@ -101,6 +101,13 @@ void APlayerCharacter::BeginPlay()
 		DirectionalDamageIndicatorWidget = Cast<UDirectionalDamageIndicatorWidget>(CreateWidget(GetWorld(), DamageIndicatorWidgetBP));
 		DirectionalDamageIndicatorWidget->AddToViewport(1);
 	}
+	// Create and add Pause Menu Widget
+	if(PauseMenuWidgetBP)
+	{
+		PauseMenuWidgetInstance = Cast<UPauseMenuWidget>(CreateWidget(GetWorld(), PauseMenuWidgetBP));
+		PauseMenuWidgetInstance->AddToViewport(1);
+		PauseMenuWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
+	}
 	
 	bDashBlurFadingIn = false;
 	CurrentGameMode = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
@@ -151,15 +158,27 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 void APlayerCharacter::Pause(const FInputActionValue& Value)
 {
-	if(!UGameplayStatics::IsGamePaused(GetWorld()))// && PauseMenuWidgetInstance)
+	if(!PauseMenuWidgetInstance)
+		return;
+	
+	if(!UGameplayStatics::IsGamePaused(GetWorld()))
 	{
+		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(PlayerController, PauseMenuWidgetInstance);
 		PlayerController->SetIgnoreLookInput(true);
 		PlayerController->SetIgnoreMoveInput(true);
 		SetCanAttack(false);
 		PlayerController->bShowMouseCursor = true;
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		PauseMenuWidgetInstance->SetVisibility(ESlateVisibility::Visible);
 	}
 	else
+		UnPause();
+
+}
+
+void APlayerCharacter::UnPause()
+{
+	if(UGameplayStatics::IsGamePaused(GetWorld()))
 	{
 		PlayerController->SetIgnoreLookInput(false);
 		PlayerController->SetIgnoreMoveInput(false);
@@ -167,8 +186,9 @@ void APlayerCharacter::Pause(const FInputActionValue& Value)
 		PlayerController->bShowMouseCursor = false;
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		UWidgetBlueprintLibrary::SetInputMode_GameOnly(PlayerController, false);
+		PauseMenuWidgetInstance->HideSettingsMenu();
+		PauseMenuWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
 	}
-
 }
 
 void APlayerCharacter::Move(const FInputActionValue &Value)

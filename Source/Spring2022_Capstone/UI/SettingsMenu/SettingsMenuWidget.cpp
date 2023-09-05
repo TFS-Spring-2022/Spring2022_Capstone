@@ -49,7 +49,10 @@ void USettingsMenuWidget::OnWindowModeSelected(FString SelectedOption, ESelectIn
 
 void USettingsMenuWidget::OnBackButtonPressed()
 {
-    Manager->DismissSettingsWidget();
+	if(Manager)
+		Manager->DismissSettingsWidget();
+	else
+		SetVisibility(ESlateVisibility::Hidden);
 }
 
 void USettingsMenuWidget::OnGeneralButtonPressed()

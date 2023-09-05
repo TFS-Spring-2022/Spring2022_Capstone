@@ -11,6 +11,7 @@
 #include "Spring2022_Capstone/GameplaySystems/ScoreSystemTimerSubSystem.h"
 #include "Spring2022_Capstone/UI/HUD/DirectionalDamageIndicatorWidget.h"
 #include "Spring2022_Capstone/UI/HUD/HUDWidget.h"
+#include "Spring2022_Capstone/UI/PauseMenu/PauseMenuWidget.h"
 #include "PlayerCharacter.generated.h"
 
 class AWeaponBase;
@@ -74,7 +75,7 @@ protected:
 	TSubclassOf<UUserWidget> PauseMenuWidgetBP;
 
 	UPROPERTY()
-	UWidget* PauseMenuWidgetInstance;
+	UPauseMenuWidget* PauseMenuWidgetInstance;
 	
 	// Directional Damage UUSerWidget To Create.
 	UPROPERTY(EditAnywhere, Category = "HUD")
@@ -143,9 +144,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UMantleSystemComponent* PlayerMantleSystemComponent;
-
-	void Pause(const FInputActionValue &Value);
-	
 	
 	void Move(const FInputActionValue &Value);
 	virtual void Jump() override;
@@ -359,5 +357,9 @@ public:
 
 	FORCEINLINE void SetHasSniperDisableObject(bool Status) {bHasSniperDisableObject = Status;}
 	FORCEINLINE bool GetHasSniperDisableObject() const {return bHasSniperDisableObject;}
+
+	void Pause(const FInputActionValue &Value);
+	void UnPause();
+	
 	
 };
