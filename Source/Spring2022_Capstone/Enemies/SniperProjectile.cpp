@@ -28,5 +28,16 @@ void ASniperProjectile::BeginPlay()
 void ASniperProjectile::OnHit(UPrimitiveComponent *HitComp, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalizedImpulse, const FHitResult &Hit)
 {
     // TODO: Explosive round
+    TArray<AActor *> OverlappingActors;
+    SphereCollider->GetOverlappingActors(OverlappingActors);
+
+    for( AActor *OverlappingActor : OverlappingActors )
+    {
+        UE_LOG(LogTemp, Display, TEXT("%s"), *OverlappingActor->GetName());
+        if (IDamageableActor *DamageableActor = Cast<IDamageableActor>(OverlappingActor))
+        {
+            DamageableActor->DamageActor(this, Damage);
+        }
+    }
     Destroy();
 }
