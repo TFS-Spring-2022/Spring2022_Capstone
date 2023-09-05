@@ -4,6 +4,7 @@
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 #include "MainMenuManager.h"
+#include "Spring2022_Capstone/GameplaySystems/ScoreSystemManagerSubSystem.h"
 
 void UMainMenuWidget::NativeConstruct()
 {
@@ -21,6 +22,7 @@ void UMainMenuWidget::NativeConstruct()
 		PC->bEnableClickEvents = true;
 		PC->bEnableMouseOverEvents = true;
 	}
+	GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>()->ResetScoreSystem();
 }
 
 void UMainMenuWidget::OnPlayButtonPressed()

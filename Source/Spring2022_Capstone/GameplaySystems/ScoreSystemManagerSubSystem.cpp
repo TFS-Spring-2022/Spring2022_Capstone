@@ -14,10 +14,6 @@ void UScoreSystemManagerSubSystem::Initialize(FSubsystemCollectionBase& Collecti
 
 	ResetScoreSystem();
 
-	// As the score system manager subsystem is loaded, set a reference to it inside the score system timer subsystem.
-	if(UScoreSystemTimerSubSystem* UScoreSystemTimerSubSystem = GetWorld()->GetSubsystem<class UScoreSystemTimerSubSystem>())
-		UScoreSystemTimerSubSystem->SetScoreManagerSubSystem(this);
-	
 }
 
 void UScoreSystemManagerSubSystem::SetPlayerReference(APlayerCharacter* Player)
@@ -195,6 +191,71 @@ void UScoreSystemManagerSubSystem::CheckWaveEndAccolades()
 void UScoreSystemManagerSubSystem::IncrementDeathDodgerCount()
 {
 	DeathDodgerCount++;
+}
+
+float UScoreSystemManagerSubSystem::GetCounterValue(EScoreCounters Counter)
+{
+	switch (Counter)
+	{
+	case EScoreCounters::Hits: 
+		return Hits;
+	case EScoreCounters::EnemiesKilled:
+		return EnemiesKilled;
+	case EScoreCounters::HeadshotHits:
+		return HeadshotHits;
+	case EScoreCounters::HitsWhileAirborne:
+		return HitsWhileAirborne;
+	case EScoreCounters::EnemiesKilledWithHazards:
+		return EnemiesKilledWithHazards;
+	case EScoreCounters::ElitesKilled:
+		return ElitesKilled;
+	case EScoreCounters::SnipersDisabled:
+		return SnipersDisabled;
+	default: return 9999;
+	}
+}
+
+int UScoreSystemManagerSubSystem::GetAccoladeCount(EAccolades Accolade)
+{
+	switch (Accolade)
+	{
+	case SkullNCrosshair: 
+		return Accolade_SkullNCrosshairCount;
+	case CaptainOfWar: 
+		return Accolade_CaptainOfWarCount;
+	case SkyPirate:
+		return Accolade_SkyPirateCount;
+	case LandLubber: 
+		return Accolade_LandLubberCount;
+	case CloseCallCorsair:
+		return Accolade_CloseCallCorsairCount;
+	case Opportunist:
+		return Accolade_OpportunistCount;
+	case CaptainsCoup:
+		return Accolade_CaptainsCoupCount;
+	case DoubleAerialPlunder:
+		return Accolade_DoubleAerialPlunderCount;
+	case BlunderBlast:
+		return Accolade_BlunderBlastCount;
+	case SkyBuccaneer:
+		return Accolade_SkyBuccaneerCount;
+	case HotHeaded:
+		return Accolade_HotHeadedCount;
+	case NimbleBones:
+		return Accolade_NimbleBonesCount;
+	case DeathDodger:
+		return Accolade_DeathDodgerCount;
+	case PiratesFortitude:
+		return Accolade_PiratesFortitudeCount;
+	case PlunderersProwess:
+		return Accolade_PlunderersProwessCount;
+	case IPreferTreasure:
+		return Accolade_IPreferTreasureCount;
+	case PirateBlitz:
+		return Accolade_PirateBlitz;
+	default: GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Could not find accolade count");
+		return 9999;
+	}
 }
 
 void UScoreSystemManagerSubSystem::CheckHotHeaded()
