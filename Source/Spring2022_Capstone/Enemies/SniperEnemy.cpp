@@ -37,7 +37,12 @@ void ASniperEnemy::SpecialAttack()
     if(bCanAttack)
     {
         if (!Projectile) { return; }
-        GetWorld()->SpawnActor<ABaseEnemyProjectile>(Projectile, ProjectileSpawnPoint->GetComponentLocation(), GetActorRotation());
+        if (APlayerCharacter *Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+        {
+            FVector vectorToPlayer = Player->GetActorLocation() - GetActorLocation();
+            FRotator FacingRotator = vectorToPlayer.Rotation();
+            GetWorld()->SpawnActor<ABaseEnemyProjectile>(Projectile, ProjectileSpawnPoint->GetComponentLocation(), FacingRotator);
+        }
     }
 }
 
