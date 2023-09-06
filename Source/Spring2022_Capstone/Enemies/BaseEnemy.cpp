@@ -55,6 +55,9 @@ void ABaseEnemy::BeginPlay()
 
 	if (!EnemyColors.IsEmpty())
 		GetMesh()->SetMaterial(0, EnemyColors[FMath::RandRange(0, EnemyColors.Num() - 1)]);
+
+	ScoreManagerSubSystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
+	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
 	
 }
 
@@ -129,19 +132,29 @@ void ABaseEnemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
+bool ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
 {
 	PlayHitAnimation(HitBoneName);
 
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount, HitBoneName);
 	if (HealthComp)
 	{
-		HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
-		if (HealthComp->GetHealth() <= 0)
+		if(HealthComp->GetHealth() > 0)
 		{
-			Death();
+			// Start Captains Coup Accolade Timer
+			if(ScoreManagerTimerSubSystem && bIsElite)
+				ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CaptainsCoup);
+			
+			HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
+			if (HealthComp->GetHealth() <= 0)
+			{
+				Death();
+				return true;
+			}
 		}
+		
 	}
+	return false;
 }
 
 void ABaseEnemy::ReceiveToken()
@@ -191,27 +204,68 @@ void ABaseEnemy::PromoteToElite()
 	FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true, true);
 	}
 
-
+	bIsElite = true;
 	// ToDo: Play voice line.
 }
 
 void ABaseEnemy::Death()
 {
-	GunShotComp->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
-	GunShotComp->DestroyComponent();
-	// Drop Item
-	for (const FEnemyDrop DroppableItem : Drops)
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Killed"), *GetName()));
+	// Prevent the shotgun from causing an enemy to call multiple Death multiple times.
+	if(bIsDying)
+		return;
+
+	bIsDying = true;
+
+	// Captains Coup Accolade
+	if(bIsElite && ScoreManagerTimerSubSystem && ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::CaptainsCoup))
 	{
-		const float RandomValue = FMath::RandRange(0.0f, 100.0f);
-		// If the drop chance is hit, spawn the drop and break loop.
-		if (RandomValue < DroppableItem.DropChancePercentage)
+		ScoreManagerSubSystem->IncrementAccoladeCount(EAccolades::CaptainsCoup);
+		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::CaptainsCoup);
+	}
+	
+	// Captain Of War Accolade
+	if(ScoreManagerTimerSubSystem)
+	{
+		if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::CaptainOfWar) == false)
+			ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CaptainOfWar);
+		else
+			ScoreManagerTimerSubSystem->IncrementCaptainOfWarKills();
+	}
+	
+	if(GunShotComp)
+	{
+		GunShotComp->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+		GunShotComp->DestroyComponent();
+	}
+
+	
+	if(!bIsElite)
+	{
+		// Drop health pack
+		for (const FEnemyDrop DroppableItem : Drops)
+		{
+			const float RandomValue = FMath::RandRange(0.0f, 100.0f);
+			// If the drop chance is hit, spawn the drop and break loop.
+			if (RandomValue < DroppableItem.DropChancePercentage)
+			{
+				const FVector DropLocation = GetActorLocation();
+				const FRotator DropRotation = GetActorRotation();
+				AActor *SpawnedPickup = GetWorld()->SpawnActor<ABasePickup>(DroppableItem.EnemyDrop, DropLocation, DropRotation);
+				break;
+			}
+		}
+	}
+	else
+	{
+		if(SniperDisableDropBP)
 		{
 			const FVector DropLocation = GetActorLocation();
 			const FRotator DropRotation = GetActorRotation();
-			AActor *SpawnedPickup = GetWorld()->SpawnActor<ABasePickup>(DroppableItem.EnemyDrop, DropLocation, DropRotation);
-			break;
+			AActor *SpawnedPickup = GetWorld()->SpawnActor<ASniperDisablePickup>(SniperDisableDropBP, DropLocation, DropRotation);
 		}
 	}
+
 
 	// ToDo: Rag doll enemy once new skeleton is implemented.
 	ReleaseToken();
@@ -230,6 +284,13 @@ void ABaseEnemy::Death()
 	NameTextRenderer->SetVisibility(false);
 	if(EliteParticleInstance)
 		EliteParticleInstance->DestroyInstance();
+
+	if(ScoreManagerSubSystem)
+	{
+		ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::EnemiesKilled);
+		if(bIsElite)
+			ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::ElitesKilled);
+	}
 	
 	// Note: Enemies are destroyed in EnemyWaveManagementSystem.
 }

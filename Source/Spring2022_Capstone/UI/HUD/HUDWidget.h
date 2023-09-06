@@ -28,6 +28,8 @@ public:
 	
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *RootPanel;
+	UPROPERTY(EditAnywhere, meta = (BindWIdget))
+	UTextBlock* WaveTimerTextBlock;
 	// Health bar
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UProgressBar *HealthBar;
@@ -57,6 +59,12 @@ public:
 
 	// Sets the EquippedWeaponIcon and StashedWeaponIcons to show the given Texture2Ds.
 	void SetWeaponIcons(UTexture2D* EquippedWeaponTexture2D, UTexture2D* StashedWeaponTexture2D) const;
+
+	/**
+	 * @brief Displays the time elapsed in the current wave.
+	 * @note Called from EnemyWaveManagementSystem::ConvertElapsedTime;
+	 */
+	void SetWaveTimerText(int Minutes, float Seconds);
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Grapple")

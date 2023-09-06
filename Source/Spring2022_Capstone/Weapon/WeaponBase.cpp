@@ -57,8 +57,9 @@ void AWeaponBase::BeginPlay()
 		PlayerCharacter->SetWeapon2(this);
 		AttachWeapon(PlayerCharacter);
 	}
-	
-	
+
+	ScoreManagerSubSystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
+	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
 	
 }
 
@@ -136,6 +137,10 @@ void AWeaponBase::Overheat()
 	}
 	
 	GetWorldTimerManager().SetTimer(OverheatTimerHandle, this, &AWeaponBase::WeaponCooldown, OverheatTime, false, -1);
+
+	// Check the status of the 'Hot Headed' accolade.
+	if(ScoreManagerSubSystem)
+		ScoreManagerSubSystem->CheckHotHeaded();
 }
 
 void AWeaponBase::WeaponCooldown()
