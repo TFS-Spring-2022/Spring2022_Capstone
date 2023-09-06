@@ -6,7 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ComboBox.h"
 #include "Components/ComboBoxString.h"
-#include "Components/Slider.h"
 #include "SettingsMenuWidget.generated.h"
 
 class UPanelWidget;
@@ -14,6 +13,7 @@ class UImage;
 class UTextBlock;
 class AMainMenuManager;
 class UButton;
+class USlider;
 
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API USettingsMenuWidget : public UUserWidget
@@ -44,6 +44,10 @@ public:
 	UButton *GeneralButton;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *GeneralPanel;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	USlider *XSensitivitySlider;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	USlider *YSensitivitySlider;
 
 	// Controls
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -110,5 +114,10 @@ private:
 
 	UFUNCTION()
 	void RestartIgnoreButtonPressed();
+	
+	UFUNCTION()
+	void OnYSensitivityValueChanged(float Value);
+	UFUNCTION()
+	void OnXSensitivityValueChanged(float Value);
 	
 };

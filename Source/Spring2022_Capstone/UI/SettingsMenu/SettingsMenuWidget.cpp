@@ -5,6 +5,7 @@
 #include "Components/Button.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Components/Slider.h"
 
 void USettingsMenuWidget::NativeConstruct()
 {
@@ -21,6 +22,9 @@ void USettingsMenuWidget::NativeConstruct()
 	WindowModeComboBox->AddOption("Borderless Full Screen");
 	WindowModeComboBox->AddOption("Windowed");
 	WindowModeComboBox->OnSelectionChanged.AddDynamic(this, &USettingsMenuWidget::OnWindowModeSelected);
+
+	YSensitivitySlider->OnValueChanged.AddUniqueDynamic(this, &USettingsMenuWidget::OnYSensitivityValueChanged);
+	XSensitivitySlider->OnValueChanged.AddUniqueDynamic(this, &USettingsMenuWidget::OnXSensitivityValueChanged);
 }
 
 void USettingsMenuWidget::OnWindowModeSelected(FString SelectedOption, ESelectInfo::Type SelectInfo)
@@ -95,4 +99,12 @@ void USettingsMenuWidget::OnRestartConfirmButtonPressed()
 void USettingsMenuWidget::RestartIgnoreButtonPressed()
 {
 	RestartPanel->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void USettingsMenuWidget::OnYSensitivityValueChanged(float Value)
+{
+}
+
+void USettingsMenuWidget::OnXSensitivityValueChanged(float Value)
+{
 }
