@@ -33,7 +33,6 @@ void ASniperProjectile::OnHit(UPrimitiveComponent *HitComp, AActor *OtherActor, 
 
     for( AActor *OverlappingActor : OverlappingActors )
     {
-        UE_LOG(LogTemp, Display, TEXT("%s"), *OverlappingActor->GetName());
         if (IDamageableActor *DamageableActor = Cast<IDamageableActor>(OverlappingActor))
         {
             DamageableActor->DamageActor(this, Damage);
