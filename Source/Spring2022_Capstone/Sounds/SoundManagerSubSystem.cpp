@@ -161,10 +161,6 @@ USoundManagerSubSystem::USoundManagerSubSystem()
 	if (GruntWaveStartLoaded.Succeeded())
 		GruntWaveStartSC = GruntWaveStartLoaded.Object;
 
-	static ConstructorHelpers::FObjectFinder<USoundCue>GruntNumbersLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Grunt/SC_GruntNumbers.SC_GruntNumbers'"));
-	if (GruntNumbersLoaded.Succeeded())
-		GruntNumbersSC = GruntNumbersLoaded.Object;
-
 	
 #pragma endregion 
 	
