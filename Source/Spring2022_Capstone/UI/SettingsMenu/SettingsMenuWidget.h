@@ -45,9 +45,9 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *GeneralPanel;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	USlider *XSensitivitySlider;
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	USlider *YSensitivitySlider;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	USlider *XSensitivitySlider;
 
 	// Controls
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
