@@ -192,7 +192,6 @@ void USoundManagerSubSystem::PlaySoundEvent() const
 	GEngine->AddOnScreenDebugMessage(-1, 5.f ,FColor::Black,"PlaySoundEventCalled");
 	if(PlayerDeathSC)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f ,FColor::Black,"PlayerDS");
 		PlaySound(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation(),PlayerDeathSC);
 	}
 }

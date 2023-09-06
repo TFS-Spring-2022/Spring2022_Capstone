@@ -185,7 +185,6 @@ private:
 
 	UPROPERTY()
 	int PlayerSoundEventToken;
-	
 
 	
 	
