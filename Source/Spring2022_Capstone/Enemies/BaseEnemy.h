@@ -107,6 +107,9 @@ public:
 	
 	UPROPERTY()
 	USoundBase* FootStepSound;
+
+	UPROPERTY()
+	USoundBase* LandSound;
 	
 	// Amount the enemy's stats are multiplied by when promoted.
 	UPROPERTY(EditAnywhere, Category = "Stats")

@@ -5,31 +5,29 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify_PlaySound.h"
 #include "Spring2022_Capstone/Enemies/BaseEnemy.h"
-#include "FootSoundAnimNotify.generated.h"
+#include "LandSoundAnimNotify.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SPRING2022_CAPSTONE_API UFootSoundAnimNotify : public UAnimNotify_PlaySound
+class SPRING2022_CAPSTONE_API ULandSoundAnimNotify : public UAnimNotify_PlaySound
 {
 	GENERATED_BODY()
-	
 public:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
-	
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* WoodLandSound;
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* WoodStepSound;
+	USoundBase* RockLandSound;
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* RockStepSound;
+	USoundBase* WaterLandSound;
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* WaterStepSound;
-	
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* GrassStepSound;
+	USoundBase* GrassLandSound;
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UPhysicalMaterial* CurrentGroundMat;
