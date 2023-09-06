@@ -36,6 +36,7 @@ public:
 	// Sets default values for this character's properties
 	ABaseEnemy();
 
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -47,6 +48,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UAudioComponent *GunShotComp;
+
+	
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UTextRenderComponent* NameTextRenderer;
@@ -107,9 +110,15 @@ public:
 	void PlayHitAnimation(FName HitBone);
 
 	void PromoteToElite();
-
+	
+	UPROPERTY()
+	USoundBase* FootStepSound;
+	
+	UPROPERTY()
+	USoundBase* LandSound;
+	
 	bool bIsElite = false;
-
+	
 	// Amount the enemy's stats are multiplied by when promoted.
 	UPROPERTY(EditAnywhere, Category = "Stats")
 	float EliteMultiplier = 1.3f;

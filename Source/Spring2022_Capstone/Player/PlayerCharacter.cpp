@@ -10,11 +10,13 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Spring2022_Capstone/Spring2022_Capstone.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
 APlayerCharacter::APlayerCharacter()
@@ -36,6 +38,9 @@ APlayerCharacter::APlayerCharacter()
 	UpgradeSystemComponent = CreateDefaultSubobject<UUpgradeSystemComponent>("Upgrades System");
 
 	PlayerMantleSystemComponent = CreateDefaultSubobject<UMantleSystemComponent>(TEXT("Mantle"));
+
+	FootStepAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Foot Steps"));
+	LandingAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Landing Steps"));
 
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
@@ -71,9 +76,15 @@ void APlayerCharacter::BeginPlay()
 
 	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
 	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
+
+	FootStepAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	LandingAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	CheckGround();
+
 	
 	//Temp
 	SoundManagerSubSystem->PlaySoundEvent();
+
 	
 	PlayerController = Cast<APlayerController>(GetController());
 	if(PlayerController)
@@ -132,6 +143,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	float CrouchInterpTime = FMath::Min(1.f, CrouchSpeed * DeltaTime);
 	CrouchEyeOffset = (1.f - CrouchInterpTime) * CrouchEyeOffset;
+	CheckGround();
 
 	if(ScoreManagerTimerSubSystem)
 	{
@@ -193,17 +205,26 @@ void APlayerCharacter::UnPause()
 
 void APlayerCharacter::Move(const FInputActionValue &Value)
 {
-	
 	const FVector2D DirectionalValue = Value.Get<FVector2D>();
 	if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
 	{
 		bIsMoving = true;
+		if(isGrounded)
+		{
+			if(FootStepAudioComp->GetSound())
+				if(!FootStepAudioComp->IsPlaying())
+					FootStepAudioComp->Play();
+		}
 		GetCharacterMovement()->MaxWalkSpeed = bIsSprinting ? Speed * SprintMultiplier : Speed;
 		AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * 100);
 		AddMovementInput(GetActorRightVector(), DirectionalValue.X * 100);
 	}
 	else
+	{
 		bIsMoving = false;
+		FootStepAudioComp->Stop();
+	}
+		
 }
 
 void APlayerCharacter::Jump()
@@ -323,6 +344,14 @@ void APlayerCharacter::Look(const FInputActionValue &Value)
 
 void APlayerCharacter::Sprint(const FInputActionValue &Value)
 {
+	if(Value.Get<bool>())
+	{
+		FootStepAudioComp->SetPitchMultiplier(2.f);
+	}
+	else
+	{
+		FootStepAudioComp->SetPitchMultiplier(1.4f);
+	}
 	bIsSprinting = Value.Get<bool>();
 }
 
@@ -555,4 +584,71 @@ UUpgradeSystemComponent* APlayerCharacter::GetUpgradeSystemComponent()
 		return UpgradeSystemComponent;
 	else
 		return nullptr;
+}
+
+void APlayerCharacter::CheckGround()
+{
+	
+			FHitResult HitResult;
+
+			FVector StartTrace = this->GetActorLocation();
+			FVector DownVector = FVector(0,0,1);
+			FVector EndTrace = ((DownVector * 120.f * -1) + StartTrace);
+			FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
+			TraceParams->bReturnPhysicalMaterial = true; 
+			TraceParams->AddIgnoredComponent(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetMesh());
+			
+			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
+			{
+				if(!isGrounded)
+				{
+					LandingAudioComp->Play();
+					isGrounded = true;
+				}
+				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
+					if(CurrentGroundMat != Cast<UPhysicalMaterial>(HitResult.PhysMaterial.Get()))
+					{
+						CurrentGroundMat = Cast<UPhysicalMaterial>(HitResult.PhysMaterial.Get());
+						switch (HitSurfaceType)
+						{
+						case SURFACE_Rock:
+							if(RockStepSound)
+								FootStepAudioComp->SetSound(RockStepSound);
+							if(RockLandSound)
+								LandingAudioComp->SetSound(RockLandSound);
+							break;
+						case SURFACE_Wood:
+							if(WoodStepSound)
+								FootStepAudioComp->SetSound(WoodStepSound);
+							if(WoodLandSound)
+								LandingAudioComp->SetSound(WoodLandSound);
+							break;
+						case SURFACE_Grass:
+								FootStepAudioComp->SetSound(GrassStepSound);
+							if(GrassLandSound)
+								LandingAudioComp->SetSound(GrassLandSound);
+							break;
+						case SURFACE_Water:
+							if(WaterStepSound)
+								FootStepAudioComp->SetSound(WaterStepSound);
+							if(WaterLandSound)
+								LandingAudioComp->SetSound(WaterLandSound);
+							break;
+						default:
+							if(RockStepSound)
+							FootStepAudioComp->SetSound(RockStepSound);
+							if(RockLandSound)
+							LandingAudioComp->SetSound(RockLandSound);
+							break;
+						}
+					}
+			}
+			else
+			{
+				if(isGrounded)
+				{
+					isGrounded = false;	
+					FootStepAudioComp->Stop();
+				}
+			}
 }
