@@ -223,7 +223,6 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
 	{
 		bIsMoving = false;
 		FootStepAudioComp->Stop();
-		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Blue,"We are not moving");
 	}
 		
 }
@@ -650,7 +649,6 @@ void APlayerCharacter::CheckGround()
 				{
 					isGrounded = false;	
 					FootStepAudioComp->Stop();
-					GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "We are not grounded");
 				}
 			}
 }
