@@ -18,7 +18,7 @@ public:
 	UCustomGameUserSettings();
 
 	UFUNCTION(BlueprintCallable)
-	static UCustomGameUserSettings *GetBetterGameUserSettings();
+	static UCustomGameUserSettings *GetCustomGameUserSettings();
 
 	UPROPERTY(Config, BlueprintReadWrite)
 	float YSensitivity;

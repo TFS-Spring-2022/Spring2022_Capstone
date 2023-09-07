@@ -5,11 +5,17 @@
 
 UCustomGameUserSettings::UCustomGameUserSettings()
 {
-    YSensitivity = 0;
-    XSensitivity = 0;
+    YSensitivity = 10;
+    XSensitivity = 10;
 }
 
-UCustomGameUserSettings *UCustomGameUserSettings::GetBetterGameUserSettings()
+UCustomGameUserSettings *UCustomGameUserSettings::GetCustomGameUserSettings()
 {
+    if (UGameUserSettings::GetGameUserSettings()){
+        UE_LOG(LogTemp, Display, TEXT("HERE HERE 1"));
+    }
+    if (Cast<UCustomGameUserSettings>(UGameUserSettings::GetGameUserSettings())){
+        UE_LOG(LogTemp, Display, TEXT("HERE HERE 2"));
+    }
     return Cast<UCustomGameUserSettings>(UGameUserSettings::GetGameUserSettings());
 }
