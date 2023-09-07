@@ -84,7 +84,6 @@ protected:
 	UPROPERTY()
 	UDirectionalDamageIndicatorWidget* DirectionalDamageIndicatorWidget;
 	
-
 	////	MOVEMENT RELATED INPUT ACTIONS
 	/**
 	 * @brief Holds the Move Input Action
@@ -157,6 +156,9 @@ protected:
 	void Grapple(const FInputActionValue &Value);
 	// Switches ActiveWeapon between Weapon1 and Weapon2
 	void SwitchWeapon(const FInputActionValue &Value);
+
+	// Player's movement vector. Set inside Move().
+	FVector2D DirectionalMovementValue;
 
 	bool bCanAttack = true;
 
@@ -390,9 +392,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UAudioComponent* LandingAudioComp;
-
 	
-
 	FORCEINLINE void SetCanAttack(bool Status) {bCanAttack = Status;}
 
 	FORCEINLINE void SetHasSniperDisableObject(bool Status) {bHasSniperDisableObject = Status;}
@@ -400,6 +400,5 @@ public:
 
 	void Pause(const FInputActionValue &Value);
 	void UnPause();
-	
 	
 };
