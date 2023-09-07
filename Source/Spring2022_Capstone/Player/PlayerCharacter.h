@@ -384,6 +384,12 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundBase* GrassLandSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* SandStepSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* SandLandSound;
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UAudioComponent* FootStepAudioComp;

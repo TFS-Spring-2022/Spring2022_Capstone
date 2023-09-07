@@ -30,6 +30,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundBase* GrassStepSound;
+	
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* SandStepSound;
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UPhysicalMaterial* CurrentGroundMat;
