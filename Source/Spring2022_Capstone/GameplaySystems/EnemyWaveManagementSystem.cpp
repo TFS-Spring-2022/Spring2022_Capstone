@@ -9,7 +9,6 @@
 
 UEnemyWaveManagementSystem::UEnemyWaveManagementSystem()
 {
-	RegisterComponent();
 }
 
 void UEnemyWaveManagementSystem::BeginPlay()

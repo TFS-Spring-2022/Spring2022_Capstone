@@ -13,6 +13,7 @@ void ASpring2022_CapstoneGameModeBase::BeginPlay()
 	// Create an instance of EnemyWaveManager BP assigned in the details panel. 
 	EnemyWaveManagerInstance = NewObject<UEnemyWaveManagementSystem>(this, LevelEnemyWaveManagerBP);
 	EnemyWaveManagerInstance->SetEnemySpawnLocations();
+	EnemyWaveManagerInstance->RegisterComponent();
 	
 	AIAttackSystemComp = FindComponentByClass<UAIAttackSystemComponent>();
 	if(!AIAttackSystemComp)
