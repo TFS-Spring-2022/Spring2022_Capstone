@@ -17,7 +17,7 @@ ASemiAutomaticWeapon::ASemiAutomaticWeapon()
 	RecoilComponent = CreateDefaultSubobject<URecoilComponent>("SemiAuto Recoil Component");
 }
 
-void ASemiAutomaticWeapon::Shoot()
+bool ASemiAutomaticWeapon::Shoot()
 {
 
 	if (!bIsOverheating && CurrentCharge > MaxChargeAmount)
@@ -137,8 +137,9 @@ void ASemiAutomaticWeapon::Shoot()
 			// Call recoil
 			if (RecoilComponent)
 				RecoilComponent->RecoilKick();
+			
+			return true;
 		}
 	}
-
-	
+	return false;
 }
