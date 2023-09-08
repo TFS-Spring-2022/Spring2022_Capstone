@@ -85,6 +85,13 @@ void UHUDWidget::SetWaveTimerText(int Minutes, float Seconds)
     WaveTimerTextBlock->SetText(TimeString);
 }
 
+void UHUDWidget::SetEnemiesRemainingText(int NumberOfEnemies)
+{
+    FText EnemiesRemainingText = FText::FromString(FString::Printf(TEXT("Enemies Remaining: %d"), NumberOfEnemies));
+    if(EnemiesRemainingTextBlock)
+        EnemiesRemainingTextBlock->SetText(EnemiesRemainingText);
+}
+
 void UHUDWidget::OnHealthChanged(float HealthValue)
 {
     HealthBar->SetPercent(HealthValue / MaxHealth);

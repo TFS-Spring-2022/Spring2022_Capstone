@@ -21,7 +21,7 @@ class SPRING2022_CAPSTONE_API ASemiAutomaticWeapon : public AWeaponBase
 	 * @brief Fires a single raycast shot forwards from the camera.
 	*/
 	UFUNCTION(BlueprintCallable)
-	virtual void Shoot() override;
+	virtual bool Shoot() override;
 
 	UPROPERTY(EditAnywhere)
 	URecoilComponent* RecoilComponent;
