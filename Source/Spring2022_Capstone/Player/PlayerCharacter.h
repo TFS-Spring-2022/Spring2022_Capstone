@@ -355,8 +355,7 @@ public:
 	UUpgradeSystemComponent* GetUpgradeSystemComponent();
 
 	FORCEINLINE bool GetIsSprinting() const {return bIsSprinting;}
-
-
+	
 	//Sounds
 	UFUNCTION()
 	void CheckGround();
@@ -420,6 +419,9 @@ public:
 
 	void Pause(const FInputActionValue &Value);
 	void UnPause();
-	
+
+	// Animation
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* FireMontage;
 	
 };

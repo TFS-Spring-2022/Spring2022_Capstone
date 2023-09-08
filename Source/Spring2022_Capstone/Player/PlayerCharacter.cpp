@@ -407,8 +407,9 @@ void APlayerCharacter::Attack(const FInputActionValue &Value)
 	{
 		if (bIsSprinting)
 			return;
-		ActiveWeapon->Shoot();
-		// Can attack is toggled false on anim montage. Set it back after fire rate has elapsed and the player can fire again.
+		if(ActiveWeapon->Shoot())
+			PlayAnimMontage(FireMontage, 1.0, "HeavyShot");
+		
 		GetWorld()->GetTimerManager().SetTimer(BetweenShotTimerHandle, this, &APlayerCharacter::SetCanAttackTrue, ActiveWeapon->GetFireRate(), false);
 	}
 }
