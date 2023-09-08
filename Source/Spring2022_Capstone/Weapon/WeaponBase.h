@@ -218,6 +218,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void DisplayFloatingDamageNumbers(FVector Location, int DamageAmount, bool bIsCrit);
 
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool GetIsOverheating(){return bIsOverheating;}
 	FORCEINLINE float GetFireRate() {return FireRate;}
 	
