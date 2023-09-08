@@ -167,6 +167,8 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	if(bDashBlurFadingIn)
 		Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight = FMath::FInterpTo(Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight, 1, DeltaTime, DASH_BLUR_FADEIN_SPEED);
+
+	ActiveWeapon->SetActorHiddenInGame(false);
 	
 }
 
@@ -225,8 +227,16 @@ void APlayerCharacter::PlayOverheatMontage(bool bFinishOverheatAnimation)
 
 void APlayerCharacter::Move(const FInputActionValue &Value)
 {
-	const FVector2D DirectionalValue = Value.Get<FVector2D>();
-	if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
+	 DirectionalMovementValue = Value.Get<FVector2D>();
+
+	// Disable vertical movement when grappling to prevent weird throws from happening (could also divide by liek .8 or something test).
+	if(GrappleComponent->GrappleState == EGrappleState::Attached)
+	{
+		// Stop vertical input
+		DirectionalMovementValue.Y = 0;
+	}
+	
+	if (GetController() && ( DirectionalMovementValue.X != 0.f ||  DirectionalMovementValue.Y != 0.f))
 	{
 		bIsMoving = true;
 		if(isGrounded)
@@ -236,8 +246,8 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
 					FootStepAudioComp->Play();
 		}
 		GetCharacterMovement()->MaxWalkSpeed = bIsSprinting ? Speed * SprintMultiplier : Speed;
-		AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * 100);
-		AddMovementInput(GetActorRightVector(), DirectionalValue.X * 100);
+		AddMovementInput(GetActorForwardVector(),  DirectionalMovementValue.Y * 100);
+		AddMovementInput(GetActorRightVector(),  DirectionalMovementValue.X * 100);
 	}
 	else
 	{
@@ -249,7 +259,6 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
 
 void APlayerCharacter::Jump()
 {
-	
 	if(!bIsMantleing)
 	{
 		if(bIsMoving)
@@ -267,7 +276,6 @@ void APlayerCharacter::Jump()
 	}
 
 	Super::Jump();
-
 }
 
 void APlayerCharacter::Landed(const FHitResult& Hit)
@@ -283,18 +291,14 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 {
 	const float CurrentTime = GetWorld()->GetRealTimeSeconds();
 
+	if (GetController() && (DirectionalMovementValue.X != 0.f ||  DirectionalMovementValue.Y != 0.f))
 	if (bCanDash)
 	{
-
-		// If Player Double Taps the same direction
-		if (CurrentTime - LastDashActionTappedTime < DoubleTapActivationDelay && Value.GetMagnitude() == PreviousDashDirection)
-		{
-
 			// Knock the actor up slightly to prevent ground collision
 			LaunchCharacter(FVector(0, 0, 250), false, true); // Note: I like the feel of true Overrides but we can come back later.
 
 			// Set Dash DirectionalValue to be used in DashDirectionLaunch
-			DashDirectionalValue = Value.Get<FVector2D>();
+			DashDirectionalValue =  DirectionalMovementValue; 
 
 			// After a tiny delay dash in desired direction
 			GetWorld()->GetTimerManager().SetTimer(DashDirectionalMovementDelayTimerHandle, this, &APlayerCharacter::DashDirectionalLaunch, 0.065, false); // Note: This number will never change while running. 0.65 feels good.
@@ -306,10 +310,7 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 			GetWorld()->GetTimerManager().SetTimer(DashBlurTimerHandle, this, &APlayerCharacter::ClearDashBlur, DashBlurUpTime, false);
 
 			if(SoundManagerSubSystem)
-			{
 				SoundManagerSubSystem->PlaySound(this->GetActorLocation(), DashSC);
-			}
-		}
 	}
 
 	LastDashActionTappedTime = CurrentTime;
@@ -328,6 +329,7 @@ void APlayerCharacter::DashDirectionalLaunch()
 		LaunchCharacter(-GetActorRightVector() * DashDistance, true, false);
 	else if (DashDirectionalValue.X == 1)
 		LaunchCharacter(GetActorRightVector() * DashDistance, true, false);
+	
 
 	// Handle velocity after dash
 	FVector PostDashDirection = UKismetMathLibrary::Conv_RotatorToVector(GetCharacterMovement()->GetLastUpdateRotation());

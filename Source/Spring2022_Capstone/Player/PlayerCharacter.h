@@ -84,7 +84,6 @@ protected:
 	UPROPERTY()
 	UDirectionalDamageIndicatorWidget* DirectionalDamageIndicatorWidget;
 	
-
 	////	MOVEMENT RELATED INPUT ACTIONS
 	/**
 	 * @brief Holds the Move Input Action
@@ -168,6 +167,9 @@ protected:
 	void InspectWeapon(const FInputActionValue &Value);
 	void InspectGrapple(const FInputActionValue &Value);
 
+	// Player's movement vector. Set inside Move().
+	FVector2D DirectionalMovementValue;
+
 	/**
 	 * @brief Switches ActiveWeapon between Weapon1 and Weapon2. Swaps meshes.
 	 * @note Called from SwapMeshAnimationNotify in the swapping weapons animation.
@@ -181,7 +183,7 @@ protected:
 	 */
 	UFUNCTION()
 	void PlaySwitchWeaponAnimation(const FInputActionValue &Value);
-	
+
 	bool bCanAttack = true;
 
 	// Time between presses of a button to indicate a double tap
@@ -416,7 +418,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UAudioComponent* LandingAudioComp;
-	
+
 	FTimerHandle BetweenShotTimerHandle;
 	UFUNCTION()
 	FORCEINLINE void SetCanAttackTrue() {bCanAttack = true;}
@@ -449,7 +451,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	UAnimMontage* GrappleLaunchMontage;
-	
+
 	FTimerHandle DelayGrappleTimerHandle;
 
 	/**
