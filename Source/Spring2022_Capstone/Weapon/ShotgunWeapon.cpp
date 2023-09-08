@@ -14,7 +14,7 @@ AShotgunWeapon::AShotgunWeapon()
 	RecoilComponent = CreateDefaultSubobject<URecoilComponent>("Shotgun Recoil Component");
 }
 
-void AShotgunWeapon::Shoot()
+bool AShotgunWeapon::Shoot()
 {
 	if (!bIsOverheating && CurrentCharge > MaxChargeAmount)
 	{
@@ -206,6 +206,9 @@ void AShotgunWeapon::Shoot()
 
 			ActorsKilledWhilePlayerGroundedIDs.Empty();
 			ActorsKilledWhilePlayerAirborneIDs.Empty();
+
+			return true;
 		}
 	}
+	return false;
 }
