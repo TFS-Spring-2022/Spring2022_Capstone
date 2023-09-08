@@ -408,7 +408,10 @@ void APlayerCharacter::Attack(const FInputActionValue &Value)
 		if (bIsSprinting)
 			return;
 		if(ActiveWeapon->Shoot())
-			PlayAnimMontage(FireMontage, 1.0, "HeavyShot");
+		{
+			if(FireMontage)
+				PlayAnimMontage(FireMontage, 1.0, "HeavyShot");
+		}
 		
 		GetWorld()->GetTimerManager().SetTimer(BetweenShotTimerHandle, this, &APlayerCharacter::SetCanAttackTrue, ActiveWeapon->GetFireRate(), false);
 	}
