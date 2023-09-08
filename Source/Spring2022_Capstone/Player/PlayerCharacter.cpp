@@ -203,6 +203,24 @@ void APlayerCharacter::UnPause()
 	}
 }
 
+void APlayerCharacter::PlayOverheatMontage(bool bFinishOverheatAnimation)
+{
+	if(!OverheatMontage)
+		return;
+
+	if(!bFinishOverheatAnimation)
+	{
+		// Note - Setting bEnableAutoBlendOut to false is not causing the gun to hold at final frame. ToDo: Figure out how to loop end.
+		OverheatMontage->bEnableAutoBlendOut = false;
+		PlayAnimMontage(OverheatMontage, 1.0, "OverheatStart");
+	}
+	else
+	{
+		OverheatMontage->bEnableAutoBlendOut = true;
+		PlayAnimMontage(OverheatMontage, 1.0, "OverheatEnd");
+	}
+}
+
 void APlayerCharacter::Move(const FInputActionValue &Value)
 {
 	const FVector2D DirectionalValue = Value.Get<FVector2D>();

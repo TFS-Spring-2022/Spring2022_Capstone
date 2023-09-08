@@ -423,5 +423,10 @@ public:
 	// Animation
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	UAnimMontage* FireMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* OverheatMontage;
+
+	void PlayOverheatMontage(bool bFinishOverheatAnimation);
 	
 };
