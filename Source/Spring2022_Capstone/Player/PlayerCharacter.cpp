@@ -167,6 +167,8 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	if(bDashBlurFadingIn)
 		Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight = FMath::FInterpTo(Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight, 1, DeltaTime, DASH_BLUR_FADEIN_SPEED);
+
+	ActiveWeapon->SetActorHiddenInGame(false);
 	
 }
 

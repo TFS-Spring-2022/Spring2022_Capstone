@@ -179,5 +179,6 @@ void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 	// Attach the weapon to the Player PlayerCharacter
 	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true); 
 	AttachToComponent(PlayerCharacter->GetMesh(), AttachmentRules, FName(WeaponSocketName));
+	SetActorHiddenInGame(true);
 	
 }
