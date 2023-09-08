@@ -437,5 +437,17 @@ public:
 	UAnimMontage* InspectWeaponMontage;
 
 	void PlayOverheatMontage(bool bFinishOverheatAnimation);
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* GrappleLaunchMontage;
 	
+	FTimerHandle DelayGrappleTimerHandle;
+
+	/**
+	 * @brief Used to call AGrappleComponent::Fire after a short delay so the
+	 * grapple animation can bring the stump into view.
+	 */
+	UFUNCTION()
+	void FireGrappleAfterDelay();
+
 };

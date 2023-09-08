@@ -74,7 +74,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
 	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
 
@@ -455,14 +455,25 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility);
 	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.f);
-	FVector TargetLocation = EndLocation;
+	FVector GrappleTargetLocation = EndLocation;
 	if (AActor *HitActor = HitResult.GetActor())
 	{
-		TargetLocation = HitResult.ImpactPoint;
+		GrappleTargetLocation = HitResult.ImpactPoint;
 	}
-	GrappleComponent->Fire(TargetLocation);
+
+	if(GrappleLaunchMontage)
+		PlayAnimMontage(GrappleLaunchMontage, 1.0, "GrappleLaunch");
+
+	// ToDo: Attach grapple to edge of stump. Then calling after a delay will look nicer.
+	//GetWorld()->GetTimerManager().SetTimer(DelayGrappleTimerHandle, this, &APlayerCharacter::FireGrappleAfterDelay, 1, false);
+	GrappleComponent->Fire(GrappleTargetLocation);
 
 	// ToDo: Implement sound here (grapple shot)
+}
+
+void APlayerCharacter::FireGrappleAfterDelay()
+{
+	// ToDo: Very short delay so grapple stump can enter screen before firing.
 }
 
 void APlayerCharacter::InspectWeapon(const FInputActionValue& Value)
