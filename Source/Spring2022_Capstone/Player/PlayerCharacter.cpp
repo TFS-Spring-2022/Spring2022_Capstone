@@ -226,6 +226,14 @@ void APlayerCharacter::PlayOverheatMontage(bool bFinishOverheatAnimation)
 void APlayerCharacter::Move(const FInputActionValue &Value)
 {
 	 DirectionalMovementValue = Value.Get<FVector2D>();
+
+	// Disable vertical movement when grappling to prevent weird throws from happening (could also divide by liek .8 or something test).
+	if(GrappleComponent->GrappleState == EGrappleState::Attached)
+	{
+		// Stop vertical input
+		DirectionalMovementValue.Y = 0;
+	}
+	
 	if (GetController() && ( DirectionalMovementValue.X != 0.f ||  DirectionalMovementValue.Y != 0.f))
 	{
 		bIsMoving = true;
