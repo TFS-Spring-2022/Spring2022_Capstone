@@ -68,6 +68,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
 		EnhancedInputComponent->BindAction(InspectWeaponAction, ETriggerEvent::Triggered, this, &APlayerCharacter::InspectWeapon);
+		EnhancedInputComponent->BindAction(InspectGrappleAction, ETriggerEvent::Triggered, this, &APlayerCharacter::InspectGrapple);
 	}
 }
 
@@ -480,6 +481,12 @@ void APlayerCharacter::InspectWeapon(const FInputActionValue& Value)
 {
 	if(InspectWeaponMontage)
 		PlayAnimMontage(InspectWeaponMontage);
+}
+
+void APlayerCharacter::InspectGrapple(const FInputActionValue& Value)
+{
+	if(InspectGrappleMontage)
+		PlayAnimMontage(InspectGrappleMontage);
 }
 
 void APlayerCharacter::SwitchWeapon()

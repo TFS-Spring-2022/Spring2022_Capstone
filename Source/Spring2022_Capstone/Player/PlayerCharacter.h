@@ -143,6 +143,11 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InspectWeaponAction;
+	/**
+	 * @brief Holds the Inspect Grapple Input Action
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* InspectGrappleAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UGrappleComponent *GrappleComponent;
@@ -161,6 +166,7 @@ protected:
 	void Attack(const FInputActionValue &Value);
 	void Grapple(const FInputActionValue &Value);
 	void InspectWeapon(const FInputActionValue &Value);
+	void InspectGrapple(const FInputActionValue &Value);
 
 	/**
 	 * @brief Switches ActiveWeapon between Weapon1 and Weapon2. Swaps meshes.
@@ -435,6 +441,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	UAnimMontage* InspectWeaponMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* InspectGrappleMontage;
 
 	void PlayOverheatMontage(bool bFinishOverheatAnimation);
 
