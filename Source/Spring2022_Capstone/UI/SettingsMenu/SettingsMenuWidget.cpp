@@ -31,8 +31,8 @@ void USettingsMenuWidget::NativeConstruct()
 
 	if (Settings)
 	{
-		UE_LOG(LogTemp, Display, TEXT("GOT HERE"));
 		YSensitivitySlider->SetValue(Settings->YSensitivity);
+		XSensitivitySlider->SetValue(Settings->XSensitivity);
 	}
 }
 
@@ -112,10 +112,10 @@ void USettingsMenuWidget::RestartIgnoreButtonPressed()
 
 void USettingsMenuWidget::OnYSensitivityValueChanged(float Value)
 {
-	UE_LOG(LogTemp, Display, TEXT("%f"), Value);
+	Settings->YSensitivity = Value;
 }
 
 void USettingsMenuWidget::OnXSensitivityValueChanged(float Value)
 {
-	UE_LOG(LogTemp, Display, TEXT("%f"), Value);
+	Settings->XSensitivity = Value;
 }
