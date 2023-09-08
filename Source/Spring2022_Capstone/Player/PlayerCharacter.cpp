@@ -10,11 +10,13 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Spring2022_Capstone/Spring2022_Capstone.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
 APlayerCharacter::APlayerCharacter()
@@ -36,6 +38,9 @@ APlayerCharacter::APlayerCharacter()
 	UpgradeSystemComponent = CreateDefaultSubobject<UUpgradeSystemComponent>("Upgrades System");
 
 	PlayerMantleSystemComponent = CreateDefaultSubobject<UMantleSystemComponent>(TEXT("Mantle"));
+
+	FootStepAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Foot Steps"));
+	LandingAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Landing Steps"));
 
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
@@ -59,18 +64,24 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
 		EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Completed, this,
-										   &APlayerCharacter::SwitchWeapon);
+										   &APlayerCharacter::PlaySwitchWeaponAnimation);
 
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
+		EnhancedInputComponent->BindAction(InspectWeaponAction, ETriggerEvent::Triggered, this, &APlayerCharacter::InspectWeapon);
+		EnhancedInputComponent->BindAction(InspectGrappleAction, ETriggerEvent::Triggered, this, &APlayerCharacter::InspectGrapple);
 	}
 }
 
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
 	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
+
+	FootStepAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	LandingAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	CheckGround();
 	
 	//Temp
 	SoundManagerSubSystem->PlaySoundEvent();
@@ -125,6 +136,8 @@ void APlayerCharacter::BeginPlay()
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController(), false);
 
 	bHasSniperDisableObject = false;
+	bIsSwappingWeapon = false;
+	bCanAttack = true;
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -132,6 +145,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	float CrouchInterpTime = FMath::Min(1.f, CrouchSpeed * DeltaTime);
 	CrouchEyeOffset = (1.f - CrouchInterpTime) * CrouchEyeOffset;
+	CheckGround();
 
 	if(ScoreManagerTimerSubSystem)
 	{
@@ -191,19 +205,46 @@ void APlayerCharacter::UnPause()
 	}
 }
 
+void APlayerCharacter::PlayOverheatMontage(bool bFinishOverheatAnimation)
+{
+	if(!OverheatMontage)
+		return;
+
+	if(!bFinishOverheatAnimation)
+	{
+		// Note - Setting bEnableAutoBlendOut to false is not causing the gun to hold at final frame. ToDo: Figure out how to loop end.
+		OverheatMontage->bEnableAutoBlendOut = false;
+		PlayAnimMontage(OverheatMontage, 1.0, "OverheatStart");
+	}
+	else
+	{
+		OverheatMontage->bEnableAutoBlendOut = true;
+		PlayAnimMontage(OverheatMontage, 1.0, "OverheatEnd");
+	}
+}
+
 void APlayerCharacter::Move(const FInputActionValue &Value)
 {
-	
 	const FVector2D DirectionalValue = Value.Get<FVector2D>();
 	if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
 	{
 		bIsMoving = true;
+		if(isGrounded)
+		{
+			if(FootStepAudioComp->GetSound())
+				if(!FootStepAudioComp->IsPlaying())
+					FootStepAudioComp->Play();
+		}
 		GetCharacterMovement()->MaxWalkSpeed = bIsSprinting ? Speed * SprintMultiplier : Speed;
 		AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * 100);
 		AddMovementInput(GetActorRightVector(), DirectionalValue.X * 100);
 	}
 	else
+	{
 		bIsMoving = false;
+		FootStepAudioComp->Stop();
+	}
+		
 }
 
 void APlayerCharacter::Jump()
@@ -323,6 +364,14 @@ void APlayerCharacter::Look(const FInputActionValue &Value)
 
 void APlayerCharacter::Sprint(const FInputActionValue &Value)
 {
+	if(Value.Get<bool>())
+	{
+		FootStepAudioComp->SetPitchMultiplier(2.f);
+	}
+	else
+	{
+		FootStepAudioComp->SetPitchMultiplier(1.4f);
+	}
 	bIsSprinting = Value.Get<bool>();
 }
 
@@ -370,14 +419,21 @@ void APlayerCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo &OutResult)
 
 void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
+
+	if(bIsSwappingWeapon)
+		return;
+	
 	if(bCanAttack)
 	{
-		if(bIsSwappingWeapon)
-			return;
-	
 		if (bIsSprinting)
 			return;
-		ActiveWeapon->Shoot();
+		if(ActiveWeapon->Shoot())
+		{
+			if(FireMontage)
+				PlayAnimMontage(FireMontage, 1.0, "HeavyShot");
+		}
+		
+		GetWorld()->GetTimerManager().SetTimer(BetweenShotTimerHandle, this, &APlayerCharacter::SetCanAttackTrue, ActiveWeapon->GetFireRate(), false);
 	}
 }
 
@@ -400,34 +456,59 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility);
 	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.f);
-	FVector TargetLocation = EndLocation;
+	FVector GrappleTargetLocation = EndLocation;
 	if (AActor *HitActor = HitResult.GetActor())
 	{
-		TargetLocation = HitResult.ImpactPoint;
+		GrappleTargetLocation = HitResult.ImpactPoint;
 	}
-	GrappleComponent->Fire(TargetLocation);
+
+	if(GrappleLaunchMontage)
+		PlayAnimMontage(GrappleLaunchMontage, 1.0, "GrappleLaunch");
+
+	// ToDo: Attach grapple to edge of stump. Then calling after a delay will look nicer.
+	//GetWorld()->GetTimerManager().SetTimer(DelayGrappleTimerHandle, this, &APlayerCharacter::FireGrappleAfterDelay, 1, false);
+	GrappleComponent->Fire(GrappleTargetLocation);
 
 	// ToDo: Implement sound here (grapple shot)
 }
 
-void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
+void APlayerCharacter::FireGrappleAfterDelay()
 {
+	// ToDo: Very short delay so grapple stump can enter screen before firing.
+}
 
-	
-	
-	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
+void APlayerCharacter::InspectWeapon(const FInputActionValue& Value)
+{
+	if(InspectWeaponMontage)
+		PlayAnimMontage(InspectWeaponMontage);
+}
+
+void APlayerCharacter::InspectGrapple(const FInputActionValue& Value)
+{
+	if(InspectGrappleMontage)
+		PlayAnimMontage(InspectGrappleMontage);
+}
+
+void APlayerCharacter::SwitchWeapon()
+{
+	if(Weapon1 && Weapon2 )
 	{
 		if(ActiveWeapon->GunChangeAudioComp)
 			ActiveWeapon->GunChangeAudioComp->Play();
-		
-		bIsSwappingWeapon = true;
-		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .5f, false);
+
+		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .2f, false); // Backup incase problem with swap animation not finishing.
 		ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 		StashedWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 		StashedWeapon->SetActorHiddenInGame(true);
 		ActiveWeapon->SetActorHiddenInGame(false);
 		PlayerHUDWidgetInstance->SetWeaponIcons(ActiveWeapon->GetWeaponIcon(), StashedWeapon->GetWeaponIcon());
 	}
+}
+
+void APlayerCharacter::PlaySwitchWeaponAnimation(const FInputActionValue &Value)
+{
+	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
+		bIsSwappingWeapon = true;
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)
@@ -555,4 +636,71 @@ UUpgradeSystemComponent* APlayerCharacter::GetUpgradeSystemComponent()
 		return UpgradeSystemComponent;
 	else
 		return nullptr;
+}
+
+void APlayerCharacter::CheckGround()
+{
+	
+			FHitResult HitResult;
+
+			FVector StartTrace = this->GetActorLocation();
+			FVector DownVector = FVector(0,0,1);
+			FVector EndTrace = ((DownVector * 120.f * -1) + StartTrace);
+			FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
+			TraceParams->bReturnPhysicalMaterial = true; 
+			TraceParams->AddIgnoredComponent(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetMesh());
+			
+			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
+			{
+				if(!isGrounded)
+				{
+					LandingAudioComp->Play();
+					isGrounded = true;
+				}
+				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
+					if(CurrentGroundMat != Cast<UPhysicalMaterial>(HitResult.PhysMaterial.Get()))
+					{
+						CurrentGroundMat = Cast<UPhysicalMaterial>(HitResult.PhysMaterial.Get());
+						switch (HitSurfaceType)
+						{
+						case SURFACE_Rock:
+							if(RockStepSound)
+								FootStepAudioComp->SetSound(RockStepSound);
+							if(RockLandSound)
+								LandingAudioComp->SetSound(RockLandSound);
+							break;
+						case SURFACE_Wood:
+							if(WoodStepSound)
+								FootStepAudioComp->SetSound(WoodStepSound);
+							if(WoodLandSound)
+								LandingAudioComp->SetSound(WoodLandSound);
+							break;
+						case SURFACE_Grass:
+								FootStepAudioComp->SetSound(GrassStepSound);
+							if(GrassLandSound)
+								LandingAudioComp->SetSound(GrassLandSound);
+							break;
+						case SURFACE_Water:
+							if(WaterStepSound)
+								FootStepAudioComp->SetSound(WaterStepSound);
+							if(WaterLandSound)
+								LandingAudioComp->SetSound(WaterLandSound);
+							break;
+						default:
+							if(RockStepSound)
+							FootStepAudioComp->SetSound(RockStepSound);
+							if(RockLandSound)
+							LandingAudioComp->SetSound(RockLandSound);
+							break;
+						}
+					}
+			}
+			else
+			{
+				if(isGrounded)
+				{
+					isGrounded = false;	
+					FootStepAudioComp->Stop();
+				}
+			}
 }
