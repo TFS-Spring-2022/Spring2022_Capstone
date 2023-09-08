@@ -64,7 +64,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
 		EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Completed, this,
-										   &APlayerCharacter::SwitchWeapon);
+										   &APlayerCharacter::PlaySwitchWeaponAnimation);
 
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
 	}
@@ -80,11 +80,9 @@ void APlayerCharacter::BeginPlay()
 	FootStepAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	LandingAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	CheckGround();
-
 	
 	//Temp
 	SoundManagerSubSystem->PlaySoundEvent();
-
 	
 	PlayerController = Cast<APlayerController>(GetController());
 	if(PlayerController)
@@ -136,6 +134,8 @@ void APlayerCharacter::BeginPlay()
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController(), false);
 
 	bHasSniperDisableObject = false;
+	bIsSwappingWeapon = false;
+	bCanAttack = true;
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -399,14 +399,17 @@ void APlayerCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo &OutResult)
 
 void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
+
+	if(bIsSwappingWeapon)
+		return;
+	
 	if(bCanAttack)
 	{
-		if(bIsSwappingWeapon)
-			return;
-	
 		if (bIsSprinting)
 			return;
 		ActiveWeapon->Shoot();
+		// Can attack is toggled false on anim montage. Set it back after fire rate has elapsed and the player can fire again.
+		GetWorld()->GetTimerManager().SetTimer(BetweenShotTimerHandle, this, &APlayerCharacter::SetCanAttackTrue, ActiveWeapon->GetFireRate(), false);
 	}
 }
 
@@ -439,24 +442,26 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 	// ToDo: Implement sound here (grapple shot)
 }
 
-void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
+void APlayerCharacter::SwitchWeapon()
 {
-
-	
-	
-	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
+	if(Weapon1 && Weapon2 )
 	{
 		if(ActiveWeapon->GunChangeAudioComp)
 			ActiveWeapon->GunChangeAudioComp->Play();
-		
-		bIsSwappingWeapon = true;
-		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .5f, false);
+
+		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .2f, false); // Backup incase problem with swap animation not finishing.
 		ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 		StashedWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 		StashedWeapon->SetActorHiddenInGame(true);
 		ActiveWeapon->SetActorHiddenInGame(false);
 		PlayerHUDWidgetInstance->SetWeaponIcons(ActiveWeapon->GetWeaponIcon(), StashedWeapon->GetWeaponIcon());
 	}
+}
+
+void APlayerCharacter::PlaySwitchWeaponAnimation(const FInputActionValue &Value)
+{
+	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
+		bIsSwappingWeapon = true;
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)

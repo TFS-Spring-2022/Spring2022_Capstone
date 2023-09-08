@@ -219,5 +219,6 @@ public:
 	void DisplayFloatingDamageNumbers(FVector Location, int DamageAmount, bool bIsCrit);
 
 	FORCEINLINE bool GetIsOverheating(){return bIsOverheating;}
+	FORCEINLINE float GetFireRate() {return FireRate;}
 	
 };

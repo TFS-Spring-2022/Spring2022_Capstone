@@ -155,9 +155,21 @@ protected:
 	void Crouch(const FInputActionValue &Value);
 	void Attack(const FInputActionValue &Value);
 	void Grapple(const FInputActionValue &Value);
-	// Switches ActiveWeapon between Weapon1 and Weapon2
-	void SwitchWeapon(const FInputActionValue &Value);
 
+	/**
+	 * @brief Switches ActiveWeapon between Weapon1 and Weapon2. Swaps meshes.
+	 * @note Called from SwapMeshAnimationNotify in the swapping weapons animation.
+	 */
+	UFUNCTION(BlueprintCallable)
+	void SwitchWeapon();
+
+	/**
+	 * @brief Triggers the animation inside ABP_PlayerArms by toggling bIsSwappingWeapons.
+	 * @param Value 
+	 */
+	UFUNCTION()
+	void PlaySwitchWeaponAnimation(const FInputActionValue &Value);
+	
 	bool bCanAttack = true;
 
 	// Time between presses of a button to indicate a double tap
@@ -289,6 +301,9 @@ private:
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool GetIsSwapping() {return bIsSwappingWeapon;}
 
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetIsSwapping(bool bStatus) {bIsSwappingWeapon = bStatus;}
+	
 	FTimerHandle IsSwappingTimerHandle;
 
 	UFUNCTION()
@@ -390,10 +405,15 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UAudioComponent* LandingAudioComp;
-
 	
+	FTimerHandle BetweenShotTimerHandle;
+	UFUNCTION()
+	FORCEINLINE void SetCanAttackTrue() {bCanAttack = true;}
 
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE void SetCanAttack(bool Status) {bCanAttack = Status;}
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetCanAttack() {return bCanAttack;}
 
 	FORCEINLINE void SetHasSniperDisableObject(bool Status) {bHasSniperDisableObject = Status;}
 	FORCEINLINE bool GetHasSniperDisableObject() const {return bHasSniperDisableObject;}
