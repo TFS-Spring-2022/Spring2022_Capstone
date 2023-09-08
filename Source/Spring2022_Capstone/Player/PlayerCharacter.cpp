@@ -67,6 +67,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 										   &APlayerCharacter::PlaySwitchWeaponAnimation);
 
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
+		EnhancedInputComponent->BindAction(InspectWeaponAction, ETriggerEvent::Triggered, this, &APlayerCharacter::InspectWeapon);
 	}
 }
 
@@ -462,6 +463,12 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 	GrappleComponent->Fire(TargetLocation);
 
 	// ToDo: Implement sound here (grapple shot)
+}
+
+void APlayerCharacter::InspectWeapon(const FInputActionValue& Value)
+{
+	if(InspectWeaponMontage)
+		PlayAnimMontage(InspectWeaponMontage);
 }
 
 void APlayerCharacter::SwitchWeapon()
