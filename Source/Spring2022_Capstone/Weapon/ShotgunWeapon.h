@@ -27,7 +27,7 @@ class SPRING2022_CAPSTONE_API AShotgunWeapon : public AWeaponBase
 	* @brief Fires a group of raycasts in a cone projecting from the player.
 	*/
 	UFUNCTION(BlueprintCallable)
-	virtual void Shoot() override;
+	virtual bool Shoot() override;
 
 	UPROPERTY(EditAnywhere)
 	URecoilComponent* RecoilComponent;

@@ -34,7 +34,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Equip")
 	void AttachWeapon(APlayerCharacter* TargetCharacter);
 
-	virtual void Shoot() PURE_VIRTUAL(AWeaponBase::Shoot());
+	/**
+	 * @brief 
+	 * @return True - shot fired.
+	 */
+	virtual bool Shoot() PURE_VIRTUAL(AWeaponBase::Shoot(), return false;);
 	
 	UPROPERTY(EditAnywhere)
 	USoundCue* HeatBuildUp;
@@ -218,6 +222,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void DisplayFloatingDamageNumbers(FVector Location, int DamageAmount, bool bIsCrit);
 
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool GetIsOverheating(){return bIsOverheating;}
+	FORCEINLINE float GetFireRate() {return FireRate;}
 	
 };
