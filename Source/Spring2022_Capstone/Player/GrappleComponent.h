@@ -83,6 +83,6 @@ public:
 
 	void DecrementGrappleCooldown(float Seconds);
 	FORCEINLINE float GetCooldown() const { return Cooldown; }
-	
+
 	
 };

@@ -84,7 +84,6 @@ protected:
 	UPROPERTY()
 	UDirectionalDamageIndicatorWidget* DirectionalDamageIndicatorWidget;
 	
-
 	////	MOVEMENT RELATED INPUT ACTIONS
 	/**
 	 * @brief Holds the Move Input Action
@@ -138,6 +137,16 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PauseAction;
+	/**
+	 * @brief Holds the Inspect Weapon Input Action
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* InspectWeaponAction;
+	/**
+	 * @brief Holds the Inspect Grapple Input Action
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* InspectGrappleAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UGrappleComponent *GrappleComponent;
@@ -155,8 +164,25 @@ protected:
 	void Crouch(const FInputActionValue &Value);
 	void Attack(const FInputActionValue &Value);
 	void Grapple(const FInputActionValue &Value);
-	// Switches ActiveWeapon between Weapon1 and Weapon2
-	void SwitchWeapon(const FInputActionValue &Value);
+	void InspectWeapon(const FInputActionValue &Value);
+	void InspectGrapple(const FInputActionValue &Value);
+
+	// Player's movement vector. Set inside Move().
+	FVector2D DirectionalMovementValue;
+
+	/**
+	 * @brief Switches ActiveWeapon between Weapon1 and Weapon2. Swaps meshes.
+	 * @note Called from SwapMeshAnimationNotify in the swapping weapons animation.
+	 */
+	UFUNCTION(BlueprintCallable)
+	void SwitchWeapon();
+
+	/**
+	 * @brief Triggers the animation inside ABP_PlayerArms by toggling bIsSwappingWeapons.
+	 * @param Value 
+	 */
+	UFUNCTION()
+	void PlaySwitchWeaponAnimation(const FInputActionValue &Value);
 
 	bool bCanAttack = true;
 
@@ -289,6 +315,9 @@ private:
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool GetIsSwapping() {return bIsSwappingWeapon;}
 
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetIsSwapping(bool bStatus) {bIsSwappingWeapon = bStatus;}
+	
 	FTimerHandle IsSwappingTimerHandle;
 
 	UFUNCTION()
@@ -340,8 +369,7 @@ public:
 	UUpgradeSystemComponent* GetUpgradeSystemComponent();
 
 	FORCEINLINE bool GetIsSprinting() const {return bIsSprinting;}
-
-
+	
 	//Sounds
 	UFUNCTION()
 	void CheckGround();
@@ -391,15 +419,46 @@ public:
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UAudioComponent* LandingAudioComp;
 
-	
+	FTimerHandle BetweenShotTimerHandle;
+	UFUNCTION()
+	FORCEINLINE void SetCanAttackTrue() {bCanAttack = true;}
 
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE void SetCanAttack(bool Status) {bCanAttack = Status;}
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetCanAttack() {return bCanAttack;}
 
 	FORCEINLINE void SetHasSniperDisableObject(bool Status) {bHasSniperDisableObject = Status;}
 	FORCEINLINE bool GetHasSniperDisableObject() const {return bHasSniperDisableObject;}
 
 	void Pause(const FInputActionValue &Value);
 	void UnPause();
-	
-	
+
+	// Animation
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* FireMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* OverheatMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* InspectWeaponMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* InspectGrappleMontage;
+
+	void PlayOverheatMontage(bool bFinishOverheatAnimation);
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* GrappleLaunchMontage;
+
+	FTimerHandle DelayGrappleTimerHandle;
+
+	/**
+	 * @brief Used to call AGrappleComponent::Fire after a short delay so the
+	 * grapple animation can bring the stump into view.
+	 */
+	UFUNCTION()
+	void FireGrappleAfterDelay();
+
 };

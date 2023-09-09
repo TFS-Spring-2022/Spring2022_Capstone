@@ -21,11 +21,6 @@ void ULandSoundAnimNotify::CheckGround(USkeletalMeshComponent* MeshComp)
 	TraceParams->bReturnPhysicalMaterial = true;
 	TraceParams->AddIgnoredComponent(MeshComp);
 	
-		
-	DrawDebugLine(MeshComp->GetOwner()->GetWorld(),StartTrace, EndTrace,FColor::Cyan,true,5.f,0.f,5.f);
-
-	
-			
 	if (FHitResult HitResult; MeshComp->GetOwner()->GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 	{
 			EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
