@@ -161,7 +161,7 @@ protected:
 	void Dash(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
 	void Sprint(const FInputActionValue &Value);
-	void Crouch(const FInputActionValue &Value);
+	void CCrouch(const FInputActionValue &Value);
 	void Attack(const FInputActionValue &Value);
 	void Grapple(const FInputActionValue &Value);
 	void InspectWeapon(const FInputActionValue &Value);

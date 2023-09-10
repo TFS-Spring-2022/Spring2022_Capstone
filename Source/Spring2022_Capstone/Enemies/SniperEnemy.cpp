@@ -23,8 +23,11 @@ void ASniperEnemy::Attack()
 {
     if(bCanAttack)
     {
-        //TODO: Implementation
-        UE_LOG(LogTemp, Display, TEXT("ATTACK"));
+        
+        if (APlayerCharacter *Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+        {
+            Player->DamageActor(this, Damage);
+        }
     }
 }
 
