@@ -64,27 +64,27 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
 		EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Completed, this,
-										   &APlayerCharacter::SwitchWeapon);
+										   &APlayerCharacter::PlaySwitchWeaponAnimation);
 
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
+		EnhancedInputComponent->BindAction(InspectWeaponAction, ETriggerEvent::Triggered, this, &APlayerCharacter::InspectWeapon);
+		EnhancedInputComponent->BindAction(InspectGrappleAction, ETriggerEvent::Triggered, this, &APlayerCharacter::InspectGrapple);
 	}
 }
 
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
 	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
 
 	FootStepAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	LandingAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	CheckGround();
-
 	
 	//Temp
 	SoundManagerSubSystem->PlaySoundEvent();
-
 	
 	PlayerController = Cast<APlayerController>(GetController());
 	if(PlayerController)
@@ -136,6 +136,8 @@ void APlayerCharacter::BeginPlay()
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController(), false);
 
 	bHasSniperDisableObject = false;
+	bIsSwappingWeapon = false;
+	bCanAttack = true;
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -165,6 +167,8 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	if(bDashBlurFadingIn)
 		Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight = FMath::FInterpTo(Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight, 1, DeltaTime, DASH_BLUR_FADEIN_SPEED);
+
+	ActiveWeapon->SetActorHiddenInGame(false);
 	
 }
 
@@ -203,10 +207,36 @@ void APlayerCharacter::UnPause()
 	}
 }
 
+void APlayerCharacter::PlayOverheatMontage(bool bFinishOverheatAnimation)
+{
+	if(!OverheatMontage)
+		return;
+
+	if(!bFinishOverheatAnimation)
+	{
+		// Note - Setting bEnableAutoBlendOut to false is not causing the gun to hold at final frame. ToDo: Figure out how to loop end.
+		OverheatMontage->bEnableAutoBlendOut = false;
+		PlayAnimMontage(OverheatMontage, 1.0, "OverheatStart");
+	}
+	else
+	{
+		OverheatMontage->bEnableAutoBlendOut = true;
+		PlayAnimMontage(OverheatMontage, 1.0, "OverheatEnd");
+	}
+}
+
 void APlayerCharacter::Move(const FInputActionValue &Value)
 {
-	const FVector2D DirectionalValue = Value.Get<FVector2D>();
-	if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
+	 DirectionalMovementValue = Value.Get<FVector2D>();
+
+	// Disable vertical movement when grappling to prevent weird throws from happening (could also divide by liek .8 or something test).
+	if(GrappleComponent->GrappleState == EGrappleState::Attached)
+	{
+		// Stop vertical input
+		DirectionalMovementValue.Y = 0;
+	}
+	
+	if (GetController() && ( DirectionalMovementValue.X != 0.f ||  DirectionalMovementValue.Y != 0.f))
 	{
 		bIsMoving = true;
 		if(isGrounded)
@@ -216,8 +246,8 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
 					FootStepAudioComp->Play();
 		}
 		GetCharacterMovement()->MaxWalkSpeed = bIsSprinting ? Speed * SprintMultiplier : Speed;
-		AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * 100);
-		AddMovementInput(GetActorRightVector(), DirectionalValue.X * 100);
+		AddMovementInput(GetActorForwardVector(),  DirectionalMovementValue.Y * 100);
+		AddMovementInput(GetActorRightVector(),  DirectionalMovementValue.X * 100);
 	}
 	else
 	{
@@ -229,7 +259,6 @@ void APlayerCharacter::Move(const FInputActionValue &Value)
 
 void APlayerCharacter::Jump()
 {
-	
 	if(!bIsMantleing)
 	{
 		if(bIsMoving)
@@ -247,7 +276,6 @@ void APlayerCharacter::Jump()
 	}
 
 	Super::Jump();
-
 }
 
 void APlayerCharacter::Landed(const FHitResult& Hit)
@@ -263,18 +291,14 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 {
 	const float CurrentTime = GetWorld()->GetRealTimeSeconds();
 
+	if (GetController() && (DirectionalMovementValue.X != 0.f ||  DirectionalMovementValue.Y != 0.f))
 	if (bCanDash)
 	{
-
-		// If Player Double Taps the same direction
-		if (CurrentTime - LastDashActionTappedTime < DoubleTapActivationDelay && Value.GetMagnitude() == PreviousDashDirection)
-		{
-
 			// Knock the actor up slightly to prevent ground collision
 			LaunchCharacter(FVector(0, 0, 250), false, true); // Note: I like the feel of true Overrides but we can come back later.
 
 			// Set Dash DirectionalValue to be used in DashDirectionLaunch
-			DashDirectionalValue = Value.Get<FVector2D>();
+			DashDirectionalValue =  DirectionalMovementValue; 
 
 			// After a tiny delay dash in desired direction
 			GetWorld()->GetTimerManager().SetTimer(DashDirectionalMovementDelayTimerHandle, this, &APlayerCharacter::DashDirectionalLaunch, 0.065, false); // Note: This number will never change while running. 0.65 feels good.
@@ -286,10 +310,7 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 			GetWorld()->GetTimerManager().SetTimer(DashBlurTimerHandle, this, &APlayerCharacter::ClearDashBlur, DashBlurUpTime, false);
 
 			if(SoundManagerSubSystem)
-			{
 				SoundManagerSubSystem->PlaySound(this->GetActorLocation(), DashSC);
-			}
-		}
 	}
 
 	LastDashActionTappedTime = CurrentTime;
@@ -308,6 +329,7 @@ void APlayerCharacter::DashDirectionalLaunch()
 		LaunchCharacter(-GetActorRightVector() * DashDistance, true, false);
 	else if (DashDirectionalValue.X == 1)
 		LaunchCharacter(GetActorRightVector() * DashDistance, true, false);
+	
 
 	// Handle velocity after dash
 	FVector PostDashDirection = UKismetMathLibrary::Conv_RotatorToVector(GetCharacterMovement()->GetLastUpdateRotation());
@@ -399,14 +421,21 @@ void APlayerCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo &OutResult)
 
 void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
+
+	if(bIsSwappingWeapon)
+		return;
+	
 	if(bCanAttack)
 	{
-		if(bIsSwappingWeapon)
-			return;
-	
 		if (bIsSprinting)
 			return;
-		ActiveWeapon->Shoot();
+		if(ActiveWeapon->Shoot())
+		{
+			if(FireMontage)
+				PlayAnimMontage(FireMontage, 1.0, "HeavyShot");
+		}
+		
+		GetWorld()->GetTimerManager().SetTimer(BetweenShotTimerHandle, this, &APlayerCharacter::SetCanAttackTrue, ActiveWeapon->GetFireRate(), false);
 	}
 }
 
@@ -429,34 +458,59 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility);
 	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.f);
-	FVector TargetLocation = EndLocation;
+	FVector GrappleTargetLocation = EndLocation;
 	if (AActor *HitActor = HitResult.GetActor())
 	{
-		TargetLocation = HitResult.ImpactPoint;
+		GrappleTargetLocation = HitResult.ImpactPoint;
 	}
-	GrappleComponent->Fire(TargetLocation);
+
+	if(GrappleLaunchMontage)
+		PlayAnimMontage(GrappleLaunchMontage, 1.0, "GrappleLaunch");
+
+	// ToDo: Attach grapple to edge of stump. Then calling after a delay will look nicer.
+	//GetWorld()->GetTimerManager().SetTimer(DelayGrappleTimerHandle, this, &APlayerCharacter::FireGrappleAfterDelay, 1, false);
+	GrappleComponent->Fire(GrappleTargetLocation);
 
 	// ToDo: Implement sound here (grapple shot)
 }
 
-void APlayerCharacter::SwitchWeapon(const FInputActionValue &Value)
+void APlayerCharacter::FireGrappleAfterDelay()
 {
+	// ToDo: Very short delay so grapple stump can enter screen before firing.
+}
 
-	
-	
-	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
+void APlayerCharacter::InspectWeapon(const FInputActionValue& Value)
+{
+	if(InspectWeaponMontage)
+		PlayAnimMontage(InspectWeaponMontage);
+}
+
+void APlayerCharacter::InspectGrapple(const FInputActionValue& Value)
+{
+	if(InspectGrappleMontage)
+		PlayAnimMontage(InspectGrappleMontage);
+}
+
+void APlayerCharacter::SwitchWeapon()
+{
+	if(Weapon1 && Weapon2 )
 	{
 		if(ActiveWeapon->GunChangeAudioComp)
 			ActiveWeapon->GunChangeAudioComp->Play();
-		
-		bIsSwappingWeapon = true;
-		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .5f, false);
+
+		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .2f, false); // Backup incase problem with swap animation not finishing.
 		ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 		StashedWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 		StashedWeapon->SetActorHiddenInGame(true);
 		ActiveWeapon->SetActorHiddenInGame(false);
 		PlayerHUDWidgetInstance->SetWeaponIcons(ActiveWeapon->GetWeaponIcon(), StashedWeapon->GetWeaponIcon());
 	}
+}
+
+void APlayerCharacter::PlaySwitchWeaponAnimation(const FInputActionValue &Value)
+{
+	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
+		bIsSwappingWeapon = true;
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)

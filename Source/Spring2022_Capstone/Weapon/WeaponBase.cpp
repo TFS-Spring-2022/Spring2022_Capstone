@@ -135,6 +135,9 @@ void AWeaponBase::Overheat()
 		OverheatAudioComp->Play();
 		OverheatAudioComp->FadeOut(OverheatTime,0.f);
 	}
+
+	// Play start & loop of overheat animation montage.
+	PlayerCharacter->PlayOverheatMontage(false);
 	
 	GetWorldTimerManager().SetTimer(OverheatTimerHandle, this, &AWeaponBase::WeaponCooldown, OverheatTime, false, -1);
 
@@ -152,7 +155,9 @@ void AWeaponBase::WeaponCooldown()
 	
 	OverheatAudioComp->SetSound(HeatBuildUp);
 	OverheatAudioComp->Stop();
-	
+
+	// Play end of overheat montage.
+	PlayerCharacter->PlayOverheatMontage(true);
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("WEAPON COOLED"));
 }
 
@@ -174,5 +179,6 @@ void AWeaponBase::AttachWeapon(APlayerCharacter* TargetCharacter)
 	// Attach the weapon to the Player PlayerCharacter
 	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true); 
 	AttachToComponent(PlayerCharacter->GetMesh(), AttachmentRules, FName(WeaponSocketName));
+	SetActorHiddenInGame(true);
 	
 }
