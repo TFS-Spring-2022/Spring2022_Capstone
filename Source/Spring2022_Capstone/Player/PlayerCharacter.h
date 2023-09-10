@@ -280,6 +280,10 @@ private:
 	float SprintMultiplier = 1.2f;
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnRate = 200.f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float YSensitivity = 50.f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float XSensitivity = 50.f;
 
 	// ToDo: Currently assigned inside WeaponBase::BeginPlay() from weapons in level.
 	UPROPERTY(EditAnywhere, Category = "Player Inventory")
@@ -460,5 +464,10 @@ public:
 	 */
 	UFUNCTION()
 	void FireGrappleAfterDelay();
+
+	UFUNCTION()
+	void SetYSensitivity(float Value);
+	UFUNCTION()
+	void SetXSensitivity(float Value);
 
 };

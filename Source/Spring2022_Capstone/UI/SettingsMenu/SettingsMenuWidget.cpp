@@ -5,11 +5,15 @@
 #include "Components/Button.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Components/Slider.h"
+#include "Spring2022_Capstone/CustomGameUserSettings.h"
+#include "Kismet/GameplayStatics.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 
 void USettingsMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	
+
 	BackButton->OnClicked.AddUniqueDynamic(this, &USettingsMenuWidget::OnBackButtonPressed);
 	GeneralButton->OnClicked.AddUniqueDynamic(this, &USettingsMenuWidget::OnGeneralButtonPressed);
 	GraphicsButton->OnClicked.AddUniqueDynamic(this, &USettingsMenuWidget::OnGraphicsButtonPressed);
@@ -21,25 +25,37 @@ void USettingsMenuWidget::NativeConstruct()
 	WindowModeComboBox->AddOption("Borderless Full Screen");
 	WindowModeComboBox->AddOption("Windowed");
 	WindowModeComboBox->OnSelectionChanged.AddDynamic(this, &USettingsMenuWidget::OnWindowModeSelected);
+
+	YSensitivitySlider->OnValueChanged.AddUniqueDynamic(this, &USettingsMenuWidget::OnYSensitivityValueChanged);
+	XSensitivitySlider->OnValueChanged.AddUniqueDynamic(this, &USettingsMenuWidget::OnXSensitivityValueChanged);
+
+	Settings = UCustomGameUserSettings::GetCustomGameUserSettings();
+	Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	if (Settings)
+	{
+		YSensitivitySlider->SetValue(Settings->YSensitivity);
+		XSensitivitySlider->SetValue(Settings->XSensitivity);
+	}
 }
 
 void USettingsMenuWidget::OnWindowModeSelected(FString SelectedOption, ESelectInfo::Type SelectInfo)
 {
-	UGameUserSettings* GameUserSettings = GEngine->GetGameUserSettings();
-	if(!GameUserSettings)
+	UGameUserSettings *GameUserSettings = GEngine->GetGameUserSettings();
+	if (!GameUserSettings)
 		return;
-	
-	if(SelectedOption == "Full Screen")
+
+	if (SelectedOption == "Full Screen")
 	{
 		GameUserSettings->SetScreenResolution(GameUserSettings->GetDesktopResolution());
 		GameUserSettings->SetFullscreenMode(EWindowMode::Fullscreen);
 	}
-	else if(SelectedOption == "Borderless Full Screen")
+	else if (SelectedOption == "Borderless Full Screen")
 	{
 		GameUserSettings->SetScreenResolution(GameUserSettings->GetDesktopResolution());
 		GameUserSettings->SetFullscreenMode(EWindowMode::WindowedFullscreen);
 	}
-	else if(SelectedOption == "Windowed")
+	else if (SelectedOption == "Windowed")
 	{
 		GameUserSettings->SetScreenResolution(FIntPoint(1280, 720));
 		GameUserSettings->SetFullscreenMode(EWindowMode::Windowed);
@@ -49,7 +65,7 @@ void USettingsMenuWidget::OnWindowModeSelected(FString SelectedOption, ESelectIn
 
 void USettingsMenuWidget::OnBackButtonPressed()
 {
-	if(Manager)
+	if (Manager)
 		Manager->DismissSettingsWidget();
 	else
 		SetVisibility(ESlateVisibility::Hidden);
@@ -57,7 +73,7 @@ void USettingsMenuWidget::OnBackButtonPressed()
 
 void USettingsMenuWidget::OnGeneralButtonPressed()
 {
-    ClearPanels();
+	ClearPanels();
 	GeneralPanel->SetVisibility(ESlateVisibility::Visible);
 }
 
@@ -71,7 +87,7 @@ void USettingsMenuWidget::OnGraphicsButtonPressed()
 {
 	ClearPanels();
 	GraphicsPanel->SetVisibility(ESlateVisibility::Visible);
-}	
+}
 
 void USettingsMenuWidget::OnAudioButtonPressed()
 {
@@ -95,4 +111,18 @@ void USettingsMenuWidget::OnRestartConfirmButtonPressed()
 void USettingsMenuWidget::RestartIgnoreButtonPressed()
 {
 	RestartPanel->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void USettingsMenuWidget::OnYSensitivityValueChanged(float Value)
+{
+	Settings->YSensitivity = Value;
+	if (Player)
+		Player->SetYSensitivity(Value);
+}
+
+void USettingsMenuWidget::OnXSensitivityValueChanged(float Value)
+{
+	Settings->XSensitivity = Value;
+	if (Player)
+		Player->SetXSensitivity(Value);
 }
