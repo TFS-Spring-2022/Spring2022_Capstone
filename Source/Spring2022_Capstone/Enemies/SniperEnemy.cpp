@@ -2,6 +2,7 @@
 
 #include "SniperEnemy.h"
 #include "NiagaraComponent.h"
+#include "BaseEnemyProjectile.h"
 #include "Kismet/GameplayStatics.h"
 
 ASniperEnemy::ASniperEnemy()
@@ -31,6 +32,20 @@ void ASniperEnemy::Attack()
     }
 }
 
+void ASniperEnemy::SpecialAttack()
+{
+    if(bCanAttack)
+    {
+        if (!Projectile) { return; }
+        if (APlayerCharacter *Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+        {
+            FVector vectorToPlayer = Player->GetActorLocation() - GetActorLocation();
+            FRotator FacingRotator = vectorToPlayer.Rotation();
+            GetWorld()->SpawnActor<ABaseEnemyProjectile>(Projectile, ProjectileSpawnPoint->GetComponentLocation(), FacingRotator);
+        }
+    }
+}
+
 void ASniperEnemy::BeginPlay()
 {
     Super::BeginPlay();
@@ -52,10 +67,6 @@ void ASniperEnemy::EnableSniperEnemy()
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Enabled");
     bCanAttack = true;
     LaserComponent->Activate();
-}
-
-void ASniperEnemy::SpecialAttack()
-{
 }
 
 void ASniperEnemy::StartCharge()
