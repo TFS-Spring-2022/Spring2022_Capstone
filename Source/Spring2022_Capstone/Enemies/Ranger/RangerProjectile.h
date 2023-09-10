@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseEnemyProjectile.h"
+#include "Spring2022_Capstone/Enemies/BaseEnemyProjectile.h"
 #include "RangerProjectile.generated.h"
 
 /**

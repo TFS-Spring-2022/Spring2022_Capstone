@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "AttackSystemAgentInterface.h"
 #include "RandomNameGenerator.h"
-#include "SniperDisablePickup.h"
+#include "Sniper/SniperDisablePickup.h"
 #include "GameFramework/Character.h"
 #include "Spring2022_Capstone/BasePickup.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"

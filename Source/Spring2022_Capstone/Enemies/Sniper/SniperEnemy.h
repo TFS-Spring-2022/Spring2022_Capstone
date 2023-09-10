@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseEnemy.h"
+#include "Spring2022_Capstone/Enemies/BaseEnemy.h"
 #include "SniperEnemy.generated.h"
 
 class UNiagaraComponent;
