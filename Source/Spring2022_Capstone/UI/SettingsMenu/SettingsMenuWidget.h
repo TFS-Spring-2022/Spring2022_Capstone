@@ -15,6 +15,7 @@ class AMainMenuManager;
 class UButton;
 class USlider;
 class UCustomGameUserSettings;
+class APlayerCharacter;
 
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API USettingsMenuWidget : public UUserWidget
@@ -28,6 +29,7 @@ public:
 
 	AMainMenuManager *Manager;
 	UCustomGameUserSettings *Settings;
+	APlayerCharacter *Player;
 
 	// Root Panel
 	UPROPERTY(EditAnywhere, meta = (BindWidget))

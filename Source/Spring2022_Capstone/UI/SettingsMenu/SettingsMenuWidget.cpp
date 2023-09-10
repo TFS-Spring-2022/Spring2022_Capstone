@@ -7,6 +7,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Components/Slider.h"
 #include "Spring2022_Capstone/CustomGameUserSettings.h"
+#include "Kismet/GameplayStatics.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 
 void USettingsMenuWidget::NativeConstruct()
 {
@@ -28,6 +30,7 @@ void USettingsMenuWidget::NativeConstruct()
 	XSensitivitySlider->OnValueChanged.AddUniqueDynamic(this, &USettingsMenuWidget::OnXSensitivityValueChanged);
 
 	Settings = UCustomGameUserSettings::GetCustomGameUserSettings();
+	Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	if (Settings)
 	{
@@ -113,9 +116,13 @@ void USettingsMenuWidget::RestartIgnoreButtonPressed()
 void USettingsMenuWidget::OnYSensitivityValueChanged(float Value)
 {
 	Settings->YSensitivity = Value;
+	if (Player)
+		Player->SetYSensitivity(Value);
 }
 
 void USettingsMenuWidget::OnXSensitivityValueChanged(float Value)
 {
 	Settings->XSensitivity = Value;
+	if (Player)
+		Player->SetXSensitivity(Value);
 }
