@@ -51,5 +51,16 @@ bool ABarrel::DamageActor(AActor *DamagingActor, const float DamageAmount, FName
 
 void ABarrel::Explode()
 {
-	
+	TArray<AActor *> OverlappingActors;
+    SphereCollider->GetOverlappingActors(OverlappingActors);
+
+    for( AActor *OverlappingActor : OverlappingActors )
+    {
+        if (IDamageableActor *DamageableActor = Cast<IDamageableActor>(OverlappingActor))
+        {
+			if (DamageableActor == this) { continue; }
+            DamageableActor->DamageActor(this, Damage);
+        }
+    }
+    Destroy();
 }
