@@ -1,6 +1,8 @@
 // Created by Spring2022_Capstone team
 
 #include "PlayerCharacter.h"
+
+#include "DiffResults.h"
 #include "GrappleComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -41,7 +43,8 @@ APlayerCharacter::APlayerCharacter()
 
 	FootStepAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Foot Steps"));
 	LandingAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Landing Steps"));
-
+	VoiceAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Voice Lines"));
+	
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
 
@@ -81,10 +84,11 @@ void APlayerCharacter::BeginPlay()
 
 	FootStepAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	LandingAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	VoiceAudioComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	CheckGround();
 	
 	//Temp
-	SoundManagerSubSystem->PlaySoundEvent();
+	SoundManagerSubSystem->PlaySoundEvent(SoundManagerSubSystem,VoiceAudioComponent,1);
 	
 	PlayerController = Cast<APlayerController>(GetController());
 	if(PlayerController)
@@ -647,7 +651,7 @@ void APlayerCharacter::CheckGround()
 
 			FVector StartTrace = this->GetActorLocation();
 			FVector DownVector = FVector(0,0,1);
-			FVector EndTrace = ((DownVector * 120.f * -1) + StartTrace);
+			FVector EndTrace = ((DownVector * 135.f * -1) + StartTrace);
 			FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
 			TraceParams->bReturnPhysicalMaterial = true; 
 			TraceParams->AddIgnoredComponent(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetMesh());

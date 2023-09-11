@@ -424,6 +424,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UAudioComponent* LandingAudioComp;
+	
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	UAudioComponent* VoiceAudioComponent;
 
 	FTimerHandle BetweenShotTimerHandle;
 	UFUNCTION()

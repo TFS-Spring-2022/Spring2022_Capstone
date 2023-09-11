@@ -27,23 +27,33 @@ public:
 	void PlaysMusic(const USoundCue* Music) const;
 	
 	UFUNCTION()
-	void PlaySoundEvent()const;
+	static void PlaySoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID);
 
 	UFUNCTION()
-	void ImplementToken(int stk1, int ptk2, int gtk3, int sntk, int ntk);
+	static void PlaySniperSoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID);
+
+	UFUNCTION()
+	static void PlayGruntSoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID);
+
+	UFUNCTION()
+	static void PlayNarratorSoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID);
+
+	UFUNCTION()
+	static void PlayRangerSoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID);
+
+	UFUNCTION()
+	static void PlayPlayerSoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID);
+
 
 	
 private:
-
-	UPROPERTY()
-	TArray<USoundCue*> GruntVoiceLines;
 	
 	UPROPERTY()
+	TArray<USoundCue*> GruntVoiceLines;
+	UPROPERTY()
 	TArray<USoundCue*> PlayerVoiceLines;
-
 	UPROPERTY()
 	TArray<USoundCue*> SniperVoiceLines;
-
 	UPROPERTY()
 	TArray<USoundCue*> NarratorVoiceLines;
 
@@ -162,7 +172,7 @@ private:
 	USoundCue* GruntGrappleSC;
 
 	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
-	USoundCue* GruntNumbersSC;
+	USoundCue* GruntDeathSC;
 	
 	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
 	USoundCue* GruntArialHitSC;

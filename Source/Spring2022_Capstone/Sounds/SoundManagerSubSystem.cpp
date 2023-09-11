@@ -11,53 +11,53 @@ USoundManagerSubSystem::USoundManagerSubSystem()
 {
 	SubSystemAudio = CreateDefaultSubobject<UAudioComponent>("GrappleShotAC");
 
-
 #pragma region Player Voice Lines
 
 	//Player voice lines SoundCues 
 	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerDeathSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerDeath.SC_PlayerDeath'"));
 	if (PlayerDeathSCLoaded.Succeeded())
-		PlayerDeathSC = PlayerDeathSCLoaded.Object;
+		PlayerVoiceLines.Emplace(PlayerDeathSC = PlayerDeathSCLoaded.Object);
+		
 
-	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerGrapplingSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/Guns/SC_Overheat.SC_Overheat'"));
+	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerGrapplingSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerGrappling.SC_PlayerGrappling'"));
 	if (PlayerGrapplingSCLoaded.Succeeded())
-		PlayerGrapplingSC = PlayerGrapplingSCLoaded.Object;
+		PlayerVoiceLines.Emplace(PlayerGrapplingSC = PlayerGrapplingSCLoaded.Object);
 
-	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerHurtSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/Guns/SC_Overheat.SC_Overheat'"));
+	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerHurtSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerHurt.SC_PlayerHurt'"));
 	if (PlayerHurtSCLoaded.Succeeded())
-		PlayerHurtSC = PlayerHurtSCLoaded.Object;
+		PlayerVoiceLines.Emplace(PlayerHurtSC = PlayerHurtSCLoaded.Object);
 
-	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerHeavyHurSCtLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/Guns/SC_Overheat.SC_Overheat'"));
+	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerHeavyHurSCtLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerHeavyHurt.SC_PlayerHeavyHurt'"));
 	if (PlayerHeavyHurSCtLoaded.Succeeded())
-		PlayerHeavyHurtSC = PlayerHeavyHurSCtLoaded.Object;
+		PlayerVoiceLines.Emplace(PlayerHeavyHurtSC = PlayerHeavyHurSCtLoaded.Object);
 	
-	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerSniperSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/Guns/SC_Overheat.SC_Overheat'"));
+	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerSniperSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerSniperHit.SC_PlayerSniperHit'"));
 	if (PlayerSniperSCLoaded.Succeeded())
-		PlayerSniperHitSC = PlayerSniperSCLoaded.Object;
+		PlayerVoiceLines.Emplace(PlayerSniperHitSC = PlayerSniperSCLoaded.Object);
 
 	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerAFKSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerAFK.SC_PlayerAFK'"));
 	if (PlayerAFKSCLoaded.Succeeded())
-		PlayerAFKSC = PlayerAFKSCLoaded.Object;
+		PlayerVoiceLines.Emplace(PlayerAFKSC = PlayerAFKSCLoaded.Object);
 
-	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerWaveStartSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/Guns/SC_Overheat.SC_Overheat'"));
+	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerWaveStartSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerWaveStart.SC_PlayerWaveStart'"));
 	if (PlayerWaveStartSCLoaded.Succeeded())
-		PlayerWaveStartSC = PlayerWaveStartSCLoaded.Object;
+		PlayerVoiceLines.Emplace(PlayerWaveStartSC = PlayerWaveStartSCLoaded.Object);
 
 	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerArialSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerArial.SC_PlayerArial'"));
 	if (PlayerArialSCLoaded.Succeeded())
-		PlayerArialSC = PlayerArialSCLoaded.Object;
+		PlayerVoiceLines.Emplace(PlayerArialSC = PlayerArialSCLoaded.Object);
 
-	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerHealedSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/Guns/SC_Overheat.SC_Overheat'"));
+	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerHealedSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerHealed.SC_PlayerHealed'"));
 	if (PlayerHealedSCLoaded.Succeeded())
-		PlayerHealedSC = PlayerHealedSCLoaded.Object;
+		PlayerVoiceLines.Emplace(PlayerHealedSC = PlayerHealedSCLoaded.Object);
 
 	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerCritSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerCrit.SC_PlayerCrit'"));
     	if (PlayerCritSCLoaded.Succeeded())
-    		PlayerCritSC = PlayerCritSCLoaded.Object;
+    		PlayerVoiceLines.Emplace(PlayerCritSC = PlayerCritSCLoaded.Object);
     		
-	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerRampageSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/Guns/SC_Overheat.SC_Overheat'"));
+	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerRampageSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerRampage.SC_PlayerRampage'"));
 	if (PlayerRampageSCLoaded.Succeeded())
-		PlayerRampageSC = PlayerRampageSCLoaded.Object;
+		PlayerVoiceLines.Emplace(PlayerRampageSC = PlayerRampageSCLoaded.Object);
 
 	
 #pragma endregion
@@ -161,8 +161,12 @@ USoundManagerSubSystem::USoundManagerSubSystem()
 	if (GruntWaveStartLoaded.Succeeded())
 		GruntWaveStartSC = GruntWaveStartLoaded.Object;
 
+	static ConstructorHelpers::FObjectFinder<USoundCue>GruntDeathLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Grunt/SC_GruntDeath.SC_GruntDeath'"));
+	if (GruntWaveStartLoaded.Succeeded())
+		GruntDeathSC = GruntDeathLoaded.Object;
+
 	
-#pragma endregion 
+#pragma endregion
 	
 }
 
@@ -183,23 +187,111 @@ void USoundManagerSubSystem::PlaysMusic(const USoundCue* Music) const
 	}
 }
 
-void USoundManagerSubSystem::PlaySoundEvent() const
+void USoundManagerSubSystem::PlaySoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f ,FColor::Black,"PlaySoundEventCalled");
-	if(PlayerDeathSC)
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,AudioSubSystem->PlayerVoiceLines[eventID]->GetName());
+	if(OwnerAC)
+		if(OwnerAC->IsPlaying())
+		{
+			OwnerAC->Stop();
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,"It works2");
+			OwnerAC->SetSound(AudioSubSystem->PlayerVoiceLines[eventID]);
+			OwnerAC->Play();
+		}
+	
+}
+
+void USoundManagerSubSystem::PlaySniperSoundEvent(USoundManagerSubSystem* AudioSubSystem, UAudioComponent* OwnerAC, int eventID)
+{
+	
+}
+
+void USoundManagerSubSystem::PlayGruntSoundEvent(USoundManagerSubSystem* AudioSubSystem, UAudioComponent* OwnerAC, int eventID)
+{
+	if(OwnerAC)
 	{
-		PlaySound(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation(),PlayerDeathSC);
+		switch(eventID)
+		{
+		case 0 :
+			AudioSubSystem->GruntSoundEventToken += 50;
+			if(AudioSubSystem->GruntSoundEventToken >= 100)
+				if(AudioSubSystem->GruntArialHitSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(AudioSubSystem->GruntArialHitSC);
+						OwnerAC->Play();
+						AudioSubSystem->GruntSoundEventToken -= 100;
+					}
+			break;
+		case 1 :
+			AudioSubSystem->GruntSoundEventToken += 25;
+			if(AudioSubSystem->GruntSoundEventToken >= 75)
+				if(AudioSubSystem->GruntBarrelSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(AudioSubSystem->GruntBarrelSC);
+						OwnerAC->Play();
+						AudioSubSystem->GruntSoundEventToken -= 75;
+					}
+			break;
+		case 2 :
+			AudioSubSystem->GruntSoundEventToken += 10;
+			if(AudioSubSystem->GruntSoundEventToken >= 110)
+				if(AudioSubSystem->GruntHurtSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(AudioSubSystem->GruntHurtSC);
+						OwnerAC->Play();
+						AudioSubSystem->GruntSoundEventToken -= 110;
+					}
+			break;
+		case 3 :
+			if(AudioSubSystem->GruntBarrelSC)
+				if(!OwnerAC->IsPlaying())
+					if(FMath::RandRange(1, 6)== 1)
+					{
+						OwnerAC->SetSound(AudioSubSystem->GruntBarrelSC);
+						OwnerAC->Play();
+					}
+			break;
+		case 4 :
+			AudioSubSystem->GruntSoundEventToken += 20;
+			if(AudioSubSystem->GruntSoundEventToken >= 60)
+				if(AudioSubSystem->GruntWaveStartSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(AudioSubSystem->GruntWaveStartSC);
+						OwnerAC->Play();
+						AudioSubSystem->GruntSoundEventToken -= 60;
+					}
+			break;
+		case 5 :
+				if(AudioSubSystem->GruntDeathSC)
+				{
+					OwnerAC->SetSound(AudioSubSystem->GruntDeathSC);
+					OwnerAC->Play();
+				}
+			break;
+		default :
+			AudioSubSystem->GruntSoundEventToken ++;
+			break;
+		}
+		
 	}
 }
 
-void USoundManagerSubSystem::ImplementToken(int stk1, int ptk2, int gtk3, int sntk, int ntk)
+void USoundManagerSubSystem::PlayNarratorSoundEvent(USoundManagerSubSystem* AudioSubSystem, UAudioComponent* OwnerAC, int eventID)
 {
-	SoundEventToken += stk1;
-	PlayerSoundEventToken += ptk2;
-	GruntSoundEventToken += gtk3;
-	SniperSoundEventToken += sntk;
-	NarratorSoundEventToken += ntk;
 }
+
+void USoundManagerSubSystem::PlayRangerSoundEvent(USoundManagerSubSystem* AudioSubSystem, UAudioComponent* OwnerAC, int eventID)
+{
+}
+
+void USoundManagerSubSystem::PlayPlayerSoundEvent(USoundManagerSubSystem* AudioSubSystem, UAudioComponent* OwnerAC, int eventID)
+{
+}
+
 
 
 
