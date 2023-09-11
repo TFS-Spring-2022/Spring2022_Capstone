@@ -41,6 +41,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY()
+	APlayerCharacter* PlayerCharacter;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent *WeaponMesh;
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
@@ -135,8 +138,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float AttackSpeed;
 
-	UPROPERTY()
-	APlayerCharacter* PlayerCharacter;
+	
 
 	// This enemy is holding the AI Attack System Component's logical token to
 	// allow the holder's shot to hit the target.

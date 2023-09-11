@@ -31,6 +31,9 @@ private:
 	float ReloadTime;
 
 	void Reload();
-
+	
+	virtual void BeginPlay() override;
+	virtual void AttackHit() override;
 	virtual void Death() override;
+	virtual bool DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName) override;
 };

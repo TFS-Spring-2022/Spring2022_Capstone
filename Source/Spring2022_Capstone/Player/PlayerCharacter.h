@@ -300,8 +300,6 @@ private:
 
 	bool bIsMoving;
 
-	bool isGrounded;
-
 	bool bIsMantleing;
 
 	UPROPERTY()
@@ -327,6 +325,8 @@ private:
 	bool bHasSniperDisableObject = false;
 
 public:
+	UPROPERTY()
+	bool isGrounded;
 	
 	UFUNCTION(BlueprintCallable)
 	void Heal(int Value);

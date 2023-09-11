@@ -2,6 +2,9 @@
 
 
 #include "SoundManagerSubSystem.h"
+
+#include <string>
+
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "Components/AudioComponent.h"
 #include "GameFramework/Character.h"
@@ -157,7 +160,7 @@ USoundManagerSubSystem::USoundManagerSubSystem()
 	if (GruntHurtLoaded.Succeeded())
 		GruntHurtSC = GruntHurtLoaded.Object;
 
-	static ConstructorHelpers::FObjectFinder<USoundCue>GruntWaveStartLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Grunt/SC_GruntJump.SC_GruntJump'"));
+	static ConstructorHelpers::FObjectFinder<USoundCue>GruntWaveStartLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Grunt/SC_GruntSpawn.SC_GruntSpawn'"));
 	if (GruntWaveStartLoaded.Succeeded())
 		GruntWaveStartSC = GruntWaveStartLoaded.Object;
 
@@ -260,9 +263,11 @@ void USoundManagerSubSystem::PlayGruntSoundEvent(USoundManagerSubSystem* AudioSu
 				if(AudioSubSystem->GruntWaveStartSC)
 					if(!OwnerAC->IsPlaying())
 					{
+						GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,FString::FromInt(AudioSubSystem->GruntSoundEventToken));
 						OwnerAC->SetSound(AudioSubSystem->GruntWaveStartSC);
 						OwnerAC->Play();
 						AudioSubSystem->GruntSoundEventToken -= 60;
+						GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,FString::FromInt(AudioSubSystem->GruntSoundEventToken));
 					}
 			break;
 		case 5 :

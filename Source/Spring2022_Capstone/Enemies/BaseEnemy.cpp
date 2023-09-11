@@ -99,6 +99,8 @@ void ABaseEnemy::AttackHit()
 
 		if (PlayerHitResult.GetActor()->Implements<UDamageableActor>() && PlayerHitResult.GetActor()->IsA(APlayerCharacter::StaticClass())) // Question: Do we want them to be able to do damage to other enemies?
 			Cast<APlayerCharacter>(PlayerHitResult.GetActor())->DamageActor(this, Damage);
+
+		
 	}
 	if(GunShotComp)
 		GunShotComp->Play();
