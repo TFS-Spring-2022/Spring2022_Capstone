@@ -324,13 +324,13 @@ void APlayerCharacter::DashDirectionalLaunch()
 	const float PreDashSpeed = GetVelocity().Length();
 
 	if (DashDirectionalValue.Y == 1)
-		LaunchCharacter(GetActorForwardVector() * DashDistance, true, false);
+		LaunchCharacter(Camera->GetForwardVector() * DashDistance, true, false);
 	else if (DashDirectionalValue.Y == -1)
-		LaunchCharacter(-GetActorForwardVector() * DashDistance, true, false);
+		LaunchCharacter(-Camera->GetForwardVector() * DashDistance, true, false);
 	else if (DashDirectionalValue.X == -1)
-		LaunchCharacter(-GetActorRightVector() * DashDistance, true, false);
+		LaunchCharacter(-Camera->GetForwardVector() * DashDistance, true, false);
 	else if (DashDirectionalValue.X == 1)
-		LaunchCharacter(GetActorRightVector() * DashDistance, true, false);
+		LaunchCharacter(Camera->GetForwardVector()* DashDistance, true, false);
 	
 
 	// Handle velocity after dash
