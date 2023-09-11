@@ -429,7 +429,7 @@ void APlayerCharacter::Attack(const FInputActionValue &Value)
 	
 	if(bCanAttack)
 	{
-		if (bIsSprinting)
+		if (bIsSprinting && isGrounded)
 			return;
 		if(ActiveWeapon->Shoot())
 		{
