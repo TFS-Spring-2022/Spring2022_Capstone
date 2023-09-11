@@ -84,7 +84,6 @@ protected:
 	UPROPERTY()
 	UDirectionalDamageIndicatorWidget* DirectionalDamageIndicatorWidget;
 	
-
 	////	MOVEMENT RELATED INPUT ACTIONS
 	/**
 	 * @brief Holds the Move Input Action
@@ -162,11 +161,14 @@ protected:
 	void Dash(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
 	void Sprint(const FInputActionValue &Value);
-	void Crouch(const FInputActionValue &Value);
+	void CCrouch(const FInputActionValue &Value);
 	void Attack(const FInputActionValue &Value);
 	void Grapple(const FInputActionValue &Value);
 	void InspectWeapon(const FInputActionValue &Value);
 	void InspectGrapple(const FInputActionValue &Value);
+
+	// Player's movement vector. Set inside Move().
+	FVector2D DirectionalMovementValue;
 
 	/**
 	 * @brief Switches ActiveWeapon between Weapon1 and Weapon2. Swaps meshes.
@@ -181,7 +183,7 @@ protected:
 	 */
 	UFUNCTION()
 	void PlaySwitchWeaponAnimation(const FInputActionValue &Value);
-	
+
 	bool bCanAttack = true;
 
 	// Time between presses of a button to indicate a double tap
@@ -278,6 +280,10 @@ private:
 	float SprintMultiplier = 1.2f;
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnRate = 200.f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float YSensitivity = 50.f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float XSensitivity = 50.f;
 
 	// ToDo: Currently assigned inside WeaponBase::BeginPlay() from weapons in level.
 	UPROPERTY(EditAnywhere, Category = "Player Inventory")
@@ -416,7 +422,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UAudioComponent* LandingAudioComp;
-	
+
 	FTimerHandle BetweenShotTimerHandle;
 	UFUNCTION()
 	FORCEINLINE void SetCanAttackTrue() {bCanAttack = true;}
@@ -449,7 +455,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	UAnimMontage* GrappleLaunchMontage;
-	
+
 	FTimerHandle DelayGrappleTimerHandle;
 
 	/**
@@ -458,5 +464,10 @@ public:
 	 */
 	UFUNCTION()
 	void FireGrappleAfterDelay();
+
+	UFUNCTION()
+	void SetYSensitivity(float Value);
+	UFUNCTION()
+	void SetXSensitivity(float Value);
 
 };

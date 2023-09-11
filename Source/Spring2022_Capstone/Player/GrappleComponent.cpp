@@ -38,6 +38,7 @@ void UGrappleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 			UCharacterMovementComponent *MovementComponent = PlayerCharacter->GetCharacterMovement();
 			FVector ToGrappleHookDirection = GetToGrappleHookDirection();
 			MovementComponent->AddForce(ToGrappleHookDirection * 10000);
+			
 			if (FVector::Distance(_GrappleHook->GetActorLocation(), GetOwner()->GetActorLocation()) < 250 ||
 				FVector::DotProduct(InitialHookDirection2D, FVector(ToGrappleHookDirection.X, ToGrappleHookDirection.Y, 0)) < 0)
 			{
@@ -112,8 +113,9 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 		UCharacterMovementComponent *MovementComponent = PlayerCharacter->GetCharacterMovement();
 		FVector ToGrappleHookDirection = GetToGrappleHookDirection();
 		MovementComponent->GroundFriction = 0;
+		MovementComponent->BrakingDecelerationWalking = 512;
 		MovementComponent->GravityScale = 0;
-		MovementComponent->AirControl = 0.6;
+		MovementComponent->AirControl = 0.4;
 		MovementComponent->Velocity = ToGrappleHookDirection * GrappleForce;
 		InitialHookDirection2D = FVector(ToGrappleHookDirection.X, ToGrappleHookDirection.Y, 0);
 		InitialHookDirection2D.Normalize();
@@ -147,6 +149,7 @@ void UGrappleComponent::CancelGrapple(bool ShouldTriggerCooldown)
 			{
 				UCharacterMovementComponent *MovementComponent = PlayerCharacter->GetCharacterMovement();
 				MovementComponent->GroundFriction = 1;
+				MovementComponent->BrakingDecelerationWalking = 2048;
 				MovementComponent->GravityScale = 1;
 				MovementComponent->AirControl = 0.05;
 			}

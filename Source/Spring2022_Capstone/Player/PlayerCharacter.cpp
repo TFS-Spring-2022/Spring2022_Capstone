@@ -18,6 +18,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Spring2022_Capstone/Spring2022_Capstone.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
+#include "Spring2022_Capstone/CustomGameUserSettings.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -30,7 +31,7 @@ APlayerCharacter::APlayerCharacter()
 
 	// Rotate with controller's pitch so player's arms/weapons move vertically.
 	bUseControllerRotationPitch = true;
-	
+
 	GrappleComponent = CreateDefaultSubobject<UGrappleComponent>(TEXT("Grapple"));
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
@@ -44,7 +45,6 @@ APlayerCharacter::APlayerCharacter()
 
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
-
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
@@ -60,7 +60,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Dash);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Grapple);
-		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Crouch);
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &APlayerCharacter::CCrouch);
 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
 		EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Completed, this,
@@ -75,19 +75,19 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+
+	const UGameInstance *GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
 	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
 
 	FootStepAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	LandingAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	CheckGround();
-	
-	//Temp
+
+	// Temp
 	SoundManagerSubSystem->PlaySoundEvent();
-	
+
 	PlayerController = Cast<APlayerController>(GetController());
-	if(PlayerController)
+	if (PlayerController)
 	{
 		if (UEnhancedInputLocalPlayerSubsystem *Subsystem = ULocalPlayer::GetSubsystem<
 				UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -101,43 +101,47 @@ void APlayerCharacter::BeginPlay()
 	bIsMantleing = false;
 
 	// Create and add Player HUD
-	if(PlayerHUDWidgetBP)
+	if (PlayerHUDWidgetBP)
 	{
 		PlayerHUDWidgetInstance = Cast<UHUDWidget>(CreateWidget(GetWorld(), PlayerHUDWidgetBP));
 		PlayerHUDWidgetInstance->AddToViewport(1);
 	}
 	// Create and add Damage Indicator Widget
-	if(DamageIndicatorWidgetBP)
+	if (DamageIndicatorWidgetBP)
 	{
 		DirectionalDamageIndicatorWidget = Cast<UDirectionalDamageIndicatorWidget>(CreateWidget(GetWorld(), DamageIndicatorWidgetBP));
 		DirectionalDamageIndicatorWidget->AddToViewport(1);
 	}
 	// Create and add Pause Menu Widget
-	if(PauseMenuWidgetBP)
+	if (PauseMenuWidgetBP)
 	{
 		PauseMenuWidgetInstance = Cast<UPauseMenuWidget>(CreateWidget(GetWorld(), PauseMenuWidgetBP));
 		PauseMenuWidgetInstance->AddToViewport(1);
 		PauseMenuWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
 	}
-	
+
 	bDashBlurFadingIn = false;
 	CurrentGameMode = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 
 	ScoreManagerSubsystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
-	if(ScoreManagerSubsystem)
+	if (ScoreManagerSubsystem)
 		ScoreManagerSubsystem->SetPlayerReference(this);
 	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
-	if(ScoreManagerTimerSubSystem)
+	if (ScoreManagerTimerSubSystem)
 	{
 		ScoreManagerTimerSubSystem->SetPlayerReference(this);
 		ScoreManagerTimerSubSystem->SetScoreManagerSubSystem(ScoreManagerSubsystem);
 	}
-	
+
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController(), false);
 
 	bHasSniperDisableObject = false;
 	bIsSwappingWeapon = false;
 	bCanAttack = true;
+
+	// Load Settings
+	YSensitivity = UCustomGameUserSettings::GetCustomGameUserSettings()->YSensitivity;
+	XSensitivity = UCustomGameUserSettings::GetCustomGameUserSettings()->XSensitivity;
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -147,35 +151,36 @@ void APlayerCharacter::Tick(float DeltaTime)
 	CrouchEyeOffset = (1.f - CrouchInterpTime) * CrouchEyeOffset;
 	CheckGround();
 
-	if(ScoreManagerTimerSubSystem)
+	if (ScoreManagerTimerSubSystem)
 	{
-		if(GetMovementComponent()->IsFalling())
+		if (GetMovementComponent()->IsFalling())
 		{
 			ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::LandLubber);
-			
-			if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::SkyPirate) == false)
+
+			if (ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::SkyPirate) == false)
 				ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::SkyPirate);
 		}
-		if(GetMovementComponent()->IsMovingOnGround())
+		if (GetMovementComponent()->IsMovingOnGround())
 		{
 			ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::SkyPirate);
 
-			if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::LandLubber) == false)
+			if (ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::LandLubber) == false)
 				ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::LandLubber);
 		}
 	}
-	
-	if(bDashBlurFadingIn)
+
+	if (bDashBlurFadingIn)
 		Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight = FMath::FInterpTo(Camera->PostProcessSettings.WeightedBlendables.Array[0].Weight, 1, DeltaTime, DASH_BLUR_FADEIN_SPEED);
-	
+
+	ActiveWeapon->SetActorHiddenInGame(false);
 }
 
-void APlayerCharacter::Pause(const FInputActionValue& Value)
+void APlayerCharacter::Pause(const FInputActionValue &Value)
 {
-	if(!PauseMenuWidgetInstance)
+	if (!PauseMenuWidgetInstance)
 		return;
-	
-	if(!UGameplayStatics::IsGamePaused(GetWorld()))
+
+	if (!UGameplayStatics::IsGamePaused(GetWorld()))
 	{
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(PlayerController, PauseMenuWidgetInstance);
 		PlayerController->SetIgnoreLookInput(true);
@@ -187,12 +192,11 @@ void APlayerCharacter::Pause(const FInputActionValue& Value)
 	}
 	else
 		UnPause();
-
 }
 
 void APlayerCharacter::UnPause()
 {
-	if(UGameplayStatics::IsGamePaused(GetWorld()))
+	if (UGameplayStatics::IsGamePaused(GetWorld()))
 	{
 		PlayerController->SetIgnoreLookInput(false);
 		PlayerController->SetIgnoreMoveInput(false);
@@ -207,10 +211,10 @@ void APlayerCharacter::UnPause()
 
 void APlayerCharacter::PlayOverheatMontage(bool bFinishOverheatAnimation)
 {
-	if(!OverheatMontage)
+	if (!OverheatMontage)
 		return;
 
-	if(!bFinishOverheatAnimation)
+	if (!bFinishOverheatAnimation)
 	{
 		// Note - Setting bEnableAutoBlendOut to false is not causing the gun to hold at final frame. ToDo: Figure out how to loop end.
 		OverheatMontage->bEnableAutoBlendOut = false;
@@ -225,38 +229,44 @@ void APlayerCharacter::PlayOverheatMontage(bool bFinishOverheatAnimation)
 
 void APlayerCharacter::Move(const FInputActionValue &Value)
 {
-	const FVector2D DirectionalValue = Value.Get<FVector2D>();
-	if (GetController() && (DirectionalValue.X != 0.f || DirectionalValue.Y != 0.f))
+	DirectionalMovementValue = Value.Get<FVector2D>();
+
+	// Disable vertical movement when grappling to prevent weird throws from happening (could also divide by liek .8 or something test).
+	if (GrappleComponent->GrappleState == EGrappleState::Attached)
+	{
+		// Stop vertical input
+		DirectionalMovementValue.Y = 0;
+	}
+
+	if (GetController() && (DirectionalMovementValue.X != 0.f || DirectionalMovementValue.Y != 0.f))
 	{
 		bIsMoving = true;
-		if(isGrounded)
+		if (isGrounded)
 		{
-			if(FootStepAudioComp->GetSound())
-				if(!FootStepAudioComp->IsPlaying())
+			if (FootStepAudioComp->GetSound())
+				if (!FootStepAudioComp->IsPlaying())
 					FootStepAudioComp->Play();
 		}
 		GetCharacterMovement()->MaxWalkSpeed = bIsSprinting ? Speed * SprintMultiplier : Speed;
-		AddMovementInput(GetActorForwardVector(), DirectionalValue.Y * 100);
-		AddMovementInput(GetActorRightVector(), DirectionalValue.X * 100);
+		AddMovementInput(GetActorForwardVector(), DirectionalMovementValue.Y * 100);
+		AddMovementInput(GetActorRightVector(), DirectionalMovementValue.X * 100);
 	}
 	else
 	{
 		bIsMoving = false;
 		FootStepAudioComp->Stop();
 	}
-		
 }
 
 void APlayerCharacter::Jump()
 {
-	
-	if(!bIsMantleing)
+	if (!bIsMantleing)
 	{
-		if(bIsMoving)
+		if (bIsMoving)
 		{
-			if(PlayerMantleSystemComponent->AttemptMantle())
+			if (PlayerMantleSystemComponent->AttemptMantle())
 			{
-				if(SoundManagerSubSystem)
+				if (SoundManagerSubSystem)
 				{
 					SoundManagerSubSystem->PlaySound(this->GetActorLocation(), MantleSC);
 				}
@@ -267,50 +277,41 @@ void APlayerCharacter::Jump()
 	}
 
 	Super::Jump();
-
 }
 
-void APlayerCharacter::Landed(const FHitResult& Hit)
+void APlayerCharacter::Landed(const FHitResult &Hit)
 {
 	Super::Landed(Hit);
 
-	if(ScoreManagerTimerSubSystem)
+	if (ScoreManagerTimerSubSystem)
 		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::SkyPirate);
-		
 }
 
 void APlayerCharacter::Dash(const FInputActionValue &Value)
 {
 	const float CurrentTime = GetWorld()->GetRealTimeSeconds();
 
-	if (bCanDash)
-	{
-
-		// If Player Double Taps the same direction
-		if (CurrentTime - LastDashActionTappedTime < DoubleTapActivationDelay && Value.GetMagnitude() == PreviousDashDirection)
+	if (GetController() && (DirectionalMovementValue.X != 0.f || DirectionalMovementValue.Y != 0.f))
+		if (bCanDash)
 		{
-
 			// Knock the actor up slightly to prevent ground collision
 			LaunchCharacter(FVector(0, 0, 250), false, true); // Note: I like the feel of true Overrides but we can come back later.
 
 			// Set Dash DirectionalValue to be used in DashDirectionLaunch
-			DashDirectionalValue = Value.Get<FVector2D>();
+			DashDirectionalValue = DirectionalMovementValue;
 
 			// After a tiny delay dash in desired direction
 			GetWorld()->GetTimerManager().SetTimer(DashDirectionalMovementDelayTimerHandle, this, &APlayerCharacter::DashDirectionalLaunch, 0.065, false); // Note: This number will never change while running. 0.65 feels good.
 
-			if(DashCameraShake)
+			if (DashCameraShake)
 				UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(DashCameraShake);
 
 			bDashBlurFadingIn = true;
 			GetWorld()->GetTimerManager().SetTimer(DashBlurTimerHandle, this, &APlayerCharacter::ClearDashBlur, DashBlurUpTime, false);
 
-			if(SoundManagerSubSystem)
-			{
+			if (SoundManagerSubSystem)
 				SoundManagerSubSystem->PlaySound(this->GetActorLocation(), DashSC);
-			}
 		}
-	}
 
 	LastDashActionTappedTime = CurrentTime;
 	PreviousDashDirection = Value.GetMagnitude();
@@ -357,14 +358,14 @@ void APlayerCharacter::Look(const FInputActionValue &Value)
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
 	if (GetController())
 	{
-		AddControllerYawInput(LookAxisValue.X * TurnRate * UGameplayStatics::GetWorldDeltaSeconds(this));
-		AddControllerPitchInput(LookAxisValue.Y * TurnRate * UGameplayStatics::GetWorldDeltaSeconds(this));
+		AddControllerYawInput(LookAxisValue.X * YSensitivity * UGameplayStatics::GetWorldDeltaSeconds(this));
+		AddControllerPitchInput(LookAxisValue.Y * XSensitivity * UGameplayStatics::GetWorldDeltaSeconds(this));
 	}
 }
 
 void APlayerCharacter::Sprint(const FInputActionValue &Value)
 {
-	if(Value.Get<bool>())
+	if (Value.Get<bool>())
 	{
 		FootStepAudioComp->SetPitchMultiplier(2.f);
 	}
@@ -375,7 +376,7 @@ void APlayerCharacter::Sprint(const FInputActionValue &Value)
 	bIsSprinting = Value.Get<bool>();
 }
 
-void APlayerCharacter::Crouch(const FInputActionValue &Value)
+void APlayerCharacter::CCrouch(const FInputActionValue &Value)
 {
 	if (Value.Get<bool>())
 	{
@@ -420,19 +421,19 @@ void APlayerCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo &OutResult)
 void APlayerCharacter::Attack(const FInputActionValue &Value)
 {
 
-	if(bIsSwappingWeapon)
+	if (bIsSwappingWeapon)
 		return;
-	
-	if(bCanAttack)
+
+	if (bCanAttack)
 	{
 		if (bIsSprinting)
 			return;
-		if(ActiveWeapon->Shoot())
+		if (ActiveWeapon->Shoot())
 		{
-			if(FireMontage)
+			if (FireMontage)
 				PlayAnimMontage(FireMontage, 1.0, "HeavyShot");
 		}
-		
+
 		GetWorld()->GetTimerManager().SetTimer(BetweenShotTimerHandle, this, &APlayerCharacter::SetCanAttackTrue, ActiveWeapon->GetFireRate(), false);
 	}
 }
@@ -462,11 +463,11 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 		GrappleTargetLocation = HitResult.ImpactPoint;
 	}
 
-	if(GrappleLaunchMontage)
+	if (GrappleLaunchMontage)
 		PlayAnimMontage(GrappleLaunchMontage, 1.0, "GrappleLaunch");
 
 	// ToDo: Attach grapple to edge of stump. Then calling after a delay will look nicer.
-	//GetWorld()->GetTimerManager().SetTimer(DelayGrappleTimerHandle, this, &APlayerCharacter::FireGrappleAfterDelay, 1, false);
+	// GetWorld()->GetTimerManager().SetTimer(DelayGrappleTimerHandle, this, &APlayerCharacter::FireGrappleAfterDelay, 1, false);
 	GrappleComponent->Fire(GrappleTargetLocation);
 
 	// ToDo: Implement sound here (grapple shot)
@@ -477,23 +478,23 @@ void APlayerCharacter::FireGrappleAfterDelay()
 	// ToDo: Very short delay so grapple stump can enter screen before firing.
 }
 
-void APlayerCharacter::InspectWeapon(const FInputActionValue& Value)
+void APlayerCharacter::InspectWeapon(const FInputActionValue &Value)
 {
-	if(InspectWeaponMontage)
+	if (InspectWeaponMontage)
 		PlayAnimMontage(InspectWeaponMontage);
 }
 
-void APlayerCharacter::InspectGrapple(const FInputActionValue& Value)
+void APlayerCharacter::InspectGrapple(const FInputActionValue &Value)
 {
-	if(InspectGrappleMontage)
+	if (InspectGrappleMontage)
 		PlayAnimMontage(InspectGrappleMontage);
 }
 
 void APlayerCharacter::SwitchWeapon()
 {
-	if(Weapon1 && Weapon2 )
+	if (Weapon1 && Weapon2)
 	{
-		if(ActiveWeapon->GunChangeAudioComp)
+		if (ActiveWeapon->GunChangeAudioComp)
 			ActiveWeapon->GunChangeAudioComp->Play();
 
 		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .2f, false); // Backup incase problem with swap animation not finishing.
@@ -507,7 +508,7 @@ void APlayerCharacter::SwitchWeapon()
 
 void APlayerCharacter::PlaySwitchWeaponAnimation(const FInputActionValue &Value)
 {
-	if(Weapon1 && Weapon2 && bIsSwappingWeapon != true)
+	if (Weapon1 && Weapon2 && bIsSwappingWeapon != true)
 		bIsSwappingWeapon = true;
 }
 
@@ -538,39 +539,39 @@ void APlayerCharacter::SetIsMantleing(bool IsMantleingStatus)
 	bIsMantleing = IsMantleingStatus;
 }
 
-bool APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName)
+bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
 {
 
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount);
-	
+
 	if (HealthComponent)
 	{
-		if(ScoreManagerTimerSubSystem && ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(CloseCallCorsair) == false) // ToDo: Remove the IsAccolade running when cleaning up the process
+		if (ScoreManagerTimerSubSystem && ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(CloseCallCorsair) == false) // ToDo: Remove the IsAccolade running when cleaning up the process
 			ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CloseCallCorsair);
-		
-		if(DamageCameraShake)
+
+		if (DamageCameraShake)
 			UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(DamageCameraShake);
 		UpdateHealthBar();
 	}
 
 	// Set DirectionalDamageIndicator to rotate
-	if(DirectionalDamageIndicatorWidget)
+	if (DirectionalDamageIndicatorWidget)
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
-	
+
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
-	
-	if(HealthComponent->GetHealth() <= 0)
+
+	if (HealthComponent->GetHealth() <= 0)
 	{
 		CurrentGameMode->EndRun();
 		return true;
 	}
-		
-		return false;
+
+	return false;
 }
 
 void APlayerCharacter::ChangeCrosshair()
 {
-	if(OnDamagedDelegate.IsBound())
+	if (OnDamagedDelegate.IsBound())
 		OnDamagedDelegate.Execute();
 }
 
@@ -578,17 +579,17 @@ void APlayerCharacter::Heal(int Value)
 {
 
 	bool bIsBelowDeathDodgerPercentage = false;
-	
+
 	if (!HealthComponent)
 		return;
 
-	if(GetCurrentHealth() < ScoreManagerSubsystem->GetDeathDodgerHealthPercentage() / 100 * GetMaxHealth())
+	if (GetCurrentHealth() < ScoreManagerSubsystem->GetDeathDodgerHealthPercentage() / 100 * GetMaxHealth())
 		bIsBelowDeathDodgerPercentage = true;
-	
+
 	HealthComponent->SetHealth(HealthComponent->GetHealth() + Value);
 	UpdateHealthBar();
 
-	if(GetCurrentHealth() > ScoreManagerSubsystem->GetDeathDodgerHealthPercentage() / 100 * GetMaxHealth() && bIsBelowDeathDodgerPercentage)
+	if (GetCurrentHealth() > ScoreManagerSubsystem->GetDeathDodgerHealthPercentage() / 100 * GetMaxHealth() && bIsBelowDeathDodgerPercentage)
 		ScoreManagerSubsystem->IncrementDeathDodgerCount();
 }
 
@@ -626,13 +627,13 @@ void APlayerCharacter::UpdateHealthBar()
 // Temporary
 void APlayerCharacter::DEBUG_SpawnWave()
 {
-	if(CurrentGameMode)
+	if (CurrentGameMode)
 		CurrentGameMode->SpawnWave();
 }
 
-UUpgradeSystemComponent* APlayerCharacter::GetUpgradeSystemComponent()
+UUpgradeSystemComponent *APlayerCharacter::GetUpgradeSystemComponent()
 {
-	if(UpgradeSystemComponent)
+	if (UpgradeSystemComponent)
 		return UpgradeSystemComponent;
 	else
 		return nullptr;
@@ -640,67 +641,77 @@ UUpgradeSystemComponent* APlayerCharacter::GetUpgradeSystemComponent()
 
 void APlayerCharacter::CheckGround()
 {
-	
-			FHitResult HitResult;
 
-			FVector StartTrace = this->GetActorLocation();
-			FVector DownVector = FVector(0,0,1);
-			FVector EndTrace = ((DownVector * 120.f * -1) + StartTrace);
-			FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
-			TraceParams->bReturnPhysicalMaterial = true; 
-			TraceParams->AddIgnoredComponent(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetMesh());
-			
-			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
+	FHitResult HitResult;
+
+	FVector StartTrace = this->GetActorLocation();
+	FVector DownVector = FVector(0, 0, 1);
+	FVector EndTrace = ((DownVector * 120.f * -1) + StartTrace);
+	FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
+	TraceParams->bReturnPhysicalMaterial = true;
+	TraceParams->AddIgnoredComponent(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetMesh());
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
+	{
+		if (!isGrounded)
+		{
+			LandingAudioComp->Play();
+			isGrounded = true;
+		}
+		EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
+		if (CurrentGroundMat != Cast<UPhysicalMaterial>(HitResult.PhysMaterial.Get()))
+		{
+			CurrentGroundMat = Cast<UPhysicalMaterial>(HitResult.PhysMaterial.Get());
+			switch (HitSurfaceType)
 			{
-				if(!isGrounded)
-				{
-					LandingAudioComp->Play();
-					isGrounded = true;
-				}
-				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
-					if(CurrentGroundMat != Cast<UPhysicalMaterial>(HitResult.PhysMaterial.Get()))
-					{
-						CurrentGroundMat = Cast<UPhysicalMaterial>(HitResult.PhysMaterial.Get());
-						switch (HitSurfaceType)
-						{
-						case SURFACE_Rock:
-							if(RockStepSound)
-								FootStepAudioComp->SetSound(RockStepSound);
-							if(RockLandSound)
-								LandingAudioComp->SetSound(RockLandSound);
-							break;
-						case SURFACE_Wood:
-							if(WoodStepSound)
-								FootStepAudioComp->SetSound(WoodStepSound);
-							if(WoodLandSound)
-								LandingAudioComp->SetSound(WoodLandSound);
-							break;
-						case SURFACE_Grass:
-								FootStepAudioComp->SetSound(GrassStepSound);
-							if(GrassLandSound)
-								LandingAudioComp->SetSound(GrassLandSound);
-							break;
-						case SURFACE_Water:
-							if(WaterStepSound)
-								FootStepAudioComp->SetSound(WaterStepSound);
-							if(WaterLandSound)
-								LandingAudioComp->SetSound(WaterLandSound);
-							break;
-						default:
-							if(RockStepSound)
-							FootStepAudioComp->SetSound(RockStepSound);
-							if(RockLandSound)
-							LandingAudioComp->SetSound(RockLandSound);
-							break;
-						}
-					}
+			case SURFACE_Rock:
+				if (RockStepSound)
+					FootStepAudioComp->SetSound(RockStepSound);
+				if (RockLandSound)
+					LandingAudioComp->SetSound(RockLandSound);
+				break;
+			case SURFACE_Wood:
+				if (WoodStepSound)
+					FootStepAudioComp->SetSound(WoodStepSound);
+				if (WoodLandSound)
+					LandingAudioComp->SetSound(WoodLandSound);
+				break;
+			case SURFACE_Grass:
+				FootStepAudioComp->SetSound(GrassStepSound);
+				if (GrassLandSound)
+					LandingAudioComp->SetSound(GrassLandSound);
+				break;
+			case SURFACE_Water:
+				if (WaterStepSound)
+					FootStepAudioComp->SetSound(WaterStepSound);
+				if (WaterLandSound)
+					LandingAudioComp->SetSound(WaterLandSound);
+				break;
+			default:
+				if (RockStepSound)
+					FootStepAudioComp->SetSound(RockStepSound);
+				if (RockLandSound)
+					LandingAudioComp->SetSound(RockLandSound);
+				break;
 			}
-			else
-			{
-				if(isGrounded)
-				{
-					isGrounded = false;	
-					FootStepAudioComp->Stop();
-				}
-			}
+		}
+	}
+	else
+	{
+		if (isGrounded)
+		{
+			isGrounded = false;
+			FootStepAudioComp->Stop();
+		}
+	}
+}
+
+void APlayerCharacter::SetYSensitivity(float Value) 
+{
+	YSensitivity = Value;
+}
+
+void APlayerCharacter::SetXSensitivity(float Value) 
+{
+	XSensitivity = Value;
 }

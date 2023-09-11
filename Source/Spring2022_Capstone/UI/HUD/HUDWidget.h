@@ -28,12 +28,13 @@ public:
 	
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *RootPanel;
+	// Wave Timer
 	UPROPERTY(EditAnywhere, meta = (BindWIdget))
 	UTextBlock* WaveTimerTextBlock;
 	// Health bar
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UProgressBar *HealthBar;
-	// Overheat Barrie
+	// Overheat Bar
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	UProgressBar* OverheatBar;
 	// Crosshair
@@ -56,7 +57,10 @@ public:
 	UImage* EquippedWeaponIcon;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UImage* StashedWeaponIcon;
-
+	// Enemies Remaining Countdown
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UTextBlock* EnemiesRemainingTextBlock;
+	
 	// Sets the EquippedWeaponIcon and StashedWeaponIcons to show the given Texture2Ds.
 	void SetWeaponIcons(UTexture2D* EquippedWeaponTexture2D, UTexture2D* StashedWeaponTexture2D) const;
 
@@ -65,6 +69,12 @@ public:
 	 * @note Called from EnemyWaveManagementSystem::ConvertElapsedTime;
 	 */
 	void SetWaveTimerText(int Minutes, float Seconds);
+
+	/**
+	 * @brief Set's the text box to display the remaining enemies in the current wave.
+	 * @param NumberOfEnemies Number of enemies remaining in the current wave.
+	 */
+	void SetEnemiesRemainingText(int NumberOfEnemies);
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Grapple")
