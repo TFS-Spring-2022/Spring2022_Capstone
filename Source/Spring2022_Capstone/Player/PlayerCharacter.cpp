@@ -28,8 +28,8 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
 	Camera->bUsePawnControlRotation = true;
 
-	// Rotate with controller's pitch so player's arms/weapons move vertically.
-	bUseControllerRotationPitch = true;
+	// We do not want to rotate the entire player with the camera, just the skeletal mesh (in BeginPlay).
+	bUseControllerRotationPitch = false;
 	
 	GrappleComponent = CreateDefaultSubobject<UGrappleComponent>(TEXT("Grapple"));
 
@@ -44,7 +44,6 @@ APlayerCharacter::APlayerCharacter()
 
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
-
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
@@ -138,6 +137,9 @@ void APlayerCharacter::BeginPlay()
 	bHasSniperDisableObject = false;
 	bIsSwappingWeapon = false;
 	bCanAttack = true;
+
+	// Attach Skeletal Mesh to Camera to have it rotate with the camera while maintaining capsule collider orientation.
+	GetMesh()->AttachToComponent(Camera, FAttachmentTransformRules::KeepWorldTransform);
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
