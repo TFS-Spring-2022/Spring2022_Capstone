@@ -46,10 +46,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	USceneComponent *ProjectileSpawnPoint;
 
-	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UAudioComponent *GunShotComp;
-
 	
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+	UAudioComponent *VoiceAudioComponent;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UTextRenderComponent* NameTextRenderer;
@@ -77,12 +78,14 @@ protected:
 	
 	// Called when the enemy runs out of health. Removes enemy from WaveManager ActiveEnemies[] and destroys itself.
 	UFUNCTION(BlueprintCallable)
-	void Death();
+	virtual void Death();
 	
 	UPROPERTY()
 	UScoreSystemManagerSubSystem* ScoreManagerSubSystem;
 	UPROPERTY()
 	UScoreSystemTimerSubSystem* ScoreManagerTimerSubSystem;
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
 
 public:
 	// Called every frame

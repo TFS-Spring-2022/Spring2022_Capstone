@@ -31,4 +31,6 @@ private:
 	float ReloadTime;
 
 	void Reload();
+
+	virtual void Death() override;
 };

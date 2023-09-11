@@ -43,7 +43,7 @@ APlayerCharacter::APlayerCharacter()
 
 	FootStepAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Foot Steps"));
 	LandingAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Landing Steps"));
-	VoiceAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Voice Lines"));
+	PlayerVoiceAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Voice Lines"));
 	
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
@@ -84,11 +84,9 @@ void APlayerCharacter::BeginPlay()
 
 	FootStepAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	LandingAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	VoiceAudioComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	PlayerVoiceAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
 	CheckGround();
-	
-	//Temp
-	SoundManagerSubSystem->PlaySoundEvent(SoundManagerSubSystem,VoiceAudioComponent,1);
 	
 	PlayerController = Cast<APlayerController>(GetController());
 	if(PlayerController)
@@ -285,7 +283,7 @@ void APlayerCharacter::Jump()
 void APlayerCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
-
+	LandingAudioComp->Play();
 	if(ScoreManagerTimerSubSystem)
 		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::SkyPirate);
 		
@@ -651,7 +649,7 @@ void APlayerCharacter::CheckGround()
 
 			FVector StartTrace = this->GetActorLocation();
 			FVector DownVector = FVector(0,0,1);
-			FVector EndTrace = ((DownVector * 135.f * -1) + StartTrace);
+			FVector EndTrace = ((DownVector * 150.f * -1) + StartTrace);
 			FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
 			TraceParams->bReturnPhysicalMaterial = true; 
 			TraceParams->AddIgnoredComponent(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetMesh());
@@ -659,10 +657,8 @@ void APlayerCharacter::CheckGround()
 			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
 				if(!isGrounded)
-				{
-					LandingAudioComp->Play();
 					isGrounded = true;
-				}
+				
 				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 					if(CurrentGroundMat != Cast<UPhysicalMaterial>(HitResult.PhysMaterial.Get()))
 					{

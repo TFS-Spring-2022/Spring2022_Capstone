@@ -426,7 +426,7 @@ public:
 	UAudioComponent* LandingAudioComp;
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
-	UAudioComponent* VoiceAudioComponent;
+	UAudioComponent* PlayerVoiceAudioComp;
 
 	FTimerHandle BetweenShotTimerHandle;
 	UFUNCTION()

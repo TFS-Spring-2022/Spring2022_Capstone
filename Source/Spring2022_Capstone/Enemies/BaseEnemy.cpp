@@ -26,6 +26,8 @@ ABaseEnemy::ABaseEnemy()
 
 	GunShotComp = CreateDefaultSubobject<UAudioComponent>(TEXT("GunAudioComp"));
 	GunShotComp->SetupAttachment(WeaponMesh);
+	VoiceAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Voice Audio"));
+	VoiceAudioComponent->SetupAttachment(RootComponent);
 	
 	PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
@@ -45,6 +47,7 @@ void ABaseEnemy::BeginPlay()
 	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 	WeaponMesh->AttachToComponent(GetMesh(), AttachmentRules, WeaponSocket);
 	GunShotComp->AttachToComponent(WeaponMesh, AttachmentRules);
+	
 	CurrentAttackSystemComponent = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetAttackSystemComponent();
 
 	// Add enemy to AttackSystem Agents[] array on spawn.
@@ -58,7 +61,7 @@ void ABaseEnemy::BeginPlay()
 
 	ScoreManagerSubSystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
 	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
-	
+	SoundManagerSubSystem = GetGameInstance()->GetSubsystem<USoundManagerSubSystem>();
 }
 
 void ABaseEnemy::Attack()
@@ -208,7 +211,7 @@ void ABaseEnemy::PromoteToElite()
 	// ToDo: Play voice line.
 }
 
-void ABaseEnemy::Death()
+void ABaseEnemy::Death() 
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Killed"), *GetName()));
 	// Prevent the shotgun from causing an enemy to call multiple Death multiple times.

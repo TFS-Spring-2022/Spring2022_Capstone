@@ -11,3 +11,13 @@ void ARangedEnemy::SpecialAttack()
     if (!Projectile) { return; }
     GetWorld()->SpawnActor<ABaseEnemyProjectile>(Projectile, ProjectileSpawnPoint->GetComponentLocation(), GetActorRotation());
 }
+
+void ARangedEnemy::Death()
+{
+    Super::Death();
+
+    if(SoundManagerSubSystem)
+    {
+        SoundManagerSubSystem->PlayGruntSoundEvent(SoundManagerSubSystem,VoiceAudioComponent,5);
+    }
+}
