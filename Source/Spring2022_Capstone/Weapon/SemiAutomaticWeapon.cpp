@@ -10,6 +10,7 @@
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Spring2022_Capstone/Spring2022_Capstone.h"
 #include "Spring2022_Capstone/Enemies/BaseEnemy.h"
+#include "Spring2022_Capstone/EnvironmentObjects/Hazards/Barrel.h"
 
 
 ASemiAutomaticWeapon::ASemiAutomaticWeapon()
@@ -54,8 +55,14 @@ bool ASemiAutomaticWeapon::Shoot()
 				{
 
 					IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
-
-					if (!Cast<ABaseEnemy>(HitResult.GetActor())->GetIsDying())
+					
+					if(DamageableActor->_getUObject()->IsA(ABarrel::StaticClass()))
+					{
+						DamageableActor->DamageActor(this, ShotDamage);
+						if(FloatingDamageNumberParticleSystem)
+							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
+					}
+					else if (!Cast<ABaseEnemy>(HitResult.GetActor())->GetIsDying())
 					{
 						if(ScoreManagerSubSystem)
 						{
