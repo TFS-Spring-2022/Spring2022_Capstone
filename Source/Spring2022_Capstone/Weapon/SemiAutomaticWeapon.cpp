@@ -9,6 +9,7 @@
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Spring2022_Capstone/Spring2022_Capstone.h"
+#include "Spring2022_Capstone/EnvironmentObjects/Hazards/Barrel.h"
 
 
 ASemiAutomaticWeapon::ASemiAutomaticWeapon()
@@ -62,39 +63,46 @@ bool ASemiAutomaticWeapon::Shoot()
 				{
 
 					IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
-					
-					switch (HitSurfaceType)
+
+					// If the damaged actor is a barrel.
+					if(DamageableActor->_getUObject()->IsA(ABarrel::StaticClass()))
 					{
-					case SURFACE_FleshDefault:
 						DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
 						if(FloatingDamageNumberParticleSystem)
 							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
-						break;
-					case SURFACE_FleshVulnerable:
-						DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier, HitResult.BoneName);
-						if(FloatingDamageNumberParticleSystem)
-							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
-
-						// Score 
-						if(ScoreManagerSubSystem)
-							ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
-						// Skull N Crosshair Accolade
-						if(ScoreManagerTimerSubSystem)
+					}
+					else
+					{
+						switch (HitSurfaceType)
 						{
-							if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::SkullNCrosshair))
-								ScoreManagerTimerSubSystem->IncrementScullNCrosshairHeadshotHits();
-							else
-								ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::SkullNCrosshair);
+						case SURFACE_FleshDefault:
+							DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
+							if(FloatingDamageNumberParticleSystem)
+								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
+							break;
+						case SURFACE_FleshVulnerable:
+							DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier, HitResult.BoneName);
+							if(FloatingDamageNumberParticleSystem)
+								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
+
+							// Score 
+							if(ScoreManagerSubSystem)
+								ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
+							// Skull N Crosshair Accolade
+							if(ScoreManagerTimerSubSystem)
+							{
+								if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::SkullNCrosshair))
+									ScoreManagerTimerSubSystem->IncrementScullNCrosshairHeadshotHits();
+								else
+									ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::SkullNCrosshair);
+							}
+							break;
+						default:
+							DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
+							break;
 						}
-						break;
-					default:
-						DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
-						break;
 					}
 					ShowHitMarker();
-
-					
-					
 				}
 				//DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 				PlayTracerEffect(HitResult.Location);

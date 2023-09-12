@@ -27,7 +27,6 @@ void ASniperProjectile::BeginPlay()
 
 void ASniperProjectile::OnHit(UPrimitiveComponent *HitComp, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalizedImpulse, const FHitResult &Hit)
 {
-    // TODO: Explosive round
     TArray<AActor *> OverlappingActors;
     SphereCollider->GetOverlappingActors(OverlappingActors);
 

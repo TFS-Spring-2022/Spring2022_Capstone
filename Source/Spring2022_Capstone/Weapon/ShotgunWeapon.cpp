@@ -7,6 +7,8 @@
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "Spring2022_Capstone/Spring2022_Capstone.h"
+#include "Spring2022_Capstone/Enemies/BaseEnemy.h"
+#include "Spring2022_Capstone/EnvironmentObjects/Hazards/Barrel.h"
 
 
 AShotgunWeapon::AShotgunWeapon()
@@ -81,67 +83,77 @@ bool AShotgunWeapon::Shoot()
 						bPelletConnected = true;
 
 						IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
-						
-						switch (HitSurfaceType)
+
+						// If the damaged actor is a barrel.
+						if(DamageableActor->_getUObject()->IsA(ABarrel::StaticClass()))
 						{
-						case SURFACE_FleshDefault:
-							if(DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName)) 
-							{
-								//Enemy has died
-								EnemiesKilledFromAttack++;
-								if(PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
-								{
-									if(!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-										ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-								}
-								else
-								{
-									if(!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-										ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-								}
-							}
+							DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
 							if(FloatingDamageNumberParticleSystem)
 								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
-							break;
-						case SURFACE_FleshVulnerable:
-							if(DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier,HitResult.BoneName))
+						}
+						else if(DamageableActor->_getUObject()->IsA(ABaseEnemy::StaticClass()))
+						{
+							switch (HitSurfaceType)
 							{
-								//Enemy has died
-								EnemiesKilledFromAttack++;
-								if(PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+							case SURFACE_FleshDefault:
+								if(DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName)) 
 								{
-									if(!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-										ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+										//Enemy has died
+										EnemiesKilledFromAttack++;
+										if(PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+										{
+											if(!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+												ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+										}
+										else
+										{
+											if(!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+												ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+										}
 								}
-								else
+								if(FloatingDamageNumberParticleSystem)
+									DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
+								break;
+							case SURFACE_FleshVulnerable:
+								if(DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier,HitResult.BoneName))
 								{
-									if(!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-										ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+									//Enemy has died
+									EnemiesKilledFromAttack++;
+									if(PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+									{
+										if(!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+											ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+									}
+									else
+									{
+										if(!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+											ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+									}
 								}
+								if(FloatingDamageNumberParticleSystem)
+									DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
+								if(ScoreManagerSubSystem)
+									ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
+								bHeadshotHit = true;
+								break;
+							default:
+								if(DamageableActor->DamageActor(this, ShotDamage,HitResult.BoneName))
+								{
+									//Enemy has died
+									EnemiesKilledFromAttack++;
+									if(PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+									{
+										if(!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+											ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+									}
+									else
+									{
+										if(!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+											ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+									}
+								}
+								break;
 							}
-							if(FloatingDamageNumberParticleSystem)
-								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
-							if(ScoreManagerSubSystem)
-								ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
-							bHeadshotHit = true;
-							break;
-						default:
-							if(DamageableActor->DamageActor(this, ShotDamage,HitResult.BoneName))
-							{
-								//Enemy has died
-								EnemiesKilledFromAttack++;
-								if(PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
-								{
-									if(!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-										ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-								}
-								else
-								{
-									if(!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-										ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-								}
-							}
-							break;
 						}
 					}
 					//DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);

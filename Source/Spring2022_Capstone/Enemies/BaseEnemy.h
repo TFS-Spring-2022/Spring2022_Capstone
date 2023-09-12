@@ -27,6 +27,7 @@ struct FEnemyDrop
 
 class UBehaviorTree;
 class UHealthComponent;
+
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API ABaseEnemy : public ACharacter, public IDamageableActor, public IAttackSystemAgentInterface
 {
