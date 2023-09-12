@@ -116,4 +116,5 @@ public:
 
 	float GetElapsedWaveTime() const;
 	
+	FORCEINLINE UWaveAnnouncerWidget* GetWaveAnnouncerWidget() const {return WaveAnnouncerWidgetInstance;}
 };

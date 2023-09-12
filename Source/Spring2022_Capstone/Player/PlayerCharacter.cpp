@@ -192,9 +192,15 @@ void APlayerCharacter::Pause(const FInputActionValue &Value)
 		PlayerController->bShowMouseCursor = true;
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 		PauseMenuWidgetInstance->SetVisibility(ESlateVisibility::Visible);
+		if(CurrentGameMode->GetWaveManager())
+			CurrentGameMode->GetWaveManager()->GetWaveAnnouncerWidget()->PauseAnnouncementAnimation(true);
 	}
 	else
+	{
 		UnPause();
+		if(CurrentGameMode->GetWaveManager())
+			CurrentGameMode->GetWaveManager()->GetWaveAnnouncerWidget()->PauseAnnouncementAnimation(false);
+	}
 }
 
 void APlayerCharacter::UnPause()
