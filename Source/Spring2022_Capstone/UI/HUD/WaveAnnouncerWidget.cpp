@@ -3,6 +3,16 @@
 
 #include "WaveAnnouncerWidget.h"
 
+#include "Animation/UMGSequencePlayer.h"
+
+void UWaveAnnouncerWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	// Stop AnnouncementTextBlock from blocking mouse input.
+	AnnouncementTextBlock->SetVisibility(ESlateVisibility::HitTestInvisible);
+}
+
 void UWaveAnnouncerWidget::SetAnnouncementTextBlock(FText Announcement)
 {
 	if(!AnnouncementTextBlock)

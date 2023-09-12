@@ -17,6 +17,8 @@ class SPRING2022_CAPSTONE_API UWaveAnnouncerWidget : public UUserWidget
 
 protected:
 
+	virtual void NativeConstruct() override;
+	
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UTextBlock* AnnouncementTextBlock;
 
