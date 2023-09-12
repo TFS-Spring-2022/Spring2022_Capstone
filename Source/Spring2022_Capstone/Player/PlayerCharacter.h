@@ -161,7 +161,7 @@ protected:
 	void Dash(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
 	void Sprint(const FInputActionValue &Value);
-	void Crouch(const FInputActionValue &Value);
+	void CCrouch(const FInputActionValue &Value);
 	void Attack(const FInputActionValue &Value);
 	void Grapple(const FInputActionValue &Value);
 	void InspectWeapon(const FInputActionValue &Value);
@@ -280,6 +280,10 @@ private:
 	float SprintMultiplier = 1.2f;
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnRate = 200.f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float YSensitivity = 50.f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float XSensitivity = 50.f;
 
 	// ToDo: Currently assigned inside WeaponBase::BeginPlay() from weapons in level.
 	UPROPERTY(EditAnywhere, Category = "Player Inventory")
@@ -460,5 +464,10 @@ public:
 	 */
 	UFUNCTION()
 	void FireGrappleAfterDelay();
+
+	UFUNCTION()
+	void SetYSensitivity(float Value);
+	UFUNCTION()
+	void SetXSensitivity(float Value);
 
 };
