@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseEnemy.h"
+#include "Spring2022_Capstone/Enemies/BaseEnemy.h"
 #include "SniperEnemy.generated.h"
 
 class UNiagaraComponent;
+class ABaseEnemyProjectile;
 
 UCLASS()
 class SPRING2022_CAPSTONE_API ASniperEnemy : public ABaseEnemy
@@ -20,8 +21,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	
 	virtual void BeginPlay() override;
-	
-protected:
+    
 	virtual void Attack() override;
 
 	bool bCanAttack = true;
@@ -32,13 +32,13 @@ protected:
 	void StartCharge();
 	UFUNCTION(BlueprintCallable)
 	void StopCharge();
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
-	float ChargeTime;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	bool bIsCharging;
 	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UNiagaraComponent* LaserComponent;
+    UPROPERTY(EditDefaultsOnly, Category = "Projectile", meta = (AllowPrivateAccess = true))
+    TSubclassOf<ABaseEnemyProjectile> Projectile;
 
 public:
 

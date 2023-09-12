@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "AttackSystemAgentInterface.h"
 #include "RandomNameGenerator.h"
-#include "SniperDisablePickup.h"
+#include "Sniper/SniperDisablePickup.h"
 #include "GameFramework/Character.h"
 #include "Spring2022_Capstone/BasePickup.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
@@ -27,6 +27,7 @@ struct FEnemyDrop
 
 class UBehaviorTree;
 class UHealthComponent;
+
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API ABaseEnemy : public ACharacter, public IDamageableActor, public IAttackSystemAgentInterface
 {
@@ -66,6 +67,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Drops", meta = (AllowPrivateAccess = true))
 	TArray<FEnemyDrop> Drops;
+    
+    UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
+    float Damage;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Pawn, meta = (AllowPrivateAccess = "true"))
 	bool bDidHide;
@@ -132,9 +136,9 @@ public:
 	UPROPERTY()
 	UNiagaraComponent* EliteParticleInstance;
 
+	FORCEINLINE bool GetIsDying() const {return bIsDying;}
+
 private:
-	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
-	float Damage;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float AttackSpeed;
 

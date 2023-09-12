@@ -103,8 +103,8 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 		return;
 	}
 
-	FTimerHandle handle;
-	GetWorld()->GetTimerManager().SetTimer(handle, this, &UGrappleComponent::MaxGrappleTimeReached, MaximumGrappleTime, false);
+	// Set timer to ensure player does not grapple for longer then MaximumGrappleTime.
+	GetWorld()->GetTimerManager().SetTimer(MaxGrappleTimerHandle, this, &UGrappleComponent::MaxGrappleTimeReached, MaximumGrappleTime, false);
 
 	GrappleState = EGrappleState::Attached;
 

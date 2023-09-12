@@ -9,6 +9,8 @@
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Spring2022_Capstone/Spring2022_Capstone.h"
+#include "Spring2022_Capstone/Enemies/BaseEnemy.h"
+#include "Spring2022_Capstone/EnvironmentObjects/Hazards/Barrel.h"
 
 
 ASemiAutomaticWeapon::ASemiAutomaticWeapon()
@@ -45,15 +47,6 @@ bool ASemiAutomaticWeapon::Shoot()
 			
 			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
-				if(ScoreManagerSubSystem)
-				{
-					// Increment hit counter
-					ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::Hits);
-				
-					// If player is in the air, increment counter
-					if(!PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
-						ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HitsWhileAirborne);
-				}
 				
 				// Get Surface Type to check for headshot and impact material type.
 				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
@@ -63,38 +56,54 @@ bool ASemiAutomaticWeapon::Shoot()
 
 					IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
 					
-					switch (HitSurfaceType)
+					if(DamageableActor->_getUObject()->IsA(ABarrel::StaticClass()))
 					{
-					case SURFACE_FleshDefault:
-						DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
+						DamageableActor->DamageActor(this, ShotDamage);
 						if(FloatingDamageNumberParticleSystem)
 							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
-						break;
-					case SURFACE_FleshVulnerable:
-						DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier, HitResult.BoneName);
-						if(FloatingDamageNumberParticleSystem)
-							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
-
-						// Score 
+					}
+					else if (!Cast<ABaseEnemy>(HitResult.GetActor())->GetIsDying())
+					{
 						if(ScoreManagerSubSystem)
-							ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
-						// Skull N Crosshair Accolade
-						if(ScoreManagerTimerSubSystem)
 						{
-							if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::SkullNCrosshair))
-								ScoreManagerTimerSubSystem->IncrementScullNCrosshairHeadshotHits();
-							else
-								ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::SkullNCrosshair);
+							// Increment hit counter
+							ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::Hits);
+				
+							// If player is in the air, increment counter
+							if(!PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+								ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HitsWhileAirborne);
 						}
-						break;
-					default:
-						DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
-						break;
+						
+						switch (HitSurfaceType)
+						{
+						case SURFACE_FleshDefault:
+							DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
+							if(FloatingDamageNumberParticleSystem)
+								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
+							break;
+						case SURFACE_FleshVulnerable:
+							DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier, HitResult.BoneName);
+							if(FloatingDamageNumberParticleSystem)
+								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
+
+							// Score 
+							if(ScoreManagerSubSystem)
+								ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
+							// Skull N Crosshair Accolade
+							if(ScoreManagerTimerSubSystem)
+							{
+								if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::SkullNCrosshair))
+									ScoreManagerTimerSubSystem->IncrementScullNCrosshairHeadshotHits();
+								else
+									ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::SkullNCrosshair);
+							}
+							break;
+						default:
+							DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
+							break;
+						}
 					}
 					ShowHitMarker();
-
-					
-					
 				}
 				//DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 				PlayTracerEffect(HitResult.Location);

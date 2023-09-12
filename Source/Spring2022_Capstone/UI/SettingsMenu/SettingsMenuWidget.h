@@ -6,7 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ComboBox.h"
 #include "Components/ComboBoxString.h"
-#include "Components/Slider.h"
 #include "SettingsMenuWidget.generated.h"
 
 class UPanelWidget;
@@ -14,6 +13,9 @@ class UImage;
 class UTextBlock;
 class AMainMenuManager;
 class UButton;
+class USlider;
+class UCustomGameUserSettings;
+class APlayerCharacter;
 
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API USettingsMenuWidget : public UUserWidget
@@ -26,6 +28,8 @@ protected:
 public:
 
 	AMainMenuManager *Manager;
+	UCustomGameUserSettings *Settings;
+	APlayerCharacter *Player;
 
 	// Root Panel
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -44,6 +48,10 @@ public:
 	UButton *GeneralButton;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *GeneralPanel;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	USlider *YSensitivitySlider;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	USlider *XSensitivitySlider;
 
 	// Controls
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -110,5 +118,10 @@ private:
 
 	UFUNCTION()
 	void RestartIgnoreButtonPressed();
+	
+	UFUNCTION()
+	void OnYSensitivityValueChanged(float Value);
+	UFUNCTION()
+	void OnXSensitivityValueChanged(float Value);
 	
 };

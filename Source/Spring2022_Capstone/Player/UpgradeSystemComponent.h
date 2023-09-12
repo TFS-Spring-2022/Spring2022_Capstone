@@ -189,7 +189,7 @@ public:
 			FUpgradeChoice(11, EUpgradeType::MovementSpeed, 5),
 			FUpgradeChoice(12, EUpgradeType::MovementSpeed, 5),
 			// Double Jump
-			FUpgradeChoice(13, EUpgradeType::UnlockDoubleJump, NULL),
+			FUpgradeChoice(13, EUpgradeType::UnlockDoubleJump, 0),
 			// Max Weapon Charge (ToDo: Specific Weapon (Currently effects active weapon)
 			FUpgradeChoice(14, EUpgradeType::ChargeCooldown, 5),
 			FUpgradeChoice(15, EUpgradeType::ChargeCooldown, 5),
