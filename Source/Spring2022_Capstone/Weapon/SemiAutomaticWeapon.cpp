@@ -9,7 +9,7 @@
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Spring2022_Capstone/Spring2022_Capstone.h"
-#include "Spring2022_Capstone/EnvironmentObjects/Hazards/Barrel.h"
+#include "Spring2022_Capstone/Enemies/BaseEnemy.h"
 
 
 ASemiAutomaticWeapon::ASemiAutomaticWeapon()
@@ -46,15 +46,6 @@ bool ASemiAutomaticWeapon::Shoot()
 			
 			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
-				if(ScoreManagerSubSystem)
-				{
-					// Increment hit counter
-					ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::Hits);
-				
-					// If player is in the air, increment counter
-					if(!PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
-						ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HitsWhileAirborne);
-				}
 				
 				// Get Surface Type to check for headshot and impact material type.
 				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
@@ -64,15 +55,18 @@ bool ASemiAutomaticWeapon::Shoot()
 
 					IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
 
-					// If the damaged actor is a barrel.
-					if(DamageableActor->_getUObject()->IsA(ABarrel::StaticClass()))
+					if (!Cast<ABaseEnemy>(HitResult.GetActor())->GetIsDying())
 					{
-						DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
-						if(FloatingDamageNumberParticleSystem)
-							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
-					}
-					else
-					{
+						if(ScoreManagerSubSystem)
+						{
+							// Increment hit counter
+							ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::Hits);
+				
+							// If player is in the air, increment counter
+							if(!PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+								ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HitsWhileAirborne);
+						}
+						
 						switch (HitSurfaceType)
 						{
 						case SURFACE_FleshDefault:

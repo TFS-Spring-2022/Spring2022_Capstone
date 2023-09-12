@@ -78,6 +78,13 @@ private:
 	bool TraceDownForMantleSurface();
 
 	/**
+	 * @brief Line trace above Actor to ensure they are not under a platform and going to mantle
+	 * through the surface.
+	 * @return true - Player is blocked from above and cannot mantle.
+	 */
+	bool CheckForBlockingAbove() const;
+
+	/**
 	* @brief Set CollisionQuereyParams properties of TraceParams
 	*/
 	void SetTraceParams();
@@ -86,10 +93,12 @@ private:
 	FCollisionQueryParams TraceParams;
 	
 /// Const Variables ///
-	const float CAPSULE_TRACE_ZAXIS_RAISE = 50.0f;	// Amount blocking wall cast is raised to ensure lower surfaces are not caught.
-	const float CAPSULE_TRACE_REACH = 45.0f;		// Distance to wall to mantle.
-	const float CAPSULE_TRACE_RADIUS = 30.0f;		// Radius used in check for blocking wall and mantle surface.
-	const float MANTLE_SURFACE_DEPTH = -60.0f;		// Depth the player will climb up to. *
-	const float MANTLE_VERTICAL_KNOCK = 300.0f;		// Used in mantle process to knock-up the player and ensure they don't get stuck on ground.
+	const float CAPSULE_TRACE_ZAXIS_RAISE = 10.0f;		// Amount blocking wall cast is raised to ensure lower surfaces are not caught.
+	const float CAPSULE_TRACE_REACH = 45.0f;			// Distance to wall to mantle.
+	const float CAPSULE_HEIGHT_BUFFER = 3.0f;			// Additional height added to blocking wall capsule trace.
+	const float CAPSULE_TRACE_RADIUS = 30.0f;			// Radius used in check for blocking wall and mantle surface.
+	const float MANTLE_SURFACE_DEPTH = -75.0f;			// Depth the player will climb up to. 
+	const float MANTLE_VERTICAL_KNOCK = 350.0f;			// Used in mantle process to knock-up the player and ensure they don't get stuck on ground.
+	const float BLOCKING_ABOVE_TRACE_DISTANCE = 175.0f;	// Distance traced above the player when searching for an above blocking platform.
 	
 };
