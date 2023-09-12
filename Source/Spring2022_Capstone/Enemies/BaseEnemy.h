@@ -129,6 +129,8 @@ public:
 	UPROPERTY()
 	UNiagaraComponent* EliteParticleInstance;
 
+	FORCEINLINE bool GetIsDying() const {return bIsDying;}
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float AttackSpeed;
