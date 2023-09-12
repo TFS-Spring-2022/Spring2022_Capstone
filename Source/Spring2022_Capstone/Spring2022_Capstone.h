@@ -10,3 +10,5 @@
 #define SURFACE_Wood				SurfaceType4
 #define SURFACE_Water			    SurfaceType5	
 #define SURFACE_Grass               SurfaceType6
+
+#define TRACE_Grapple				ECC_GameTraceChannel1
