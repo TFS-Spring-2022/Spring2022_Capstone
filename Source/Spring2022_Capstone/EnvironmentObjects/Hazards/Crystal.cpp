@@ -25,3 +25,11 @@ void ACrystal::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+bool ACrystal::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
+{
+    return false;
+}
+
+void ACrystal::Pulse()
+{
+}
