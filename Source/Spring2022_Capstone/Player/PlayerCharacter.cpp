@@ -2,7 +2,6 @@
 
 #include "PlayerCharacter.h"
 
-#include "DiffResults.h"
 #include "GrappleComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -32,7 +31,7 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetupAttachment(RootComponent);
 	Camera->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
 	Camera->bUsePawnControlRotation = true;
-
+	
 	// We do not want to rotate the entire player with the camera, just the skeletal mesh (in BeginPlay).
 	bUseControllerRotationPitch = false;
 

@@ -15,8 +15,6 @@ class SPRING2022_CAPSTONE_API USoundManagerSubSystem : public UGameInstanceSubsy
 {
 	GENERATED_BODY()
 
-	
-
 public:
 	USoundManagerSubSystem();
 	
