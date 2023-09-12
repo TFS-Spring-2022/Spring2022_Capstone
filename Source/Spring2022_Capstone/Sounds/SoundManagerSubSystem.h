@@ -25,6 +25,9 @@ public:
 
 	UFUNCTION()
 	void PlaysMusic(const USoundCue* Music) const;
+
+	UFUNCTION()
+	void ResetEventTokens();
 	
 	UFUNCTION()
 	static void PlaySoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID);
@@ -44,7 +47,7 @@ public:
 	UFUNCTION()
 	static void PlayPlayerSoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID);
 
-
+	
 	
 private:
 	

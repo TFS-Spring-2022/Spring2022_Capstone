@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "Spring2022_Capstone/UI/UpgradeMenu/UpgradeMenuWidget.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
+#include "SoundManagerSubSystem.generated.h"
 #include "UpgradeSystemComponent.generated.h"
 
 UENUM()
@@ -69,6 +70,9 @@ public:
 
 	UPROPERTY()
 	UUpgradeMenuWidget* UpgradeMenuWidgetInstance;
+
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
 	
 
 protected:

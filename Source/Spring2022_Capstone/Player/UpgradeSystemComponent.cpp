@@ -23,7 +23,7 @@ UUpgradeSystemComponent::UUpgradeSystemComponent()
 void UUpgradeSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	PlayerToUpgrade = Cast<APlayerCharacter>(GetOwner());
 
 	if(UpgradeMenuWidgetBP)
@@ -32,7 +32,9 @@ void UUpgradeSystemComponent::BeginPlay()
 	bIsMenuOpen = false;
 
 	PlayerController = GetWorld()->GetFirstPlayerController();
-	
+
+	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
 }
 
 
@@ -40,6 +42,7 @@ void UUpgradeSystemComponent::BeginPlay()
 void UUpgradeSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
 	
 }
 
@@ -121,6 +124,8 @@ void UUpgradeSystemComponent::OpenUpgradeMenu()
 		UpgradeMenuWidgetInstance->AddToViewport(0);
 		bIsMenuOpen = true;
 		PlayerToUpgrade->GetPlayerHUD()->SetVisibility(ESlateVisibility::Hidden);
+
+		SoundManagerSubSystem->ResetEventTokens();
 	}
 
 

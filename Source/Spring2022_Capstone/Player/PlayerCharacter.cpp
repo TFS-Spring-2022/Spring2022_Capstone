@@ -20,6 +20,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Spring2022_Capstone/Spring2022_Capstone.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
+#include "Spring2022_Capstone/Enemies/RangedEnemy.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -472,8 +473,7 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 	// ToDo: Attach grapple to edge of stump. Then calling after a delay will look nicer.
 	//GetWorld()->GetTimerManager().SetTimer(DelayGrappleTimerHandle, this, &APlayerCharacter::FireGrappleAfterDelay, 1, false);
 	GrappleComponent->Fire(GrappleTargetLocation);
-
-	// ToDo: Implement sound here (grapple shot)
+	
 }
 
 void APlayerCharacter::FireGrappleAfterDelay()
@@ -560,11 +560,31 @@ bool APlayerCharacter::DamageActor(AActor* DamagingActor, const float DamageAmou
 	// Set DirectionalDamageIndicator to rotate
 	if(DirectionalDamageIndicatorWidget)
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
+
+	
+	if(DamageAmount >= 6)
+		SoundManagerSubSystem->PlayPlayerSoundEvent(SoundManagerSubSystem, PlayerVoiceAudioComp, 2);
+
+	else
+	{
+		if(Cast<ARangedEnemy>(DamagingActor))
+		{
+			SoundManagerSubSystem->PlayPlayerSoundEvent(SoundManagerSubSystem, PlayerVoiceAudioComp, 4);
+		}
+		else
+			SoundManagerSubSystem->PlayPlayerSoundEvent(SoundManagerSubSystem, PlayerVoiceAudioComp, 3);
+	}
+	
+	
 	
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
+
+	
+	
 	
 	if(HealthComponent->GetHealth() <= 0)
 	{
+		SoundManagerSubSystem->PlayPlayerSoundEvent(SoundManagerSubSystem,PlayerVoiceAudioComp,1);
 		CurrentGameMode->EndRun();
 		return true;
 	}
