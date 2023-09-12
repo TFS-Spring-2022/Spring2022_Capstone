@@ -1,7 +1,9 @@
-Saved
-Platforms
+.git
+.idea
+.vs
+.vscode
 Content
 DerivedDataCache
-.git
-.vscode
 Intermediate
+Platforms
+Saved

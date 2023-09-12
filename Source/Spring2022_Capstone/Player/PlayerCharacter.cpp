@@ -547,28 +547,25 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount);
 
-	if (HealthComponent)
-	{
-		if (ScoreManagerTimerSubSystem && ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(CloseCallCorsair) == false) // ToDo: Remove the IsAccolade running when cleaning up the process
-			ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CloseCallCorsair);
+	if (!HealthComponent) { return false; }
 
-		if (DamageCameraShake)
-			UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(DamageCameraShake);
-		UpdateHealthBar();
-	}
+	if (ScoreManagerTimerSubSystem && ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(CloseCallCorsair) == false) 
+		ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CloseCallCorsair);
 
+	if (DamageCameraShake)
+		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(DamageCameraShake);
+		
 	// Set DirectionalDamageIndicator to rotate
 	if (DirectionalDamageIndicatorWidget)
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
 
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
-
+	UpdateHealthBar();
 	if (HealthComponent->GetHealth() <= 0)
 	{
 		CurrentGameMode->EndRun();
 		return true;
 	}
-
 	return false;
 }
 

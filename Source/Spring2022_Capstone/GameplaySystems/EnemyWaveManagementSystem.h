@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "EnemySpawnPoint.h"
 #include "Spring2022_Capstone/Enemies/BaseEnemy.h"
-#include "Spring2022_Capstone/Enemies/SniperEnemy.h"
+#include "Spring2022_Capstone/Enemies/Sniper/SniperEnemy.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "Spring2022_Capstone/UI/HUD/WaveAnnouncerWidget.h"
 #include "EnemyWaveManagementSystem.generated.h"

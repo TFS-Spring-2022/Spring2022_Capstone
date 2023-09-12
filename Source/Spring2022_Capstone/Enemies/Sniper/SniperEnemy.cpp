@@ -2,7 +2,7 @@
 
 #include "SniperEnemy.h"
 #include "NiagaraComponent.h"
-#include "BaseEnemyProjectile.h"
+#include "Spring2022_Capstone/Enemies/BaseEnemyProjectile.h"
 #include "Kismet/GameplayStatics.h"
 
 ASniperEnemy::ASniperEnemy()

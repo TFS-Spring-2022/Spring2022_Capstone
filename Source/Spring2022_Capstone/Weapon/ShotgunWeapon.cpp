@@ -8,6 +8,7 @@
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "Spring2022_Capstone/Spring2022_Capstone.h"
 #include "Spring2022_Capstone/Enemies/BaseEnemy.h"
+#include "Spring2022_Capstone/EnvironmentObjects/Hazards/Barrel.h"
 
 
 AShotgunWeapon::AShotgunWeapon()
@@ -18,10 +19,8 @@ AShotgunWeapon::AShotgunWeapon()
 bool AShotgunWeapon::Shoot()
 {
 	if (!bIsOverheating && CurrentCharge > MaxChargeAmount)
-	{
 		Overheat();
-	}
-
+	
 	if (bCanFire)
 	{
 		// Enemies killed from a single attack.
@@ -32,8 +31,7 @@ bool AShotgunWeapon::Shoot()
 			TArray<uint32> ActorsKilledWhilePlayerGroundedIDs;
 			TArray<uint32> ActorsKilledWhilePlayerAirborneIDs;
 			// Start timer the fire rate timer (after it runs for FireRate (time between shots in seconds) it will be cleared
-			GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AShotgunWeapon::ClearFireTimerHandle, FireRate,
-			                                false);
+			GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AShotgunWeapon::ClearFireTimerHandle, FireRate,false);
 
 			FHitResult HitResult;
 
@@ -48,16 +46,14 @@ bool AShotgunWeapon::Shoot()
 
 			if (MuzzleFlashParticleSystem)
 				UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, SkeletalMesh, ShootingStartSocket,
-				                                       SkeletalMesh->GetSocketLocation(ShootingStartSocket),
-				                                       SkeletalMesh->GetSocketRotation(ShootingStartSocket));
+					SkeletalMesh->GetSocketLocation(ShootingStartSocket),SkeletalMesh->GetSocketRotation(ShootingStartSocket));
 
 			bool bHeadshotHit = false; // Used to ensure shotgun headshots don't call for every pellet.
 
 			for (int i = 0; i < PelletCount; i++)
 			{
 				// Get random direction inside cone projected from player
-				ForwardVector = UKismetMathLibrary::RandomUnitVectorInConeInRadians(
-					PlayerCamera->GetActorForwardVector(), HalfAngle);
+				ForwardVector = UKismetMathLibrary::RandomUnitVectorInConeInRadians(PlayerCamera->GetActorForwardVector(), HalfAngle);
 				FVector EndTrace = ((ForwardVector * ShotDistance) + StartTrace);
 				FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 				TraceParams->bReturnPhysicalMaterial = true;
@@ -67,106 +63,102 @@ bool AShotgunWeapon::Shoot()
 				if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 				{
 					// Get Surface Type to check for headshot and impact material.
-					EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(
-						HitResult.PhysMaterial.Get());
+					EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 
 					if (HitResult.GetActor()->Implements<UDamageableActor>())
 					{
-						if (!Cast<ABaseEnemy>(HitResult.GetActor())->GetIsDying())
-						{
-							if (ScoreManagerSubSystem)
-							{
-								// Increment hit counter
-								ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::Hits);
-
-								// If player is in the air, increment counter
-								if (!PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
-									ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HitsWhileAirborne);
-							}
-
 							// We want to call ShowHitMarker() outside of every shot to prevent unnecessary repeated calls.
 							bPelletConnected = true;
 
 							IDamageableActor* DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
 
-							switch (HitSurfaceType)
+							if(DamageableActor->_getUObject()->IsA(ABarrel::StaticClass()))
 							{
-							case SURFACE_FleshDefault:
-								if (DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName))
-								{
-									//Enemy has died
-									EnemiesKilledFromAttack++;
-									if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
-									{
-										if (!ActorsKilledWhilePlayerGroundedIDs.Contains(
-											HitResult.GetActor()->GetUniqueID()))
-											ActorsKilledWhilePlayerGroundedIDs.AddUnique(
-												HitResult.GetActor()->GetUniqueID());
-									}
-									else
-									{
-										if (!ActorsKilledWhilePlayerAirborneIDs.Contains(
-											HitResult.GetActor()->GetUniqueID()))
-											ActorsKilledWhilePlayerAirborneIDs.AddUnique(
-												HitResult.GetActor()->GetUniqueID());
-									}
-								}
-								if (FloatingDamageNumberParticleSystem)
+								DamageableActor->DamageActor(this, ShotDamage);
+								if(FloatingDamageNumberParticleSystem)
 									DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
-								break;
-							case SURFACE_FleshVulnerable:
-								if (DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier,
-								                                 HitResult.BoneName))
+							}
+							else if(DamageableActor->_getUObject()->IsA(ABaseEnemy::StaticClass()))
+							{
+
+								if(!Cast<ABaseEnemy>(HitResult.GetActor())->GetIsDying())
 								{
-									//Enemy has died
-									EnemiesKilledFromAttack++;
-									if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+									if (ScoreManagerSubSystem)
 									{
-										if (!ActorsKilledWhilePlayerGroundedIDs.Contains(
-											HitResult.GetActor()->GetUniqueID()))
-											ActorsKilledWhilePlayerGroundedIDs.AddUnique(
-												HitResult.GetActor()->GetUniqueID());
+										// Increment hit counter
+										ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::Hits);
+									
+										// If player is in the air, increment counter
+										if (!PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+											ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HitsWhileAirborne);
 									}
-									else
+									
+									switch (HitSurfaceType)
 									{
-										if (!ActorsKilledWhilePlayerAirborneIDs.Contains(
-											HitResult.GetActor()->GetUniqueID()))
-											ActorsKilledWhilePlayerAirborneIDs.AddUnique(
-												HitResult.GetActor()->GetUniqueID());
+									case SURFACE_FleshDefault:
+										if (DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName))
+										{
+											//Enemy has died
+											EnemiesKilledFromAttack++;
+											if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+											{
+												if (!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+													ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+											}
+											else
+											{
+												if (!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+													ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+											}
+										}
+										if (FloatingDamageNumberParticleSystem)
+											DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
+										break;
+									case SURFACE_FleshVulnerable:
+										if (DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier,HitResult.BoneName))
+										{
+											//Enemy has died
+											EnemiesKilledFromAttack++;
+											if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+											{
+												if (!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+													ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+											}
+											else
+											{
+												if (!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+													ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+											}
+										}
+										if (FloatingDamageNumberParticleSystem)
+											DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier,
+											                             true);
+										if (ScoreManagerSubSystem)
+											ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
+										bHeadshotHit = true;
+										break;
+									default:
+										if (DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName))
+										{
+											//Enemy has died
+											EnemiesKilledFromAttack++;
+											if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+											{
+												if (!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+													ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+											}
+											else
+											{
+												if (!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+													ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+											}
+										}
+										break;
 									}
 								}
-								if (FloatingDamageNumberParticleSystem)
-									DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier,
-									                             true);
-								if (ScoreManagerSubSystem)
-									ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
-								bHeadshotHit = true;
-								break;
-							default:
-								if (DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName))
-								{
-									//Enemy has died
-									EnemiesKilledFromAttack++;
-									if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
-									{
-										if (!ActorsKilledWhilePlayerGroundedIDs.Contains(
-											HitResult.GetActor()->GetUniqueID()))
-											ActorsKilledWhilePlayerGroundedIDs.AddUnique(
-												HitResult.GetActor()->GetUniqueID());
-									}
-									else
-									{
-										if (!ActorsKilledWhilePlayerAirborneIDs.Contains(
-											HitResult.GetActor()->GetUniqueID()))
-											ActorsKilledWhilePlayerAirborneIDs.AddUnique(
-												HitResult.GetActor()->GetUniqueID());
-									}
-								}
-								break;
 							}
 						}
-					}
-
+					
 					//DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 					PlayTracerEffect(HitResult.Location);
 
@@ -182,8 +174,8 @@ bool AShotgunWeapon::Shoot()
 						break;
 					}
 					if (ImpactEffectToPlay)
-						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffectToPlay, HitResult.ImpactPoint,
-						                                         HitResult.ImpactNormal.Rotation());
+						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffectToPlay, HitResult.ImpactPoint,HitResult.ImpactNormal.Rotation());
+				
 				} // end the shooting thing
 			}
 			if (bHeadshotHit)
