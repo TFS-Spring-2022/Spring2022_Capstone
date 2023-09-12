@@ -458,7 +458,7 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 	FCollisionQueryParams TraceParams;
 	TraceParams.AddIgnoredActor(this);
 
-	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility);
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, TRACE_Grapple);
 	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.f);
 	FVector GrappleTargetLocation = EndLocation;
 	if (AActor *HitActor = HitResult.GetActor())
