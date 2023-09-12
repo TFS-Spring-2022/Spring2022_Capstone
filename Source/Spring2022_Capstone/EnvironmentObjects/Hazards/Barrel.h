@@ -21,14 +21,14 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent *BarrelMesh;
-	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	USphereComponent *SphereCollider;
 
-	UPROPERTY(EditAnywhere, Category = "Stats", meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, Category = "Stats", meta = (AllowPrivateAccess = true))
 	UHealthComponent *HealthComp;
-	UPROPERTY(EditAnywhere, Category = "Stats", meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, Category = "Stats", meta = (AllowPrivateAccess = true))
     float Damage;
 
 public:	

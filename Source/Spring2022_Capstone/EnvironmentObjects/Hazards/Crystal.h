@@ -19,10 +19,17 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent *CrystalMesh;
-	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	USphereComponent *SphereCollider;
+
+	UPROPERTY(VisibleAnywhere, Category = "Stats", meta = (AllowPrivateAccess = true))
+    float Damage;
+	UPROPERTY(VisibleAnywhere, Category = "Stats", meta = (AllowPrivateAccess = true))
+    float TimeInterval;
+	UPROPERTY(VisibleAnywhere, Category = "Stats", meta = (AllowPrivateAccess = true))
+    float TotalPulses;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
