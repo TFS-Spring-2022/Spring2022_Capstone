@@ -41,6 +41,8 @@ public:
 	virtual bool DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
 	UFUNCTION(BlueprintCallable)
 	void Pulse();
+	UFUNCTION(BlueprintCallable)
+	void Explode();
 
 private:
 	FTimerHandle PulseTimer;

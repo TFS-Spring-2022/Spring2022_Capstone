@@ -37,8 +37,7 @@ bool ACrystal::DamageActor(AActor *DamagingActor, const float DamageAmount, FNam
 
 void ACrystal::Pulse()
 {
-	// Pulse
-
+	Explode();
 	bIsPulsing = true;
 	PulseCounter ++;
 
@@ -50,4 +49,19 @@ void ACrystal::Pulse()
 		bIsPulsing = false;
 		PulseCounter = 0;
 	}
+}
+
+void ACrystal::Explode()
+{
+	TArray<AActor *> OverlappingActors;
+    SphereCollider->GetOverlappingActors(OverlappingActors);
+
+    for( AActor *OverlappingActor : OverlappingActors )
+    {
+        if (IDamageableActor *DamageableActor = Cast<IDamageableActor>(OverlappingActor))
+        {
+			if (DamageableActor == this) { continue; }
+            DamageableActor->DamageActor(this, Damage);
+        }
+    }
 }
