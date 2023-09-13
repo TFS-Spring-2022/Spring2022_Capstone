@@ -29,22 +29,6 @@ void ARangedEnemy::AttackHit()
     }
 }
 
-void ARangedEnemy::Death()
-{
-    Super::Death();
-
-    if(SoundManagerSubSystem)
-    {
-        SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,5);
-    }
-}
-
-bool ARangedEnemy::DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName)
-{
-    SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,2);
-    return Super::DamageActor(DamagingActor, DamageAmount, HitBoneName);
-    
-}
 
 
 

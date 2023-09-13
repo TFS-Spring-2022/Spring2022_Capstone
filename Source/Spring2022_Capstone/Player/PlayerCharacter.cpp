@@ -580,6 +580,10 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 	UpdateHealthBar();
 	if (HealthComponent->GetHealth() <= 0)
 	{
+		if(Cast<ASniperEnemy>(DamagingActor))
+		{
+			SoundManagerSubSystem->PlaySniperSoundEvent(PlayerVoiceAudioComp, 4);
+		}
 		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp,1);
 		CurrentGameMode->EndRun();
 		return true;

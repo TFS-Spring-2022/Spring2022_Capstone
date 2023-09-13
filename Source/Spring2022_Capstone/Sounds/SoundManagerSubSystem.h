@@ -32,7 +32,7 @@ public:
 	void PlaysMusic(const USoundCue* Music) const;
 
 	UFUNCTION()
-	void ResetEventTokens(USoundManagerSubSystem* AudioSubSystem);
+	void ResetEventTokens();
 
 	UFUNCTION()
 	void PlaySniperSoundEvent(UAudioComponent* OwnerAC, int eventID);
@@ -42,10 +42,7 @@ public:
 
 	UFUNCTION()
 	void PlayNarratorSoundEvent(UAudioComponent* OwnerAC, int eventID);
-
-	UFUNCTION()
-	void PlayRangerSoundEvent(UAudioComponent* OwnerAC, int eventID);
-
+	
 	UFUNCTION()
 	void PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int eventID);
 
@@ -170,6 +167,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
 	USoundCue* RangerDeathSC;
+
+	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
+	USoundCue* RangerDisabledSC;
+
+	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
+	USoundCue* RangerFearSC;
 	
 #pragma endregion
 #pragma region Grunt Voices

@@ -50,6 +50,9 @@ void UEnemyWaveManagementSystem::SpawnWave()
 	ElapsedWaveTime = 0.0f;
 	WaveTimerMinutes = 0;
 	WaveTimerSeconds = 0.0f;
+
+	//Sound token reset
+	SoundManagerSubSystem->ResetEventTokens();
 	
 	// Assigning here due to execution order.
 	if(!ScoreSystemTimerSubSystem)

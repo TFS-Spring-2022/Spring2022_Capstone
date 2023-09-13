@@ -197,7 +197,7 @@ void USoundManagerSubSystem::PlaysMusic(const USoundCue* Music) const
 	}
 }
 
-void USoundManagerSubSystem::ResetEventTokens(USoundManagerSubSystem* AudioSubSystem)
+void USoundManagerSubSystem::ResetEventTokens()
 {
 	PlayerSoundEventToken = 0;
 	NarratorSoundEventToken = 0;
@@ -207,7 +207,98 @@ void USoundManagerSubSystem::ResetEventTokens(USoundManagerSubSystem* AudioSubSy
 
 void USoundManagerSubSystem::PlaySniperSoundEvent(UAudioComponent* OwnerAC, int eventID)
 {
-	
+	if(OwnerAC)
+	{
+		switch(eventID)
+		{
+		case 0 :
+			SniperSoundEventToken += 50;
+			if(SniperSoundEventToken >= 100)
+				if(RangerLockOnSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(RangerLockOnSC);
+						OwnerAC->Play();
+						SniperSoundEventToken -= 100;
+					}
+			break;
+		case 1 :
+			SniperSoundEventToken += 10;
+			if(SniperSoundEventToken >= 110)
+				if(RangerHurtSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(RangerHurtSC);
+						OwnerAC->Play();
+						SniperSoundEventToken -= 120;
+					}
+			break;
+		case 2:
+				if(RangerDeathSC)
+					if(OwnerAC->IsPlaying())
+					{
+						OwnerAC->Stop();
+						OwnerAC->SetSound(RangerDeathSC);
+						OwnerAC->Play();
+					}
+					else
+					{
+						OwnerAC->SetSound(RangerDeathSC);
+						OwnerAC->Play();
+					}
+			break;
+		case 3:
+			SniperSoundEventToken += 50;
+			if(SniperSoundEventToken >= 80)
+				if(RangerAirHitSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(RangerAirHitSC);
+						OwnerAC->Play();
+						SniperSoundEventToken -= 90;
+					}
+			break;
+		case 4:
+			if(RangerKillsPlayerSC)
+				if(OwnerAC->IsPlaying())
+				{
+					OwnerAC->Stop();
+					OwnerAC->SetSound(RangerKillsPlayerSC);
+					OwnerAC->Play();
+				}
+				else
+				{
+					OwnerAC->SetSound(RangerKillsPlayerSC);
+					OwnerAC->Play();
+				}
+			break;
+		case 5:
+			SniperSoundEventToken += 50;
+			if(SniperSoundEventToken >= 80)
+				if(RangerFearSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(RangerFearSC);
+						OwnerAC->Play();
+						SniperSoundEventToken -= 90;
+					}
+			break;
+		case 6:
+			SniperSoundEventToken += 50;
+			if(SniperSoundEventToken >= 80)
+				if(RangerDisabledSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(RangerDisabledSC);
+						OwnerAC->Play();
+						SniperSoundEventToken -= 90;
+					}
+			break;
+		default:
+			SniperSoundEventToken++;
+			break;
+		}
+	}
 }
 
 void USoundManagerSubSystem::PlayGruntSoundEvent(UAudioComponent* OwnerAC, int eventID)
@@ -538,14 +629,14 @@ void USoundManagerSubSystem::PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int 
 					}
 			break;
 		case 11 :
-			PlayerSoundEventToken += 10;
-			if(PlayerSoundEventToken >= 150)
+			PlayerSoundEventToken += 5;
+			if(PlayerSoundEventToken >= 350)
 				if(PlayerMissSC)
 					if(!OwnerAC->IsPlaying())
 					{
 						OwnerAC->SetSound(PlayerMissSC);
 						OwnerAC->Play();
-						PlayerSoundEventToken -= 200;
+						PlayerSoundEventToken -= 350;
 					}
 			break;
 

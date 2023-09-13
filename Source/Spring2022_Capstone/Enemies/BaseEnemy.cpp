@@ -99,9 +99,13 @@ void ABaseEnemy::AttackHit()
 
 		if (PlayerHitResult.GetActor()->Implements<UDamageableActor>() && PlayerHitResult.GetActor()->IsA(APlayerCharacter::StaticClass())) // Question: Do we want them to be able to do damage to other enemies?
 			Cast<APlayerCharacter>(PlayerHitResult.GetActor())->DamageActor(this, Damage);
-
-		
 	}
+	
+	if(Cast<ASniperEnemy>(this))
+		SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,3);
+	else
+		SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,0);
+	
 	if(GunShotComp)
 		GunShotComp->Play();
 }
@@ -147,6 +151,12 @@ bool ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FN
 	
 	PlayHitAnimation(HitBoneName);
 
+	if(Cast<ASniperEnemy>(this))
+		SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,1);
+	else
+		SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,2);
+		
+	
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount, HitBoneName);
 	if (HealthComp)
 	{
@@ -250,6 +260,13 @@ void ABaseEnemy::Death()
 		GunShotComp->DestroyComponent();
 	}
 
+	if(SoundManagerSubSystem)
+	{
+		if(Cast<ASniperEnemy>(this))
+			SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,2);
+		else
+			SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,5);
+	}
 	
 	if(!bIsElite)
 	{

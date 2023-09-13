@@ -24,11 +24,14 @@ void ASniperEnemy::Attack()
 {
     if(bCanAttack)
     {
+        if(PlayerCharacter->GetHasSniperDisableObject())
+            SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,5);
         
         if (APlayerCharacter *Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
         {
             Player->DamageActor(this, Damage);
         }
+        
     }
 }
 
@@ -41,6 +44,7 @@ void ASniperEnemy::SpecialAttack()
         {
             FVector vectorToPlayer = Player->GetActorLocation() - GetActorLocation();
             FRotator FacingRotator = vectorToPlayer.Rotation();
+            SoundManagerSubSystem->PlaySniperSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,0);
             GetWorld()->SpawnActor<ABaseEnemyProjectile>(Projectile, ProjectileSpawnPoint->GetComponentLocation(), FacingRotator);
         }
     }
@@ -57,6 +61,7 @@ void ASniperEnemy::DisableSniperEnemy()
 {
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Disabled");
     bCanAttack = false;
+    SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,6);
     StopCharge();
     LaserComponent->Deactivate();
     // ToDo: Disable laser effect (when implemented).
