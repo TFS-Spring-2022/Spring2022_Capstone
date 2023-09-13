@@ -19,6 +19,13 @@ void UEnemyWaveManagementSystem::BeginPlay()
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.SetTickFunctionEnable(true);
 	PrimaryComponentTick.RegisterTickFunction(GetComponentLevel());
+	
+	// Create Wave Announcer Widget and apply to screen.
+	if(WaveAnnouncerWidgetBP)
+	{
+		WaveAnnouncerWidgetInstance = Cast<UWaveAnnouncerWidget>(CreateWidget(GetWorld(), WaveAnnouncerWidgetBP));
+		WaveAnnouncerWidgetInstance->AddToViewport(1);
+	}
 }
 
 
@@ -31,6 +38,11 @@ void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 
 void UEnemyWaveManagementSystem::SpawnWave()
 {
+
+	// Announce wave to player.
+	if(WaveAnnouncerWidgetInstance)
+		WaveAnnouncerWidgetInstance->SetAnnouncementTextBlock(FText::FromString(FString::Printf(TEXT("WAVE %d"), CurrentWave + 1)));
+	
 	// Restart wave timer on new wave.
 	ElapsedWaveTime = 0.0f;
 	WaveTimerMinutes = 0;
