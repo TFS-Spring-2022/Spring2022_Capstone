@@ -130,6 +130,7 @@ public:
 	UPROPERTY()
 	UNiagaraComponent* EliteParticleInstance;
 
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool GetIsDying() const {return bIsDying;}
 
 private:
