@@ -84,12 +84,15 @@ bool ASemiAutomaticWeapon::Shoot()
 						case SURFACE_FleshVulnerable:
 							
 							//Coin flip for voiceline
-							if(SoundManagerSubSystem)
+							if(DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier, HitResult.BoneName))
 							{
-								if(FMath::RandRange(1,2) == 1)
-									SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,6);
-								else
-									SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,2);
+								if(SoundManagerSubSystem)
+								{
+									if(FMath::RandRange(1,2) == 1)
+										SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,6);
+									else
+										SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,2);
+								}
 							}
 							
 							DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier, HitResult.BoneName);

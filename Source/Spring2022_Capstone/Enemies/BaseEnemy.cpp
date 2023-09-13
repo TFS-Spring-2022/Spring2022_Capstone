@@ -10,6 +10,7 @@
 #include "Components/TextRenderComponent.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
+#include "Spring2022_Capstone/EnvironmentObjects/Hazards/Barrel.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
@@ -155,7 +156,12 @@ bool ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FN
 		SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,1);
 	else
 		SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,2);
-		
+
+	if(!Cast<ASniperEnemy>(this))
+	{
+		if(Cast<ABarrel>(DamagingActor))
+			SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,1);
+	}
 	
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount, HitBoneName);
 	if (HealthComp)
