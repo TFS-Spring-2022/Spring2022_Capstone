@@ -104,6 +104,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
 	USoundCue* PlayerArialSC;
 
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerOverHeatSC;
+
 #pragma endregion
 #pragma region Narrator Voices
 	

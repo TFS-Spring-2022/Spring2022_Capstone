@@ -62,6 +62,10 @@ USoundManagerSubSystem::USoundManagerSubSystem()
 	if (PlayerRampageSCLoaded.Succeeded())
 		PlayerVoiceLines.Emplace(PlayerRampageSC = PlayerRampageSCLoaded.Object);
 
+	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerOverHeatLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerOverheat.SC_PlayerOverheat'"));
+	if (PlayerRampageSCLoaded.Succeeded())
+		PlayerVoiceLines.Emplace(PlayerOverHeatSC = PlayerOverHeatLoaded.Object);
+
 	
 #pragma endregion
 #pragma region Narrator Voice Lines
@@ -494,17 +498,22 @@ void USoundManagerSubSystem::PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int 
 			
 		case 7 :
 			if(PlayerWaveStartSC)
-				if(OwnerAC->IsPlaying())
-				{
-					OwnerAC->Stop();
-					OwnerAC->SetSound(PlayerWaveStartSC);
-					OwnerAC->Play();
-				}
-				else
+				if(!OwnerAC->IsPlaying())
 				{
 					OwnerAC->SetSound(PlayerWaveStartSC);
 					OwnerAC->Play();
 				}
+			break;
+		case 8 :
+			PlayerSoundEventToken += 60;
+			if(PlayerSoundEventToken >= 120)
+				if(PlayerOverHeatSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(PlayerOverHeatSC);
+						OwnerAC->Play();
+						PlayerSoundEventToken -= 85;
+					}
 			break;
 		default :
 			PlayerSoundEventToken ++;

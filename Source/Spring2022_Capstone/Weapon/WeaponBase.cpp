@@ -131,6 +131,7 @@ void AWeaponBase::Overheat()
 
 	if(OverheatAudioComp)
 	{
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,8);
 		OverheatAudioComp->SetSound(OverHeat);
 		OverheatAudioComp->SetVolumeMultiplier(1.f);
 		OverheatAudioComp->SetPitchMultiplier(1.f);
