@@ -15,19 +15,6 @@ ABarrel::ABarrel()
 	SphereCollider->SetupAttachment(RootComponent);
 
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-
-}
-
-void ABarrel::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-void ABarrel::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 
 bool ABarrel::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
@@ -35,16 +22,13 @@ bool ABarrel::DamageActor(AActor *DamagingActor, const float DamageAmount, FName
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount, HitBoneName);
 	if (HealthComp)
 	{
-		if(HealthComp->GetHealth() > 0)
+		if (HealthComp->GetHealth() > 0)
 		{
 			HealthComp->SetHealth(HealthComp->GetHealth() - DamageAmount);
 			if (HealthComp->GetHealth() <= 0)
-			{
 				Explode();
-				return true;
-			}
 		}
-		
+		return true;
 	}
 	return false;
 }
@@ -52,15 +36,18 @@ bool ABarrel::DamageActor(AActor *DamagingActor, const float DamageAmount, FName
 void ABarrel::Explode()
 {
 	TArray<AActor *> OverlappingActors;
-    SphereCollider->GetOverlappingActors(OverlappingActors);
+	SphereCollider->GetOverlappingActors(OverlappingActors);
 
-    for( AActor *OverlappingActor : OverlappingActors )
-    {
-        if (IDamageableActor *DamageableActor = Cast<IDamageableActor>(OverlappingActor))
-        {
-			if (DamageableActor == this) { continue; }
-            DamageableActor->DamageActor(this, Damage);
-        }
-    }
-    Destroy();
+	for (AActor *OverlappingActor : OverlappingActors)
+	{
+		if (IDamageableActor *DamageableActor = Cast<IDamageableActor>(OverlappingActor))
+		{
+			if (DamageableActor == this)
+			{
+				continue;
+			}
+			DamageableActor->DamageActor(this, Damage);
+		}
+	}
+	Destroy();
 }
