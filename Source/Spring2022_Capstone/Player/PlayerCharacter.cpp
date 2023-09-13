@@ -301,7 +301,7 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 	const float CurrentTime = GetWorld()->GetRealTimeSeconds();
 
 	if (GetController() && (DirectionalMovementValue.X != 0.f || DirectionalMovementValue.Y != 0.f))
-		if (bCanDash)
+		if (bCanDash && GrappleComponent->GrappleState != EGrappleState::Attached)
 		{
 			// Knock the actor up slightly to prevent ground collision
 			LaunchCharacter(FVector(0, 0, 250), false, true); // Note: I like the feel of true Overrides but we can come back later.
