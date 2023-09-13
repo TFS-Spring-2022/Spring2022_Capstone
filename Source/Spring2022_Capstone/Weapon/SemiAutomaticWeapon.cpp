@@ -1,27 +1,23 @@
 // Created by Spring2022_Capstone team
 
 #include "SemiAutomaticWeapon.h"
-
 #include "DevTargets.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetStringLibrary.h"
-
-#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "Spring2022_Capstone/Spring2022_Capstone.h"
 #include "Spring2022_Capstone/Enemies/BaseEnemy.h"
 #include "Spring2022_Capstone/EnvironmentObjects/Hazards/Barrel.h"
-
+#include "Spring2022_Capstone/EnvironmentObjects/Hazards/Crystal.h"
 
 ASemiAutomaticWeapon::ASemiAutomaticWeapon()
 {
-
 	RecoilComponent = CreateDefaultSubobject<URecoilComponent>("SemiAuto Recoil Component");
 }
 
 bool ASemiAutomaticWeapon::Shoot()
 {
-
 	if (!bIsOverheating && CurrentCharge > MaxChargeAmount)
 	{
 		Overheat();
@@ -42,47 +38,47 @@ bool ASemiAutomaticWeapon::Shoot()
 			FVector ForwardVector = PlayerCamera->GetActorForwardVector();
 			FVector EndTrace = ((ForwardVector * ShotDistance) + StartTrace);
 			FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
-			TraceParams->bReturnPhysicalMaterial = true;  // Hit must return a physical material to tell if the player has hit a headshot.
+			TraceParams->bReturnPhysicalMaterial = true; // Hit must return a physical material to tell if the player has hit a headshot.
 			TraceParams->AddIgnoredComponent(PlayerCharacter->GetMesh());
-			
+
 			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
-				
 				// Get Surface Type to check for headshot and impact material type.
 				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
-				
+
 				if (HitResult.GetActor()->Implements<UDamageableActor>())
 				{
-
 					IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
-					
-					if(DamageableActor->_getUObject()->IsA(ABarrel::StaticClass()))
+
+					if (DamageableActor->_getUObject()->IsA(ABarrel::StaticClass()) || DamageableActor->_getUObject()->IsA(ACrystal::StaticClass()))
 					{
 						DamageableActor->DamageActor(this, ShotDamage);
-						if(FloatingDamageNumberParticleSystem)
+						if (FloatingDamageNumberParticleSystem)
 							DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
 					}
 					else if (!Cast<ABaseEnemy>(HitResult.GetActor())->GetIsDying())
 					{
-						if(ScoreManagerSubSystem)
+						if (ScoreManagerSubSystem)
 						{
 							// Increment hit counter
 							ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::Hits);
-				
+
 							// If player is in the air, increment counter
-							if(!PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+							if (!PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
 								ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HitsWhileAirborne);
 						}
-						
+
 						switch (HitSurfaceType)
 						{
 						case SURFACE_FleshDefault:
+
 							if(DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName))
 							{
 								if (!PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
 									SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 9);
 							}
 							if(FloatingDamageNumberParticleSystem)
+
 								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
 							break;
 						case SURFACE_FleshVulnerable:
@@ -97,16 +93,16 @@ bool ASemiAutomaticWeapon::Shoot()
 							}
 							
 							DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier, HitResult.BoneName);
-							if(FloatingDamageNumberParticleSystem)
+							if (FloatingDamageNumberParticleSystem)
 								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);
 
-							// Score 
-							if(ScoreManagerSubSystem)
+							// Score
+							if (ScoreManagerSubSystem)
 								ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
 							// Skull N Crosshair Accolade
-							if(ScoreManagerTimerSubSystem)
+							if (ScoreManagerTimerSubSystem)
 							{
-								if(ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::SkullNCrosshair))
+								if (ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(EAccolades::SkullNCrosshair))
 									ScoreManagerTimerSubSystem->IncrementScullNCrosshairHeadshotHits();
 								else
 									ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::SkullNCrosshair);
@@ -119,10 +115,9 @@ bool ASemiAutomaticWeapon::Shoot()
 					}
 					ShowHitMarker();
 				}
-				//DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
+				// DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 				PlayTracerEffect(HitResult.Location);
 
-				
 				switch (HitSurfaceType)
 				{
 				case SURFACE_FleshDefault:
@@ -133,34 +128,30 @@ bool ASemiAutomaticWeapon::Shoot()
 					ImpactEffectToPlay = RockImpactParticleSystem; // ToDo: Setup default once all custom Surface Types are made.
 					break;
 				}
-				if(ImpactEffectToPlay)
+				if (ImpactEffectToPlay)
 					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffectToPlay, HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation());
 			}
-			
-			if(MuzzleFlashParticleSystem)
+
+			if (MuzzleFlashParticleSystem)
 				UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, SkeletalMesh, ShootingStartSocket);
-			
+
 			CurrentCharge += ShotCost;
 			PlayWeaponCameraShake();
 
 			bIsFiring = true;
-			GetWorld()->GetTimerManager().SetTimer(IsFiringToggleTimerHandle, this, &AWeaponBase::ToggleIsFiringOff, 0.05, false);	
+			GetWorld()->GetTimerManager().SetTimer(IsFiringToggleTimerHandle, this, &AWeaponBase::ToggleIsFiringOff, 0.05, false);
 
-			if(OverheatAudioComp)
-			{
-				OverheatAudioComp->SetPitchMultiplier((CurrentCharge/MaxChargeAmount));
-			}
+			if (OverheatAudioComp)
+				OverheatAudioComp->SetPitchMultiplier((CurrentCharge / MaxChargeAmount));
 
-			//Play gun sound
-			if(GunShotAudioComp)
-			{
+			// Play gun sound
+			if (GunShotAudioComp)
 				GunShotAudioComp->Play();
-			}
-			
+
 			// Call recoil
 			if (RecoilComponent)
 				RecoilComponent->RecoilKick();
-			
+
 			return true;
 		}
 	}
