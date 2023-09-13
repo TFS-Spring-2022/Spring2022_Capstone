@@ -5,8 +5,8 @@
 
 UCustomGameUserSettings::UCustomGameUserSettings()
 {
-    YSensitivity = 50;
-    XSensitivity = 50;
+    YSensitivity = 45;
+    XSensitivity = 45;
 }
 
 UCustomGameUserSettings *UCustomGameUserSettings::GetCustomGameUserSettings()
