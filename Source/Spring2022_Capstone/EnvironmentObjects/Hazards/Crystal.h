@@ -26,11 +26,11 @@ protected:
 	USphereComponent *SphereCollider;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
-    bool bIsPulsing;
+    bool bIsPulsing = false;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
     float Damage;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
-    float TimeInterval;
+    float PulseInterval;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
     float TotalPulses;
 
@@ -41,4 +41,8 @@ public:
 	virtual bool DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
 	UFUNCTION(BlueprintCallable)
 	void Pulse();
+
+private:
+	FTimerHandle PulseTimer;
+	int PulseCounter = 0;
 };

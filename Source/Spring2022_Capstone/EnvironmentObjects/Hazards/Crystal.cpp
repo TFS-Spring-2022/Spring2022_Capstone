@@ -12,7 +12,6 @@ ACrystal::ACrystal()
 
 	SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	SphereCollider->SetupAttachment(RootComponent);
-
 }
 
 void ACrystal::BeginPlay()
@@ -27,9 +26,28 @@ void ACrystal::Tick(float DeltaTime)
 
 bool ACrystal::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
 {
-    return false;
+	if (bIsPulsing)
+	{
+		return false;
+	}
+
+	Pulse();
+	return true;
 }
 
 void ACrystal::Pulse()
 {
+	// Pulse
+
+	bIsPulsing = true;
+	PulseCounter ++;
+
+	UE_LOG(LogTemp, Display, TEXT("Pulse %d"), PulseCounter);
+
+	if (PulseCounter < TotalPulses) {
+		GetWorld()->GetTimerManager().SetTimer(PulseTimer, this, &ACrystal::Pulse, PulseInterval);
+	} else {
+		bIsPulsing = false;
+		PulseCounter = 0;
+	}
 }
