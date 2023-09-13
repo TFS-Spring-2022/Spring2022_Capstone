@@ -77,7 +77,11 @@ bool ASemiAutomaticWeapon::Shoot()
 						switch (HitSurfaceType)
 						{
 						case SURFACE_FleshDefault:
-							DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName);
+							if(DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName))
+							{
+								if (!PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+									SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 9);
+							}
 							if(FloatingDamageNumberParticleSystem)
 								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
 							break;

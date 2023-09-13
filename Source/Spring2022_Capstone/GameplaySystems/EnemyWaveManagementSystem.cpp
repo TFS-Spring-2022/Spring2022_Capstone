@@ -208,7 +208,7 @@ void UEnemyWaveManagementSystem::StartNextRound()
 	if(SoundManagerSubSystem)
 	{
 		SoundManagerSubSystem->WaveStart(PlayerCharacter);
-		SoundManagerSubSystem->ToggleMusic(PlayerCharacter->MusicAudioComp);
+		SoundManagerSubSystem->ToggleMusicOn(PlayerCharacter->MusicAudioComp);
 		GetWorld()->GetTimerManager().SetTimer(TimeBeforeWaveStartVoiceLine,this,&UEnemyWaveManagementSystem::PlayWaveStartVoiceLine, 2.f,false);
 	}
 	

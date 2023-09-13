@@ -282,6 +282,9 @@ void UScoreSystemTimerSubSystem::FinishWave()
 	bWaveStarted = false;
 	PiratesFortitudeTimeInRange = 0.0f;
 	PlunderersProwessTimeInRange = 0.0f;
+
+	//End Music
+	SoundManagerSubSystem->ToggleMusicOff(PlayerCharacter->MusicAudioComp);
 }
 
 

@@ -108,7 +108,10 @@ bool AShotgunWeapon::Shoot()
 											else
 											{
 												if (!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+												{
 													ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+													SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 9);
+												}
 											}
 										}
 										if (FloatingDamageNumberParticleSystem)

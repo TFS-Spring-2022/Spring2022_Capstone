@@ -50,7 +50,10 @@ public:
 	void PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int eventID);
 
 	UFUNCTION()
-	void ToggleMusic(UAudioComponent* MusicAudioComp);
+	void ToggleMusicOff(UAudioComponent* MusicAudioComp);
+
+	UFUNCTION()
+	void ToggleMusicOn(UAudioComponent* MusicAudioComp);
 
 	UFUNCTION()
 	void WaveStart(AActor* Actor);

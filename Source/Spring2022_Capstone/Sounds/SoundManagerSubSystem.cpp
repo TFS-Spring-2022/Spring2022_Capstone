@@ -515,6 +515,17 @@ void USoundManagerSubSystem::PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int 
 						PlayerSoundEventToken -= 85;
 					}
 			break;
+		case 9 :
+			PlayerSoundEventToken += 70;
+			if(PlayerSoundEventToken >= 80)
+				if(PlayerArialSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(PlayerArialSC);
+						OwnerAC->Play();
+						PlayerSoundEventToken -= 85;
+					}
+			break;
 		default :
 			PlayerSoundEventToken ++;
 			break;
@@ -523,16 +534,19 @@ void USoundManagerSubSystem::PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int 
 	}
 }
 
-void USoundManagerSubSystem::ToggleMusic(UAudioComponent* MusicAudioComp)
+void USoundManagerSubSystem::ToggleMusicOn(UAudioComponent* MusicAudioComp)
 {
-	if(MusicAudioComp->IsPlaying())
+	if(MusicAudioComp->GetSound())
 	{
-		MusicAudioComp->FadeOut(3.f,0.0f,EAudioFaderCurve::Linear);
-	}
-	else
-	{
+		MusicAudioComp->Stop();
 		MusicAudioComp->FadeIn(3.f,1.f,0.f,EAudioFaderCurve::Linear);
 	}
+}
+
+void USoundManagerSubSystem::ToggleMusicOff(UAudioComponent* MusicAudioComp)
+{
+	if(MusicAudioComp->GetSound())
+		MusicAudioComp->FadeOut(3.f,0.0f,EAudioFaderCurve::Linear);
 }
 
 void USoundManagerSubSystem::WaveStart(AActor* Actor)
