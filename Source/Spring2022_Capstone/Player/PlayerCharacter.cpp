@@ -335,9 +335,9 @@ void APlayerCharacter::DashDirectionalLaunch()
 	else if (DashDirectionalValue.Y == -1)
 		LaunchCharacter(-Camera->GetForwardVector() * DashDistance, true, false);
 	else if (DashDirectionalValue.X == -1)
-		LaunchCharacter(-Camera->GetForwardVector() * DashDistance, true, false);
+		LaunchCharacter(-Camera->GetRightVector() * DashDistance, true, false);
 	else if (DashDirectionalValue.X == 1)
-		LaunchCharacter(Camera->GetForwardVector()* DashDistance, true, false);
+		LaunchCharacter(Camera->GetRightVector()* DashDistance, true, false);
 	
 	// Handle velocity after dash
 	FVector PostDashDirection = UKismetMathLibrary::Conv_RotatorToVector(GetCharacterMovement()->GetLastUpdateRotation());
