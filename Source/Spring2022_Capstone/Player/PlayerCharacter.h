@@ -312,6 +312,7 @@ private:
 	UPROPERTY()
 	class ASpring2022_CapstoneGameModeBase* CurrentGameMode;
 
+	UPROPERTY(VisibleAnywhere, Category = "DEBUG")
 	bool bIsSwappingWeapon = false;
 
 	UFUNCTION(BlueprintCallable)
