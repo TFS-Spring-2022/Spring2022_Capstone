@@ -16,7 +16,7 @@ void ARangedEnemy::BeginPlay()
 {
     Super::BeginPlay();
     if(SoundManagerSubSystem)
-    SoundManagerSubSystem->PlayGruntSoundEvent(SoundManagerSubSystem,VoiceAudioComponent,4);
+    SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,4);
 }
 
 void ARangedEnemy::AttackHit()
@@ -25,7 +25,7 @@ void ARangedEnemy::AttackHit()
 
     if(!PlayerCharacter->isGrounded)
     {
-        SoundManagerSubSystem->PlayGruntSoundEvent(SoundManagerSubSystem,VoiceAudioComponent,0);
+        SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,0);
     }
 }
 
@@ -35,13 +35,13 @@ void ARangedEnemy::Death()
 
     if(SoundManagerSubSystem)
     {
-        SoundManagerSubSystem->PlayGruntSoundEvent(SoundManagerSubSystem,VoiceAudioComponent,5);
+        SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,5);
     }
 }
 
 bool ARangedEnemy::DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName)
 {
-    SoundManagerSubSystem->PlayGruntSoundEvent(SoundManagerSubSystem,VoiceAudioComponent,2);
+    SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,2);
     return Super::DamageActor(DamagingActor, DamageAmount, HitBoneName);
     
 }

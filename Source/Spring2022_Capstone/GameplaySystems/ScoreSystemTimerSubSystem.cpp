@@ -152,9 +152,9 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 		if(UpgradeTimerAFK >= 30.f)
 		{
 			if(FMath::FRandRange(1,2) == 1)
-				SoundManagerSubSystem->PlayPlayerSoundEvent(SoundManagerSubSystem, PlayerCharacter->PlayerVoiceAudioComp,5);
+				SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,5);
 			else
-				SoundManagerSubSystem->PlayNarratorSoundEvent(SoundManagerSubSystem, PlayerCharacter->PlayerVoiceAudioComp,5);
+				SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,1);
 
 			ResetUpgradeTimerAfk();
 		}

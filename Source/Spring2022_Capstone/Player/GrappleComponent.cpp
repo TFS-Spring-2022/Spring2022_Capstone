@@ -122,7 +122,7 @@ void UGrappleComponent::OnHit(AActor *SelfActor, AActor *OtherActor, FVector Nor
 
 		if(SoundManagerSubSystem && _GrappleHook->GrappleHitSound)
 		{
-			SoundManagerSubSystem->PlayPlayerSoundEvent(SoundManagerSubSystem,PlayerCharacter->PlayerVoiceAudioComp,1);
+			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,1);
 			SoundManagerSubSystem->PlaySound(Hit.Location ,_GrappleHook->GrappleHitSound);
 		}
 	}

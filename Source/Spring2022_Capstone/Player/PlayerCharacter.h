@@ -379,6 +379,9 @@ public:
 	void CheckGround();
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
+	UAudioComponent* MusicAudioComp;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
 	UPhysicalMaterial* CurrentGroundMat;
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)

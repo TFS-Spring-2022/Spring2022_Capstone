@@ -55,6 +55,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	UAudioComponent* GunChangeAudioComp;
 
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

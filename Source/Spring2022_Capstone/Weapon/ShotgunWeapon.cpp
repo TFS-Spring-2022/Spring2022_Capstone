@@ -119,6 +119,16 @@ bool AShotgunWeapon::Shoot()
 										{
 											//Enemy has died
 											EnemiesKilledFromAttack++;
+											//Coin flip for voiceline
+											if(FMath::RandRange(1,2) == 1)
+											{
+												SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,6);
+											}
+											else
+											{
+												SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,2);
+											}
+											
 											if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
 											{
 												if (!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))

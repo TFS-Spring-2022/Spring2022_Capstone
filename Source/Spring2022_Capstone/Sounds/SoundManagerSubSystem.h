@@ -14,9 +14,16 @@ UCLASS()
 class SPRING2022_CAPSTONE_API USoundManagerSubSystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
+	
+	USoundManagerSubSystem();
+
+	int SoundEventToken = 0;
+	int GruntSoundEventToken = 0;
+	int SniperSoundEventToken = 0;
+	int NarratorSoundEventToken = 0;
+	int PlayerSoundEventToken = 0;
 
 public:
-	USoundManagerSubSystem();
 	
 	UFUNCTION()
 	void PlaySound(const FVector& Location, USoundBase* Sound) const;
@@ -25,25 +32,29 @@ public:
 	void PlaysMusic(const USoundCue* Music) const;
 
 	UFUNCTION()
-	void ResetEventTokens();
-	
-	UFUNCTION()
-	static void PlaySoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID);
+	void ResetEventTokens(USoundManagerSubSystem* AudioSubSystem);
 
 	UFUNCTION()
-	static void PlaySniperSoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID);
+	void PlaySniperSoundEvent(UAudioComponent* OwnerAC, int eventID);
 
 	UFUNCTION()
-	static void PlayGruntSoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID);
+	void PlayGruntSoundEvent(UAudioComponent* OwnerAC, int eventID);
 
 	UFUNCTION()
-	static void PlayNarratorSoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID);
+	void PlayNarratorSoundEvent(UAudioComponent* OwnerAC, int eventID);
 
 	UFUNCTION()
-	static void PlayRangerSoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID);
+	void PlayRangerSoundEvent(UAudioComponent* OwnerAC, int eventID);
 
 	UFUNCTION()
-	static void PlayPlayerSoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID);
+	void PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int eventID);
+
+	UFUNCTION()
+	void ToggleMusic(UAudioComponent* MusicAudioComp);
+
+	UFUNCTION()
+	void WaveStart(AActor* Actor);
+
 
 	
 	
@@ -94,7 +105,6 @@ private:
 	USoundCue* PlayerArialSC;
 
 #pragma endregion
-
 #pragma region Narrator Voices
 	
 	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
@@ -129,7 +139,6 @@ private:
 
 	
 #pragma endregion
-
 #pragma region Ranger Voices
 
 	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
@@ -154,7 +163,6 @@ private:
 	USoundCue* RangerDeathSC;
 	
 #pragma endregion
-
 #pragma region Grunt Voices
 	
 	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
@@ -182,26 +190,9 @@ private:
 
 #pragma 
 	
-	UPROPERTY()
-	int SoundEventToken;
-
-	UPROPERTY()
-	int GruntSoundEventToken;
-
-	UPROPERTY()
-	int SniperSoundEventToken;
-
-	UPROPERTY()
-	int NarratorSoundEventToken;
-
-	UPROPERTY()
-	int PlayerSoundEventToken;
-
+	UPROPERTY(EditAnywhere, Category = "Wave Sound")
+	USoundCue* WaveStartSound;
 	
-	
-	
-	
-
 	UPROPERTY(EditAnywhere, Category = "Menu Music")
 	USoundCue* MainMenuMusic;
 

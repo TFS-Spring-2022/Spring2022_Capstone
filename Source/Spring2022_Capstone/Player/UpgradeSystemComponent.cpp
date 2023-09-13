@@ -32,9 +32,9 @@ void UUpgradeSystemComponent::BeginPlay()
 	bIsMenuOpen = false;
 
 	PlayerController = GetWorld()->GetFirstPlayerController();
-
-	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
-	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
+	
+	SoundManagerSubSystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USoundManagerSubSystem>();
+	ScoreSystemTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
 }
 
 
@@ -76,6 +76,7 @@ void UUpgradeSystemComponent::IncreaseMaxHealthByPercentage(float PercentageAmou
 void UUpgradeSystemComponent::IncreaseMovementSpeedByAmount(int Amount)
 {
 	PlayerToUpgrade->Speed += Amount;
+	SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerToUpgrade->PlayerVoiceAudioComp, 4);
 	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Movement Speed is: %f"), PlayerToUpgrade->Speed));
 }
 
@@ -92,11 +93,14 @@ void UUpgradeSystemComponent::UnlockDoubleJump()
 {
 	PlayerToUpgrade->JumpMaxCount = PlayerToUpgrade->JumpMaxCount == 1 ? 2 : 1;
 	GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, FString::Printf(TEXT("Your max jumps are: %i"), PlayerToUpgrade->JumpMaxCount));
+	SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerToUpgrade->PlayerVoiceAudioComp, 0);
 }
 
 void UUpgradeSystemComponent::DecreaseGrappleCooldownBySeconds(const float Seconds)
 {
 	PlayerToUpgrade->GrappleComponent->DecrementGrappleCooldown(Seconds);
+	if(PlayerToUpgrade->GrappleComponent->GetCooldown() <= PlayerToUpgrade->GrappleComponent->GetMinCooldown())
+		SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerToUpgrade->PlayerVoiceAudioComp, 3);
 	GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, FString::Printf(TEXT("Your grapple cooldown is: %f"), PlayerToUpgrade->GrappleComponent->GetCooldown()));
 }
 
@@ -125,10 +129,7 @@ void UUpgradeSystemComponent::OpenUpgradeMenu()
 		bIsMenuOpen = true;
 		ScoreSystemTimerSubSystem->bUpgradeTimerAFKStarted = true;
 		PlayerToUpgrade->GetPlayerHUD()->SetVisibility(ESlateVisibility::Hidden);
-		SoundManagerSubSystem->ResetEventTokens();
 	}
-
-
 }
 
 void UUpgradeSystemComponent::CloseUpgradeMenu()

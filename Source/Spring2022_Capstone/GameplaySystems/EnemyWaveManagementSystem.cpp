@@ -15,6 +15,9 @@ void UEnemyWaveManagementSystem::BeginPlay()
 {
 	Super::BeginPlay();
 
+	const UGameInstance *GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+	SoundManagerSubSystem = GameInstance->GetSubsystem<USoundManagerSubSystem>();
+	
 	PrimaryComponentTick.Target = this;
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.SetTickFunctionEnable(true);
@@ -201,6 +204,25 @@ void UEnemyWaveManagementSystem::StartNextRound()
 	// Check for wave end accolades
 	if(ScoreSystemManagerSubSystem)
 		ScoreSystemManagerSubSystem->CheckWaveEndAccolades();
+
+	if(SoundManagerSubSystem)
+	{
+		SoundManagerSubSystem->WaveStart(PlayerCharacter);
+		SoundManagerSubSystem->ToggleMusic(PlayerCharacter->MusicAudioComp);
+		GetWorld()->GetTimerManager().SetTimer(TimeBeforeWaveStartVoiceLine,this,&UEnemyWaveManagementSystem::PlayWaveStartVoiceLine, 2.f,false);
+	}
 	
 	GetWorld()->GetTimerManager().SetTimer(TimeBeforeUpgradeMenuTimerHandle, this, &UEnemyWaveManagementSystem::SpawnWave, TimeBeforeNextRoundStart, false);
+}
+
+void UEnemyWaveManagementSystem::PlayWaveStartVoiceLine() const
+{
+	if(FMath::RandRange(1,2) == 1)
+	{
+		SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 9);
+	}
+	else
+	{
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 7);
+	}
 }

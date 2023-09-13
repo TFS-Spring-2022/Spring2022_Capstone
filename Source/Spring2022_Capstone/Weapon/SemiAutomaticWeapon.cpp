@@ -82,6 +82,16 @@ bool ASemiAutomaticWeapon::Shoot()
 								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
 							break;
 						case SURFACE_FleshVulnerable:
+							
+							//Coin flip for voiceline
+							if(SoundManagerSubSystem)
+							{
+								if(FMath::RandRange(1,2) == 1)
+									SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,6);
+								else
+									SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,2);
+							}
+							
 							DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier, HitResult.BoneName);
 							if(FloatingDamageNumberParticleSystem)
 								DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier, true);

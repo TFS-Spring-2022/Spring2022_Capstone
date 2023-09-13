@@ -46,6 +46,7 @@ APlayerCharacter::APlayerCharacter()
 	FootStepAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Foot Steps"));
 	LandingAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Landing Steps"));
 	PlayerVoiceAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Voice Lines"));
+	MusicAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Music"));
 	
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
@@ -86,7 +87,8 @@ void APlayerCharacter::BeginPlay()
 	FootStepAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	LandingAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	PlayerVoiceAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-
+	MusicAudioComp->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
+	
 	CheckGround();
 	
 	PlayerController = Cast<APlayerController>(GetController());
@@ -562,23 +564,23 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
 	
 	if(DamageAmount >= 6)
-		SoundManagerSubSystem->PlayPlayerSoundEvent(SoundManagerSubSystem, PlayerVoiceAudioComp, 2);
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 2);
 
 	else
 	{
 		if(Cast<ARangedEnemy>(DamagingActor))
 		{
-			SoundManagerSubSystem->PlayPlayerSoundEvent(SoundManagerSubSystem, PlayerVoiceAudioComp, 4);
+			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 4);
 		}
 		else
-			SoundManagerSubSystem->PlayPlayerSoundEvent(SoundManagerSubSystem, PlayerVoiceAudioComp, 3);
+			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 3);
 	}
 	
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 	UpdateHealthBar();
 	if (HealthComponent->GetHealth() <= 0)
 	{
-		SoundManagerSubSystem->PlayPlayerSoundEvent(SoundManagerSubSystem,PlayerVoiceAudioComp,1);
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp,1);
 		CurrentGameMode->EndRun();
 		return true;
 	}

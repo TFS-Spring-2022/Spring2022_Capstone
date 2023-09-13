@@ -4,11 +4,15 @@
 #include "SoundManagerSubSystem.h"
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "Components/AudioComponent.h"
+#include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 
 USoundManagerSubSystem::USoundManagerSubSystem()
 {
-	SubSystemAudio = CreateDefaultSubobject<UAudioComponent>("GrappleShotAC");
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>WaveStartSoundLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/GameMechanics/SC_WaveStart.SC_WaveStart'"));
+	if (WaveStartSoundLoaded.Succeeded())
+		WaveStartSound = WaveStartSoundLoaded.Object;
 
 #pragma region Player Voice Lines
 
@@ -169,7 +173,6 @@ USoundManagerSubSystem::USoundManagerSubSystem()
 	
 }
 
-
 void USoundManagerSubSystem::PlaySound(const FVector& Location, USoundBase* Sound) const
 {
 	if(Sound)
@@ -186,7 +189,7 @@ void USoundManagerSubSystem::PlaysMusic(const USoundCue* Music) const
 	}
 }
 
-void USoundManagerSubSystem::ResetEventTokens()
+void USoundManagerSubSystem::ResetEventTokens(USoundManagerSubSystem* AudioSubSystem)
 {
 	PlayerSoundEventToken = 0;
 	NarratorSoundEventToken = 0;
@@ -194,183 +197,338 @@ void USoundManagerSubSystem::ResetEventTokens()
 	GruntSoundEventToken = 0;
 }
 
-void USoundManagerSubSystem::PlaySoundEvent(USoundManagerSubSystem* AudioSubSystem,UAudioComponent* OwnerAC, int eventID)
-{
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,AudioSubSystem->PlayerVoiceLines[eventID]->GetName());
-	if(OwnerAC)
-		if(OwnerAC->IsPlaying())
-		{
-			OwnerAC->Stop();
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,"It works2");
-			OwnerAC->SetSound(AudioSubSystem->PlayerVoiceLines[eventID]);
-			OwnerAC->Play();
-		}
-	
-}
-
-void USoundManagerSubSystem::PlaySniperSoundEvent(USoundManagerSubSystem* AudioSubSystem, UAudioComponent* OwnerAC, int eventID)
+void USoundManagerSubSystem::PlaySniperSoundEvent(UAudioComponent* OwnerAC, int eventID)
 {
 	
 }
 
-void USoundManagerSubSystem::PlayGruntSoundEvent(USoundManagerSubSystem* AudioSubSystem, UAudioComponent* OwnerAC, int eventID)
+void USoundManagerSubSystem::PlayGruntSoundEvent(UAudioComponent* OwnerAC, int eventID)
 {
 	if(OwnerAC)
 	{
 		switch(eventID)
 		{
 		case 0 :
-			AudioSubSystem->GruntSoundEventToken += 50;
-			if(AudioSubSystem->GruntSoundEventToken >= 100)
-				if(AudioSubSystem->GruntArialHitSC)
+			GruntSoundEventToken += 50;
+			if(GruntSoundEventToken >= 100)
+				if(GruntArialHitSC)
 					if(!OwnerAC->IsPlaying())
 					{
-						OwnerAC->SetSound(AudioSubSystem->GruntArialHitSC);
+						OwnerAC->SetSound(GruntArialHitSC);
 						OwnerAC->Play();
-						AudioSubSystem->GruntSoundEventToken -= 100;
+						GruntSoundEventToken -= 100;
 					}
 			break;
 		case 1 :
-			AudioSubSystem->GruntSoundEventToken += 25;
-			if(AudioSubSystem->GruntSoundEventToken >= 75)
-				if(AudioSubSystem->GruntBarrelSC)
+			GruntSoundEventToken += 25;
+			if(GruntSoundEventToken >= 75)
+				if(GruntBarrelSC)
 					if(!OwnerAC->IsPlaying())
 					{
-						OwnerAC->SetSound(AudioSubSystem->GruntBarrelSC);
+						OwnerAC->SetSound(GruntBarrelSC);
 						OwnerAC->Play();
-						AudioSubSystem->GruntSoundEventToken -= 75;
+						GruntSoundEventToken -= 75;
 					}
 			break;
 		case 2 :
-			AudioSubSystem->GruntSoundEventToken += 10;
-			if(AudioSubSystem->GruntSoundEventToken >= 110)
-				if(AudioSubSystem->GruntHurtSC)
+			GruntSoundEventToken += 10;
+			if(GruntSoundEventToken >= 110)
+				if(GruntHurtSC)
 					if(!OwnerAC->IsPlaying())
 					{
-						OwnerAC->SetSound(AudioSubSystem->GruntHurtSC);
+						OwnerAC->SetSound(GruntHurtSC);
 						OwnerAC->Play();
-						AudioSubSystem->GruntSoundEventToken -= 110;
+						GruntSoundEventToken -= 110;
 					}
 			break;
 		case 3 :
-			if(AudioSubSystem->GruntBarrelSC)
+			if(GruntBarrelSC)
 				if(!OwnerAC->IsPlaying())
 					if(FMath::RandRange(1, 6)== 1)
 					{
-						OwnerAC->SetSound(AudioSubSystem->GruntBarrelSC);
+						OwnerAC->SetSound(GruntBarrelSC);
 						OwnerAC->Play();
 					}
 			break;
 		case 4 :
-			AudioSubSystem->GruntSoundEventToken += 20;
-			if(AudioSubSystem->GruntSoundEventToken >= 60)
-				if(AudioSubSystem->GruntWaveStartSC)
+			GruntSoundEventToken += 20;
+			if(GruntSoundEventToken >= 60)
+				if(GruntWaveStartSC)
 					if(!OwnerAC->IsPlaying())
 					{
-						GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,FString::FromInt(AudioSubSystem->GruntSoundEventToken));
-						OwnerAC->SetSound(AudioSubSystem->GruntWaveStartSC);
+						GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,FString::FromInt(GruntSoundEventToken));
+						OwnerAC->SetSound(GruntWaveStartSC);
 						OwnerAC->Play();
-						AudioSubSystem->GruntSoundEventToken -= 60;
-						GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,FString::FromInt(AudioSubSystem->GruntSoundEventToken));
+						GruntSoundEventToken -= 60;
+						GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,FString::FromInt(GruntSoundEventToken));
 					}
 			break;
 		case 5 :
-				if(AudioSubSystem->GruntDeathSC)
+				if(GruntDeathSC)
 				{
-					OwnerAC->SetSound(AudioSubSystem->GruntDeathSC);
+					OwnerAC->SetSound(GruntDeathSC);
 					OwnerAC->Play();
 				}
 			break;
 		default :
-			AudioSubSystem->GruntSoundEventToken ++;
+			GruntSoundEventToken ++;
 			break;
 		}
 		
 	}
 }
 
-void USoundManagerSubSystem::PlayNarratorSoundEvent(USoundManagerSubSystem* AudioSubSystem, UAudioComponent* OwnerAC, int eventID)
-{
-	
-}
-
-void USoundManagerSubSystem::PlayRangerSoundEvent(USoundManagerSubSystem* AudioSubSystem, UAudioComponent* OwnerAC, int eventID)
-{
-}
-
-void USoundManagerSubSystem::PlayPlayerSoundEvent(USoundManagerSubSystem* AudioSubSystem, UAudioComponent* OwnerAC, int eventID)
+void USoundManagerSubSystem::PlayNarratorSoundEvent(UAudioComponent* OwnerAC, int eventID)
 {
 	if(OwnerAC)
 	{
 		switch(eventID)
 		{
 		case 0 :
-				if(AudioSubSystem->PlayerDeathSC)
+			if(NarratorUpgradeDoubleJumpSC)
+				if(OwnerAC->IsPlaying())
+				{
+					OwnerAC->Stop();
+					OwnerAC->SetSound(NarratorUpgradeDoubleJumpSC);
+					OwnerAC->Play();
+				}
+				else
+					OwnerAC->SetSound(NarratorUpgradeDoubleJumpSC);
+					OwnerAC->Play();
+
+		case 1 :
+			if(NarratorAFKUpgradeSC)
+				if(!OwnerAC->IsPlaying())
+				{
+					OwnerAC->SetSound(NarratorAFKUpgradeSC);
+					OwnerAC->Play();
+				}
+			break;
+
+		case 2 :
+			NarratorSoundEventToken += 20;
+			if(NarratorHeavyHitSC)
+				if(NarratorSoundEventToken >= 120)
 					if(OwnerAC->IsPlaying())
 					{
 						OwnerAC->Stop();
-						OwnerAC->SetSound(AudioSubSystem->PlayerDeathSC);
+						OwnerAC->SetSound(NarratorHeavyHitSC);
 						OwnerAC->Play();
+						NarratorSoundEventToken -= 135;
 					}
 					else
 						OwnerAC->Play();
 			break;
-		case 1 :
-			if(FMath::RandRange(1, 100)== 1)
-				if(AudioSubSystem->PlayerGrapplingSC)
+		case 3 :
+			if(NarratorMaxGrappleSC)
+				if(OwnerAC->IsPlaying())
+				{
+					OwnerAC->Stop();
+					OwnerAC->SetSound(NarratorMaxGrappleSC);
+					OwnerAC->Play();
+				}
+				else
+					OwnerAC->Play();
+			break;
+		case 4 :
+			if(FMath::RandRange(1, 6)== 1)
+			{
+				if(NarratorMaxSpeedSC)
+					if(OwnerAC->IsPlaying())
+					{
+						OwnerAC->Stop();
+						OwnerAC->SetSound(NarratorMaxSpeedSC);
+						OwnerAC->Play();
+					}
+					else
+					{
+						OwnerAC->SetSound(NarratorMaxSpeedSC);
+						OwnerAC->Play();
+					}
+			}
+				break;
+		case 5 :
+			NarratorSoundEventToken += 40;
+			if(NarratorRampageSC)
+				if(NarratorSoundEventToken >= 70)
 					if(!OwnerAC->IsPlaying())
 					{
-						OwnerAC->SetSound(AudioSubSystem->PlayerGrapplingSC);
+						OwnerAC->SetSound(NarratorRampageSC);
+						OwnerAC->Play();
+					}
+			break;
+		case 6 :
+			if(FMath::RandRange(1, 6)== 1)
+			{
+				if(NarratorUpgradeOpenSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(NarratorUpgradeOpenSC);
+						OwnerAC->Play();
+					}
+					else
+					{
+						OwnerAC->SetSound(NarratorUpgradeOpenSC);
+						OwnerAC->Play();
+					}
+			}
+			break;
+		case 7 :
+			if(NarratorRandomSC)
+				if(!OwnerAC->IsPlaying())
+				{
+					OwnerAC->SetSound(NarratorRandomSC);
+					OwnerAC->Play();
+				}
+			break;
+		case 8 :
+			if(NarratorUpgradeSelectSC)
+				if(!OwnerAC->IsPlaying())
+				{
+					OwnerAC->SetSound(NarratorUpgradeSelectSC);
+					OwnerAC->Play();
+				}
+			break;
+		case 9 :
+			if(NarratorWaveStartSC)
+				if(!OwnerAC->IsPlaying())
+				{
+					OwnerAC->SetSound(NarratorWaveStartSC);
+					OwnerAC->Play();
+				}
+			break;
+		default :
+			NarratorSoundEventToken++;
+			break;
+		}
+	}
+		
+}
+void USoundManagerSubSystem::PlayRangerSoundEvent(UAudioComponent* OwnerAC, int eventID)
+{
+	
+}
+
+void USoundManagerSubSystem::PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int eventID)
+{
+	if(OwnerAC)
+	{
+		switch(eventID)
+		{
+		case 0 :
+			if(PlayerDeathSC)
+				if(OwnerAC->IsPlaying())
+				{
+					OwnerAC->Stop();
+					OwnerAC->SetSound(PlayerDeathSC);
+					OwnerAC->Play();
+				}
+				else
+				{
+					OwnerAC->SetSound(PlayerDeathSC);
+					OwnerAC->Play();
+				}
+			break;
+		case 1 :
+			if(FMath::RandRange(1, 100)== 1)
+				if(PlayerGrapplingSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(PlayerGrapplingSC);
 						OwnerAC->Play();
 					}
 			break;
 		case 2 :
-			AudioSubSystem->PlayerSoundEventToken += 10;
-			if(AudioSubSystem->PlayerSoundEventToken >= 100)
-				if(AudioSubSystem->PlayerHurtSC)
+			PlayerSoundEventToken += 10;
+			if(PlayerSoundEventToken >= 100)
+				if(PlayerHurtSC)
 					if(!OwnerAC->IsPlaying())
 					{
-						OwnerAC->SetSound(AudioSubSystem->PlayerHurtSC);
+						OwnerAC->SetSound(PlayerHurtSC);
 						OwnerAC->Play();
-						AudioSubSystem->PlayerSoundEventToken -= 100;
+						PlayerSoundEventToken -= 105;
 					}
 			break;
 		case 3 :
-			AudioSubSystem->PlayerSoundEventToken += 40;
-			if(AudioSubSystem->PlayerSoundEventToken >= 100)
-				if(AudioSubSystem->PlayerHeavyHurtSC)
+			PlayerSoundEventToken += 40;
+			if(PlayerSoundEventToken >= 100)
+				if(PlayerHeavyHurtSC)
 					if(!OwnerAC->IsPlaying())
 					{
-						OwnerAC->SetSound(AudioSubSystem->PlayerHeavyHurtSC);
+						OwnerAC->SetSound(PlayerHeavyHurtSC);
 						OwnerAC->Play();
-						AudioSubSystem->PlayerSoundEventToken -= 100;
+						PlayerSoundEventToken -= 105;
 					}
 			break;
 		case 4 :
-			AudioSubSystem->PlayerSoundEventToken += 30;
-			if(AudioSubSystem->PlayerSoundEventToken >= 70)
-				if(AudioSubSystem->PlayerSniperHitSC)
+			PlayerSoundEventToken += 30;
+			if(PlayerSoundEventToken >= 70)
+				if(PlayerSniperHitSC)
 					if(!OwnerAC->IsPlaying())
 					{
-						OwnerAC->SetSound(AudioSubSystem->PlayerSniperHitSC);
+						OwnerAC->SetSound(PlayerSniperHitSC);
 						OwnerAC->Play();
-						AudioSubSystem->PlayerSoundEventToken -= 70;
+						PlayerSoundEventToken -= 65;
 					}
 			break;
 		case 5 :
-				if(AudioSubSystem->PlayerAFKSC)
+			if(PlayerAFKSC)
+				if(!OwnerAC->IsPlaying())
+				{
+					OwnerAC->SetSound(PlayerAFKSC);
+					OwnerAC->Play();
+				}
+			break;
+
+		case 6 :
+			PlayerSoundEventToken += 20;
+			if(PlayerSoundEventToken >= 70)
+				if(PlayerCritSC)
 					if(!OwnerAC->IsPlaying())
 					{
-						OwnerAC->SetSound(AudioSubSystem->PlayerAFKSC);
+						OwnerAC->SetSound(PlayerCritSC);
 						OwnerAC->Play();
+						PlayerSoundEventToken -= 65;
 					}
 			break;
+			
+		case 7 :
+			if(PlayerWaveStartSC)
+				if(OwnerAC->IsPlaying())
+				{
+					OwnerAC->Stop();
+					OwnerAC->SetSound(PlayerWaveStartSC);
+					OwnerAC->Play();
+				}
+				else
+				{
+					OwnerAC->SetSound(PlayerWaveStartSC);
+					OwnerAC->Play();
+				}
+			break;
 		default :
-			AudioSubSystem->PlayerSoundEventToken ++;
+			PlayerSoundEventToken ++;
 			break;
 		}
-		
+
 	}
+}
+
+void USoundManagerSubSystem::ToggleMusic(UAudioComponent* MusicAudioComp)
+{
+	if(MusicAudioComp->IsPlaying())
+	{
+		MusicAudioComp->FadeOut(3.f,0.0f,EAudioFaderCurve::Linear);
+	}
+	else
+	{
+		MusicAudioComp->FadeIn(3.f,1.f,0.f,EAudioFaderCurve::Linear);
+	}
+}
+
+void USoundManagerSubSystem::WaveStart(AActor* Actor)
+{
+	UGameplayStatics::PlaySound2D(Actor->GetWorld(),WaveStartSound);
 }
 
 
