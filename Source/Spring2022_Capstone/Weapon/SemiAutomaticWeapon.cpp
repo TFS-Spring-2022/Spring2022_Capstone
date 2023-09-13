@@ -1,16 +1,15 @@
 // Created by Spring2022_Capstone team
 
 #include "SemiAutomaticWeapon.h"
-
 #include "DevTargets.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetStringLibrary.h"
-
-#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Spring2022_Capstone/Player/PlayerCharacter.h"
 #include "Spring2022_Capstone/Spring2022_Capstone.h"
 #include "Spring2022_Capstone/Enemies/BaseEnemy.h"
 #include "Spring2022_Capstone/EnvironmentObjects/Hazards/Barrel.h"
+#include "Spring2022_Capstone/EnvironmentObjects/Hazards/Crystal.h"
 
 
 ASemiAutomaticWeapon::ASemiAutomaticWeapon()
@@ -56,7 +55,7 @@ bool ASemiAutomaticWeapon::Shoot()
 
 					IDamageableActor *DamageableActor = Cast<IDamageableActor>(HitResult.GetActor());
 					
-					if(DamageableActor->_getUObject()->IsA(ABarrel::StaticClass()))
+					if(DamageableActor->_getUObject()->IsA(ABarrel::StaticClass()) || DamageableActor->_getUObject()->IsA(ACrystal::StaticClass()))
 					{
 						DamageableActor->DamageActor(this, ShotDamage);
 						if(FloatingDamageNumberParticleSystem)
