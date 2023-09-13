@@ -72,6 +72,9 @@ public:
 
 	UPROPERTY()
 	USoundManagerSubSystem* SoundManagerSubSystem;
+
+	UPROPERTY()
+	UScoreSystemTimerSubSystem* ScoreSystemTimerSubSystem;
 	
 
 protected:

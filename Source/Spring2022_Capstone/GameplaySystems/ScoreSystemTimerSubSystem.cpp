@@ -97,7 +97,7 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 	}
 	// Land Lubber Accolade
 	if(bLandLubberTimerStarted)
-	{
+	{	
 		LandLubberTimer += DeltaTime;
 		if(LandLubberTimer >= LAND_LUBBER_TIME_REQUIREMENT)
 		{
@@ -142,6 +142,22 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 		CaptainOfWarTimer += DeltaTime;
 		if(CaptainOfWarTimer >= CAPTAIN_OF_WAR_TIME_REQUIREMENT)
 			StopAccoladeTimer(EAccolades::CaptainOfWar);
+	}
+
+
+	//Checks to trigger Afk dialogue
+	if(bUpgradeTimerAFKStarted)
+	{
+		UpgradeTimerAFK += DeltaTime;
+		if(UpgradeTimerAFK >= 30.f)
+		{
+			if(FMath::FRandRange(1,2) == 1)
+				SoundManagerSubSystem->PlayPlayerSoundEvent(SoundManagerSubSystem, PlayerCharacter->PlayerVoiceAudioComp,5);
+			else
+				SoundManagerSubSystem->PlayNarratorSoundEvent(SoundManagerSubSystem, PlayerCharacter->PlayerVoiceAudioComp,5);
+
+			ResetUpgradeTimerAfk();
+		}
 	}
 }
 
@@ -237,6 +253,11 @@ bool UScoreSystemTimerSubSystem::IsAccoladeTimerRunning(EAccolades Accolade)
 	default: GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Accolade does not require a timer");
 	}
 	return false;
+}
+
+void UScoreSystemTimerSubSystem::ResetUpgradeTimerAfk()
+{
+	UpgradeTimerAFK = 0.0f;
 }
 
 void UScoreSystemTimerSubSystem::FinishWave()

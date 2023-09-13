@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ScoreSystemManagerSubSystem.h"
+#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "ScoreSystemTimerSubSystem.generated.h"
 // ToDo: Make not a SubSystem (see ResetScoreSystemTimerSubSystem() comment).
@@ -69,6 +70,17 @@ public:
 
 	bool bPirateBlitzTimerStarted = false;
 	float PirateBlitzTimer = 0.0f;
+
+
+	//Sounds
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
+	
+	bool bUpgradeTimerAFKStarted = false;
+	float UpgradeTimerAFK = 0.0f;
+
+	void ResetUpgradeTimerAfk();
+	
 	/**
 	 * @brief Called from EnemyWaveManagementSystem at the end of a wave. Checks accolades that
 	 * reference round time.

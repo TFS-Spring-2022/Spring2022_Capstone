@@ -123,8 +123,8 @@ void UUpgradeSystemComponent::OpenUpgradeMenu()
 		// Open Upgrade Menu.
 		UpgradeMenuWidgetInstance->AddToViewport(0);
 		bIsMenuOpen = true;
+		ScoreSystemTimerSubSystem->bUpgradeTimerAFKStarted = true;
 		PlayerToUpgrade->GetPlayerHUD()->SetVisibility(ESlateVisibility::Hidden);
-
 		SoundManagerSubSystem->ResetEventTokens();
 	}
 
@@ -147,6 +147,7 @@ void UUpgradeSystemComponent::CloseUpgradeMenu()
 		// Close Upgrade Menu.
 		UpgradeMenuWidgetInstance->RemoveFromParent();
 		bIsMenuOpen = false;
+		ScoreSystemTimerSubSystem->bUpgradeTimerAFKStarted = false;
 		// Clear from delegate's invocation list.
 		UpgradeMenuWidgetInstance->GetUpgrade1Button()->OnClicked.Clear();
 		UpgradeMenuWidgetInstance->GetUpgrade2Button()->OnClicked.Clear();
