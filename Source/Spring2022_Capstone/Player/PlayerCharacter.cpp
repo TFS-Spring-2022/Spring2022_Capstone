@@ -568,12 +568,12 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 
 	else
 	{
-		if(Cast<ARangedEnemy>(DamagingActor))
+		if(Cast<ASniperEnemy>(DamagingActor))
 		{
 			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 4);
 		}
 		else
-			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 3);
+			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 12);
 	}
 	
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
@@ -609,6 +609,9 @@ void APlayerCharacter::Heal(int Value)
 
 	if (GetCurrentHealth() > ScoreManagerSubsystem->GetDeathDodgerHealthPercentage() / 100 * GetMaxHealth() && bIsBelowDeathDodgerPercentage)
 		ScoreManagerSubsystem->IncrementDeathDodgerCount();
+
+	if(SoundManagerSubSystem)
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp,10);
 }
 
 void APlayerCharacter::HealByPercentage(int Percentage)

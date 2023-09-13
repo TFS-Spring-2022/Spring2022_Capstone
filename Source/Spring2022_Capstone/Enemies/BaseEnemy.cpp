@@ -129,6 +129,8 @@ void ABaseEnemy::AttackMiss()
 
 	if(GunShotComp)
 		GunShotComp->Play();
+
+	SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,11);
 }
 
 // Called every frame

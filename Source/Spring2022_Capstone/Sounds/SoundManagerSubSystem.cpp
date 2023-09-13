@@ -66,6 +66,10 @@ USoundManagerSubSystem::USoundManagerSubSystem()
 	if (PlayerRampageSCLoaded.Succeeded())
 		PlayerVoiceLines.Emplace(PlayerOverHeatSC = PlayerOverHeatLoaded.Object);
 
+	static ConstructorHelpers::FObjectFinder<USoundCue>PlayerAimLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerMiss.SC_PlayerMiss'"));
+	if (PlayerRampageSCLoaded.Succeeded())
+		PlayerVoiceLines.Emplace(PlayerMissSC = PlayerAimLoaded.Object);
+
 	
 #pragma endregion
 #pragma region Narrator Voice Lines
@@ -408,10 +412,6 @@ void USoundManagerSubSystem::PlayNarratorSoundEvent(UAudioComponent* OwnerAC, in
 	}
 		
 }
-void USoundManagerSubSystem::PlayRangerSoundEvent(UAudioComponent* OwnerAC, int eventID)
-{
-	
-}
 
 void USoundManagerSubSystem::PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int eventID)
 {
@@ -524,6 +524,40 @@ void USoundManagerSubSystem::PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int 
 						OwnerAC->SetSound(PlayerArialSC);
 						OwnerAC->Play();
 						PlayerSoundEventToken -= 85;
+					}
+			break;
+		case 10 :
+			PlayerSoundEventToken += 40;
+			if(PlayerSoundEventToken >= 80)
+				if(PlayerHealedSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(PlayerHealedSC);
+						OwnerAC->Play();
+						PlayerSoundEventToken -= 100;
+					}
+			break;
+		case 11 :
+			PlayerSoundEventToken += 10;
+			if(PlayerSoundEventToken >= 150)
+				if(PlayerMissSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(PlayerMissSC);
+						OwnerAC->Play();
+						PlayerSoundEventToken -= 200;
+					}
+			break;
+
+		case 12 :
+			PlayerSoundEventToken += 15;
+			if(PlayerSoundEventToken >= 95)
+				if(PlayerHurtSC)
+					if(!OwnerAC->IsPlaying())
+					{
+						OwnerAC->SetSound(PlayerHurtSC);
+						OwnerAC->Play();
+						PlayerSoundEventToken -= 100;
 					}
 			break;
 		default :
