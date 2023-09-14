@@ -197,9 +197,15 @@ void APlayerCharacter::Pause(const FInputActionValue &Value)
 		PlayerController->bShowMouseCursor = true;
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 		PauseMenuWidgetInstance->SetVisibility(ESlateVisibility::Visible);
+		if(CurrentGameMode->GetWaveManager())
+			CurrentGameMode->GetWaveManager()->GetWaveAnnouncerWidget()->PauseAnnouncementAnimation(true);
 	}
 	else
+	{
 		UnPause();
+		if(CurrentGameMode->GetWaveManager())
+			CurrentGameMode->GetWaveManager()->GetWaveAnnouncerWidget()->PauseAnnouncementAnimation(false);
+	}
 }
 
 void APlayerCharacter::UnPause()
@@ -299,7 +305,7 @@ void APlayerCharacter::Dash(const FInputActionValue &Value)
 	const float CurrentTime = GetWorld()->GetRealTimeSeconds();
 
 	if (GetController() && (DirectionalMovementValue.X != 0.f || DirectionalMovementValue.Y != 0.f))
-		if (bCanDash)
+		if (bCanDash && GrappleComponent->GrappleState != EGrappleState::Attached)
 		{
 			// Knock the actor up slightly to prevent ground collision
 			LaunchCharacter(FVector(0, 0, 250), false, true); // Note: I like the feel of true Overrides but we can come back later.
@@ -333,9 +339,9 @@ void APlayerCharacter::DashDirectionalLaunch()
 	else if (DashDirectionalValue.Y == -1)
 		LaunchCharacter(-Camera->GetForwardVector() * DashDistance, true, false);
 	else if (DashDirectionalValue.X == -1)
-		LaunchCharacter(-Camera->GetForwardVector() * DashDistance, true, false);
+		LaunchCharacter(-Camera->GetRightVector() * DashDistance, true, false);
 	else if (DashDirectionalValue.X == 1)
-		LaunchCharacter(Camera->GetForwardVector()* DashDistance, true, false);
+		LaunchCharacter(Camera->GetRightVector()* DashDistance, true, false);
 	
 	// Handle velocity after dash
 	FVector PostDashDirection = UKismetMathLibrary::Conv_RotatorToVector(GetCharacterMovement()->GetLastUpdateRotation());
