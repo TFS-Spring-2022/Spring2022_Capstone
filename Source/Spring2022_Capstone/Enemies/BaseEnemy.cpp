@@ -101,11 +101,13 @@ void ABaseEnemy::AttackHit()
 		if (PlayerHitResult.GetActor()->Implements<UDamageableActor>() && PlayerHitResult.GetActor()->IsA(APlayerCharacter::StaticClass())) // Question: Do we want them to be able to do damage to other enemies?
 			Cast<APlayerCharacter>(PlayerHitResult.GetActor())->DamageActor(this, Damage);
 	}
-	
-	if(Cast<ASniperEnemy>(this))
-		SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,3);
-	else
-		SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,0);
+	if(!PlayerCharacter->isGrounded)
+	{
+		if(Cast<ASniperEnemy>(this))
+			SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,3);
+		else
+			SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,0);
+	}
 	
 	if(GunShotComp)
 		GunShotComp->Play();

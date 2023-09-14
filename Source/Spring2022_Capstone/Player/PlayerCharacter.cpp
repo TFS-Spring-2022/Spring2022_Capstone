@@ -290,7 +290,6 @@ void APlayerCharacter::Jump()
 void APlayerCharacter::Landed(const FHitResult &Hit)
 {
 	Super::Landed(Hit);
-	LandingAudioComp->Play();
 	if (ScoreManagerTimerSubSystem)
 		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::SkyPirate);
 }
