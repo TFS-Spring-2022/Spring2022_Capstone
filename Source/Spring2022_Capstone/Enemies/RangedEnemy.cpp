@@ -11,3 +11,24 @@ void ARangedEnemy::SpecialAttack()
     if (!Projectile) { return; }
     GetWorld()->SpawnActor<ABaseEnemyProjectile>(Projectile, ProjectileSpawnPoint->GetComponentLocation(), GetActorRotation());
 }
+
+void ARangedEnemy::BeginPlay()
+{
+    Super::BeginPlay();
+    if(SoundManagerSubSystem)
+    SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,4);
+}
+
+void ARangedEnemy::AttackHit()
+{
+    Super::AttackHit();
+
+    if(!PlayerCharacter->isGrounded)
+    {
+        SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,0);
+    }
+}
+
+
+
+

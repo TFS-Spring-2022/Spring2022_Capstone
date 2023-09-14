@@ -6,11 +6,8 @@
 #include "BaseEnemy.h"
 #include "RangedEnemy.generated.h"
 
-/**
- *
- */
-
 class ABaseEnemyProjectile;
+
 UCLASS()
 class SPRING2022_CAPSTONE_API ARangedEnemy : public ABaseEnemy
 {
@@ -31,4 +28,7 @@ private:
 	float ReloadTime;
 
 	void Reload();
+	
+	virtual void BeginPlay() override;
+	virtual void AttackHit() override;
 };

@@ -161,7 +161,7 @@ protected:
 	void Dash(const FInputActionValue &Value);
 	void Look(const FInputActionValue &Value);
 	void Sprint(const FInputActionValue &Value);
-	void Crouch(const FInputActionValue &Value);
+	void CCrouch(const FInputActionValue &Value);
 	void Attack(const FInputActionValue &Value);
 	void Grapple(const FInputActionValue &Value);
 	void InspectWeapon(const FInputActionValue &Value);
@@ -280,6 +280,10 @@ private:
 	float SprintMultiplier = 1.2f;
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnRate = 200.f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float YSensitivity = 50.f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float XSensitivity = 50.f;
 
 	// ToDo: Currently assigned inside WeaponBase::BeginPlay() from weapons in level.
 	UPROPERTY(EditAnywhere, Category = "Player Inventory")
@@ -300,8 +304,6 @@ private:
 
 	bool bIsMoving;
 
-	bool isGrounded;
-
 	bool bIsMantleing;
 
 	UPROPERTY()
@@ -310,6 +312,7 @@ private:
 	UPROPERTY()
 	class ASpring2022_CapstoneGameModeBase* CurrentGameMode;
 
+	UPROPERTY(VisibleAnywhere, Category = "DEBUG")
 	bool bIsSwappingWeapon = false;
 
 	UFUNCTION(BlueprintCallable)
@@ -327,6 +330,8 @@ private:
 	bool bHasSniperDisableObject = false;
 
 public:
+	UPROPERTY()
+	bool isGrounded;
 	
 	UFUNCTION(BlueprintCallable)
 	void Heal(int Value);
@@ -375,6 +380,9 @@ public:
 	void CheckGround();
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
+	UAudioComponent* MusicAudioComp;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
 	UPhysicalMaterial* CurrentGroundMat;
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
@@ -412,12 +420,21 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundBase* GrassLandSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* SandStepSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* SandLandSound;
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UAudioComponent* FootStepAudioComp;
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UAudioComponent* LandingAudioComp;
+	
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	UAudioComponent* PlayerVoiceAudioComp;
 
 	FTimerHandle BetweenShotTimerHandle;
 	UFUNCTION()
@@ -460,5 +477,10 @@ public:
 	 */
 	UFUNCTION()
 	void FireGrappleAfterDelay();
+
+	UFUNCTION()
+	void SetYSensitivity(float Value);
+	UFUNCTION()
+	void SetXSensitivity(float Value);
 
 };
