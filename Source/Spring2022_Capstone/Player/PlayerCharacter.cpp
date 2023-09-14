@@ -88,6 +88,8 @@ void APlayerCharacter::BeginPlay()
 	LandingAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	PlayerVoiceAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	MusicAudioComp->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
+
+	UpgradeSystemComponent->RegisterComponent();
 	
 	CheckGround();
 	
