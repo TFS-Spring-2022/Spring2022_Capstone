@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "AttackSystemAgentInterface.h"
 #include "RandomNameGenerator.h"
-#include "SniperDisablePickup.h"
+#include "Sniper/SniperDisablePickup.h"
 #include "GameFramework/Character.h"
 #include "Spring2022_Capstone/BasePickup.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
@@ -27,6 +27,7 @@ struct FEnemyDrop
 
 class UBehaviorTree;
 class UHealthComponent;
+
 UCLASS(Abstract)
 class SPRING2022_CAPSTONE_API ABaseEnemy : public ACharacter, public IDamageableActor, public IAttackSystemAgentInterface
 {
@@ -41,15 +42,19 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY()
+	APlayerCharacter* PlayerCharacter;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent *WeaponMesh;
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	USceneComponent *ProjectileSpawnPoint;
 
-	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UAudioComponent *GunShotComp;
-
 	
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+	UAudioComponent *VoiceAudioComponent;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
 	UTextRenderComponent* NameTextRenderer;
@@ -80,12 +85,14 @@ protected:
 	
 	// Called when the enemy runs out of health. Removes enemy from WaveManager ActiveEnemies[] and destroys itself.
 	UFUNCTION(BlueprintCallable)
-	void Death();
+	virtual void Death();
 	
 	UPROPERTY()
 	UScoreSystemManagerSubSystem* ScoreManagerSubSystem;
 	UPROPERTY()
 	UScoreSystemTimerSubSystem* ScoreManagerTimerSubSystem;
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
 
 public:
 	// Called every frame
@@ -129,12 +136,13 @@ public:
 	UPROPERTY()
 	UNiagaraComponent* EliteParticleInstance;
 
+	FORCEINLINE bool GetIsDying() const {return bIsDying;}
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float AttackSpeed;
 
-	UPROPERTY()
-	APlayerCharacter* PlayerCharacter;
+	
 
 	// This enemy is holding the AI Attack System Component's logical token to
 	// allow the holder's shot to hit the target.

@@ -10,6 +10,7 @@
 #include "Components/TextRenderComponent.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
+#include "Spring2022_Capstone/EnvironmentObjects/Hazards/Barrel.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
@@ -26,6 +27,8 @@ ABaseEnemy::ABaseEnemy()
 
 	GunShotComp = CreateDefaultSubobject<UAudioComponent>(TEXT("GunAudioComp"));
 	GunShotComp->SetupAttachment(WeaponMesh);
+	VoiceAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Voice Audio"));
+	VoiceAudioComponent->SetupAttachment(RootComponent);
 	
 	PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
@@ -45,6 +48,7 @@ void ABaseEnemy::BeginPlay()
 	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 	WeaponMesh->AttachToComponent(GetMesh(), AttachmentRules, WeaponSocket);
 	GunShotComp->AttachToComponent(WeaponMesh, AttachmentRules);
+	
 	CurrentAttackSystemComponent = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetAttackSystemComponent();
 
 	// Add enemy to AttackSystem Agents[] array on spawn.
@@ -58,7 +62,7 @@ void ABaseEnemy::BeginPlay()
 
 	ScoreManagerSubSystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
 	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
-	
+	SoundManagerSubSystem = GetGameInstance()->GetSubsystem<USoundManagerSubSystem>();
 }
 
 void ABaseEnemy::Attack()
@@ -97,6 +101,12 @@ void ABaseEnemy::AttackHit()
 		if (PlayerHitResult.GetActor()->Implements<UDamageableActor>() && PlayerHitResult.GetActor()->IsA(APlayerCharacter::StaticClass())) // Question: Do we want them to be able to do damage to other enemies?
 			Cast<APlayerCharacter>(PlayerHitResult.GetActor())->DamageActor(this, Damage);
 	}
+	
+	if(Cast<ASniperEnemy>(this))
+		SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,3);
+	else
+		SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,0);
+	
 	if(GunShotComp)
 		GunShotComp->Play();
 }
@@ -124,6 +134,8 @@ void ABaseEnemy::AttackMiss()
 
 	if(GunShotComp)
 		GunShotComp->Play();
+
+	SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,11);
 }
 
 // Called every frame
@@ -134,8 +146,23 @@ void ABaseEnemy::Tick(float DeltaTime)
 
 bool ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
 {
+
+	if(bIsDying)
+		return false;
+	
 	PlayHitAnimation(HitBoneName);
 
+	if(Cast<ASniperEnemy>(this))
+		SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,1);
+	else
+		SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,2);
+
+	if(!Cast<ASniperEnemy>(this))
+	{
+		if(Cast<ABarrel>(DamagingActor))
+			SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,1);
+	}
+	
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount, HitBoneName);
 	if (HealthComp)
 	{
@@ -208,7 +235,7 @@ void ABaseEnemy::PromoteToElite()
 	// ToDo: Play voice line.
 }
 
-void ABaseEnemy::Death()
+void ABaseEnemy::Death() 
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Killed"), *GetName()));
 	// Prevent the shotgun from causing an enemy to call multiple Death multiple times.
@@ -239,6 +266,13 @@ void ABaseEnemy::Death()
 		GunShotComp->DestroyComponent();
 	}
 
+	if(SoundManagerSubSystem)
+	{
+		if(Cast<ASniperEnemy>(this))
+			SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,2);
+		else
+			SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,5);
+	}
 	
 	if(!bIsElite)
 	{

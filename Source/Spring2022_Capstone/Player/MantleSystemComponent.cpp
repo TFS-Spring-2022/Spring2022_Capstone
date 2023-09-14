@@ -55,12 +55,18 @@ void UMantleSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 bool UMantleSystemComponent::AttemptMantle()
 {
+	// Check for mantle-able wall.
 	if(!CheckForBlockingWall())
 		return false;
 
+	// Check for space to mantle towards.
 	if(!TraceDownForMantleSurface())
 		return false;
 
+	// Ensure player is not blocked from above.
+	if(CheckForBlockingAbove())
+		return false;
+	
 	// Start Mantle (Movement handled in TickComponent().
 	PlayerCharacterMovementComponent->SetMovementMode(MOVE_None); // Stop player from moving while mantle-ing.
 	
@@ -74,13 +80,12 @@ bool UMantleSystemComponent::CheckForBlockingWall()
 {
 	FHitResult BlockingWallHitResult;
 	
-	FVector BlockingWallCheckStartLocation = PlayerCharacterMovementComponent->GetActorLocation();
+	FVector BlockingWallCheckStartLocation = PlayerCapsuleComponent->GetComponentLocation(); 
 	BlockingWallCheckStartLocation.Z += CAPSULE_TRACE_ZAXIS_RAISE; // Raise capsule trace to avoid lower surfaces.
-
-	FVector BlockingWallCheckEndLocation = BlockingWallCheckStartLocation + (GetOwner()->GetActorForwardVector() * CAPSULE_TRACE_REACH); 
+	FVector BlockingWallCheckEndLocation = BlockingWallCheckStartLocation + (PlayerCapsuleComponent->GetForwardVector() * CAPSULE_TRACE_REACH);
 
 	if(GetWorld()->SweepSingleByChannel(BlockingWallHitResult, BlockingWallCheckStartLocation, BlockingWallCheckEndLocation, FQuat::Identity, ECC_Visibility,
-		FCollisionShape::MakeCapsule(CAPSULE_TRACE_RADIUS, PlayerCapsuleComponent->GetScaledCapsuleHalfHeight()), TraceParams))
+		FCollisionShape::MakeCapsule(CAPSULE_TRACE_RADIUS, PlayerCapsuleComponent->GetScaledCapsuleHalfHeight() + CAPSULE_HEIGHT_BUFFER), TraceParams))
 	{
 
 		if(!PlayerCharacterMovementComponent->IsWalkable(BlockingWallHitResult))
@@ -96,7 +101,7 @@ bool UMantleSystemComponent::CheckForBlockingWall()
 		bCanMantle = false; 
 		return false; 
 	}
-
+	// DrawDebugCapsule(GetWorld(), BlockingWallCheckStartLocation, (PlayerCapsuleComponent->GetScaledCapsuleHalfHeight() + CAPSULE_HEIGHT_BUFFER), CAPSULE_TRACE_RADIUS, FQuat::Identity, FColor::Green, true);
 	return true;
 }
 
@@ -135,6 +140,20 @@ bool UMantleSystemComponent::TraceDownForMantleSurface()
 	}
 
 	return true;
+}
+
+bool UMantleSystemComponent::CheckForBlockingAbove() const
+{
+	FHitResult UpCheckHitResult;
+	const FVector StartTrace = PlayerCapsuleComponent->GetComponentLocation();
+	const FVector UpwardsVector = PlayerCapsuleComponent->GetUpVector();
+	const FVector EndTrace = ((UpwardsVector * BLOCKING_ABOVE_TRACE_DISTANCE) + StartTrace);
+	
+	if(GetWorld()->LineTraceSingleByChannel(UpCheckHitResult, StartTrace, EndTrace, ECC_Camera, TraceParams))
+		return true;
+	
+	//DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Green, true);
+	return false;
 }
 
 void UMantleSystemComponent::SetTraceParams()

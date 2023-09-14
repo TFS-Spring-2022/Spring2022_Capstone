@@ -76,11 +76,11 @@ private:
 
 	float GetCoverMultiplier(const AActor* Agent, AActor* Target) const;
 
-	// Bone used to check if lower half of target's body is behind cover Note - ToDo: Change when player skeleton added, currently using Unreal Engine 'pelvis'.
+	// Bone used to check if lower half of target's body is behind cover Note.
 	UPROPERTY(EditAnywhere, Category = "Attack System | Bones")
 	FName LowerBone;
 
-	// Bone used to check if upper half of target's body is behind cover Note - ToDo: Change when player skeleton added, currently using Unreal Engine 'spine_03'.
+	// Bone used to check if upper half of target's body is behind cover Note.
 	UPROPERTY(EditAnywhere, Category = "Attack System | Bones")
 	FName UpperBone;
 

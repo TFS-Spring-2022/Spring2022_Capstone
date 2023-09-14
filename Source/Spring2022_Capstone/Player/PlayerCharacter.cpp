@@ -1,6 +1,7 @@
 // Created by Spring2022_Capstone team
 
 #include "PlayerCharacter.h"
+
 #include "GrappleComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -18,7 +19,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Spring2022_Capstone/Spring2022_Capstone.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
+#include "Spring2022_Capstone/Enemies/RangedEnemy.h"
 #include "Spring2022_Capstone/CustomGameUserSettings.h"
+
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -28,9 +31,9 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetupAttachment(RootComponent);
 	Camera->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
 	Camera->bUsePawnControlRotation = true;
-
-	// Rotate with controller's pitch so player's arms/weapons move vertically.
-	bUseControllerRotationPitch = true;
+	
+	// We do not want to rotate the entire player with the camera, just the skeletal mesh (in BeginPlay).
+	bUseControllerRotationPitch = false;
 
 	GrappleComponent = CreateDefaultSubobject<UGrappleComponent>(TEXT("Grapple"));
 
@@ -42,7 +45,9 @@ APlayerCharacter::APlayerCharacter()
 
 	FootStepAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Foot Steps"));
 	LandingAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Landing Steps"));
-
+	PlayerVoiceAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Voice Lines"));
+	MusicAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Music"));
+	
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
 }
@@ -81,11 +86,11 @@ void APlayerCharacter::BeginPlay()
 
 	FootStepAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	LandingAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	PlayerVoiceAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	MusicAudioComp->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
+	
 	CheckGround();
-
-	// Temp
-	SoundManagerSubSystem->PlaySoundEvent();
-
+	
 	PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController)
 	{
@@ -138,6 +143,9 @@ void APlayerCharacter::BeginPlay()
 	bHasSniperDisableObject = false;
 	bIsSwappingWeapon = false;
 	bCanAttack = true;
+
+	// Attach Skeletal Mesh to Camera to have it rotate with the camera while maintaining capsule collider orientation.
+	GetMesh()->AttachToComponent(Camera, FAttachmentTransformRules::KeepWorldTransform);
 
 	// Load Settings
 	YSensitivity = UCustomGameUserSettings::GetCustomGameUserSettings()->YSensitivity;
@@ -282,7 +290,7 @@ void APlayerCharacter::Jump()
 void APlayerCharacter::Landed(const FHitResult &Hit)
 {
 	Super::Landed(Hit);
-
+	LandingAudioComp->Play();
 	if (ScoreManagerTimerSubSystem)
 		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::SkyPirate);
 }
@@ -322,14 +330,14 @@ void APlayerCharacter::DashDirectionalLaunch()
 	const float PreDashSpeed = GetVelocity().Length();
 
 	if (DashDirectionalValue.Y == 1)
-		LaunchCharacter(GetActorForwardVector() * DashDistance, true, false);
+		LaunchCharacter(Camera->GetForwardVector() * DashDistance, true, false);
 	else if (DashDirectionalValue.Y == -1)
-		LaunchCharacter(-GetActorForwardVector() * DashDistance, true, false);
+		LaunchCharacter(-Camera->GetForwardVector() * DashDistance, true, false);
 	else if (DashDirectionalValue.X == -1)
-		LaunchCharacter(-GetActorRightVector() * DashDistance, true, false);
+		LaunchCharacter(-Camera->GetForwardVector() * DashDistance, true, false);
 	else if (DashDirectionalValue.X == 1)
-		LaunchCharacter(GetActorRightVector() * DashDistance, true, false);
-
+		LaunchCharacter(Camera->GetForwardVector()* DashDistance, true, false);
+	
 	// Handle velocity after dash
 	FVector PostDashDirection = UKismetMathLibrary::Conv_RotatorToVector(GetCharacterMovement()->GetLastUpdateRotation());
 	PostDashDirection *= PreDashSpeed;
@@ -426,7 +434,7 @@ void APlayerCharacter::Attack(const FInputActionValue &Value)
 
 	if (bCanAttack)
 	{
-		if (bIsSprinting)
+		if (bIsSprinting && isGrounded)
 			return;
 		if (ActiveWeapon->Shoot())
 		{
@@ -455,7 +463,7 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 	FCollisionQueryParams TraceParams;
 	TraceParams.AddIgnoredActor(this);
 
-	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility);
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, TRACE_Grapple);
 	// DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 5.f);
 	FVector GrappleTargetLocation = EndLocation;
 	if (AActor *HitActor = HitResult.GetActor())
@@ -469,8 +477,7 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 	// ToDo: Attach grapple to edge of stump. Then calling after a delay will look nicer.
 	// GetWorld()->GetTimerManager().SetTimer(DelayGrappleTimerHandle, this, &APlayerCharacter::FireGrappleAfterDelay, 1, false);
 	GrappleComponent->Fire(GrappleTargetLocation);
-
-	// ToDo: Implement sound here (grapple shot)
+	
 }
 
 void APlayerCharacter::FireGrappleAfterDelay()
@@ -544,28 +551,43 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount);
 
-	if (HealthComponent)
-	{
-		if (ScoreManagerTimerSubSystem && ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(CloseCallCorsair) == false) // ToDo: Remove the IsAccolade running when cleaning up the process
-			ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CloseCallCorsair);
+	if (!HealthComponent) { return false; }
 
-		if (DamageCameraShake)
-			UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(DamageCameraShake);
-		UpdateHealthBar();
-	}
+	if (ScoreManagerTimerSubSystem && ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(CloseCallCorsair) == false) 
+		ScoreManagerTimerSubSystem->StartAccoladeTimer(EAccolades::CloseCallCorsair);
 
+	if (DamageCameraShake)
+		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraShake(DamageCameraShake);
+		
 	// Set DirectionalDamageIndicator to rotate
 	if (DirectionalDamageIndicatorWidget)
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
+	
+	if(DamageAmount >= 6)
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 2);
 
+	else
+	{
+		if(Cast<ASniperEnemy>(DamagingActor))
+		{
+			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 4);
+		}
+		else
+			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 12);
+	}
+	
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
-
+	UpdateHealthBar();
 	if (HealthComponent->GetHealth() <= 0)
 	{
+		if(Cast<ASniperEnemy>(DamagingActor))
+		{
+			SoundManagerSubSystem->PlaySniperSoundEvent(PlayerVoiceAudioComp, 4);
+		}
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp,1);
 		CurrentGameMode->EndRun();
 		return true;
 	}
-
 	return false;
 }
 
@@ -591,6 +613,9 @@ void APlayerCharacter::Heal(int Value)
 
 	if (GetCurrentHealth() > ScoreManagerSubsystem->GetDeathDodgerHealthPercentage() / 100 * GetMaxHealth() && bIsBelowDeathDodgerPercentage)
 		ScoreManagerSubsystem->IncrementDeathDodgerCount();
+
+	if(SoundManagerSubSystem)
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp,10);
 }
 
 void APlayerCharacter::HealByPercentage(int Percentage)
@@ -641,7 +666,6 @@ UUpgradeSystemComponent *APlayerCharacter::GetUpgradeSystemComponent()
 
 void APlayerCharacter::CheckGround()
 {
-
 	FHitResult HitResult;
 
 	FVector StartTrace = this->GetActorLocation();

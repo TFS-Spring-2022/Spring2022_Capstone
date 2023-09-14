@@ -60,6 +60,8 @@ void AWeaponBase::BeginPlay()
 
 	ScoreManagerSubSystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
 	ScoreManagerTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
+
+	SoundManagerSubSystem = GetGameInstance()->GetSubsystem<USoundManagerSubSystem>();
 	
 }
 
@@ -129,6 +131,7 @@ void AWeaponBase::Overheat()
 
 	if(OverheatAudioComp)
 	{
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,8);
 		OverheatAudioComp->SetSound(OverHeat);
 		OverheatAudioComp->SetVolumeMultiplier(1.f);
 		OverheatAudioComp->SetPitchMultiplier(1.f);

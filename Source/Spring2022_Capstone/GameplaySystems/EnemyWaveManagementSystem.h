@@ -5,8 +5,9 @@
 #include "CoreMinimal.h"
 #include "EnemySpawnPoint.h"
 #include "Spring2022_Capstone/Enemies/BaseEnemy.h"
-#include "Spring2022_Capstone/Enemies/SniperEnemy.h"
+#include "Spring2022_Capstone/Enemies/Sniper/SniperEnemy.h"
 #include "Spring2022_Capstone/Player/PlayerCharacter.h"
+#include "Spring2022_Capstone/UI/HUD/WaveAnnouncerWidget.h"
 #include "EnemyWaveManagementSystem.generated.h"
 
 USTRUCT()
@@ -26,6 +27,9 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 	GENERATED_BODY()
 
 	UEnemyWaveManagementSystem();
+
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
 
 	virtual void BeginPlay() override;
 	
@@ -59,6 +63,7 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 
 	FTimerHandle TimeBeforeNextRoundStartTimerHandle;
 	FTimerHandle TimeBeforeUpgradeMenuTimerHandle;
+	FTimerHandle TimeBeforeWaveStartVoiceLine;
 	FTimerHandle TimeBeforeClearDeadEnemiesTimerHandle;
 
 	// Used to open the player's upgrade menu through a timer.
@@ -78,6 +83,14 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 	void ConvertWaveTime(float DTime);
 	float WaveTimerSeconds = 0.0f; // Used for converting total seconds to minutes:seconds
 	int WaveTimerMinutes = 0.0f;	// Used for converting total seconds to minutes:seconds
+
+	// Wave Announcer Widget to be created
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TSubclassOf<UWaveAnnouncerWidget> WaveAnnouncerWidgetBP;
+
+	// Announcer Widget Instance
+	UPROPERTY()
+	UWaveAnnouncerWidget* WaveAnnouncerWidgetInstance;
 	
 public:
 
@@ -102,6 +115,9 @@ public:
 	// Used to call checks for accolades and start the next round after a delay.
 	void StartNextRound();
 
+	//Sound Voice
+	void PlayWaveStartVoiceLine() const;
+	
 	// Called every Tick
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 

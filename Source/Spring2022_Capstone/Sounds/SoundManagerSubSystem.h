@@ -14,36 +14,58 @@ UCLASS()
 class SPRING2022_CAPSTONE_API USoundManagerSubSystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
-
 	
+	USoundManagerSubSystem();
+
+	int SoundEventToken = 0;
+	int GruntSoundEventToken = 0;
+	int SniperSoundEventToken = 0;
+	int NarratorSoundEventToken = 0;
+	int PlayerSoundEventToken = 0;
 
 public:
-	USoundManagerSubSystem();
 	
 	UFUNCTION()
 	void PlaySound(const FVector& Location, USoundBase* Sound) const;
 
 	UFUNCTION()
 	void PlaysMusic(const USoundCue* Music) const;
+
+	UFUNCTION()
+	void ResetEventTokens();
+
+	UFUNCTION()
+	void PlaySniperSoundEvent(UAudioComponent* OwnerAC, int eventID);
+
+	UFUNCTION()
+	void PlayGruntSoundEvent(UAudioComponent* OwnerAC, int eventID);
+
+	UFUNCTION()
+	void PlayNarratorSoundEvent(UAudioComponent* OwnerAC, int eventID);
 	
 	UFUNCTION()
-	void PlaySoundEvent()const;
+	void PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int eventID);
 
 	UFUNCTION()
-	void ImplementToken(int stk1, int ptk2, int gtk3, int sntk, int ntk);
+	void ToggleMusicOff(UAudioComponent* MusicAudioComp);
 
+	UFUNCTION()
+	void ToggleMusicOn(UAudioComponent* MusicAudioComp);
+
+	UFUNCTION()
+	void WaveStart(AActor* Actor);
+
+
+	
 	
 private:
-
-	UPROPERTY()
-	TArray<USoundCue*> GruntVoiceLines;
 	
 	UPROPERTY()
+	TArray<USoundCue*> GruntVoiceLines;
+	UPROPERTY()
 	TArray<USoundCue*> PlayerVoiceLines;
-
 	UPROPERTY()
 	TArray<USoundCue*> SniperVoiceLines;
-
 	UPROPERTY()
 	TArray<USoundCue*> NarratorVoiceLines;
 
@@ -82,8 +104,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
 	USoundCue* PlayerArialSC;
 
-#pragma endregion
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerOverHeatSC;
+	
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerMissSC;
 
+#pragma endregion
 #pragma region Narrator Voices
 	
 	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
@@ -118,7 +145,6 @@ private:
 
 	
 #pragma endregion
-
 #pragma region Ranger Voices
 
 	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
@@ -141,9 +167,14 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
 	USoundCue* RangerDeathSC;
+
+	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
+	USoundCue* RangerDisabledSC;
+
+	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
+	USoundCue* RangerFearSC;
 	
 #pragma endregion
-
 #pragma region Grunt Voices
 	
 	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
@@ -162,7 +193,7 @@ private:
 	USoundCue* GruntGrappleSC;
 
 	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
-	USoundCue* GruntNumbersSC;
+	USoundCue* GruntDeathSC;
 	
 	UPROPERTY(EditAnywhere, Category = "Grunt Voice Lines")
 	USoundCue* GruntArialHitSC;
@@ -171,26 +202,9 @@ private:
 
 #pragma 
 	
-	UPROPERTY()
-	int SoundEventToken;
-
-	UPROPERTY()
-	int GruntSoundEventToken;
-
-	UPROPERTY()
-	int SniperSoundEventToken;
-
-	UPROPERTY()
-	int NarratorSoundEventToken;
-
-	UPROPERTY()
-	int PlayerSoundEventToken;
-
+	UPROPERTY(EditAnywhere, Category = "Wave Sound")
+	USoundCue* WaveStartSound;
 	
-	
-	
-	
-
 	UPROPERTY(EditAnywhere, Category = "Menu Music")
 	USoundCue* MainMenuMusic;
 
