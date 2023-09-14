@@ -710,6 +710,12 @@ void APlayerCharacter::CheckGround()
 				if (WaterLandSound)
 					LandingAudioComp->SetSound(WaterLandSound);
 				break;
+			case SURFACE_Sand:
+				if (SandStepSound)
+					FootStepAudioComp->SetSound(SandStepSound);
+				if (SandLandSound)
+					LandingAudioComp->SetSound(SandLandSound);
+				break;
 			default:
 				if (RockStepSound)
 					FootStepAudioComp->SetSound(RockStepSound);

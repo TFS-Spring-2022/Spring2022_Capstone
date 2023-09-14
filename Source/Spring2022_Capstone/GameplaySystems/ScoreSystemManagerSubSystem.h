@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "UObject/NoExportTypes.h"
 #include "ScoreSystemManagerSubSystem.generated.h"
 
@@ -54,6 +55,9 @@ class SPRING2022_CAPSTONE_API UScoreSystemManagerSubSystem : public UGameInstanc
 
 	UPROPERTY()
 	class APlayerCharacter* PlayerCharacter;
+
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
 
 	// Accolades:
 	int TotalAccoladesCount = 0;
