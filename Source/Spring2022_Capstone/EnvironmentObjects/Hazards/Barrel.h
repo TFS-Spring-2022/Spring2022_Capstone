@@ -14,13 +14,16 @@ UCLASS()
 class SPRING2022_CAPSTONE_API ABarrel : public AActor, public IDamageableActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	ABarrel();
 
-protected:
-	virtual void BeginPlay() override;
+	UFUNCTION(BlueprintCallable)
+	virtual bool DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
+	UFUNCTION(BlueprintCallable)
+	void Explode();
 
+protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent *BarrelMesh;
 	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = true))
@@ -29,14 +32,5 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	UHealthComponent *HealthComp;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
-    float Damage;
-
-public:	
-	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION(BlueprintCallable)
-	virtual bool DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
-	UFUNCTION(BlueprintCallable)
-	void Explode();
-
+	float Damage;
 };

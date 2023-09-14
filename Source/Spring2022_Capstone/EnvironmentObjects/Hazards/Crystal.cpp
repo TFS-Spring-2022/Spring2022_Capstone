@@ -39,13 +39,13 @@ void ACrystal::Pulse()
 {
 	Explode();
 	bIsPulsing = true;
-	PulseCounter ++;
-
-	UE_LOG(LogTemp, Display, TEXT("Pulse %d"), PulseCounter);
-
-	if (PulseCounter < TotalPulses) {
+	PulseCounter++;
+	if (PulseCounter < TotalPulses)
+	{
 		GetWorld()->GetTimerManager().SetTimer(PulseTimer, this, &ACrystal::Pulse, PulseInterval);
-	} else {
+	}
+	else
+	{
 		bIsPulsing = false;
 		PulseCounter = 0;
 	}
@@ -54,14 +54,17 @@ void ACrystal::Pulse()
 void ACrystal::Explode()
 {
 	TArray<AActor *> OverlappingActors;
-    SphereCollider->GetOverlappingActors(OverlappingActors);
+	SphereCollider->GetOverlappingActors(OverlappingActors);
 
-    for( AActor *OverlappingActor : OverlappingActors )
-    {
-        if (IDamageableActor *DamageableActor = Cast<IDamageableActor>(OverlappingActor))
-        {
-			if (DamageableActor == this) { continue; }
-            DamageableActor->DamageActor(this, Damage);
-        }
-    }
+	for (AActor *OverlappingActor : OverlappingActors)
+	{
+		if (IDamageableActor *DamageableActor = Cast<IDamageableActor>(OverlappingActor))
+		{
+			if (DamageableActor == this)
+			{
+				continue;
+			}
+			DamageableActor->DamageActor(this, Damage);
+		}
+	}
 }
