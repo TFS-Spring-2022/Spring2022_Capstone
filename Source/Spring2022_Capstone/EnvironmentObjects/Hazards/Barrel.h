@@ -10,6 +10,7 @@
 
 class USphereComponent;
 class UHealthComponent;
+class ADamageArea;
 
 UCLASS()
 class SPRING2022_CAPSTONE_API ABarrel : public AActor, public IDamageableActor
@@ -23,12 +24,16 @@ public:
 	virtual bool DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
 	UFUNCTION(BlueprintCallable)
 	void Explode();
+	UFUNCTION(BlueprintCallable)
+	void SpawnDamageArea();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent *BarrelMesh;
 	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	USphereComponent *SphereCollider;
+	UPROPERTY(EditDefaultsOnly, Category = "Projectile", meta = (AllowPrivateAccess = true))
+    TSubclassOf<ADamageArea> DamageArea;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	UHealthComponent *HealthComp;

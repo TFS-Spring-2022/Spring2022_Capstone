@@ -52,3 +52,11 @@ void ABarrel::Explode()
 	}
 	Destroy();
 }
+
+void ABarrel::SpawnDamageArea()
+{
+	if (!DamageArea)
+		return;
+
+	GetWorld()->SpawnActor<ABaseEnemyProjectile>(DamageArea, GetActorLocation(), GetActorRotation());
+}
