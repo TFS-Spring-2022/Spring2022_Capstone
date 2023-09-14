@@ -60,6 +60,14 @@ void UFootSoundAnimNotify::CheckGround(USkeletalMeshComponent* MeshComp)
 								Cast<ABaseEnemy>(MeshComp->GetOwner())->FootStepSound = WaterStepSound;
 						}
 						break;
+
+					case SURFACE_Sand:
+						if(SandStepSound)
+						{
+							if(Cast<ABaseEnemy>(MeshComp->GetOwner()))
+								Cast<ABaseEnemy>(MeshComp->GetOwner())->FootStepSound = SandStepSound;
+						}
+						break;
 					default:
 						if(RockStepSound)
 						{

@@ -1,6 +1,7 @@
 // Created by Spring2022_Capstone team
 
 #include "PlayerCharacter.h"
+
 #include "GrappleComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -18,7 +19,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Spring2022_Capstone/Spring2022_Capstone.h"
 #include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
+#include "Spring2022_Capstone/Enemies/RangedEnemy.h"
 #include "Spring2022_Capstone/CustomGameUserSettings.h"
+
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -28,7 +31,7 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetupAttachment(RootComponent);
 	Camera->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
 	Camera->bUsePawnControlRotation = true;
-
+	
 	// We do not want to rotate the entire player with the camera, just the skeletal mesh (in BeginPlay).
 	bUseControllerRotationPitch = false;
 
@@ -42,7 +45,9 @@ APlayerCharacter::APlayerCharacter()
 
 	FootStepAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Foot Steps"));
 	LandingAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Landing Steps"));
-
+	PlayerVoiceAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Voice Lines"));
+	MusicAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("Music"));
+	
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
 }
@@ -81,11 +86,11 @@ void APlayerCharacter::BeginPlay()
 
 	FootStepAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	LandingAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	PlayerVoiceAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	MusicAudioComp->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
+	
 	CheckGround();
-
-	// Temp
-	SoundManagerSubSystem->PlaySoundEvent();
-
+	
 	PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController)
 	{
@@ -285,7 +290,7 @@ void APlayerCharacter::Jump()
 void APlayerCharacter::Landed(const FHitResult &Hit)
 {
 	Super::Landed(Hit);
-
+	LandingAudioComp->Play();
 	if (ScoreManagerTimerSubSystem)
 		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::SkyPirate);
 }
@@ -472,8 +477,7 @@ void APlayerCharacter::Grapple(const FInputActionValue &Value)
 	// ToDo: Attach grapple to edge of stump. Then calling after a delay will look nicer.
 	// GetWorld()->GetTimerManager().SetTimer(DelayGrappleTimerHandle, this, &APlayerCharacter::FireGrappleAfterDelay, 1, false);
 	GrappleComponent->Fire(GrappleTargetLocation);
-
-	// ToDo: Implement sound here (grapple shot)
+	
 }
 
 void APlayerCharacter::FireGrappleAfterDelay()
@@ -558,11 +562,29 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 	// Set DirectionalDamageIndicator to rotate
 	if (DirectionalDamageIndicatorWidget)
 		DirectionalDamageIndicatorWidget->SetDamagingActor(DamagingActor);
+	
+	if(DamageAmount >= 6)
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 2);
 
+	else
+	{
+		if(Cast<ASniperEnemy>(DamagingActor))
+		{
+			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 4);
+		}
+		else
+			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 12);
+	}
+	
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 	UpdateHealthBar();
 	if (HealthComponent->GetHealth() <= 0)
 	{
+		if(Cast<ASniperEnemy>(DamagingActor))
+		{
+			SoundManagerSubSystem->PlaySniperSoundEvent(PlayerVoiceAudioComp, 4);
+		}
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp,1);
 		CurrentGameMode->EndRun();
 		return true;
 	}
@@ -591,6 +613,9 @@ void APlayerCharacter::Heal(int Value)
 
 	if (GetCurrentHealth() > ScoreManagerSubsystem->GetDeathDodgerHealthPercentage() / 100 * GetMaxHealth() && bIsBelowDeathDodgerPercentage)
 		ScoreManagerSubsystem->IncrementDeathDodgerCount();
+
+	if(SoundManagerSubSystem)
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp,10);
 }
 
 void APlayerCharacter::HealByPercentage(int Percentage)
@@ -641,7 +666,6 @@ UUpgradeSystemComponent *APlayerCharacter::GetUpgradeSystemComponent()
 
 void APlayerCharacter::CheckGround()
 {
-
 	FHitResult HitResult;
 
 	FVector StartTrace = this->GetActorLocation();

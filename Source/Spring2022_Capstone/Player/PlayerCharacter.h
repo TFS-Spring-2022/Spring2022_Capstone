@@ -304,8 +304,6 @@ private:
 
 	bool bIsMoving;
 
-	bool isGrounded;
-
 	bool bIsMantleing;
 
 	UPROPERTY()
@@ -332,6 +330,8 @@ private:
 	bool bHasSniperDisableObject = false;
 
 public:
+	UPROPERTY()
+	bool isGrounded;
 	
 	UFUNCTION(BlueprintCallable)
 	void Heal(int Value);
@@ -380,6 +380,9 @@ public:
 	void CheckGround();
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
+	UAudioComponent* MusicAudioComp;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
 	UPhysicalMaterial* CurrentGroundMat;
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
@@ -417,12 +420,21 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundBase* GrassLandSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* SandStepSound;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* SandLandSound;
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UAudioComponent* FootStepAudioComp;
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	UAudioComponent* LandingAudioComp;
+	
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	UAudioComponent* PlayerVoiceAudioComp;
 
 	FTimerHandle BetweenShotTimerHandle;
 	UFUNCTION()

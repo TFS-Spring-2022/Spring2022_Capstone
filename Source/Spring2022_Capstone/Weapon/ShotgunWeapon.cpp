@@ -140,18 +140,88 @@ bool AShotgunWeapon::Shoot()
 								default:
 									if (DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName))
 									{
-										// Enemy has died
-										EnemiesKilledFromAttack++;
-										if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+										// Increment hit counter
+										ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::Hits);
+									
+										// If player is in the air, increment counter
+										if (!PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+											ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HitsWhileAirborne);
+									}
+									
+									switch (HitSurfaceType)
+									{
+									case SURFACE_FleshDefault:
+										if (DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName))
 										{
-											if (!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-												ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+											//Enemy has died
+											EnemiesKilledFromAttack++;
+											if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+											{
+												if (!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+													ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+											}
+											else
+											{
+												if (!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+												{
+													ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+													SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 9);
+												}
+											}
 										}
-										else
+										if (FloatingDamageNumberParticleSystem)
+											DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
+										break;
+									case SURFACE_FleshVulnerable:
+										if (DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier,HitResult.BoneName))
 										{
-											if (!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-												ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+											//Enemy has died
+											EnemiesKilledFromAttack++;
+											//Coin flip for voiceline
+											if(FMath::RandRange(1,2) == 1)
+											{
+												SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,6);
+											}
+											else
+											{
+												SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,2);
+											}
+											
+											if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+											{
+												if (!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+													ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+											}
+											else
+											{
+												if (!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+													ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+											}
 										}
+										if (FloatingDamageNumberParticleSystem)
+											DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier,
+											                             true);
+										if (ScoreManagerSubSystem)
+											ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
+										bHeadshotHit = true;
+										break;
+									default:
+										if (DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName))
+										{
+											//Enemy has died
+											EnemiesKilledFromAttack++;
+											if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+											{
+												if (!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+													ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+											}
+											else
+											{
+												if (!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+													ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+											}
+										}
+										break;
 									}
 									break;
 								}

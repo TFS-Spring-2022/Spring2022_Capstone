@@ -28,4 +28,7 @@ private:
 	float ReloadTime;
 
 	void Reload();
+	
+	virtual void BeginPlay() override;
+	virtual void AttackHit() override;
 };
