@@ -60,6 +60,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	float MinimumGrappleCooldown = 1;
 	
+	
 	// Used to ensure the player has not grappled for longer then MaximumGrappleTime.
 	FTimerHandle MaxGrappleTimerHandle;
 
@@ -86,5 +87,5 @@ public:
 
 	void DecrementGrappleCooldown(float Seconds);
 	FORCEINLINE float GetCooldown() const { return Cooldown; }
-	
+	FORCEINLINE float GetMinCooldown() const{return MinimumGrappleCooldown;}
 };

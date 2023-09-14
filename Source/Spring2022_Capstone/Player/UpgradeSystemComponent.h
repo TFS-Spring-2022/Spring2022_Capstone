@@ -69,6 +69,12 @@ public:
 
 	UPROPERTY()
 	UUpgradeMenuWidget* UpgradeMenuWidgetInstance;
+
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
+
+	UPROPERTY()
+	UScoreSystemTimerSubSystem* ScoreSystemTimerSubSystem;
 	
 
 protected:

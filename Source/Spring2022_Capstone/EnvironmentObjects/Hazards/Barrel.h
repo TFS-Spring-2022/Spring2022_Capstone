@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
+#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "Barrel.generated.h"
 
 class USphereComponent;

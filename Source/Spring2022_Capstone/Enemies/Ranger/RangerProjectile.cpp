@@ -31,8 +31,12 @@ void ARangerProjectile::BeginPlay()
 
 void ARangerProjectile::OnHit(UPrimitiveComponent *HitComp, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalizedImpulse, const FHitResult &Hit)
 {
-    if (OtherActor->Implements<UDamageableActor>() && OtherActor->IsA(APlayerCharacter::StaticClass())) // Question: Do we want them to be able to do damage to other enemies?
+    if (OtherActor->Implements<UDamageableActor>() && OtherActor->IsA(APlayerCharacter::StaticClass()))
+    {
         Cast<APlayerCharacter>(OtherActor)->DamageActor(this, Damage);
+        SoundManagerSubSystem->PlayPlayerSoundEvent(Cast<APlayerCharacter>(OtherActor)->PlayerVoiceAudioComp,3);
+    }// Question: Do we want them to be able to do damage to other enemies?
+       
 
     TrackingSoundComponent->SetSound(ExplodingSound);
     if(ExplodingSound)

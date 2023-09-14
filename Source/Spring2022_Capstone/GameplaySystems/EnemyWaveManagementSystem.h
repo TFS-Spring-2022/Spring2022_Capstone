@@ -28,6 +28,9 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 
 	UEnemyWaveManagementSystem();
 
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
+
 	virtual void BeginPlay() override;
 	
 	// Set of enemies to be spawned at the start of a new wave.
@@ -60,6 +63,7 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 
 	FTimerHandle TimeBeforeNextRoundStartTimerHandle;
 	FTimerHandle TimeBeforeUpgradeMenuTimerHandle;
+	FTimerHandle TimeBeforeWaveStartVoiceLine;
 	FTimerHandle TimeBeforeClearDeadEnemiesTimerHandle;
 
 	// Used to open the player's upgrade menu through a timer.
@@ -111,6 +115,9 @@ public:
 	// Used to call checks for accolades and start the next round after a delay.
 	void StartNextRound();
 
+	//Sound Voice
+	void PlayWaveStartVoiceLine() const;
+	
 	// Called every Tick
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
