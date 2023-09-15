@@ -1,6 +1,7 @@
 // Created by Spring2022_Capstone team
 
 #include "Crystal.h"
+#include "NiagaraComponent.h"
 #include "Components/SphereComponent.h"
 
 ACrystal::ACrystal()
@@ -12,16 +13,11 @@ ACrystal::ACrystal()
 
 	SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	SphereCollider->SetupAttachment(RootComponent);
-}
 
-void ACrystal::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void ACrystal::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+	ExplosionEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ExplosionEffect"));
+    ExplosionEffect->SetupAttachment(RootComponent);
+	ExplosionEffect->SetActive(false);
+	ExplosionEffect->SetAutoActivate(false);
 }
 
 bool ACrystal::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
@@ -30,7 +26,8 @@ bool ACrystal::DamageActor(AActor *DamagingActor, const float DamageAmount, FNam
 	{
 		return false;
 	}
-
+	if(ExplosionEffect)
+		ExplosionEffect->SetActive(true);
 	Pulse();
 	return true;
 }
@@ -39,29 +36,34 @@ void ACrystal::Pulse()
 {
 	Explode();
 	bIsPulsing = true;
-	PulseCounter ++;
-
-	UE_LOG(LogTemp, Display, TEXT("Pulse %d"), PulseCounter);
-
-	if (PulseCounter < TotalPulses) {
+	PulseCounter++;
+	if (PulseCounter < TotalPulses)
+	{
 		GetWorld()->GetTimerManager().SetTimer(PulseTimer, this, &ACrystal::Pulse, PulseInterval);
-	} else {
+	}
+	else
+	{
 		bIsPulsing = false;
 		PulseCounter = 0;
+		if(ExplosionEffect)
+			ExplosionEffect->SetActive(false);
 	}
 }
 
 void ACrystal::Explode()
 {
 	TArray<AActor *> OverlappingActors;
-    SphereCollider->GetOverlappingActors(OverlappingActors);
+	SphereCollider->GetOverlappingActors(OverlappingActors);
 
-    for( AActor *OverlappingActor : OverlappingActors )
-    {
-        if (IDamageableActor *DamageableActor = Cast<IDamageableActor>(OverlappingActor))
-        {
-			if (DamageableActor == this) { continue; }
-            DamageableActor->DamageActor(this, Damage);
-        }
-    }
+	for (AActor *OverlappingActor : OverlappingActors)
+	{
+		if (IDamageableActor *DamageableActor = Cast<IDamageableActor>(OverlappingActor))
+		{
+			if (DamageableActor == this)
+			{
+				continue;
+			}
+			DamageableActor->DamageActor(this, Damage);
+		}
+	}
 }
