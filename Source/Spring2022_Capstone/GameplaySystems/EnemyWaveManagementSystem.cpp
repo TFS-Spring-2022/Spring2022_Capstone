@@ -31,8 +31,8 @@ void UEnemyWaveManagementSystem::BeginPlay()
 	}
 
 	bEliteEnemySpawnedThisWave = false;
+	EnemiesKilledThisWave = 0;
 }
-
 
 void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 {
@@ -43,6 +43,8 @@ void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 
 void UEnemyWaveManagementSystem::SpawnWave()
 {
+	// Reset wave stats.
+	EnemiesKilledThisWave = 0;
 
 	// Announce wave to player.
 	if(WaveAnnouncerWidgetInstance)
@@ -104,7 +106,7 @@ void UEnemyWaveManagementSystem::SpawnWave()
 	// Set remaining enemies text to the amount in the current wave.
 	PlayerCharacter->GetPlayerHUD()->SetEnemiesRemainingText(Waves[CurrentWave].EnemiesToSpawn.Num());
 
-	CurrentWave++;
+	//CurrentWave++;
 }
 
 void UEnemyWaveManagementSystem::SpawnEnemy(TSubclassOf<ABaseEnemy> SpawningEnemy)
@@ -145,14 +147,20 @@ void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 {
 	if(ActiveEnemies.Contains(EnemyToRemove))
 	{
+		EnemiesKilledThisWave++;
+		
 		ActiveEnemies.Remove(EnemyToRemove);
 		// Update enemies remaining text.
-		PlayerCharacter->GetPlayerHUD()->SetEnemiesRemainingText(ActiveEnemies.Num());
-		
+		//PlayerCharacter->GetPlayerHUD()->SetEnemiesRemainingText(ActiveEnemies.Num());
+		PlayerCharacter->GetPlayerHUD()->SetEnemiesRemainingText(Waves[CurrentWave].EnemiesToSpawn.Num() - EnemiesKilledThisWave);
+
+		// ROUND IS DONE
 		// Note - This is inside the if-contains to prevent placed enemies out of ActiveEnemies[]
 		// from spawning an unwanted wave.
 		if(ActiveEnemies.IsEmpty())
 		{
+			CurrentWave++;
+			
 			// Begin play is not called on this component so PlayerCharacter must be set here.
 			if(!PlayerCharacter)
 				PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
