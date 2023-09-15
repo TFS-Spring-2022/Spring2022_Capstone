@@ -16,6 +16,9 @@ ABarrel::ABarrel()
 	SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	SphereCollider->SetupAttachment(RootComponent);
 
+	ExplosionEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ExplosionEffect"));
+    ExplosionEffect->SetupAttachment(RootComponent);
+
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
 
@@ -54,7 +57,8 @@ void ABarrel::Explode()
 		}
 	}
 	SpawnDamageArea();
-	Destroy();
+	ExplosionEffect->SetActive(true);
+	BarrelMesh->SetHiddenInGame(true);
 }
 
 void ABarrel::SpawnDamageArea()

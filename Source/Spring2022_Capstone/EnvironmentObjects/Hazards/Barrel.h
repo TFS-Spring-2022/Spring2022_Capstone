@@ -11,6 +11,7 @@
 class USphereComponent;
 class UHealthComponent;
 class ADamageArea;
+class UNiagaraComponent;
 
 UCLASS()
 class SPRING2022_CAPSTONE_API ABarrel : public AActor, public IDamageableActor
@@ -34,6 +35,8 @@ protected:
 	USphereComponent *SphereCollider;
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile", meta = (AllowPrivateAccess = true))
     TSubclassOf<ADamageArea> DamageArea;
+	UPROPERTY(EditDefaultsOnly, Category = "Effect", meta = (AllowPrivateAccess = true))
+    UNiagaraComponent*  ExplosionEffect;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	UHealthComponent *HealthComp;
