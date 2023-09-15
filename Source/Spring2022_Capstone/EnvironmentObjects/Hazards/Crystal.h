@@ -46,4 +46,10 @@ public:
 private:
 	FTimerHandle PulseTimer;
 	int PulseCounter = 0;
+
+	FTimerHandle ExplosionEffectDelayTimerHandle;
+	UFUNCTION()
+	void PlayDelayedExplosionEffect();
+	const float EXPLOSION_EFFECT_DELAY = 0.5f;	// Time(s) before the crystal explosion effect is started.
+	
 };

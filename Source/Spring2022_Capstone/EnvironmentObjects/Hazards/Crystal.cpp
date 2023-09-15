@@ -26,8 +26,7 @@ bool ACrystal::DamageActor(AActor *DamagingActor, const float DamageAmount, FNam
 	{
 		return false;
 	}
-	if(ExplosionEffect)
-		ExplosionEffect->SetActive(true);
+	GetWorld()->GetTimerManager().SetTimer(ExplosionEffectDelayTimerHandle, this, &ACrystal::PlayDelayedExplosionEffect, EXPLOSION_EFFECT_DELAY, false);
 	Pulse();
 	return true;
 }
@@ -62,4 +61,10 @@ void ACrystal::Explode()
 			Cast<IDamageableActor>(OverlappingActor)->DamageActor(this, Damage);
 		}
 	}
+}
+
+void ACrystal::PlayDelayedExplosionEffect()
+{
+	if(ExplosionEffect)
+		ExplosionEffect->SetActive(true);
 }
