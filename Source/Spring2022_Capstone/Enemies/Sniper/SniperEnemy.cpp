@@ -53,6 +53,7 @@ void ASniperEnemy::SpecialAttack()
 void ASniperEnemy::BeginPlay()
 {
     Super::BeginPlay();
+    SoundManagerSubSystem = GetGameInstance()->GetSubsystem<USoundManagerSubSystem>();
 
     EnableSniperEnemy();
 }
@@ -61,7 +62,8 @@ void ASniperEnemy::DisableSniperEnemy()
 {
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Disabled");
     bCanAttack = false;
-    SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,6);
+    if(SoundManagerSubSystem)
+        SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,6);
     StopCharge();
     LaserComponent->Deactivate();
     // ToDo: Disable laser effect (when implemented).
