@@ -149,10 +149,6 @@ USoundManagerSubSystem::USoundManagerSubSystem()
     if (RangerLockOnLoaded.Succeeded())
         RangerLockOnSC = RangerLockOnLoaded.Object;
     
-    static ConstructorHelpers::FObjectFinder<USoundCue>RangerRandomLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerRandom.SC_RangerRandom'"));
-    if (RangerRandomLoaded.Succeeded())
-        RangerRandomSC = RangerRandomLoaded.Object;
-    
 #pragma endregion
 #pragma region Grunt Voice Lines
     
