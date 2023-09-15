@@ -29,7 +29,7 @@ public:
 	void PlaySound(const FVector& Location, USoundBase* Sound) const;
 
 	UFUNCTION()
-	void PlaysMusic(const USoundCue* Music) const;
+	void PlaysMusic(USoundCue* Music) const;
 
 	UFUNCTION()
 	void ResetEventTokens();
@@ -55,8 +55,14 @@ public:
 	UFUNCTION()
 	void WaveStart(AActor* Actor);
 
+	UPROPERTY(EditAnywhere,Category="Narrotr Vocie Lines")
+	USoundCue* NarratorLoseSC;
 
+	UPROPERTY(EditAnywhere,Category="Narrotr Vocie Lines")
+	USoundCue* NarratorWinSC;
 	
+	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
+	USoundCue* RangerKillsPlayerSC;
 	
 private:
 	
@@ -149,6 +155,7 @@ private:
 	UPROPERTY(EditAnywhere,Category="Narrotr Vocie Lines")
 	USoundCue* NarratorUpgradeMenuSC;
 
+	
 
 	
 #pragma endregion
@@ -159,12 +166,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
 	USoundCue* RangerHurtSC;
-
-	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
-	USoundCue* RangerJumpSC;
-
-	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
-	USoundCue* RangerKillsPlayerSC;
 
 	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
 	USoundCue* RangerRandomSC;

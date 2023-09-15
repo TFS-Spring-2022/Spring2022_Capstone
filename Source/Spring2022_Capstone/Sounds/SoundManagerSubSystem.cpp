@@ -13,6 +13,7 @@ USoundManagerSubSystem::USoundManagerSubSystem()
     static ConstructorHelpers::FObjectFinder<USoundCue>WaveStartSoundLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/GameMechanics/SC_WaveStart.SC_WaveStart'"));
     if (WaveStartSoundLoaded.Succeeded())
         WaveStartSound = WaveStartSoundLoaded.Object;
+
     
 #pragma region Player Voice Lines
     
@@ -87,14 +88,6 @@ USoundManagerSubSystem::USoundManagerSubSystem()
     if (NarratorHeavyHitLoaded.Succeeded())
         NarratorHeavyHitSC = NarratorHeavyHitLoaded.Object;
     
-    static ConstructorHelpers::FObjectFinder<USoundCue>NarratorMaxGrappleLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorMaxGrapple.SC_NarratorMaxGrapple'"));
-    if (NarratorMaxGrappleLoaded.Succeeded())
-        NarratorMaxGrappleSC = NarratorMaxGrappleLoaded.Object;
-    
-    static ConstructorHelpers::FObjectFinder<USoundCue>NarratorMaxSpeedLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorMaxSpeed.SC_NarratorMaxSpeed'"));
-    if (NarratorMaxSpeedLoaded.Succeeded())
-        NarratorMaxSpeedSC = NarratorMaxSpeedLoaded.Object;
-    
     static ConstructorHelpers::FObjectFinder<USoundCue>NarratorRampageLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorRampage.SC_NarratorRampage'"));
     if (NarratorRampageLoaded.Succeeded())
         NarratorRampageSC = NarratorRampageLoaded.Object;
@@ -107,10 +100,6 @@ USoundManagerSubSystem::USoundManagerSubSystem()
     if (NarratorUpgradeOpenLoaded.Succeeded())
         NarratorUpgradeOpenSC = NarratorUpgradeOpenLoaded.Object;
     
-    static ConstructorHelpers::FObjectFinder<USoundCue>NarratorUpgradeSelectLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorUpgradeSelect.SC_NarratorUpgradeSelect'"));
-    if (NarratorUpgradeSelectLoaded.Succeeded())
-        NarratorUpgradeSelectSC = NarratorUpgradeSelectLoaded.Object;
-    
     static ConstructorHelpers::FObjectFinder<USoundCue>NarratorWaveStartLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorWaveStart.SC_NarratorWaveStart'"));
     if (NarratorWaveStartLoaded.Succeeded())
         NarratorWaveStartSC = NarratorWaveStartLoaded.Object;
@@ -118,6 +107,16 @@ USoundManagerSubSystem::USoundManagerSubSystem()
     static ConstructorHelpers::FObjectFinder<USoundCue>NarratorBarrelLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorBarrel.SC_NarratorBarrel'"));
     if (NarratorWaveStartLoaded.Succeeded())
         NarratorBarrelSC = NarratorBarrelLoaded.Object;
+
+    static ConstructorHelpers::FObjectFinder<USoundCue>NarratorLoseLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorLose.SC_NarratorLose'"));
+    if (NarratorWaveStartLoaded.Succeeded())
+        NarratorLoseSC = NarratorLoseLoaded.Object;
+
+    static ConstructorHelpers::FObjectFinder<USoundCue>NarratorWinLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorWin.SC_NarratorWin'"));
+    if (NarratorWaveStartLoaded.Succeeded())
+        NarratorWinSC = NarratorWinLoaded.Object;
+
+
 
 
     
@@ -137,10 +136,6 @@ USoundManagerSubSystem::USoundManagerSubSystem()
     static ConstructorHelpers::FObjectFinder<USoundCue>RangerHurtLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerHurt.SC_RangerHurt'"));
     if (RangerHurtLoaded.Succeeded())
         RangerHurtSC = RangerHurtLoaded.Object;
-    
-    static ConstructorHelpers::FObjectFinder<USoundCue>RangerJumpLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerJump.SC_RangerJump'"));
-    if (RangerJumpLoaded.Succeeded())
-        RangerJumpSC = RangerJumpLoaded.Object;
     
     static ConstructorHelpers::FObjectFinder<USoundCue>RangerKillLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerKill.SC_RangerKill'"));
     if (RangerKillLoaded.Succeeded())
@@ -190,15 +185,15 @@ void USoundManagerSubSystem::PlaySound(const FVector& Location, USoundBase* Soun
 {
     if(Sound)
     {
-        UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, Location, 1.0f, 1.0f,0.0f);
+        UGameplayStatics::PlaySoundAtLocation(GetWorld(),Sound, Location, 1, 1.0f);
     }
 }
 
-void USoundManagerSubSystem::PlaysMusic(const USoundCue* Music) const
+void USoundManagerSubSystem::PlaysMusic(USoundCue* Music) const
 {
     if(Music)
     {
-        
+        UGameplayStatics::SpawnSound2D(GetWorld(),Music, 1,1,0,nullptr,true);
     }
 }
 
@@ -476,7 +471,7 @@ void USoundManagerSubSystem::PlayNarratorSoundEvent(UAudioComponent* OwnerAC, in
                 }
                 break;
             case 6 :
-                if(FMath::RandRange(1, 6)== 1)
+                if(FMath::RandRange(1, 1)== 1)
                 {
                     if(NarratorUpgradeOpenSC)
                     {

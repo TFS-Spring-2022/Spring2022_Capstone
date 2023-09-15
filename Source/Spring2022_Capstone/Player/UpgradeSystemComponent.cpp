@@ -145,6 +145,7 @@ void UUpgradeSystemComponent::OpenUpgradeMenu()
 		PlayerToUpgrade->GetPlayerHUD()->SetVisibility(ESlateVisibility::Hidden);
 		//Menu AfkSounds
 		bUpgradeTimerAFKStarted = true;
+		SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerToUpgrade->PlayerVoiceAudioComp, 6);
 		
 	}
 }

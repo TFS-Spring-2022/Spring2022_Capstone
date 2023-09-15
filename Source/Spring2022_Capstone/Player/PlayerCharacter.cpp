@@ -572,7 +572,6 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 	
 	if(DamageAmount >= 6)
 		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 2);
-
 	else
 	{
 		if(Cast<ASniperEnemy>(DamagingActor))
@@ -589,9 +588,11 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 	{
 		if(Cast<ASniperEnemy>(DamagingActor))
 		{
-			SoundManagerSubSystem->PlaySniperSoundEvent(PlayerVoiceAudioComp, 4);
+			SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->RangerKillsPlayerSC);
 		}
-		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp,1);
+		else
+			SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->NarratorLoseSC);
+		
 		CurrentGameMode->EndRun();
 		return true;
 	}

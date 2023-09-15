@@ -26,6 +26,9 @@ class SPRING2022_CAPSTONE_API ASpring2022_CapstoneGameModeBase : public AGameMod
 	UPROPERTY(VisibleAnywhere, Category = "Wave Management")
 	UEnemyWaveManagementSystem* EnemyWaveManagerInstance;
 
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
+
 public:
 	
 	UFUNCTION(BlueprintCallable)

@@ -81,6 +81,7 @@ void UEnemyWaveManagementSystem::SpawnWave()
 	// If we have passed all the waves.
 	if(CurrentWave > Waves.Num() - 1)
 	{
+		SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->NarratorWinSC);
 		Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->EndRun(); 
 		return;
 	}
