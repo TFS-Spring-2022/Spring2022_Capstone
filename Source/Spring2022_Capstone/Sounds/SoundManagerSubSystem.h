@@ -143,6 +143,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
 	USoundCue* NarratorMaxSpeedSC;
 
+	UPROPERTY(EditAnywhere,Category="Narrotr Vocie Lines")
+	USoundCue* NarratorBarrelSC;
+
+	UPROPERTY(EditAnywhere,Category="Narrotr Vocie Lines")
+	USoundCue* NarratorUpgradeMenuSC;
+
+
 	
 #pragma endregion
 #pragma region Ranger Voices

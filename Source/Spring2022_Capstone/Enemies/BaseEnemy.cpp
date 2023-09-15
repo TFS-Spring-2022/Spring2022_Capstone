@@ -162,7 +162,14 @@ bool ABaseEnemy::DamageActor(AActor *DamagingActor, const float DamageAmount, FN
 	if(!Cast<ASniperEnemy>(this))
 	{
 		if(Cast<ABarrel>(DamagingActor))
-			SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,1);
+			if(FMath::RandRange(1,2) == 1)
+			{
+				SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,1);
+			}
+			else
+			{
+				SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 10);
+			}
 	}
 	
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount, HitBoneName);

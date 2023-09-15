@@ -13,4 +13,3 @@
 #define SURFACE_Sand                SurfaceType7
 
 #define TRACE_Grapple				ECC_GameTraceChannel1
-

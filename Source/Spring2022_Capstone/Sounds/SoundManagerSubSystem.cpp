@@ -103,7 +103,7 @@ USoundManagerSubSystem::USoundManagerSubSystem()
     if (NarratorRandomLoadedLoaded.Succeeded())
         NarratorRampageSC = NarratorRandomLoadedLoaded.Object;
     
-    static ConstructorHelpers::FObjectFinder<USoundCue>NarratorUpgradeOpenLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorUpgradeOpen.SC_NarratorUpgradeOpen'"));
+    static ConstructorHelpers::FObjectFinder<USoundCue>NarratorUpgradeOpenLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_UpgradeMenuOpen.SC_UpgradeMenuOpen'"));
     if (NarratorUpgradeOpenLoaded.Succeeded())
         NarratorUpgradeOpenSC = NarratorUpgradeOpenLoaded.Object;
     
@@ -114,7 +114,12 @@ USoundManagerSubSystem::USoundManagerSubSystem()
     static ConstructorHelpers::FObjectFinder<USoundCue>NarratorWaveStartLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorWaveStart.SC_NarratorWaveStart'"));
     if (NarratorWaveStartLoaded.Succeeded())
         NarratorWaveStartSC = NarratorWaveStartLoaded.Object;
-    
+
+    static ConstructorHelpers::FObjectFinder<USoundCue>NarratorBarrelLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Narrator/SC_NarratorBarrel.SC_NarratorBarrel'"));
+    if (NarratorWaveStartLoaded.Succeeded())
+        NarratorBarrelSC = NarratorBarrelLoaded.Object;
+
+
     
 #pragma endregion
 #pragma region Ranger Voice Lines
@@ -460,17 +465,14 @@ void USoundManagerSubSystem::PlayNarratorSoundEvent(UAudioComponent* OwnerAC, in
                 }
                 break;
             case 5 :
-                NarratorSoundEventToken += 40;
                 if(NarratorRampageSC)
                 {
-                    if(NarratorSoundEventToken >= 70)
-                    {
                         if(!OwnerAC->IsPlaying())
                         {
                             OwnerAC->SetSound(NarratorRampageSC);
                             OwnerAC->Play();
                         }
-                    }
+                    NarratorSoundEventToken -= 20;
                 }
                 break;
             case 6 :
@@ -515,6 +517,20 @@ void USoundManagerSubSystem::PlayNarratorSoundEvent(UAudioComponent* OwnerAC, in
                         OwnerAC->Play();
                     }
                 break;
+        case 10 :
+            NarratorSoundEventToken += 50;
+            if(NarratorBarrelSC)
+            {
+                if(NarratorSoundEventToken >= 85)
+                {
+                    if(!OwnerAC->IsPlaying())
+                    {
+                        OwnerAC->SetSound(NarratorBarrelSC);
+                        OwnerAC->Play();
+                        NarratorSoundEventToken -= 90;
+                    }
+                }
+            }
             default :
                 NarratorSoundEventToken++;
                 break;

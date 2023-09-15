@@ -42,4 +42,7 @@ protected:
 	UHealthComponent *HealthComp;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float Damage;
+
+	UPROPERTY()
+	USoundManagerSubSystem* SoundManagerSubSystem;
 };

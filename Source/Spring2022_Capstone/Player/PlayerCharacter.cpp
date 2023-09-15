@@ -677,7 +677,7 @@ void APlayerCharacter::CheckGround()
 
 	FVector StartTrace = this->GetActorLocation();
 	FVector DownVector = FVector(0, 0, 1);
-	FVector EndTrace = ((DownVector * 120.f * -1) + StartTrace);
+	FVector EndTrace = ((DownVector * 145.f * -1) + StartTrace);
 	FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
 	TraceParams->bReturnPhysicalMaterial = true;
 	TraceParams->AddIgnoredComponent(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetMesh());
