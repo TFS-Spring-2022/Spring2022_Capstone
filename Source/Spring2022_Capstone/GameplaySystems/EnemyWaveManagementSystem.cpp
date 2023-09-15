@@ -29,8 +29,10 @@ void UEnemyWaveManagementSystem::BeginPlay()
 		WaveAnnouncerWidgetInstance = Cast<UWaveAnnouncerWidget>(CreateWidget(GetWorld(), WaveAnnouncerWidgetBP));
 		WaveAnnouncerWidgetInstance->AddToViewport(1);
 	}
-}
 
+	bEliteEnemySpawnedThisWave = false;
+	EnemiesKilledThisWave = 0;
+}
 
 void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 {
@@ -41,6 +43,8 @@ void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 
 void UEnemyWaveManagementSystem::SpawnWave()
 {
+	// Reset wave stats.
+	EnemiesKilledThisWave = 0;
 
 	// Announce wave to player.
 	if(WaveAnnouncerWidgetInstance)
@@ -63,8 +67,6 @@ void UEnemyWaveManagementSystem::SpawnWave()
 	// Assigning here due to execution order.
 	if(!ScoreSystemTimerSubSystem)
 		ScoreSystemTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
-
-	
 	
 	// Check for Pirate Blitz Accolade
 	if(ScoreSystemTimerSubSystem)
@@ -75,48 +77,24 @@ void UEnemyWaveManagementSystem::SpawnWave()
 		if(ScoreSystemTimerSubSystem->IsAccoladeTimerRunning(EAccolades::PirateBlitz) == false)
 			ScoreSystemTimerSubSystem->StartAccoladeTimer(EAccolades::PirateBlitz);
 	}
-	
-	bool bEliteEnemySpawned = false;
-	
+
+	// If we have passed all the waves.
 	if(CurrentWave > Waves.Num() - 1)
 	{
 		Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->EndRun(); 
 		return;
 	}
+
+	float TimeBetweenSpawns = MINIMUM_TIME_BETWEEN_SPAWNS;
 	
 	for (TSubclassOf<ABaseEnemy> EnemyToSpawn : Waves[CurrentWave].EnemiesToSpawn)
 	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		
-		int RandomSpawnSelection = FMath::RandRange(0, EnemySpawnLocations.Num()-1);
-
-		// ToDo: Temporary before spawning finalization.
-		// Don't spawn at same point twice to avoid enemy overlap.
-		do
-		{
-			RandomSpawnSelection = FMath::RandRange(0, EnemySpawnLocations.Num()-1);
-		}
-		while (RandomSpawnSelection == LastSpawnLocationElement);
-
-		LastSpawnLocationElement = RandomSpawnSelection;
-		
-		FVector Location = EnemySpawnLocations[RandomSpawnSelection]->GetActorLocation();
-		FRotator Rotation = EnemySpawnLocations[RandomSpawnSelection]->GetActorRotation();
-		
-		AActor* SpawnedEnemy = GetWorld()->SpawnActor(EnemyToSpawn, &Location, &Rotation, SpawnParams);
-		ActiveEnemies.Add(SpawnedEnemy);
-		EnemiesToDestroy.Add(SpawnedEnemy);
-
-		// Elite spawning
-		if(CurrentWave > 0 && !bEliteEnemySpawned)
-		{
-			if(ABaseEnemy* EnemyToPromote = Cast<ABaseEnemy>(SpawnedEnemy))
-			{
-				EnemyToPromote->PromoteToElite();
-				bEliteEnemySpawned = true;
-			}
-		}
+		// Spawn Enemies on a delay.
+		FTimerHandle SpawnCallTimerHandle;
+		FTimerDelegate SpawnEnemyDelegate = FTimerDelegate::CreateUObject(this, &UEnemyWaveManagementSystem::SpawnEnemy, EnemyToSpawn);
+		const float DelayTime = TimeBetweenSpawns + FMath::RandRange(SPAWN_DELAY_MINIMUM_BUFFER, SPAWN_DELAY_MAXIMUM_BUFFER);
+		GetWorld()->GetTimerManager().SetTimer(SpawnCallTimerHandle, SpawnEnemyDelegate, DelayTime, false);
+		TimeBetweenSpawns += MINIMUM_TIME_BETWEEN_SPAWNS;
 	}
 
 	// Enable all snipers
@@ -125,23 +103,62 @@ void UEnemyWaveManagementSystem::SpawnWave()
 		Cast<ASniperEnemy>(Sniper)->EnableSniperEnemy();
 	}
 	
-	CurrentWave++;
-	// Update enemies remaining text.
-	PlayerCharacter->GetPlayerHUD()->SetEnemiesRemainingText(ActiveEnemies.Num());
+	// Set remaining enemies text to the amount in the current wave.
+	PlayerCharacter->GetPlayerHUD()->SetEnemiesRemainingText(Waves[CurrentWave].EnemiesToSpawn.Num());
+
+	//CurrentWave++;
+}
+
+void UEnemyWaveManagementSystem::SpawnEnemy(TSubclassOf<ABaseEnemy> SpawningEnemy)
+{
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		
+	int RandomSpawnSelection = FMath::RandRange(0, EnemySpawnLocations.Num()-1);
+
+	// Don't spawn at same point twice to avoid enemy overlap.
+	do
+	{
+		RandomSpawnSelection = FMath::RandRange(0, EnemySpawnLocations.Num()-1);
+	}
+	while (RandomSpawnSelection == LastSpawnLocationElement);
+
+	LastSpawnLocationElement = RandomSpawnSelection;
+		
+	FVector Location = EnemySpawnLocations[RandomSpawnSelection]->GetActorLocation();
+	FRotator Rotation = EnemySpawnLocations[RandomSpawnSelection]->GetActorRotation();
+		
+	AActor* SpawnedEnemy = GetWorld()->SpawnActor(SpawningEnemy, &Location, &Rotation, SpawnParams);
+	ActiveEnemies.Add(SpawnedEnemy);
+	EnemiesToDestroy.Add(SpawnedEnemy);
+
+	// Elite spawning
+	if(CurrentWave > 0 && !bEliteEnemySpawnedThisWave)
+	{
+		if(ABaseEnemy* EnemyToPromote = Cast<ABaseEnemy>(SpawnedEnemy))
+		{
+			EnemyToPromote->PromoteToElite();
+			bEliteEnemySpawnedThisWave = true;
+		}
+	}
 }
 
 void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 {
 	if(ActiveEnemies.Contains(EnemyToRemove))
 	{
+		EnemiesKilledThisWave++;
+		
 		ActiveEnemies.Remove(EnemyToRemove);
 		// Update enemies remaining text.
-		PlayerCharacter->GetPlayerHUD()->SetEnemiesRemainingText(ActiveEnemies.Num());
+		PlayerCharacter->GetPlayerHUD()->SetEnemiesRemainingText(Waves[CurrentWave].EnemiesToSpawn.Num() - EnemiesKilledThisWave);
 		
 		// Note - This is inside the if-contains to prevent placed enemies out of ActiveEnemies[]
 		// from spawning an unwanted wave.
-		if(ActiveEnemies.IsEmpty())
+		if(EnemiesKilledThisWave >= Waves[CurrentWave].EnemiesToSpawn.Num())
 		{
+			CurrentWave++;
+			
 			// Begin play is not called on this component so PlayerCharacter must be set here.
 			if(!PlayerCharacter)
 				PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
@@ -170,7 +187,6 @@ void UEnemyWaveManagementSystem::ConvertWaveTime(float DTime)
 	}
 	
 	PlayerCharacter->GetPlayerHUD()->SetWaveTimerText(WaveTimerMinutes, WaveTimerSeconds);
-	
 }
 
 void UEnemyWaveManagementSystem::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -193,7 +209,6 @@ void UEnemyWaveManagementSystem::OpenUpgradeMenu() const
 
 void UEnemyWaveManagementSystem::ClearDeadEnemies()
 {
-
 	for (AActor* DeadEnemy : EnemiesToDestroy)
 	{
 		DeadEnemy->Destroy();
@@ -215,18 +230,18 @@ void UEnemyWaveManagementSystem::StartNextRound()
 	// Check for wave end accolades
 	if(ScoreSystemManagerSubSystem)
 		ScoreSystemManagerSubSystem->CheckWaveEndAccolades();
-	
+
+	bEliteEnemySpawnedThisWave = false; // Reset EliteEnemySpawning bool.
 	GetWorld()->GetTimerManager().SetTimer(TimeBeforeUpgradeMenuTimerHandle, this, &UEnemyWaveManagementSystem::SpawnWave, TimeBeforeNextRoundStart, false);
 }
 
 void UEnemyWaveManagementSystem::PlayWaveStartVoiceLine() const
 {
-	if(FMath::RandRange(1,2) == 1)
+	if(SoundManagerSubSystem)
 	{
-		SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 9);
-	}
-	else
-	{
-		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 7);
+		if(FMath::RandRange(1,2) == 1)
+			SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 9);
+		else
+			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 7);
 	}
 }
