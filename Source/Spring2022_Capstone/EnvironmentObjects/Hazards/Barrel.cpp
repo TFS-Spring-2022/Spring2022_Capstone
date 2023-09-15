@@ -3,6 +3,7 @@
 #include "Barrel.h"
 #include "DamageArea.h"
 #include "Components/SphereComponent.h"
+#include "NiagaraComponent.h"
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Spring2022_Capstone/Enemies/Sniper/SniperEnemy.h"
 
@@ -15,6 +16,11 @@ ABarrel::ABarrel()
 
 	SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	SphereCollider->SetupAttachment(RootComponent);
+
+	ExplosionNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ExplosionEffectSystem"));
+    ExplosionNiagaraComponent->SetupAttachment(RootComponent);
+	ExplosionNiagaraComponent->SetActive(false);
+	ExplosionNiagaraComponent->SetAutoActivate(false);
 
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
@@ -54,7 +60,9 @@ void ABarrel::Explode()
 		}
 	}
 	SpawnDamageArea();
-	Destroy();
+	if(ExplosionNiagaraComponent)
+		ExplosionNiagaraComponent->SetActive(true);
+	BarrelMesh->SetHiddenInGame(true);
 }
 
 void ABarrel::SpawnDamageArea()
