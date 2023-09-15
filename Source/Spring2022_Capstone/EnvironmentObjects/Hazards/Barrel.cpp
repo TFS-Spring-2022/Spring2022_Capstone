@@ -56,6 +56,9 @@ void ABarrel::Explode()
 			Cast<IDamageableActor>(OverlappingActor)->DamageActor(this, Damage);
 		}
 	}
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(),ExplosionSound,this->GetActorLocation(),this->GetActorRotation());
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(),AfterBurnSound,this->GetActorLocation(),this->GetActorRotation());
 	
 	SpawnDamageArea();
 	if(ExplosionNiagaraComponent)

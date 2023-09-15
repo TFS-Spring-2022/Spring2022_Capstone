@@ -7,6 +7,7 @@
 #include "DamageArea.generated.h"
 
 class USphereComponent;
+class UNiagaraComponent;
 
 UCLASS()
 class SPRING2022_CAPSTONE_API ADamageArea : public AActor
@@ -24,7 +25,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Components", meta = (AllowPrivateAccess = true))
 	USphereComponent *SphereCollider;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float Damage;
@@ -32,4 +33,5 @@ protected:
 	float DamageInterval;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float Duration;
+	
 };

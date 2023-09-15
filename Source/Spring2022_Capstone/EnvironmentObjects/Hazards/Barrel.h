@@ -43,6 +43,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float Damage;
 
-	UPROPERTY()
-	USoundManagerSubSystem* SoundManagerSubSystem;
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundCue* AfterBurnSound;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundCue* ExplosionSound;
 };
