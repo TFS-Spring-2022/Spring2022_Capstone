@@ -8,6 +8,7 @@
 #include "Crystal.generated.h"
 
 class USphereComponent;
+class UNiagaraComponent;
 
 UCLASS()
 class SPRING2022_CAPSTONE_API ACrystal : public AActor, public IDamageableActor
@@ -18,12 +19,12 @@ public:
 	ACrystal();
 
 protected:
-	virtual void BeginPlay() override;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent *CrystalMesh;
 	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	USphereComponent *SphereCollider;
+	UPROPERTY(EditDefaultsOnly, Category = "Effect", meta = (AllowPrivateAccess = true))
+    UNiagaraComponent*  ExplosionEffect;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
     bool bIsPulsing = false;
@@ -35,8 +36,6 @@ protected:
     float TotalPulses;
 
 public:	
-	virtual void Tick(float DeltaTime) override;
-
 	UFUNCTION(BlueprintCallable)
 	virtual bool DamageActor(AActor* DamagingActor, const float DamageAmount, FName HitBoneName = "NONE") override;
 	UFUNCTION(BlueprintCallable)

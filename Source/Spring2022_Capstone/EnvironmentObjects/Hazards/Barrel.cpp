@@ -3,6 +3,7 @@
 #include "Barrel.h"
 #include "DamageArea.h"
 #include "Components/SphereComponent.h"
+#include "NiagaraComponent.h"
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Spring2022_Capstone/Enemies/Sniper/SniperEnemy.h"
 
