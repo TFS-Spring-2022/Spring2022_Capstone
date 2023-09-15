@@ -17,8 +17,10 @@ ABarrel::ABarrel()
 	SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	SphereCollider->SetupAttachment(RootComponent);
 
-	ExplosionEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ExplosionEffect"));
-    ExplosionEffect->SetupAttachment(RootComponent);
+	ExplosionNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ExplosionEffectSystem"));
+    ExplosionNiagaraComponent->SetupAttachment(RootComponent);
+	ExplosionNiagaraComponent->SetActive(false);
+	ExplosionNiagaraComponent->SetAutoActivate(false);
 
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
@@ -58,7 +60,8 @@ void ABarrel::Explode()
 		}
 	}
 	SpawnDamageArea();
-	ExplosionEffect->SetActive(true);
+	if(ExplosionNiagaraComponent)
+		ExplosionNiagaraComponent->SetActive(true);
 	BarrelMesh->SetHiddenInGame(true);
 }
 

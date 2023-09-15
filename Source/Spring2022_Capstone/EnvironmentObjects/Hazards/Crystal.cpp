@@ -16,6 +16,8 @@ ACrystal::ACrystal()
 
 	ExplosionEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ExplosionEffect"));
     ExplosionEffect->SetupAttachment(RootComponent);
+	ExplosionEffect->SetActive(false);
+	ExplosionEffect->SetAutoActivate(false);
 }
 
 bool ACrystal::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
@@ -24,7 +26,8 @@ bool ACrystal::DamageActor(AActor *DamagingActor, const float DamageAmount, FNam
 	{
 		return false;
 	}
-	ExplosionEffect->SetActive(true);
+	if(ExplosionEffect)
+		ExplosionEffect->SetActive(true);
 	Pulse();
 	return true;
 }
@@ -42,7 +45,8 @@ void ACrystal::Pulse()
 	{
 		bIsPulsing = false;
 		PulseCounter = 0;
-		ExplosionEffect->SetActive(false);
+		if(ExplosionEffect)
+			ExplosionEffect->SetActive(false);
 	}
 }
 

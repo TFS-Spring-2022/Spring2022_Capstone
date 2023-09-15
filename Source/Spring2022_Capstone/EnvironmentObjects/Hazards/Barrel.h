@@ -36,7 +36,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile", meta = (AllowPrivateAccess = true))
     TSubclassOf<ADamageArea> DamageArea;
 	UPROPERTY(EditDefaultsOnly, Category = "Effect", meta = (AllowPrivateAccess = true))
-    UNiagaraComponent*  ExplosionEffect;
+    UNiagaraComponent*  ExplosionNiagaraComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	UHealthComponent *HealthComp;
