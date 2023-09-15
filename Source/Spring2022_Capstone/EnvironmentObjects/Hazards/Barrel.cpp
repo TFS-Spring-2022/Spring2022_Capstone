@@ -1,6 +1,7 @@
 // Created by Spring2022_Capstone team
 
 #include "Barrel.h"
+#include "DamageArea.h"
 #include "Components/SphereComponent.h"
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Spring2022_Capstone/Enemies/Sniper/SniperEnemy.h"
@@ -52,6 +53,7 @@ void ABarrel::Explode()
 			DamageableActor->DamageActor(this, Damage);
 		}
 	}
+	SpawnDamageArea();
 	Destroy();
 }
 
@@ -60,5 +62,5 @@ void ABarrel::SpawnDamageArea()
 	if (!DamageArea)
 		return;
 
-	GetWorld()->SpawnActor<ABaseEnemyProjectile>(DamageArea, GetActorLocation(), GetActorRotation());
+	GetWorld()->SpawnActor<ADamageArea>(DamageArea, GetActorLocation(), GetActorRotation());
 }
