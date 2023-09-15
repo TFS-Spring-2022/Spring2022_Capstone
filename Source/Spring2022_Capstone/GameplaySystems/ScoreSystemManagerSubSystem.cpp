@@ -69,7 +69,8 @@ void UScoreSystemManagerSubSystem::ResetScoreSystem()
 void UScoreSystemManagerSubSystem::IncrementAccoladeCount(const EAccolades Accolade)
 {
 	if(!SoundManagerSubSystem)
-		SoundManagerSubSystem = Cast<USoundManagerSubSystem>(GetGameInstance());
+		SoundManagerSubSystem = GetGameInstance()->GetSubsystem<USoundManagerSubSystem>();
+
 	switch (Accolade)
 	{
 	case SkullNCrosshair:
@@ -78,7 +79,8 @@ void UScoreSystemManagerSubSystem::IncrementAccoladeCount(const EAccolades Accol
 		break;
 	case CaptainOfWar:
 		Accolade_CaptainOfWarCount++;
-		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 13);
+		if(SoundManagerSubSystem)
+			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 13);
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "CAPTAIN OF WAR!");
 		break;
 	case SkyPirate:
