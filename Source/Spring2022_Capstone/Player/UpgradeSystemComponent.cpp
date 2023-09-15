@@ -143,9 +143,10 @@ void UUpgradeSystemComponent::OpenUpgradeMenu()
 		UpgradeMenuWidgetInstance->AddToViewport(0);
 		bIsMenuOpen = true;
 		PlayerToUpgrade->GetPlayerHUD()->SetVisibility(ESlateVisibility::Hidden);
-		//Menu AfkSounds
+		//Menu VoiceLines
 		bUpgradeTimerAFKStarted = true;
-		SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerToUpgrade->PlayerVoiceAudioComp, 6);
+		if(FMath::RandRange(1,5) == 1)
+			SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerToUpgrade->PlayerVoiceAudioComp, 6);
 		
 	}
 }

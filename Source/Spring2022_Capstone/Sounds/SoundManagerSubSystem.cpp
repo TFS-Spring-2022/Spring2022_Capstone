@@ -21,6 +21,10 @@ USoundManagerSubSystem::USoundManagerSubSystem()
     static ConstructorHelpers::FObjectFinder<USoundCue>PlayerDeathSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerDeath.SC_PlayerDeath'"));
     if (PlayerDeathSCLoaded.Succeeded())
         PlayerVoiceLines.Emplace(PlayerDeathSC = PlayerDeathSCLoaded.Object);
+
+    static ConstructorHelpers::FObjectFinder<USoundCue>PlayerDoubleJumpLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_DoubleJump.SC_DoubleJump'"));
+    if (PlayerDeathSCLoaded.Succeeded())
+        PlayerVoiceLines.Emplace(PlayerDoubleJumpSC = PlayerDoubleJumpLoaded.Object);
     
     
     static ConstructorHelpers::FObjectFinder<USoundCue>PlayerGrapplingSCLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Player/SC_PlayerGrappling.SC_PlayerGrappling'"));
@@ -714,6 +718,17 @@ void USoundManagerSubSystem::PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int 
                     }
                 }
                 break;
+        case 14 :
+            PlayerSoundEventToken += 10;
+            if(PlayerSoundEventToken >= 90)
+                if(PlayerHurtSC)
+                    if(!OwnerAC->IsPlaying())
+                    {
+                        OwnerAC->SetSound(PlayerHurtSC);
+                        OwnerAC->Play();
+                        PlayerSoundEventToken -= 100;
+                    }
+            break;
             default :
                 PlayerSoundEventToken ++;
                 break;

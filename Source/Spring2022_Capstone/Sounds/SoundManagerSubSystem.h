@@ -81,6 +81,9 @@ private:
 	USoundCue* PlayerDeathSC;
 
 	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerDoubleJumpSC;
+
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
 	USoundCue* PlayerHurtSC;
 	
 	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")

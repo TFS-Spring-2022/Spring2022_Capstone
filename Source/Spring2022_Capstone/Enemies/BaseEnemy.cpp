@@ -107,6 +107,12 @@ void ABaseEnemy::AttackHit()
 			SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,3);
 		else
 			SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,0);
+
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,14);
+	}
+	else
+	{
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,14);
 	}
 	
 	if(GunShotComp)
