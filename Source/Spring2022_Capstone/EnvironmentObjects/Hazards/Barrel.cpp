@@ -52,6 +52,8 @@ bool ABarrel::DamageActor(AActor *DamagingActor, const float DamageAmount, FName
 
 void ABarrel::Explode()
 {
+	//Todo Explosion sound
+	
 	TArray<AActor *> OverlappingActors;
     SphereCollider->GetOverlappingActors(OverlappingActors);
 

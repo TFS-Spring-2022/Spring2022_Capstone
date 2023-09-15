@@ -143,22 +143,6 @@ void UScoreSystemTimerSubSystem::Tick(float DeltaTime)
 		if(CaptainOfWarTimer >= CAPTAIN_OF_WAR_TIME_REQUIREMENT)
 			StopAccoladeTimer(EAccolades::CaptainOfWar);
 	}
-
-
-	//Checks to trigger Afk dialogue
-	if(bUpgradeTimerAFKStarted)
-	{
-		UpgradeTimerAFK += DeltaTime;
-		if(UpgradeTimerAFK >= 30.f)
-		{
-			if(FMath::FRandRange(1,2) == 1)
-				SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,5);
-			else
-				SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,1);
-
-			ResetUpgradeTimerAfk();
-		}
-	}
 }
 
 void UScoreSystemTimerSubSystem::StartAccoladeTimer(EAccolades Accolade)
@@ -255,10 +239,6 @@ bool UScoreSystemTimerSubSystem::IsAccoladeTimerRunning(EAccolades Accolade)
 	return false;
 }
 
-void UScoreSystemTimerSubSystem::ResetUpgradeTimerAfk()
-{
-	UpgradeTimerAFK = 0.0f;
-}
 
 void UScoreSystemTimerSubSystem::FinishWave()
 {

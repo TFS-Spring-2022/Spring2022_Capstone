@@ -88,6 +88,8 @@ void APlayerCharacter::BeginPlay()
 	LandingAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	PlayerVoiceAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	MusicAudioComp->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
+
+	UpgradeSystemComponent->RegisterComponent();
 	
 	CheckGround();
 	
@@ -296,7 +298,6 @@ void APlayerCharacter::Jump()
 void APlayerCharacter::Landed(const FHitResult &Hit)
 {
 	Super::Landed(Hit);
-	LandingAudioComp->Play();
 	if (ScoreManagerTimerSubSystem)
 		ScoreManagerTimerSubSystem->StopAccoladeTimer(EAccolades::SkyPirate);
 }
@@ -716,6 +717,12 @@ void APlayerCharacter::CheckGround()
 					FootStepAudioComp->SetSound(WaterStepSound);
 				if (WaterLandSound)
 					LandingAudioComp->SetSound(WaterLandSound);
+				break;
+			case SURFACE_Sand:
+				if (SandStepSound)
+					FootStepAudioComp->SetSound(SandStepSound);
+				if (SandLandSound)
+					LandingAudioComp->SetSound(SandLandSound);
 				break;
 			default:
 				if (RockStepSound)
