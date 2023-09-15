@@ -96,39 +96,22 @@ bool AShotgunWeapon::Shoot()
 								switch (HitSurfaceType)
 								{
 								case SURFACE_FleshDefault:
+										
 									if (DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName))
 									{
-										// Enemy has died
+										//Enemy has died
 										EnemiesKilledFromAttack++;
-										if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
-										{
-											if (!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-												ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-										}
-										else
-										{
-											if (!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-												ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-										}
+										CheckIfAirborn(ActorsKilledWhilePlayerGroundedIDs,ActorsKilledWhilePlayerAirborneIDs,HitResult);
 									}
 									if (FloatingDamageNumberParticleSystem)
 										DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
 									break;
 								case SURFACE_FleshVulnerable:
-									if (DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier, HitResult.BoneName))
+									if (DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier,HitResult.BoneName))
 									{
-										// Enemy has died
+										//Enemy has died
 										EnemiesKilledFromAttack++;
-										if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
-										{
-											if (!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-												ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-										}
-										else
-										{
-											if (!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-												ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-										}
+										CheckIfAirborn(ActorsKilledWhilePlayerGroundedIDs,ActorsKilledWhilePlayerAirborneIDs,HitResult);
 									}
 									if (FloatingDamageNumberParticleSystem)
 										DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier,
@@ -140,88 +123,9 @@ bool AShotgunWeapon::Shoot()
 								default:
 									if (DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName))
 									{
-										// Increment hit counter
-										ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::Hits);
-									
-										// If player is in the air, increment counter
-										if (!PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
-											ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HitsWhileAirborne);
-									}
-									
-									switch (HitSurfaceType)
-									{
-									case SURFACE_FleshDefault:
-										if (DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName))
-										{
-											//Enemy has died
-											EnemiesKilledFromAttack++;
-											if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
-											{
-												if (!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-													ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-											}
-											else
-											{
-												if (!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-												{
-													ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-													SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 9);
-												}
-											}
-										}
-										if (FloatingDamageNumberParticleSystem)
-											DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage, false);
-										break;
-									case SURFACE_FleshVulnerable:
-										if (DamageableActor->DamageActor(this, ShotDamage * CriticalHitMultiplier,HitResult.BoneName))
-										{
-											//Enemy has died
-											EnemiesKilledFromAttack++;
-											//Coin flip for voiceline
-											if(FMath::RandRange(1,2) == 1)
-											{
-												SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,6);
-											}
-											else
-											{
-												SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,2);
-											}
-											
-											if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
-											{
-												if (!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-													ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-											}
-											else
-											{
-												if (!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-													ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-											}
-										}
-										if (FloatingDamageNumberParticleSystem)
-											DisplayFloatingDamageNumbers(HitResult.Location, ShotDamage * CriticalHitMultiplier,
-											                             true);
-										if (ScoreManagerSubSystem)
-											ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::HeadshotHits);
-										bHeadshotHit = true;
-										break;
-									default:
-										if (DamageableActor->DamageActor(this, ShotDamage, HitResult.BoneName))
-										{
-											//Enemy has died
-											EnemiesKilledFromAttack++;
-											if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
-											{
-												if (!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-													ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-											}
-											else
-											{
-												if (!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
-													ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
-											}
-										}
-										break;
+										//Enemy has died
+										EnemiesKilledFromAttack++;
+										CheckIfAirborn(ActorsKilledWhilePlayerGroundedIDs,ActorsKilledWhilePlayerAirborneIDs,HitResult);
 									}
 									break;
 								}
@@ -245,8 +149,7 @@ bool AShotgunWeapon::Shoot()
 					}
 					if (ImpactEffectToPlay)
 						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffectToPlay, HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation());
-
-				} // end the shooting thing
+				} 
 			}
 			if (bHeadshotHit)
 			{
@@ -294,4 +197,28 @@ bool AShotgunWeapon::Shoot()
 		}
 	}
 	return false;
+}
+
+void AShotgunWeapon::CheckIfAirborn(TArray<uint32> ActorsKilledWhilePlayerGroundedIDs,TArray<uint32> ActorsKilledWhilePlayerAirborneIDs, FHitResult HitResult)
+{
+	if (PlayerCharacter->GetMovementComponent()->IsMovingOnGround())
+	{
+		if (!ActorsKilledWhilePlayerGroundedIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+			ActorsKilledWhilePlayerGroundedIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+	}
+	else
+	{
+		if (!ActorsKilledWhilePlayerAirborneIDs.Contains(HitResult.GetActor()->GetUniqueID()))
+		{
+			ActorsKilledWhilePlayerAirborneIDs.AddUnique(HitResult.GetActor()->GetUniqueID());
+			
+			//Coin flip for voiceline
+			if(FMath::RandRange(1,2) == 1)
+				SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,6);
+			else
+				SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,2);
+			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,9);
+		}
+		
+	}
 }

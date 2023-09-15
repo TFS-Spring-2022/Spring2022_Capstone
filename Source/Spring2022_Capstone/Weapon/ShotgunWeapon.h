@@ -34,5 +34,7 @@ class SPRING2022_CAPSTONE_API AShotgunWeapon : public AWeaponBase
 
 	// Used to prevent multiple calls to ShowHitMarker() when multiple pellets hit.
 	bool bPelletConnected = false;
-	
+
+	UFUNCTION()
+	void CheckIfAirborn(TArray<uint32> ActorsKilledWhilePlayerGroundedIDs,TArray<uint32> ActorsKilledWhilePlayerAirborneIDs, FHitResult HitResult);
 };

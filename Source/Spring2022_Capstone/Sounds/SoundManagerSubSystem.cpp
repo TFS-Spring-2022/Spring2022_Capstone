@@ -608,6 +608,7 @@ void USoundManagerSubSystem::PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int 
 			break;
 		case 9 :
 			PlayerSoundEventToken += 70;
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Cyan, "Arial kill");
 			if(PlayerSoundEventToken >= 80)
 				if(PlayerArialSC)
 					if(!OwnerAC->IsPlaying())
@@ -629,14 +630,12 @@ void USoundManagerSubSystem::PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int 
 					}
 			break;
 		case 11 :
-			PlayerSoundEventToken += 5;
-			if(PlayerSoundEventToken >= 350)
+			if(FMath::RandRange(1,50) == 1)
 				if(PlayerMissSC)
 					if(!OwnerAC->IsPlaying())
 					{
 						OwnerAC->SetSound(PlayerMissSC);
 						OwnerAC->Play();
-						PlayerSoundEventToken -= 350;
 					}
 			break;
 
@@ -649,6 +648,20 @@ void USoundManagerSubSystem::PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int 
 						OwnerAC->SetSound(PlayerHurtSC);
 						OwnerAC->Play();
 						PlayerSoundEventToken -= 100;
+					}
+			break;
+		case 13 :
+				if(PlayerRampageSC)
+					if(OwnerAC->IsPlaying())
+					{
+						OwnerAC->Stop();
+						OwnerAC->SetSound(PlayerRampageSC);
+						OwnerAC->Play();
+					}
+					else
+					{
+						OwnerAC->SetSound(PlayerRampageSC);
+						OwnerAC->Play();
 					}
 			break;
 		default :

@@ -91,6 +91,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "UI")
 	float PausedTimeDilation = 0.05;
 
+
+	//Sounds
+	bool bUpgradeTimerAFKStarted = false;
+	float UpgradeTimerAFK = 0.0f;
+
+	const float AFK_TIME_TRIGGER = 10.f;
+
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

@@ -51,12 +51,20 @@ void UEnemyWaveManagementSystem::SpawnWave()
 	WaveTimerMinutes = 0;
 	WaveTimerSeconds = 0.0f;
 
-	//Sound token reset
+	//Sounds
 	SoundManagerSubSystem->ResetEventTokens();
+	if(SoundManagerSubSystem)
+	{
+		SoundManagerSubSystem->WaveStart(PlayerCharacter);
+		SoundManagerSubSystem->ToggleMusicOn(PlayerCharacter->MusicAudioComp);
+		GetWorld()->GetTimerManager().SetTimer(TimeBeforeWaveStartVoiceLine,this,&UEnemyWaveManagementSystem::PlayWaveStartVoiceLine, 2.f,false);
+	}
 	
 	// Assigning here due to execution order.
 	if(!ScoreSystemTimerSubSystem)
 		ScoreSystemTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
+
+	
 	
 	// Check for Pirate Blitz Accolade
 	if(ScoreSystemTimerSubSystem)
@@ -207,13 +215,6 @@ void UEnemyWaveManagementSystem::StartNextRound()
 	// Check for wave end accolades
 	if(ScoreSystemManagerSubSystem)
 		ScoreSystemManagerSubSystem->CheckWaveEndAccolades();
-
-	if(SoundManagerSubSystem)
-	{
-		SoundManagerSubSystem->WaveStart(PlayerCharacter);
-		SoundManagerSubSystem->ToggleMusicOn(PlayerCharacter->MusicAudioComp);
-		GetWorld()->GetTimerManager().SetTimer(TimeBeforeWaveStartVoiceLine,this,&UEnemyWaveManagementSystem::PlayWaveStartVoiceLine, 2.f,false);
-	}
 	
 	GetWorld()->GetTimerManager().SetTimer(TimeBeforeUpgradeMenuTimerHandle, this, &UEnemyWaveManagementSystem::SpawnWave, TimeBeforeNextRoundStart, false);
 }

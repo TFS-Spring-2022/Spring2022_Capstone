@@ -14,7 +14,7 @@ UUpgradeSystemComponent::UUpgradeSystemComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 	
 }
 
@@ -37,13 +37,28 @@ void UUpgradeSystemComponent::BeginPlay()
 	ScoreSystemTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
 }
 
-
 // Called every frame
 void UUpgradeSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 	
+	if(bUpgradeTimerAFKStarted)
+	{
+		UpgradeTimerAFK += (DeltaTime * 20);
+		GEngine->AddOnScreenDebugMessage(5,5.f,FColor::Red,FString::Printf(TEXT("%f"),UpgradeTimerAFK));
+	}
+
+	if(UpgradeTimerAFK >= AFK_TIME_TRIGGER)
+	{
+		if(FMath::RandRange(1,2) == 1)
+			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerToUpgrade->PlayerVoiceAudioComp,5);
+		else
+			SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerToUpgrade->PlayerVoiceAudioComp,1);
+
+		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Emerald,"AfkSoundCue");
+
+		UpgradeTimerAFK = 0;
+	}
 }
 
 void UUpgradeSystemComponent::IncreaseMaxChargeAmount(AWeaponBase* WeaponToUpgrade, float Amount)
@@ -127,8 +142,10 @@ void UUpgradeSystemComponent::OpenUpgradeMenu()
 		// Open Upgrade Menu.
 		UpgradeMenuWidgetInstance->AddToViewport(0);
 		bIsMenuOpen = true;
-		ScoreSystemTimerSubSystem->bUpgradeTimerAFKStarted = true;
 		PlayerToUpgrade->GetPlayerHUD()->SetVisibility(ESlateVisibility::Hidden);
+		//Menu AfkSounds
+		bUpgradeTimerAFKStarted = true;
+		
 	}
 }
 
@@ -148,7 +165,7 @@ void UUpgradeSystemComponent::CloseUpgradeMenu()
 		// Close Upgrade Menu.
 		UpgradeMenuWidgetInstance->RemoveFromParent();
 		bIsMenuOpen = false;
-		ScoreSystemTimerSubSystem->bUpgradeTimerAFKStarted = false;
+		bUpgradeTimerAFKStarted = false;
 		// Clear from delegate's invocation list.
 		UpgradeMenuWidgetInstance->GetUpgrade1Button()->OnClicked.Clear();
 		UpgradeMenuWidgetInstance->GetUpgrade2Button()->OnClicked.Clear();
