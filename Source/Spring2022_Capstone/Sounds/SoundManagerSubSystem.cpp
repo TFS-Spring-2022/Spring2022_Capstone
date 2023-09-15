@@ -674,7 +674,7 @@ void USoundManagerSubSystem::PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int 
                         }
                 break;
             case 11 :
-                if(FMath::RandRange(1,50) == 1)
+                if(FMath::RandRange(1,75) == 1)
                     if(PlayerMissSC)
                         if(!OwnerAC->IsPlaying())
                         {
