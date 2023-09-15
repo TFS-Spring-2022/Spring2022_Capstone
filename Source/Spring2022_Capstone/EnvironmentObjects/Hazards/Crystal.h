@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraSystem.h"
 #include "GameFramework/Actor.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
 #include "Crystal.generated.h"
@@ -24,8 +25,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	USphereComponent *SphereCollider;
 	UPROPERTY(EditDefaultsOnly, Category = "Effect", meta = (AllowPrivateAccess = true))
-    UNiagaraComponent*  ExplosionEffect;
-
+    UNiagaraSystem*  ExplosionEffectNiagaraSystem;
+	UPROPERTY(EditDefaultsOnly, Category = "Effect", meta = (AllowPrivateAccess = true))
+	UNiagaraSystem* PulseEffectNiagaraSystem;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
     bool bIsPulsing = false;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
@@ -51,5 +54,6 @@ private:
 	UFUNCTION()
 	void PlayDelayedExplosionEffect();
 	const float EXPLOSION_EFFECT_DELAY = 0.5f;	// Time(s) before the crystal explosion effect is started.
-	
+
+	bool bExplosionEffectPlayed = false;
 };
