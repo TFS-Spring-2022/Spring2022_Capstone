@@ -48,15 +48,11 @@ void ABarrel::Explode()
 	TArray<AActor *> OverlappingActors;
 	SphereCollider->GetOverlappingActors(OverlappingActors);
 
-	for (AActor *OverlappingActor : OverlappingActors)
+	for (AActor* OverlappingActor : OverlappingActors)
 	{
-		if (IDamageableActor *DamageableActor = Cast<IDamageableActor>(OverlappingActor))
+		if(OverlappingActor->Implements<UDamageableActor>() && OverlappingActor != this)
 		{
-			if (DamageableActor == this)
-			{
-				continue;
-			}
-			DamageableActor->DamageActor(this, Damage);
+			Cast<IDamageableActor>(OverlappingActor)->DamageActor(this, Damage);
 		}
 	}
 	SpawnDamageArea();

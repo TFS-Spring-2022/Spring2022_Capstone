@@ -2,7 +2,11 @@
 
 #include "Crystal.h"
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/SphereComponent.h"
+#include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 ACrystal::ACrystal()
 {
@@ -13,11 +17,6 @@ ACrystal::ACrystal()
 
 	SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	SphereCollider->SetupAttachment(RootComponent);
-
-	ExplosionEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ExplosionEffect"));
-    ExplosionEffect->SetupAttachment(RootComponent);
-	ExplosionEffect->SetActive(false);
-	ExplosionEffect->SetAutoActivate(false);
 }
 
 bool ACrystal::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
@@ -26,8 +25,7 @@ bool ACrystal::DamageActor(AActor *DamagingActor, const float DamageAmount, FNam
 	{
 		return false;
 	}
-	if(ExplosionEffect)
-		ExplosionEffect->SetActive(true);
+	GetWorld()->GetTimerManager().SetTimer(ExplosionEffectDelayTimerHandle, this, &ACrystal::PlayDelayedExplosionEffect, EXPLOSION_EFFECT_DELAY, false);
 	Pulse();
 	return true;
 }
@@ -45,25 +43,45 @@ void ACrystal::Pulse()
 	{
 		bIsPulsing = false;
 		PulseCounter = 0;
-		if(ExplosionEffect)
-			ExplosionEffect->SetActive(false);
 	}
 }
 
 void ACrystal::Explode()
 {
+	
+	if(bExplosionEffectPlayed)
+	{
+		if(PulseEffectNiagaraSystem)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), PulseEffectNiagaraSystem, GetActorLocation(), GetActorRotation(), GetActorScale());
+		}
+	}
+	
 	TArray<AActor *> OverlappingActors;
 	SphereCollider->GetOverlappingActors(OverlappingActors);
 
-	for (AActor *OverlappingActor : OverlappingActors)
+	for (AActor* OverlappingActor : OverlappingActors)
 	{
-		if (IDamageableActor *DamageableActor = Cast<IDamageableActor>(OverlappingActor))
+		if(OverlappingActor->Implements<UDamageableActor>() && !OverlappingActor->IsA(ACrystal::StaticClass()))
 		{
-			if (DamageableActor == this)
-			{
-				continue;
-			}
-			DamageableActor->DamageActor(this, Damage);
+			Cast<IDamageableActor>(OverlappingActor)->DamageActor(this, Damage);
 		}
 	}
+}
+
+void ACrystal::PlayDelayedExplosionEffect()
+{
+	if(ExplosionEffectNiagaraSystem)
+	{
+		// Rotate explosion effect towards player.
+		const FRotator PlayerLookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ExplosionEffectNiagaraSystem, GetActorLocation(), PlayerLookAtRotation, GetActorScale());
+	}
+		
+
+	// Spawn first pulse with initial explosion
+	if(PulseEffectNiagaraSystem)
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), PulseEffectNiagaraSystem, GetActorLocation(), GetActorRotation(), GetActorScale());
+
+	bExplosionEffectPlayed = true;
 }
