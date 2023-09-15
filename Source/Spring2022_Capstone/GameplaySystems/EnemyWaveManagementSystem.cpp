@@ -151,13 +151,11 @@ void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 		
 		ActiveEnemies.Remove(EnemyToRemove);
 		// Update enemies remaining text.
-		//PlayerCharacter->GetPlayerHUD()->SetEnemiesRemainingText(ActiveEnemies.Num());
 		PlayerCharacter->GetPlayerHUD()->SetEnemiesRemainingText(Waves[CurrentWave].EnemiesToSpawn.Num() - EnemiesKilledThisWave);
-
-		// ROUND IS DONE
+		
 		// Note - This is inside the if-contains to prevent placed enemies out of ActiveEnemies[]
 		// from spawning an unwanted wave.
-		if(ActiveEnemies.IsEmpty())
+		if(EnemiesKilledThisWave >= Waves[CurrentWave].EnemiesToSpawn.Num())
 		{
 			CurrentWave++;
 			
