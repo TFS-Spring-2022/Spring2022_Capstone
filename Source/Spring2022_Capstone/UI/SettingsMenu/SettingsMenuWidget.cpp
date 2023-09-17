@@ -29,6 +29,11 @@ void USettingsMenuWidget::NativeConstruct()
 	YSensitivitySlider->OnValueChanged.AddUniqueDynamic(this, &USettingsMenuWidget::OnYSensitivityValueChanged);
 	XSensitivitySlider->OnValueChanged.AddUniqueDynamic(this, &USettingsMenuWidget::OnXSensitivityValueChanged);
 
+	MasterVolumeSlider->OnValueChanged.AddUniqueDynamic(this, &USettingsMenuWidget::OnMasterVolumeValueChanged);
+	SFXSlider->OnValueChanged.AddUniqueDynamic(this, &USettingsMenuWidget::OnSFXValueChanged);
+	MusicSlider->OnValueChanged.AddUniqueDynamic(this, &USettingsMenuWidget::OnMusicValueChanged);
+	VoiceSlider->OnValueChanged.AddUniqueDynamic(this, &USettingsMenuWidget::OnVoiceValueChanged);
+
 	Settings = UCustomGameUserSettings::GetCustomGameUserSettings();
 	Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
@@ -36,6 +41,23 @@ void USettingsMenuWidget::NativeConstruct()
 	{
 		YSensitivitySlider->SetValue(Settings->YSensitivity);
 		XSensitivitySlider->SetValue(Settings->XSensitivity);
+
+		
+		MasterVolumeSlider->SetValue(Settings->MasterVolumeValue);
+		UGameplayStatics::SetSoundMixClassOverride(GetWorld(),SBP_MasterVolume,Master,Settings->MasterVolumeValue,1,0,true);
+		UGameplayStatics::PushSoundMixModifier(GetWorld(),SBP_MasterVolume);
+		
+		SFXSlider->SetValue(Settings->SFXVolumeValue);
+		UGameplayStatics::SetSoundMixClassOverride(GetWorld(),SBP_SFXVolume,SFX,Settings->SFXVolumeValue,1,0,true);
+		UGameplayStatics::PushSoundMixModifier(GetWorld(),SBP_SFXVolume);
+		
+		MusicSlider->SetValue(Settings->MusicVolumeValue);
+		UGameplayStatics::SetSoundMixClassOverride(GetWorld(),SBP_MusicVolume,Music,Settings->MusicVolumeValue,1,0,true);
+		UGameplayStatics::PushSoundMixModifier(GetWorld(),SBP_MusicVolume);
+		
+		VoiceSlider->SetValue(Settings->VoiceVolumeValue);
+		UGameplayStatics::SetSoundMixClassOverride(GetWorld(),SBP_VoiceVolume,Voice,Settings->VoiceVolumeValue,1,0,true);
+		UGameplayStatics::PushSoundMixModifier(GetWorld(),SBP_VoiceVolume);
 	}
 }
 
@@ -126,3 +148,33 @@ void USettingsMenuWidget::OnXSensitivityValueChanged(float Value)
 	if (Player)
 		Player->SetXSensitivity(Value);
 }
+
+void USettingsMenuWidget::OnMasterVolumeValueChanged(float Value)
+{
+	Settings->MasterVolumeValue = Value;
+	UGameplayStatics::SetSoundMixClassOverride(GetWorld(),SBP_MasterVolume,Master,Value,1,0,true);
+	UGameplayStatics::PushSoundMixModifier(GetWorld(),SBP_MasterVolume);
+}
+
+void USettingsMenuWidget::OnSFXValueChanged(float Value)
+{
+	Settings->SFXVolumeValue = Value;
+	UGameplayStatics::SetSoundMixClassOverride(GetWorld(),SBP_SFXVolume,SFX,Value,1,0,true);
+	UGameplayStatics::PushSoundMixModifier(GetWorld(),SBP_SFXVolume);
+}
+
+void USettingsMenuWidget::OnMusicValueChanged(float Value)
+{
+	Settings->MusicVolumeValue = Value;
+	UGameplayStatics::SetSoundMixClassOverride(GetWorld(),SBP_MusicVolume,Music,Value,1,0,true);
+	UGameplayStatics::PushSoundMixModifier(GetWorld(),SBP_MusicVolume);
+}
+
+void USettingsMenuWidget::OnVoiceValueChanged(float Value)
+{
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,"Voice volume set");
+	Settings->VoiceVolumeValue = Value;
+	UGameplayStatics::SetSoundMixClassOverride(GetWorld(),SBP_VoiceVolume,Voice,Value,1,0,true);
+	UGameplayStatics::PushSoundMixModifier(GetWorld(),SBP_VoiceVolume);
+}
+

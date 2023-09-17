@@ -63,6 +63,18 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
 	USoundCue* RangerKillsPlayerSC;
+
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
+	float MasterVolume = 1.f;
+
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
+	float MusicVolume = 1.f;
+
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
+	float SFXVolume = 1.f;
+
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
+	float VoiceVolume = 1.f;
 	
 private:
 	
@@ -210,8 +222,6 @@ private:
 	USoundCue* GruntArialHitSC;
 	
 #pragma endregion 
-
-#pragma 
 	
 	UPROPERTY(EditAnywhere, Category = "Wave Sound")
 	USoundCue* WaveStartSound;
@@ -227,4 +237,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Audio C")
 	UAudioComponent* SubSystemAudio;
+
+	
 };

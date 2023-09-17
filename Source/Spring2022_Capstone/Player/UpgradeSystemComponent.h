@@ -73,6 +73,9 @@ public:
 	UPROPERTY()
 	USoundManagerSubSystem* SoundManagerSubSystem;
 
+	UPROPERTY(EditAnywhere, Category = "Purchase Sound")
+	USoundCue* PurchaseSC;
+
 	UPROPERTY()
 	UScoreSystemTimerSubSystem* ScoreSystemTimerSubSystem;
 	

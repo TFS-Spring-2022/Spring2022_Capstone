@@ -108,8 +108,8 @@ protected:
 	/**
 	 * @brief Holds the Crouch Input Action
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction *CrouchAction;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	//UInputAction *CrouchAction;
 
 	////	CASTING AND ATTACK RELATED INPUT ACTIONS
 	/**

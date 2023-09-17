@@ -28,6 +28,7 @@ protected:
 public:
 
 	AMainMenuManager *Manager;
+	UPROPERTY(BlueprintReadWrite)
 	UCustomGameUserSettings *Settings;
 	APlayerCharacter *Player;
 
@@ -84,15 +85,32 @@ public:
 	UPanelWidget *AudioPanel;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	USlider *MaxVolumeSlider;
-
+	USlider *MasterVolumeSlider;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	USlider *MusicSlider;
-
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	USlider *SFXSlider;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	USlider *VoiceSlider;
 
+	UPROPERTY(EditAnywhere)
+	USoundClass* Master;
+	UPROPERTY(EditAnywhere)
+	USoundClass* SFX;
+	UPROPERTY(EditAnywhere)
+	USoundClass* Music;
+	UPROPERTY(EditAnywhere)
+	USoundClass* Voice;
 
+	UPROPERTY(EditAnywhere)
+	USoundMix* SBP_MasterVolume;
+	UPROPERTY(EditAnywhere)
+	USoundMix* SBP_SFXVolume;
+	UPROPERTY(EditAnywhere)
+	USoundMix* SBP_MusicVolume;
+	UPROPERTY(EditAnywhere)
+	USoundMix* SBP_VoiceVolume;
+	
 private:
 	
 	UFUNCTION()
@@ -123,5 +141,17 @@ private:
 	void OnYSensitivityValueChanged(float Value);
 	UFUNCTION()
 	void OnXSensitivityValueChanged(float Value);
+
+	UFUNCTION()
+	void OnMasterVolumeValueChanged(float Value);
+
+	UFUNCTION()
+	void OnSFXValueChanged(float Value);
+
+	UFUNCTION()
+	void OnMusicValueChanged(float Value);
+
+	UFUNCTION()
+	void OnVoiceValueChanged(float Value);
 	
 };

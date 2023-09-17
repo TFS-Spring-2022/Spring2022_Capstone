@@ -24,4 +24,13 @@ public:
 	float YSensitivity;
 	UPROPERTY(Config, BlueprintReadWrite)
 	float XSensitivity;
+	
+	UPROPERTY(Config, BlueprintReadWrite)
+	float MasterVolumeValue;
+	UPROPERTY(Config, BlueprintReadWrite)
+	float SFXVolumeValue;
+	UPROPERTY(Config, BlueprintReadWrite)
+	float MusicVolumeValue;
+	UPROPERTY(Config, BlueprintReadWrite)
+	float VoiceVolumeValue;
 };

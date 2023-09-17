@@ -249,6 +249,8 @@ FUpgradeChoice UUpgradeSystemComponent::GetUpgradeChoice()
 
 void UUpgradeSystemComponent::ApplyUpgrade1()
 {
+	if(PurchaseSC)
+		SoundManagerSubSystem->PlaysMusic(PurchaseSC);
 
 	// ToDo: Random weapon selection to upgrade (RandRang and GetWeapon());
 	switch (UpgradeChoice1.TypeOfUpgrade)
@@ -283,6 +285,8 @@ void UUpgradeSystemComponent::ApplyUpgrade1()
 
 void UUpgradeSystemComponent::ApplyUpgrade2()
 {
+	if(PurchaseSC)
+		SoundManagerSubSystem->PlaysMusic(PurchaseSC);
 	
 	// ToDo: Random weapon selection to upgrade (RandRang and GetWeapon());
 	switch (UpgradeChoice2.TypeOfUpgrade)
@@ -317,6 +321,8 @@ void UUpgradeSystemComponent::ApplyUpgrade2()
 
 void UUpgradeSystemComponent::ApplyUpgrade3()
 {
+	if(PurchaseSC)
+		SoundManagerSubSystem->PlaysMusic(PurchaseSC);
 	
 	// ToDo: Random weapon selection to upgrade (RandRang and GetWeapon());
 	switch (UpgradeChoice3.TypeOfUpgrade)
