@@ -44,8 +44,10 @@ void ASniperEnemy::SpecialAttack()
         {
             FVector vectorToPlayer = Player->GetActorLocation() - GetActorLocation();
             FRotator FacingRotator = vectorToPlayer.Rotation();
-            SoundManagerSubSystem->PlaySniperSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,0);
-            GetWorld()->SpawnActor<ABaseEnemyProjectile>(Projectile, ProjectileSpawnPoint->GetComponentLocation(), FacingRotator);
+            if(SoundManagerSubSystem)
+                SoundManagerSubSystem->PlaySniperSoundEvent(PlayerCharacter->PlayerVoiceAudioComp,0);
+            if(Projectile)
+                GetWorld()->SpawnActor<ABaseEnemyProjectile>(Projectile, ProjectileSpawnPoint->GetComponentLocation(), FacingRotator);
         }
     }
 }
