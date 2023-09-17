@@ -25,34 +25,24 @@ class SPRING2022_CAPSTONE_API USoundManagerSubSystem : public UGameInstanceSubsy
 
 public:
 	
-	UFUNCTION()
 	void PlaySound(const FVector& Location, USoundBase* Sound) const;
 
-	UFUNCTION()
 	void PlaysMusic(USoundCue* Music) const;
 
-	UFUNCTION()
 	void ResetEventTokens();
 
-	UFUNCTION()
 	void PlaySniperSoundEvent(UAudioComponent* OwnerAC, int eventID);
 
-	UFUNCTION()
 	void PlayGruntSoundEvent(UAudioComponent* OwnerAC, int eventID);
 
-	UFUNCTION()
 	void PlayNarratorSoundEvent(UAudioComponent* OwnerAC, int eventID);
 	
-	UFUNCTION()
 	void PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int eventID);
-
-	UFUNCTION()
+	
 	void ToggleMusicOff(UAudioComponent* MusicAudioComp);
 
-	UFUNCTION()
 	void ToggleMusicOn(UAudioComponent* MusicAudioComp);
 
-	UFUNCTION()
 	void WaveStart(AActor* Actor);
 
 	UPROPERTY(EditAnywhere,Category="Narrotr Vocie Lines")

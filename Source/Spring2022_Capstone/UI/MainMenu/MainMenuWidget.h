@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Sound/SoundCue.h"
 #include "MainMenuWidget.generated.h"
 
 class UPanelWidget;
@@ -81,6 +82,7 @@ public:
 	UButton *NoButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock *NoButtonText;
+
 
 private:
 	UFUNCTION()

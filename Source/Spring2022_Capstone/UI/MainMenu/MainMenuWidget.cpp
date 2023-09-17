@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "MainMenuManager.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Components/AudioComponent.h"
 #include "Spring2022_Capstone/GameplaySystems/ScoreSystemManagerSubSystem.h"
 
 void UMainMenuWidget::NativeConstruct()
@@ -30,13 +31,13 @@ void UMainMenuWidget::NativeConstruct()
 void UMainMenuWidget::OnPlayButtonPressed()
 {
 	APlayerController *PC = GetWorld()->GetFirstPlayerController();
+	
 	if (PC)
 	{
 		PC->bShowMouseCursor = false;
 		PC->bEnableClickEvents = false;
 		PC->bEnableMouseOverEvents = false;
 	}
-
 	UGameplayStatics::OpenLevel(this, "PirateIsland");
 }
 
