@@ -20,6 +20,7 @@ void ASpring2022_CapstoneGameModeBase::BeginPlay()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "No AIAttackSystemComponent On Game Mode BP");
 	
 	GetWorld()->GetTimerManager().SetTimer(FirstWaveStartTimerHandle, this, &ASpring2022_CapstoneGameModeBase::SpawnWave, TimeBeforeFirstWave, false);
+	
 }
 
 UEnemyWaveManagementSystem* ASpring2022_CapstoneGameModeBase::GetWaveManager()

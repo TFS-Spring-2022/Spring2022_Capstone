@@ -25,7 +25,8 @@ void ARangedEnemy::AttackHit()
 
     if(!PlayerCharacter->isGrounded)
     {
-        SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,0);
+        if(FMath::RandRange(1,25) == 1)
+            SoundManagerSubSystem->PlayGruntSoundEvent(VoiceAudioComponent,0);
     }
 }
 

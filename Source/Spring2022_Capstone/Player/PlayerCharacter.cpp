@@ -65,7 +65,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Dash);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		EnhancedInputComponent->BindAction(GrappleAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Grapple);
-		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &APlayerCharacter::CCrouch);
+		//EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &APlayerCharacter::CCrouch);
 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
 		EnhancedInputComponent->BindAction(SwitchWeaponAction, ETriggerEvent::Completed, this,
@@ -572,7 +572,6 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 	
 	if(DamageAmount >= 6)
 		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 2);
-
 	else
 	{
 		if(Cast<ASniperEnemy>(DamagingActor))
@@ -589,9 +588,11 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 	{
 		if(Cast<ASniperEnemy>(DamagingActor))
 		{
-			SoundManagerSubSystem->PlaySniperSoundEvent(PlayerVoiceAudioComp, 4);
+			SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->RangerKillsPlayerSC);
 		}
-		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp,1);
+		else
+			SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->NarratorLoseSC);
+		
 		CurrentGameMode->EndRun();
 		return true;
 	}
@@ -677,7 +678,7 @@ void APlayerCharacter::CheckGround()
 
 	FVector StartTrace = this->GetActorLocation();
 	FVector DownVector = FVector(0, 0, 1);
-	FVector EndTrace = ((DownVector * 120.f * -1) + StartTrace);
+	FVector EndTrace = ((DownVector * 145.f * -1) + StartTrace);
 	FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
 	TraceParams->bReturnPhysicalMaterial = true;
 	TraceParams->AddIgnoredComponent(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetMesh());

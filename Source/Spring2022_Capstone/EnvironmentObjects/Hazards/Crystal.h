@@ -6,6 +6,7 @@
 #include "NiagaraSystem.h"
 #include "GameFramework/Actor.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
+#include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "Crystal.generated.h"
 
 class USphereComponent;
@@ -18,6 +19,9 @@ class SPRING2022_CAPSTONE_API ACrystal : public AActor, public IDamageableActor
 	
 public:
 	ACrystal();
+
+	
+	
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = true))
@@ -37,6 +41,15 @@ protected:
     float PulseInterval;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
     float TotalPulses;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	UAudioComponent* PulseSoundAudioComponent;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundCue* PulseSound;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundCue* ExplosionSound;
 
 public:	
 	UFUNCTION(BlueprintCallable)

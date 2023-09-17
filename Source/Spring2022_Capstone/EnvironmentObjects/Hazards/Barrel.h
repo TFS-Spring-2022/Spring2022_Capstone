@@ -42,4 +42,10 @@ protected:
 	UHealthComponent *HealthComp;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	float Damage;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundCue* AfterBurnSound;
+
+	UPROPERTY(EditAnywhere, Category = "Sounds")
+	USoundCue* ExplosionSound;
 };

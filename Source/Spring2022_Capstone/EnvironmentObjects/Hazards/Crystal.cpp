@@ -3,6 +3,7 @@
 #include "Crystal.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
@@ -17,6 +18,9 @@ ACrystal::ACrystal()
 
 	SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	SphereCollider->SetupAttachment(RootComponent);
+
+	PulseSoundAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
+	PulseSoundAudioComponent->SetupAttachment(RootComponent);
 }
 
 bool ACrystal::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
@@ -27,6 +31,8 @@ bool ACrystal::DamageActor(AActor *DamagingActor, const float DamageAmount, FNam
 	}
 	GetWorld()->GetTimerManager().SetTimer(ExplosionEffectDelayTimerHandle, this, &ACrystal::PlayDelayedExplosionEffect, EXPLOSION_EFFECT_DELAY, false);
 	Pulse();
+
+	PulseSoundAudioComponent->Play();
 	return true;
 }
 
@@ -42,13 +48,14 @@ void ACrystal::Pulse()
 	else
 	{
 		bIsPulsing = false;
+		PulseSoundAudioComponent->Stop();
 		PulseCounter = 0;
 	}
 }
 
 void ACrystal::Explode()
 {
-	
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(),PulseSound,this->GetActorLocation(),this->GetActorRotation());
 	if(bExplosionEffectPlayed)
 	{
 		if(PulseEffectNiagaraSystem)
@@ -56,6 +63,8 @@ void ACrystal::Explode()
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), PulseEffectNiagaraSystem, GetActorLocation(), GetActorRotation(), GetActorScale());
 		}
 	}
+
+	
 	
 	TArray<AActor *> OverlappingActors;
 	SphereCollider->GetOverlappingActors(OverlappingActors);
@@ -76,9 +85,10 @@ void ACrystal::PlayDelayedExplosionEffect()
 		// Rotate explosion effect towards player.
 		const FRotator PlayerLookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ExplosionEffectNiagaraSystem, GetActorLocation(), PlayerLookAtRotation, GetActorScale());
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(),ExplosionSound,this->GetActorLocation(),this->GetActorRotation());
 	}
 		
-
+	
 	// Spawn first pulse with initial explosion
 	if(PulseEffectNiagaraSystem)
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), PulseEffectNiagaraSystem, GetActorLocation(), GetActorRotation(), GetActorScale());

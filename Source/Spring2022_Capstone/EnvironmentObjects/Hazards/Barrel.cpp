@@ -4,6 +4,7 @@
 #include "DamageArea.h"
 #include "Components/SphereComponent.h"
 #include "NiagaraComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/HealthComponent.h"
 #include "Spring2022_Capstone/Enemies/Sniper/SniperEnemy.h"
 
@@ -55,6 +56,10 @@ void ABarrel::Explode()
 			Cast<IDamageableActor>(OverlappingActor)->DamageActor(this, Damage);
 		}
 	}
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(),ExplosionSound,this->GetActorLocation(),this->GetActorRotation());
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(),AfterBurnSound,this->GetActorLocation(),this->GetActorRotation());
+	
 	SpawnDamageArea();
 	if(ExplosionNiagaraComponent)
 		ExplosionNiagaraComponent->SetActive(true);

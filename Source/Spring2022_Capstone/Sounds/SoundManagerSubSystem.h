@@ -25,38 +25,46 @@ class SPRING2022_CAPSTONE_API USoundManagerSubSystem : public UGameInstanceSubsy
 
 public:
 	
-	UFUNCTION()
 	void PlaySound(const FVector& Location, USoundBase* Sound) const;
 
-	UFUNCTION()
-	void PlaysMusic(const USoundCue* Music) const;
+	void PlaysMusic(USoundCue* Music) const;
 
-	UFUNCTION()
 	void ResetEventTokens();
 
-	UFUNCTION()
 	void PlaySniperSoundEvent(UAudioComponent* OwnerAC, int eventID);
 
-	UFUNCTION()
 	void PlayGruntSoundEvent(UAudioComponent* OwnerAC, int eventID);
 
-	UFUNCTION()
 	void PlayNarratorSoundEvent(UAudioComponent* OwnerAC, int eventID);
 	
-	UFUNCTION()
 	void PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int eventID);
-
-	UFUNCTION()
+	
 	void ToggleMusicOff(UAudioComponent* MusicAudioComp);
 
-	UFUNCTION()
 	void ToggleMusicOn(UAudioComponent* MusicAudioComp);
 
-	UFUNCTION()
 	void WaveStart(AActor* Actor);
 
+	UPROPERTY(EditAnywhere,Category="Narrotr Vocie Lines")
+	USoundCue* NarratorLoseSC;
 
+	UPROPERTY(EditAnywhere,Category="Narrotr Vocie Lines")
+	USoundCue* NarratorWinSC;
 	
+	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
+	USoundCue* RangerKillsPlayerSC;
+
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
+	float MasterVolume = 1.f;
+
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
+	float MusicVolume = 1.f;
+
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
+	float SFXVolume = 1.f;
+
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
+	float VoiceVolume = 1.f;
 	
 private:
 	
@@ -73,6 +81,9 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
 	USoundCue* PlayerDeathSC;
+
+	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
+	USoundCue* PlayerDoubleJumpSC;
 
 	UPROPERTY(EditAnywhere, Category = "Player Voice Lines")
 	USoundCue* PlayerHurtSC;
@@ -143,6 +154,14 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Narrator Voice Lines")
 	USoundCue* NarratorMaxSpeedSC;
 
+	UPROPERTY(EditAnywhere,Category="Narrotr Vocie Lines")
+	USoundCue* NarratorBarrelSC;
+
+	UPROPERTY(EditAnywhere,Category="Narrotr Vocie Lines")
+	USoundCue* NarratorUpgradeMenuSC;
+
+	
+
 	
 #pragma endregion
 #pragma region Ranger Voices
@@ -152,12 +171,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
 	USoundCue* RangerHurtSC;
-
-	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
-	USoundCue* RangerJumpSC;
-
-	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
-	USoundCue* RangerKillsPlayerSC;
 
 	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
 	USoundCue* RangerRandomSC;
@@ -199,8 +212,6 @@ private:
 	USoundCue* GruntArialHitSC;
 	
 #pragma endregion 
-
-#pragma 
 	
 	UPROPERTY(EditAnywhere, Category = "Wave Sound")
 	USoundCue* WaveStartSound;
@@ -216,4 +227,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Audio C")
 	UAudioComponent* SubSystemAudio;
+
+	
 };
