@@ -65,6 +65,18 @@ void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
         BloodSplatterAnimationTime = GetAnimationCurrentTime(BloodSplatterAnimation);
 }
 
+void UHUDWidget::FadeInHUD()
+{
+    if(HUDFadeInAnimation)
+        PlayAnimation(HUDFadeInAnimation, 0, 1,  EUMGSequencePlayMode::Forward, 1, false);
+}
+
+void UHUDWidget::FadeOutHUD()
+{
+    if(HUDFadeInAnimation)
+        PlayAnimationReverse(HUDFadeInAnimation, 1, false);
+}
+
 void UHUDWidget::PlayBloodSplatterAnimation()
 {
     if(BloodSplatterAnimation)

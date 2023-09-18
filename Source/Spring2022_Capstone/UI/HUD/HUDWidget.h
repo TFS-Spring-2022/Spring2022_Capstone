@@ -65,6 +65,12 @@ public:
 	UImage* BloodSplatterImage;
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	UWidgetAnimation* BloodSplatterAnimation;
+	// HUD Fade In Animation
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* HUDFadeInAnimation;
+
+	void FadeInHUD();
+	void FadeOutHUD();
 
 	/**
 	 * @brief Play the blood splatter animation from 'BloodSplatterAnimationTime'.

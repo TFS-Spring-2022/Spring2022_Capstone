@@ -41,6 +41,10 @@ UAIAttackSystemComponent* ASpring2022_CapstoneGameModeBase::GetAttackSystemCompo
 
 void ASpring2022_CapstoneGameModeBase::SpawnWave()
 {
+
+	// Fade in HUD
+	Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))->GetPlayerHUD()->FadeInHUD();
+	
 	if(EnemyWaveManagerInstance)
 		EnemyWaveManagerInstance->SpawnWave();
 	// Ensure token is not lost between waves.
