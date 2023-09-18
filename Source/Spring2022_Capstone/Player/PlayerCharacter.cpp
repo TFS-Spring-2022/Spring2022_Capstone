@@ -50,6 +50,8 @@ APlayerCharacter::APlayerCharacter()
 	
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
+	// Disable crouching.
+	GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = false;
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
