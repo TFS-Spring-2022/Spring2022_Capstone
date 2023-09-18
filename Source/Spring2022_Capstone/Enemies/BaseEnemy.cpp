@@ -92,12 +92,20 @@ void ABaseEnemy::AttackHit()
 	FVector StartPlayerAttackHitTrace = GetActorLocation();								   // ProjectileSpawnPoint();
 	FVector EndPlayerAttachHitTrace = PlayerCharacter->GetMesh()->GetBoneLocation("head"); // ToDo: const string HeadBone could be useful here once skeleton added
 
-	DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, FColor::Red, false, .5f);
+	//DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, FColor::Red, false, .5f);
 
 	if (GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Camera, *TraceParams))
 	{
-		DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Red, false, .5f);
+		//DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Red, false, .5f);
+		if(BulletTracerNiagaraSystem)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BulletTracerNiagaraSystem, GetMesh()->GetSocketLocation(FireSocketName),
+				FRotator::ZeroRotator)->SetVectorParameter("BeamEnd", PlayerHitResult.Location);
+		}
 
+		if(BulletImpactNiagaraSystem)
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BulletImpactNiagaraSystem, PlayerHitResult.Location, PlayerHitResult.ImpactNormal.Rotation());
+		
 		if (PlayerHitResult.GetActor()->Implements<UDamageableActor>() && PlayerHitResult.GetActor()->IsA(APlayerCharacter::StaticClass())) // Question: Do we want them to be able to do damage to other enemies?
 			Cast<APlayerCharacter>(PlayerHitResult.GetActor())->DamageActor(this, Damage);
 	}
@@ -134,11 +142,19 @@ void ABaseEnemy::AttackMiss()
 	FVector EndPlayerAttachHitTrace = PlayerCharacter->GetMesh()->GetBoneLocation("head"); // ToDo: const string HeadBone could be useful here once skeleton added
 	EndPlayerAttachHitTrace.Z += 100;
 
-	DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, FColor::Black, false, .5f);
+	//DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, FColor::Black, false, .5f);
+	if(BulletTracerNiagaraSystem)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BulletTracerNiagaraSystem, GetMesh()->GetSocketLocation(FireSocketName),
+			FRotator::ZeroRotator)->SetVectorParameter("BeamEnd", PlayerHitResult.Location);
+	}
 
+	if(BulletImpactNiagaraSystem)
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BulletImpactNiagaraSystem, PlayerHitResult.Location, PlayerHitResult.ImpactNormal.Rotation());
+	
 	// ToDo: Implement weighting missed shots into objects/player view
-	if (GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Camera, *TraceParams))
-		DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Black, false, .5f);
+	//if (GetWorld()->LineTraceSingleByChannel(PlayerHitResult, StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, ECC_Camera, *TraceParams))
+		//DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, PlayerHitResult.Location, FColor::Black, false, .5f);
 
 	if(GunShotComp)
 		GunShotComp->Play();
