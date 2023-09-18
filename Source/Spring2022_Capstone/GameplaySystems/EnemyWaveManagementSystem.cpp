@@ -43,12 +43,15 @@ void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 
 void UEnemyWaveManagementSystem::SpawnWave()
 {
+	// Reveal hidden timer
+	PlayerCharacter->GetPlayerHUD()->ShowWaveTimer();
+	
 	// Reset wave stats.
 	EnemiesKilledThisWave = 0;
 
 	// Announce wave to player.
 	if(WaveAnnouncerWidgetInstance)
-		WaveAnnouncerWidgetInstance->SetAnnouncementTextBlock(FText::FromString(FString::Printf(TEXT("WAVE %d"), CurrentWave + 1)));
+		WaveAnnouncerWidgetInstance->SetAnnouncementTextBlock(FText::FromString(FString::Printf(TEXT("WAVE %d"), CurrentWave + 1)), false);
 	
 	// Restart wave timer on new wave.
 	ElapsedWaveTime = 0.0f;
@@ -78,13 +81,15 @@ void UEnemyWaveManagementSystem::SpawnWave()
 			ScoreSystemTimerSubSystem->StartAccoladeTimer(EAccolades::PirateBlitz);
 	}
 
+	/* REMOVE FROM HERE!
 	// If we have passed all the waves.
 	if(CurrentWave > Waves.Num() - 1)
 	{
-		SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->NarratorWinSC);
-		Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->EndRun(); 
+		SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->NarratorWinSC); // ToDo: move this to the game mode.
+		Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->EndRun(true); 
 		return;
 	}
+	*/
 
 	float TimeBetweenSpawns = MINIMUM_TIME_BETWEEN_SPAWNS;
 	
@@ -106,8 +111,6 @@ void UEnemyWaveManagementSystem::SpawnWave()
 	
 	// Set remaining enemies text to the amount in the current wave.
 	PlayerCharacter->GetPlayerHUD()->SetEnemiesRemainingText(Waves[CurrentWave].EnemiesToSpawn.Num());
-
-	//CurrentWave++;
 }
 
 void UEnemyWaveManagementSystem::SpawnEnemy(TSubclassOf<ABaseEnemy> SpawningEnemy)
@@ -159,15 +162,28 @@ void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 		if(EnemiesKilledThisWave >= Waves[CurrentWave].EnemiesToSpawn.Num())
 		{
 			CurrentWave++;
-			
-			// Begin play is not called on this component so PlayerCharacter must be set here.
-			if(!PlayerCharacter)
-				PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
 
-			// Start next round after a delay, opens upgrade menu, clears enemy, and spawns next wave.
-			GetWorld()->GetTimerManager().SetTimer(TimeBeforeNextRoundStartTimerHandle, this, &UEnemyWaveManagementSystem::OpenUpgradeMenu, TimeBeforeNextRoundStart, false);
-			GetWorld()->GetTimerManager().SetTimer(TimeBeforeClearDeadEnemiesTimerHandle, this, &UEnemyWaveManagementSystem::ClearDeadEnemies, TimeBeforeNextRoundStart - 0.1, false);
-			StartNextRound();
+			if(CurrentWave > Waves.Num() - 1)
+			{
+				SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->NarratorWinSC); // ToDo: move this to the game mode.
+
+				PlayerCharacter->GetPlayerHUD()->FadeOutHUD();
+				// Announce Victory
+				if(WaveAnnouncerWidgetInstance)
+					WaveAnnouncerWidgetInstance->SetAnnouncementTextBlock(FText::FromString("VICTORY!"), true);
+				
+				Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->EndRun(true);
+				return;
+			}
+			else
+			{
+				// Begin play is not called on this component so PlayerCharacter must be set here.
+				if(!PlayerCharacter)
+					PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+
+				// Start next round after a delay, opens upgrade menu, clears enemy, and spawns next wave.
+				GetWorld()->GetTimerManager().SetTimer(TimeBeforeUpgradeMenuTimerHandle, this, &UEnemyWaveManagementSystem::OpenUpgradeMenu, TimeBeforeOpeningUpgradeMenu, false);
+			}
 		}
 	}
 }
