@@ -44,9 +44,9 @@ bool AShotgunWeapon::Shoot()
 			HalfAngle = UKismetMathLibrary::DegreesToRadians(HalfAngle);
 			//															//
 
-			if (MuzzleFlashParticleSystem)
-				UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, SkeletalMesh, ShootingStartSocket,
-													   SkeletalMesh->GetSocketLocation(ShootingStartSocket), SkeletalMesh->GetSocketRotation(ShootingStartSocket));
+			//if (MuzzleFlashParticleSystem) // ToDo:
+			//	UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, SkeletalMesh, ShootingStartSocket,
+				//									   SkeletalMesh->GetSocketLocation(ShootingStartSocket), SkeletalMesh->GetSocketRotation(ShootingStartSocket));
 
 			bool bHeadshotHit = false; // Used to ensure shotgun headshots don't call for every pellet.
 
@@ -62,6 +62,14 @@ bool AShotgunWeapon::Shoot()
 
 				if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 				{
+					// Play muzzle flash
+					if (MuzzleFlashParticleSystem)
+						UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFlashParticleSystem, GetSkeletalMesh()->GetSocketLocation(ShootingStartSocket), GetSkeletalMesh()->GetSocketRotation(ShootingStartSocket));
+					
+					// Bullet impact niagara
+					if(BulletImpactNiagaraSystem)
+						UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BulletImpactNiagaraSystem, HitResult.Location, HitResult.ImpactNormal.Rotation());
+					
 					// Get Surface Type to check for headshot and impact material.
 					EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 

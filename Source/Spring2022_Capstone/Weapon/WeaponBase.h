@@ -172,9 +172,12 @@ protected:
 	UNiagaraSystem* BulletTracerNiagaraSystem;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UParticleSystem* MuzzleFlashParticleSystem;
+	UNiagaraSystem* MuzzleFlashParticleSystem;
 
 	void PlayTracerEffect(FVector TracerEndPoint);
+
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UNiagaraSystem* BulletImpactNiagaraSystem;
 
 	// Impact Particle Effects
 	UPROPERTY(EditDefaultsOnly, Category = "Components")

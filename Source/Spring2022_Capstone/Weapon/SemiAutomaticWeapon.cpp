@@ -43,6 +43,14 @@ bool ASemiAutomaticWeapon::Shoot()
 
 			if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 			{
+				// Play muzzle flash
+				if (MuzzleFlashParticleSystem)
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFlashParticleSystem, GetSkeletalMesh()->GetSocketLocation(ShootingStartSocket), GetSkeletalMesh()->GetSocketRotation(ShootingStartSocket));
+
+				// Bullet impact niagara
+				if(BulletImpactNiagaraSystem)
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BulletImpactNiagaraSystem, HitResult.Location, HitResult.ImpactNormal.Rotation());
+				
 				// Get Surface Type to check for headshot and impact material type.
 				EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 
@@ -117,6 +125,7 @@ bool ASemiAutomaticWeapon::Shoot()
 						}
 					}
 					ShowHitMarker();
+					
 				}
 				// DrawDebugLine(GetWorld(), StartTrace, HitResult.Location, FColor::Black, false, 0.5f);
 				PlayTracerEffect(HitResult.Location);
@@ -134,10 +143,7 @@ bool ASemiAutomaticWeapon::Shoot()
 				if (ImpactEffectToPlay)
 					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffectToPlay, HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation());
 			}
-
-			if (MuzzleFlashParticleSystem)
-				UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, SkeletalMesh, ShootingStartSocket);
-
+			
 			CurrentCharge += ShotCost;
 			PlayWeaponCameraShake();
 

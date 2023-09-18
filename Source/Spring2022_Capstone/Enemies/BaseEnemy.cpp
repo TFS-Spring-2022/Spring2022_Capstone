@@ -67,6 +67,9 @@ void ABaseEnemy::BeginPlay()
 
 void ABaseEnemy::Attack()
 {
+	if(bIsDying)
+		return;
+	
 	if (bHasAttackToken)
 	{
 		AttackHit();
@@ -74,8 +77,6 @@ void ABaseEnemy::Attack()
 	}
 	else
 		AttackMiss();
-
-	
 }
 
 // Hits player and does damage (only called when enemy has token and then releases token)
