@@ -60,6 +60,29 @@ void UHUDWidget::NativeTick(const FGeometry &MyGeometry, float DeltaTime)
                 OverheatBar->SetPercent(CurrentWeapon->GetCurrentCharge() / 100);
         }
     }
+
+    if(IsAnimationPlaying(BloodSplatterAnimation))
+        BloodSplatterAnimationTime = GetAnimationCurrentTime(BloodSplatterAnimation);
+}
+
+void UHUDWidget::PlayBloodSplatterAnimation()
+{
+    if(BloodSplatterAnimation)
+    {
+        // Start playing at BloodSplatterAnimationTime to prevent multiple hits from restarting animation. 
+        PlayAnimation(BloodSplatterAnimation, BloodSplatterAnimationTime, 1, EUMGSequencePlayMode::Forward, 1);
+        // Reverse animation after given time.
+        GetWorld()->GetTimerManager().SetTimer(BloodSplatterReverseTimerHandle, this, &UHUDWidget::PlayerBloodSplatterBackwards, TIME_BEFORE_BLOOD_SPLATTER_FADE_OUT, false, -1);
+    }
+}
+
+// Plays animation backwards after timer
+void UHUDWidget::PlayerBloodSplatterBackwards()
+{
+    if(BloodSplatterAnimation)
+        PlayAnimationReverse(BloodSplatterAnimation, 1, false);
+    // Reset BloodSplatter time to ensure timer extension next loop.
+    BloodSplatterAnimationTime = 0;
 }
 
 void UHUDWidget::SetWeaponIcons(UTexture2D* EquippedWeaponTexture2D, UTexture2D* StashedWeaponTexture2D) const

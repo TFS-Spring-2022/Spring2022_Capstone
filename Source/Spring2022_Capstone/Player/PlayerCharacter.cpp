@@ -581,7 +581,8 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 		else
 			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 12);
 	}
-	
+	if(PlayerHUDWidgetInstance)
+		PlayerHUDWidgetInstance->PlayBloodSplatterAnimation();
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 	UpdateHealthBar();
 	if (HealthComponent->GetHealth() <= 0)
