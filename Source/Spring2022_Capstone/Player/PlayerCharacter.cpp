@@ -595,8 +595,8 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 		}
 		else
 			SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->NarratorLoseSC);
-		
-		CurrentGameMode->EndRun(false);
+
+		Death();
 		return true;
 	}
 	return false;
@@ -755,4 +755,10 @@ void APlayerCharacter::SetYSensitivity(float Value)
 void APlayerCharacter::SetXSensitivity(float Value) 
 {
 	XSensitivity = Value;
+}
+
+void APlayerCharacter::Death()
+{
+	DisableInput(PlayerController);
+	CurrentGameMode->EndRun(false);
 }

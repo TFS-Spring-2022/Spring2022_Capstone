@@ -483,4 +483,6 @@ public:
 	UFUNCTION()
 	void SetXSensitivity(float Value);
 
+	void Death();
+	
 };
