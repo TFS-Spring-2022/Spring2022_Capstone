@@ -15,12 +15,18 @@ void ASpring2022_CapstoneGameModeBase::BeginPlay()
 	EnemyWaveManagerInstance->SetEnemySpawnLocations();
 	EnemyWaveManagerInstance->RegisterComponent();
 	
+	SoundManagerSubSystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USoundManagerSubSystem>();
+	
 	AIAttackSystemComp = FindComponentByClass<UAIAttackSystemComponent>();
 	if(!AIAttackSystemComp)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "No AIAttackSystemComponent On Game Mode BP");
 	
 	GetWorld()->GetTimerManager().SetTimer(FirstWaveStartTimerHandle, this, &ASpring2022_CapstoneGameModeBase::SpawnWave, TimeBeforeFirstWave, false);
 	
+
+	if(!PlayerCharacter)
+		PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+	SoundManagerSubSystem->ToggleMusicOn(PlayerCharacter->MusicAudioComp);
 }
 
 UEnemyWaveManagementSystem* ASpring2022_CapstoneGameModeBase::GetWaveManager()

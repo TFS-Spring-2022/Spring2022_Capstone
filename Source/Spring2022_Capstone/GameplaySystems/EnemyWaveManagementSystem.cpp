@@ -159,6 +159,8 @@ void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 		if(EnemiesKilledThisWave >= Waves[CurrentWave].EnemiesToSpawn.Num())
 		{
 			CurrentWave++;
+
+			GetWorld()->GetTimerManager().SetTimer(TimeStopSoundDelay,this,&UEnemyWaveManagementSystem::FadeOutMusic, 3.f,false);
 			
 			// Begin play is not called on this component so PlayerCharacter must be set here.
 			if(!PlayerCharacter)
@@ -246,3 +248,10 @@ void UEnemyWaveManagementSystem::PlayWaveStartVoiceLine() const
 			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 7);
 	}
 }
+
+void UEnemyWaveManagementSystem::FadeOutMusic()
+{
+	if(SoundManagerSubSystem)
+		SoundManagerSubSystem->StopMusic(PlayerCharacter->MusicAudioComp);
+}
+

@@ -26,6 +26,8 @@ void UMainMenuWidget::NativeConstruct()
 		UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PC, this);
 	}
 	GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>()->ResetScoreSystem();
+	GetGameInstance()->GetSubsystem<USoundManagerSubSystem>()->PlaysMusic(GetGameInstance()->GetSubsystem<USoundManagerSubSystem>()->MainMenuMusicSC);
+	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "Menu SOunds");
 }
 
 void UMainMenuWidget::OnPlayButtonPressed()

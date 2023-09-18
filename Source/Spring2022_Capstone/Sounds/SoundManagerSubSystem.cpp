@@ -14,6 +14,9 @@ USoundManagerSubSystem::USoundManagerSubSystem()
     if (WaveStartSoundLoaded.Succeeded())
         WaveStartSound = WaveStartSoundLoaded.Object;
 
+    static ConstructorHelpers::FObjectFinder<USoundCue>MainMusicLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/Music/SC_MenuMusic.SC_MenuMusic'"));
+    if (WaveStartSoundLoaded.Succeeded())
+        MainMenuMusicSC = MainMusicLoaded.Object;
     
 #pragma region Player Voice Lines
     
@@ -745,20 +748,44 @@ void USoundManagerSubSystem::ToggleMusicOn(UAudioComponent* MusicAudioComp)
 {
     if(MusicAudioComp->GetSound())
     {
-        MusicAudioComp->Stop();
-        MusicAudioComp->FadeIn(3.f,1.f,0.f,EAudioFaderCurve::Linear);
+        if(MusicAudioComp->IsPlaying()== false)
+        {
+            GEngine->AddOnScreenDebugMessage(-1,1.f,FColor::Purple,"MusicPlaying");
+            PlayMenuMusic(false);
+            MusicAudioComp->FadeIn(3.f,1.f,0.f,EAudioFaderCurve::Linear);
+        }
+    }
+}
+
+void USoundManagerSubSystem::PlayMenuMusic(bool bActivated)
+{
+    if(bActivated)
+    {
+        
+       
+    }
+    else
+    {
+        
     }
 }
 
 void USoundManagerSubSystem::ToggleMusicOff(UAudioComponent* MusicAudioComp)
 {
+    
     if(MusicAudioComp->GetSound())
         MusicAudioComp->FadeOut(3.f,0.0f,EAudioFaderCurve::Linear);
+    
 }
 
 void USoundManagerSubSystem::WaveStart(AActor* Actor)
 {
     UGameplayStatics::PlaySound2D(Actor->GetWorld(),WaveStartSound);
+}
+
+void USoundManagerSubSystem::StopMusic(UAudioComponent* Comp)
+{
+    Comp->Stop();
 }
 
 

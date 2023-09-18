@@ -29,6 +29,8 @@ class SPRING2022_CAPSTONE_API ASpring2022_CapstoneGameModeBase : public AGameMod
 	UPROPERTY()
 	USoundManagerSubSystem* SoundManagerSubSystem;
 
+	APlayerCharacter* PlayerCharacter;
+
 public:
 	
 	UFUNCTION(BlueprintCallable)
