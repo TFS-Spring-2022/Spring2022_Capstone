@@ -48,8 +48,17 @@ void ASpring2022_CapstoneGameModeBase::SpawnWave()
 		AIAttackSystemComp->ReturnToken();
 }
 
-void ASpring2022_CapstoneGameModeBase::EndRun() const
+void ASpring2022_CapstoneGameModeBase::EndRun(bool bHasWon)
 {
-	// ToDo: Move to scoring/accolades end screen
+	//if(bHasWon)
+		// ToDo: Play victory voice line.
+	//else
+		// ToDo: Player loss voice line.
+		
+	GetWorld()->GetTimerManager().SetTimer(RunEndTransferTimerHandle, this, &ASpring2022_CapstoneGameModeBase::ChangeToEndScreen, 8.0f, false);
+}
+
+void ASpring2022_CapstoneGameModeBase::ChangeToEndScreen()
+{
 	UGameplayStatics::OpenLevel(this, "RunEndScreenLevel");
 }

@@ -594,7 +594,7 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 		else
 			SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->NarratorLoseSC);
 		
-		CurrentGameMode->EndRun();
+		CurrentGameMode->EndRun(false);
 		return true;
 	}
 	return false;
