@@ -81,6 +81,7 @@ void UEnemyWaveManagementSystem::SpawnWave()
 			ScoreSystemTimerSubSystem->StartAccoladeTimer(EAccolades::PirateBlitz);
 	}
 
+	/* REMOVE FROM HERE!
 	// If we have passed all the waves.
 	if(CurrentWave > Waves.Num() - 1)
 	{
@@ -88,6 +89,7 @@ void UEnemyWaveManagementSystem::SpawnWave()
 		Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->EndRun(true); 
 		return;
 	}
+	*/
 
 	float TimeBetweenSpawns = MINIMUM_TIME_BETWEEN_SPAWNS;
 	
@@ -109,8 +111,6 @@ void UEnemyWaveManagementSystem::SpawnWave()
 	
 	// Set remaining enemies text to the amount in the current wave.
 	PlayerCharacter->GetPlayerHUD()->SetEnemiesRemainingText(Waves[CurrentWave].EnemiesToSpawn.Num());
-
-	//CurrentWave++;
 }
 
 void UEnemyWaveManagementSystem::SpawnEnemy(TSubclassOf<ABaseEnemy> SpawningEnemy)
@@ -162,13 +162,24 @@ void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 		if(EnemiesKilledThisWave >= Waves[CurrentWave].EnemiesToSpawn.Num())
 		{
 			CurrentWave++;
-			
-			// Begin play is not called on this component so PlayerCharacter must be set here.
-			if(!PlayerCharacter)
-				PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
 
-			// Start next round after a delay, opens upgrade menu, clears enemy, and spawns next wave.
-			GetWorld()->GetTimerManager().SetTimer(TimeBeforeUpgradeMenuTimerHandle, this, &UEnemyWaveManagementSystem::OpenUpgradeMenu, TimeBeforeOpeningUpgradeMenu, false);
+			if(CurrentWave > Waves.Num() - 1)
+			{
+				SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->NarratorWinSC); // ToDo: move this to the game mode.
+				
+				Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->EndRun(true);
+				PlayerCharacter->GetPlayerHUD()->FadeOutHUD();
+				return;
+			}
+			else
+			{
+				// Begin play is not called on this component so PlayerCharacter must be set here.
+				if(!PlayerCharacter)
+					PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+
+				// Start next round after a delay, opens upgrade menu, clears enemy, and spawns next wave.
+				GetWorld()->GetTimerManager().SetTimer(TimeBeforeUpgradeMenuTimerHandle, this, &UEnemyWaveManagementSystem::OpenUpgradeMenu, TimeBeforeOpeningUpgradeMenu, false);
+			}
 		}
 	}
 }
