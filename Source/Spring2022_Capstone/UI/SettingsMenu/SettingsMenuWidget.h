@@ -46,44 +46,21 @@ public:
 
 	// General
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton *GeneralButton;
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *GeneralPanel;
+
+	// Controls
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	USlider *YSensitivitySlider;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	USlider *XSensitivitySlider;
-
-	// Controls
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UButton *ControlsButton;
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UPanelWidget *ControlsPanel;
-
+	
 	// Graphics
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UButton *GraphicsButton;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UPanelWidget *GraphicsPanel;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UComboBoxString* WindowModeComboBox;
 	UFUNCTION()
 	void OnWindowModeSelected(FString SelectedOption, ESelectInfo::Type SelectInfo);
 
-	// Reset Confirmation
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UPanelWidget* RestartPanel;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UButton* RestartConfirmButton;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UButton* RestartIgnoreButton;
-
 	// Audio
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UButton *AudioButton;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UPanelWidget *AudioPanel;
-
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	USlider *MasterVolumeSlider;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -110,24 +87,20 @@ public:
 	USoundMix* SBP_MusicVolume;
 	UPROPERTY(EditAnywhere)
 	USoundMix* SBP_VoiceVolume;
-	
+
+	// Reset Confirmation
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPanelWidget* RestartPanel;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UButton* RestartConfirmButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UButton* RestartIgnoreButton;
+
 private:
 	
 	UFUNCTION()
 	void OnBackButtonPressed();
-
-	UFUNCTION()
-	void OnGeneralButtonPressed();
-
-	UFUNCTION()
-	void OnControlsButtonPressed();
-
-	UFUNCTION()
-	void OnGraphicsButtonPressed();
-
-	UFUNCTION()
-	void OnAudioButtonPressed();
-
+	
 	UFUNCTION()
 	void ClearPanels();
 
