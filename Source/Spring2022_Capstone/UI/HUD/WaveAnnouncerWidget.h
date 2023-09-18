@@ -43,4 +43,7 @@ public:
 	void PauseAnnouncementAnimation(bool bIsPaused);
 
 	void SetVictoryTextBlock(FText Announcement);
+
+	// Was an announcement paused?
+	bool bAnimationWasPaused = false;
 };
