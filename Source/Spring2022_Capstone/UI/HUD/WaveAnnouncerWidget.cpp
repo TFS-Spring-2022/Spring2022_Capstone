@@ -13,13 +13,16 @@ void UWaveAnnouncerWidget::NativeConstruct()
 	AnnouncementTextBlock->SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 
-void UWaveAnnouncerWidget::SetAnnouncementTextBlock(FText Announcement)
+void UWaveAnnouncerWidget::SetAnnouncementTextBlock(FText Announcement, bool bIsVictoryAnnouncement)
 {
 	if(!AnnouncementTextBlock)
 		return;
 
 	AnnouncementTextBlock->SetText(Announcement);
-	PlayAnimation(AnnounceWidgetAnim, 0, 1, EUMGSequencePlayMode::Forward, 1, false);
+	if(!bIsVictoryAnnouncement)
+		PlayAnimation(VictoryWidgetAnim, 0, 1, EUMGSequencePlayMode::Forward, 1, true);
+	else
+		PlayAnimation(AnnounceWidgetAnim, 0, 1, EUMGSequencePlayMode::Forward, 1, true);
 }
 
 void UWaveAnnouncerWidget::PauseAnnouncementAnimation(bool bIsPaused)

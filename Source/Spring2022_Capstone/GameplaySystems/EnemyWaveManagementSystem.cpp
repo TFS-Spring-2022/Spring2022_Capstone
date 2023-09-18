@@ -51,7 +51,7 @@ void UEnemyWaveManagementSystem::SpawnWave()
 
 	// Announce wave to player.
 	if(WaveAnnouncerWidgetInstance)
-		WaveAnnouncerWidgetInstance->SetAnnouncementTextBlock(FText::FromString(FString::Printf(TEXT("WAVE %d"), CurrentWave + 1)));
+		WaveAnnouncerWidgetInstance->SetAnnouncementTextBlock(FText::FromString(FString::Printf(TEXT("WAVE %d"), CurrentWave + 1)), false);
 	
 	// Restart wave timer on new wave.
 	ElapsedWaveTime = 0.0f;
@@ -166,9 +166,13 @@ void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 			if(CurrentWave > Waves.Num() - 1)
 			{
 				SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->NarratorWinSC); // ToDo: move this to the game mode.
+
+				PlayerCharacter->GetPlayerHUD()->FadeOutHUD();
+				// Announce Victory
+				if(WaveAnnouncerWidgetInstance)
+					WaveAnnouncerWidgetInstance->SetAnnouncementTextBlock(FText::FromString("VICTORY!"), true);
 				
 				Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->EndRun(true);
-				PlayerCharacter->GetPlayerHUD()->FadeOutHUD();
 				return;
 			}
 			else

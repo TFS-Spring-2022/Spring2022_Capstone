@@ -25,16 +25,22 @@ protected:
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	UWidgetAnimation* AnnounceWidgetAnim;
 
+	// Same as above animation but does not fade out.
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* VictoryWidgetAnim;
+
 	// Time of the AnnounceWidgetAnim when it is paused. Used when un-pausing.
 	float AnnounceAnimPauseTime;
 	
 public:
 
-	void SetAnnouncementTextBlock(FText Announcement);
+	void SetAnnouncementTextBlock(FText Announcement, bool bIsVictoryAnnouncement = false);
 
 	/**
 	 * @brief Pauses/Resumes announcement animation
 	 * @param bIsPaused True - Pause the animation, False - Resume.
 	 */
 	void PauseAnnouncementAnimation(bool bIsPaused);
+
+	void SetVictoryTextBlock(FText Announcement);
 };
