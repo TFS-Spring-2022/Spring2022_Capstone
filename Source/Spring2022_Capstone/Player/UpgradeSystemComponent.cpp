@@ -8,6 +8,7 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Spring2022_Capstone/HealthComponent.h"
+#include "Spring2022_Capstone/Spring2022_CapstoneGameModeBase.h"
 
 // Sets default values for this component's properties
 UUpgradeSystemComponent::UUpgradeSystemComponent()
@@ -35,6 +36,14 @@ void UUpgradeSystemComponent::BeginPlay()
 	
 	SoundManagerSubSystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USoundManagerSubSystem>();
 	ScoreSystemTimerSubSystem = GetWorld()->GetSubsystem<UScoreSystemTimerSubSystem>();
+
+	EnemyWaveManager = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetWaveManager();
+}
+
+void UUpgradeSystemComponent::CallStartNextRound()
+{
+	if(EnemyWaveManager)
+		EnemyWaveManager->StartNextRound();
 }
 
 // Called every frame
@@ -143,6 +152,7 @@ void UUpgradeSystemComponent::OpenUpgradeMenu()
 		UpgradeMenuWidgetInstance->AddToViewport(0);
 		bIsMenuOpen = true;
 		PlayerToUpgrade->GetPlayerHUD()->SetVisibility(ESlateVisibility::Hidden);
+		PlayerToUpgrade->GetPlayerHUD()->HideWaveTimer();
 		//Menu VoiceLines
 		bUpgradeTimerAFKStarted = true;
 		if(FMath::RandRange(1,5) == 1)
@@ -174,6 +184,7 @@ void UUpgradeSystemComponent::CloseUpgradeMenu()
 		UpgradeMenuWidgetInstance->GetUpgrade3Button()->OnClicked.Clear();
 
 		PlayerToUpgrade->GetPlayerHUD()->SetVisibility(ESlateVisibility::Visible);
+		GetWorld()->GetTimerManager().SetTimer(StartNextRoundTimerHandle, this, &UUpgradeSystemComponent::CallStartNextRound, StartNextRoundDelayBuffer, false);
 	}
 }
 

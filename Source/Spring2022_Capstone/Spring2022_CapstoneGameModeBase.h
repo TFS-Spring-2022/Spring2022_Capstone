@@ -45,7 +45,7 @@ public:
 	
 	// Called when a run ends. Moves the player to the scoring/accolades screen. 
 	UFUNCTION()
-	void EndRun() const;
+	void EndRun(bool bHasWon);
 
 private:
 
@@ -58,5 +58,15 @@ private:
 	// IMPORTANT - MUST BE ADDED TO GAME MODE'S BLUEPRINT
 	UPROPERTY()
 	UAIAttackSystemComponent* AIAttackSystemComp;
+
+	/**
+	 * @brief Changes the level to the end screen level.
+	 * @note called after a delay in UEnemyWaveManagement::EndRun().
+	 */
+	UFUNCTION()
+	void ChangeToEndScreen();
+
+	FTimerHandle RunEndTransferTimerHandle;
+	float TimeBeforeChangeToEndScreen = 5.0f;
 	
 };

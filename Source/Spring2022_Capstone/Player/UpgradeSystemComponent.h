@@ -101,7 +101,16 @@ protected:
 
 	const float AFK_TIME_TRIGGER = 10.f;
 
+	FTimerHandle StartNextRoundTimerHandle;
+	float StartNextRoundDelayBuffer = 1.0f; // Time before starting next round
 
+	// Calls UEnemyWaveManagementSystem::StartNextRound after a delay.
+	UFUNCTION()
+	void CallStartNextRound();
+
+	UPROPERTY()
+	UEnemyWaveManagementSystem* EnemyWaveManager;
+	
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

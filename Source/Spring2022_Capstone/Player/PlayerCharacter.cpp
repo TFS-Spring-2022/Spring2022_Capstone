@@ -50,6 +50,8 @@ APlayerCharacter::APlayerCharacter()
 	
 	CrouchEyeOffset = FVector(0.f);
 	CrouchSpeed = 12.f;
+	// Disable crouching.
+	GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = false;
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
@@ -581,7 +583,8 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 		else
 			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp, 12);
 	}
-	
+	if(PlayerHUDWidgetInstance)
+		PlayerHUDWidgetInstance->PlayBloodSplatterAnimation();
 	HealthComponent->SetHealth(HealthComponent->GetHealth() - DamageAmount);
 	UpdateHealthBar();
 	if (HealthComponent->GetHealth() <= 0)
@@ -593,7 +596,7 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 		else
 			SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->NarratorLoseSC);
 		
-		CurrentGameMode->EndRun();
+		CurrentGameMode->EndRun(false);
 		return true;
 	}
 	return false;

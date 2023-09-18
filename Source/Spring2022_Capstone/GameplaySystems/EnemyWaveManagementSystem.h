@@ -58,8 +58,12 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 	UPROPERTY(EditAnywhere, Category = "Waves")
 	float TimeBeforeNextRoundStart = 0.1;
 
+	UPROPERTY(EditAnywhere, Category = "Waves")
+	float TimeBeforeOpeningUpgradeMenu = 2.5;
+
 	FTimerHandle TimeBeforeNextRoundStartTimerHandle;
-	FTimerHandle TimeBeforeUpgradeMenuTimerHandle;
+	FTimerHandle TimeBeforeUpgradeMenuTimerHandle; // Unsure on this usage
+	FTimerHandle OpenUpgradeMenuTimerHandle; // Used to handle opening the upgrade menu after a delay.
 	FTimerHandle TimeBeforeWaveStartVoiceLine;
 	FTimerHandle TimeBeforeClearDeadEnemiesTimerHandle;
 	FTimerHandle TimeStopSoundDelay;
