@@ -43,6 +43,9 @@ void UEnemyWaveManagementSystem::SetEnemySpawnLocations()
 
 void UEnemyWaveManagementSystem::SpawnWave()
 {
+	// Reveal hidden timer
+	PlayerCharacter->GetPlayerHUD()->ShowWaveTimer();
+	
 	// Reset wave stats.
 	EnemiesKilledThisWave = 0;
 
@@ -165,9 +168,7 @@ void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 				PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
 
 			// Start next round after a delay, opens upgrade menu, clears enemy, and spawns next wave.
-			GetWorld()->GetTimerManager().SetTimer(TimeBeforeNextRoundStartTimerHandle, this, &UEnemyWaveManagementSystem::OpenUpgradeMenu, TimeBeforeNextRoundStart, false);
-			GetWorld()->GetTimerManager().SetTimer(TimeBeforeClearDeadEnemiesTimerHandle, this, &UEnemyWaveManagementSystem::ClearDeadEnemies, TimeBeforeNextRoundStart - 0.1, false);
-			StartNextRound();
+			GetWorld()->GetTimerManager().SetTimer(TimeBeforeUpgradeMenuTimerHandle, this, &UEnemyWaveManagementSystem::OpenUpgradeMenu, TimeBeforeOpeningUpgradeMenu, false);
 		}
 	}
 }

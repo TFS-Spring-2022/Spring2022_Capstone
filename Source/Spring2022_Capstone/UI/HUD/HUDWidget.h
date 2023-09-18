@@ -72,6 +72,11 @@ public:
 	void FadeInHUD();
 	void FadeOutHUD();
 
+	void HideWaveTimer();
+	void ShowWaveTimer();
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* WaveTimerFadeInAnimation;
+
 	/**
 	 * @brief Play the blood splatter animation from 'BloodSplatterAnimationTime'.
 	 * @note This time is used to extend reverse timer and prevent blood splatter animation from

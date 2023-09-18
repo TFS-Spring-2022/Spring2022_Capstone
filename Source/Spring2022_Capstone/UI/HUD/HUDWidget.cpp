@@ -77,6 +77,21 @@ void UHUDWidget::FadeOutHUD()
         PlayAnimationReverse(HUDFadeInAnimation, 1, false);
 }
 
+void UHUDWidget::HideWaveTimer()
+{
+    if(WaveTimerTextBlock)
+        WaveTimerTextBlock->SetRenderOpacity(0.0f);
+}
+
+void UHUDWidget::ShowWaveTimer()
+{
+    if(!WaveTimerTextBlock)
+        return;
+    
+    if(WaveTimerFadeInAnimation)
+        PlayAnimation(WaveTimerFadeInAnimation);
+}
+
 void UHUDWidget::PlayBloodSplatterAnimation()
 {
     if(BloodSplatterAnimation)
