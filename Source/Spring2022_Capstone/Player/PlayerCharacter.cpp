@@ -154,6 +154,13 @@ void APlayerCharacter::BeginPlay()
 	// Load Settings
 	YSensitivity = UCustomGameUserSettings::GetCustomGameUserSettings()->YSensitivity;
 	XSensitivity = UCustomGameUserSettings::GetCustomGameUserSettings()->XSensitivity;
+	
+	// Repurposing wave announcer for accolade announcements
+	if(AccoladeAnnouncerWidgetBP)
+    	{
+    		AccoladeAnnouncerWidgetInstance = Cast<UWaveAnnouncerWidget>(CreateWidget(GetWorld(), AccoladeAnnouncerWidgetBP));
+    		AccoladeAnnouncerWidgetInstance->AddToViewport(1);
+    	}
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -769,4 +776,10 @@ void APlayerCharacter::Death()
 	if(PlayerHUDWidgetInstance)
 		PlayerHUDWidgetInstance->PlayFadeToBlackAnim();
 	CurrentGameMode->EndRun(false);
+}
+
+void APlayerCharacter::AnnounceAccolade(FText Accolade)
+{
+	if(AccoladeAnnouncerWidgetInstance)
+		AccoladeAnnouncerWidgetInstance->SetAnnouncementTextBlock(Accolade);
 }
