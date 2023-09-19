@@ -272,7 +272,7 @@ void ABaseEnemy::PromoteToElite()
 
 void ABaseEnemy::Death() 
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Killed"), *GetName()));
+	// GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Killed"), *GetName()));
 	// Prevent the shotgun from causing an enemy to call multiple Death multiple times.
 	if(bIsDying)
 		return;

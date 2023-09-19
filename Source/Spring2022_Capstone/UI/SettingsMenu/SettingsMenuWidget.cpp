@@ -141,7 +141,7 @@ void USettingsMenuWidget::OnMusicValueChanged(float Value)
 
 void USettingsMenuWidget::OnVoiceValueChanged(float Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,"Voice volume set");
+	// GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,"Voice volume set");
 	Settings->VoiceVolumeValue = Value;
 	UGameplayStatics::SetSoundMixClassOverride(GetWorld(),SBP_VoiceVolume,Voice,Value,1,0,true);
 	UGameplayStatics::PushSoundMixModifier(GetWorld(),SBP_VoiceVolume);

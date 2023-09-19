@@ -47,7 +47,7 @@ void AAmbientSoundActor::OnOverlapBegin(UPrimitiveComponent* Comp, AActor* Other
 		if(AudioComponent->Sound)
 			{
 				float RandomStartime = FMath::RandRange( 0.f , SoundDuration);
-				GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Red,FString::SanitizeFloat(RandomStartime));
+				// GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Red,FString::SanitizeFloat(RandomStartime));
 				AudioComponent->Play(RandomStartime);
 			}
 		}
@@ -59,7 +59,7 @@ void AAmbientSoundActor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActo
 	{
 		
 		
-		GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Red, TEXT("Player is no longer within hear"));
+		//GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Red, TEXT("Player is no longer within hear"));
 		AudioComponent->Stop();
 	}
 	

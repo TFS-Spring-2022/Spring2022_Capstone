@@ -39,7 +39,7 @@ void ASniperEnemy::Tick(float DeltaTime)
 
 void ASniperEnemy::LockOn()
 {
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "LockedOn");
+    // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "LockedOn");
     bIsCharging = false;
     GetWorld()->GetTimerManager().SetTimer(TimeBeforeShotTimerHandler, this, &ASniperEnemy::Attack, 1.5f, false);
 }
@@ -99,7 +99,7 @@ void ASniperEnemy::SpecialAttack()
 
 void ASniperEnemy::DisableSniperEnemy()
 {
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Disabled");
+   // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Disabled");
     bCanAttack = false;
     if(SoundManagerSubSystem)
         SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,6);
@@ -110,7 +110,7 @@ void ASniperEnemy::DisableSniperEnemy()
 
 void ASniperEnemy::EnableSniperEnemy()
 {
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Enabled");
+   // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Enabled");
     bCanAttack = true;
     bIsCharging = true;
     LaserComponent->Activate();

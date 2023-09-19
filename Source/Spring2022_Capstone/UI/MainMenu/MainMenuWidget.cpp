@@ -27,7 +27,7 @@ void UMainMenuWidget::NativeConstruct()
 	}
 	GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>()->ResetScoreSystem();
 	GetGameInstance()->GetSubsystem<USoundManagerSubSystem>()->PlaysMusic(GetGameInstance()->GetSubsystem<USoundManagerSubSystem>()->MainMenuMusicSC);
-	GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "Menu SOunds");
+	// GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red, "Menu SOunds");
 }
 
 void UMainMenuWidget::OnPlayButtonPressed()
