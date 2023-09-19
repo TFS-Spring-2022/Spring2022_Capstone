@@ -93,7 +93,7 @@ void ABaseEnemy::AttackHit()
 	// We want to hit the player's head as this is where the camera sits and will always hit the player if they can see the enemy (not behind cover)
 	FHitResult PlayerHitResult;
 
-	FVector StartPlayerAttackHitTrace = GetActorLocation();								   // ProjectileSpawnPoint();
+	FVector StartPlayerAttackHitTrace = GetMesh()->GetSocketLocation(FireSocketName);						
 	FVector EndPlayerAttachHitTrace = PlayerCharacter->GetMesh()->GetBoneLocation("head"); // ToDo: const string HeadBone could be useful here once skeleton added
 
 	//DrawDebugLine(GetWorld(), StartPlayerAttackHitTrace, EndPlayerAttachHitTrace, FColor::Red, false, .5f);
@@ -142,7 +142,7 @@ void ABaseEnemy::AttackMiss()
 	// We want to hit the player's head as this is where the camera sits and will always hit the player if they can see the enemy (not behind cover)
 	FHitResult PlayerHitResult;
 
-	FVector StartPlayerAttackHitTrace = GetActorLocation();								   // ToDo: ProjectileSpawnPoint();
+	FVector StartPlayerAttackHitTrace = GetMesh()->GetSocketLocation(FireSocketName);							   // ToDo: ProjectileSpawnPoint();
 	FVector EndPlayerAttachHitTrace = PlayerCharacter->GetMesh()->GetBoneLocation("head"); // ToDo: const string HeadBone could be useful here once skeleton added
 	EndPlayerAttachHitTrace.Z += 100;
 
