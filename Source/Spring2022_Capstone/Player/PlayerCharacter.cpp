@@ -513,7 +513,7 @@ void APlayerCharacter::SwitchWeapon()
 		if (ActiveWeapon->GunChangeAudioComp)
 			ActiveWeapon->GunChangeAudioComp->Play();
 
-		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .2f, false); // Backup incase problem with swap animation not finishing.
+		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .4f, false); // Backup incase problem with swap animation not finishing.
 		ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 		StashedWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 		StashedWeapon->SetActorHiddenInGame(true);
@@ -525,7 +525,11 @@ void APlayerCharacter::SwitchWeapon()
 void APlayerCharacter::PlaySwitchWeaponAnimation(const FInputActionValue &Value)
 {
 	if (Weapon1 && Weapon2 && bIsSwappingWeapon != true)
+	{
+		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .4f, false); // Backup incase problem with swap animation not finishing.
 		bIsSwappingWeapon = true;
+	}
+		
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)
