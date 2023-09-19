@@ -163,6 +163,14 @@ void UEnemyWaveManagementSystem::RemoveActiveEnemy(AActor* EnemyToRemove)
 		{
 			CurrentWave++;
 
+
+			GetWorld()->GetTimerManager().SetTimer(TimeStopSoundDelay,this,&UEnemyWaveManagementSystem::FadeOutMusic, 3.f,false);
+			
+			// Begin play is not called on this component so PlayerCharacter must be set here.
+			if(!PlayerCharacter)
+				PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+
+
 			if(CurrentWave > Waves.Num() - 1)
 			{
 				SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->NarratorWinSC); // ToDo: move this to the game mode.
@@ -262,3 +270,10 @@ void UEnemyWaveManagementSystem::PlayWaveStartVoiceLine() const
 			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 7);
 	}
 }
+
+void UEnemyWaveManagementSystem::FadeOutMusic()
+{
+	if(SoundManagerSubSystem)
+		SoundManagerSubSystem->StopMusic(PlayerCharacter->MusicAudioComp);
+}
+

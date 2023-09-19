@@ -43,6 +43,8 @@ public:
 
 	void ToggleMusicOn(UAudioComponent* MusicAudioComp);
 
+	void PlayMenuMusic(bool bActivated);
+
 	void WaveStart(AActor* Actor);
 
 	UPROPERTY(EditAnywhere,Category="Narrotr Vocie Lines")
@@ -53,7 +55,7 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
 	USoundCue* RangerKillsPlayerSC;
-
+	
 	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
 	float MasterVolume = 1.f;
 
@@ -65,6 +67,11 @@ public:
 
 	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
 	float VoiceVolume = 1.f;
+
+	UPROPERTY(EditAnywhere, Category = "Ranger Voice Lines")
+	USoundCue* MainMenuMusicSC;
+
+	void StopMusic(UAudioComponent* Comp);
 	
 private:
 	
@@ -215,9 +222,6 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "Wave Sound")
 	USoundCue* WaveStartSound;
-	
-	UPROPERTY(EditAnywhere, Category = "Menu Music")
-	USoundCue* MainMenuMusic;
 
 	UPROPERTY(EditAnywhere, Category = "Menu sounds")
 	USoundCue* HoverButtonSound;
@@ -228,5 +232,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Audio C")
 	UAudioComponent* SubSystemAudio;
 
+	
 	
 };
