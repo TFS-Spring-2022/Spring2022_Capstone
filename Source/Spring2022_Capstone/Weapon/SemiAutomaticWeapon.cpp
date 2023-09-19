@@ -18,11 +18,7 @@ ASemiAutomaticWeapon::ASemiAutomaticWeapon()
 
 bool ASemiAutomaticWeapon::Shoot()
 {
-	if (!bIsOverheating && CurrentCharge > MaxChargeAmount)
-	{
-		Overheat();
-	}
-
+	
 	if (bCanFire)
 	{
 
@@ -160,6 +156,10 @@ bool ASemiAutomaticWeapon::Shoot()
 			// Call recoil
 			if (RecoilComponent)
 				RecoilComponent->RecoilKick();
+
+			// Check overheat
+			if (!bIsOverheating && CurrentCharge >= MaxChargeAmount)
+				Overheat();
 
 			return true;
 		}

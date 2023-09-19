@@ -18,9 +18,7 @@ AShotgunWeapon::AShotgunWeapon()
 
 bool AShotgunWeapon::Shoot()
 {
-	if (!bIsOverheating && CurrentCharge > MaxChargeAmount)
-		Overheat();
-
+	
 	if (bCanFire)
 	{
 		// Enemies killed from a single attack.
@@ -43,11 +41,7 @@ bool AShotgunWeapon::Shoot()
 			float HalfAngle = 10;
 			HalfAngle = UKismetMathLibrary::DegreesToRadians(HalfAngle);
 			//															//
-
-			//if (MuzzleFlashParticleSystem) // ToDo:
-			//	UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, SkeletalMesh, ShootingStartSocket,
-				//									   SkeletalMesh->GetSocketLocation(ShootingStartSocket), SkeletalMesh->GetSocketRotation(ShootingStartSocket));
-
+			
 			bool bHeadshotHit = false; // Used to ensure shotgun headshots don't call for every pellet.
 
 			for (int i = 0; i < PelletCount; i++)
@@ -200,6 +194,9 @@ bool AShotgunWeapon::Shoot()
 
 			ActorsKilledWhilePlayerGroundedIDs.Empty();
 			ActorsKilledWhilePlayerAirborneIDs.Empty();
+
+			if (!bIsOverheating && CurrentCharge >= MaxChargeAmount)
+				Overheat();
 
 			return true;
 		}
