@@ -58,6 +58,7 @@ public:
 	UPROPERTY()
 	USoundManagerSubSystem* SoundManagerSubSystem;
 
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -154,7 +155,7 @@ protected:
 	UPROPERTY()
 	APlayerCameraManager* PlayerCamera; 
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USkeletalMeshComponent* SkeletalMesh;
 	
 	UPROPERTY(EditAnywhere, Category = "Components")
@@ -228,5 +229,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool GetIsOverheating(){return bIsOverheating;}
 	FORCEINLINE float GetFireRate() {return FireRate;}
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void TriggerEffect();
 	
 };

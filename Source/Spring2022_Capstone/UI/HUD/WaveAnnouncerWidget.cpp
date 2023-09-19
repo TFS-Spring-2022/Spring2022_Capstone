@@ -13,23 +13,37 @@ void UWaveAnnouncerWidget::NativeConstruct()
 	AnnouncementTextBlock->SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 
-void UWaveAnnouncerWidget::SetAnnouncementTextBlock(FText Announcement)
+void UWaveAnnouncerWidget::SetAnnouncementTextBlock(FText Announcement, bool bIsVictoryAnnouncement)
 {
 	if(!AnnouncementTextBlock)
 		return;
 
 	AnnouncementTextBlock->SetText(Announcement);
-	PlayAnimation(AnnounceWidgetAnim, 0, 1, EUMGSequencePlayMode::Forward, 1, false);
+	if(!bIsVictoryAnnouncement)
+		PlayAnimation(VictoryWidgetAnim, 0, 1, EUMGSequencePlayMode::Forward, 1, true);
+	else
+		PlayAnimation(AnnounceWidgetAnim, 0, 1, EUMGSequencePlayMode::Forward, 1, true);
 }
 
 void UWaveAnnouncerWidget::PauseAnnouncementAnimation(bool bIsPaused)
 {
+	
 	if(bIsPaused)
 	{
 		// Save current animation time to use when resuming.
-		AnnounceAnimPauseTime = GetAnimationCurrentTime(AnnounceWidgetAnim);
-		PauseAnimation(AnnounceWidgetAnim);
+		AnnounceAnimPauseTime = GetAnimationCurrentTime(VictoryWidgetAnim);
+		if(IsAnimationPlaying(VictoryWidgetAnim))
+		{
+			bAnimationWasPaused = true;
+		}
+		PauseAnimation(VictoryWidgetAnim);
 	}
 	else
-		PlayAnimation(AnnounceWidgetAnim, AnnounceAnimPauseTime, 1, EUMGSequencePlayMode::Forward, 1, false);
+	{
+		if(bAnimationWasPaused == true)
+		{
+			PlayAnimation(VictoryWidgetAnim, AnnounceAnimPauseTime, 1, EUMGSequencePlayMode::Forward, 1, false);
+		}
+	}
+		
 }

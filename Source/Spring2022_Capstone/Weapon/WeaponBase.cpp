@@ -34,7 +34,7 @@ void AWeaponBase::BeginPlay()
 	GunShotAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	OverheatAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	GunChangeAudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-
+	
 	OverheatAudioComp->SetSound(HeatBuildUp);
 	
 	PlayerCamera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager; // No constructor will crash (execution order),
@@ -127,6 +127,7 @@ void AWeaponBase::Overheat()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("OVERHEATING"));
 	bIsOverheating = true;
+	TriggerEffect();
 	bCanFire = false;
 
 	if(OverheatAudioComp)
@@ -136,7 +137,6 @@ void AWeaponBase::Overheat()
 		OverheatAudioComp->SetVolumeMultiplier(1.f);
 		OverheatAudioComp->SetPitchMultiplier(1.f);
 		OverheatAudioComp->Play();
-		OverheatAudioComp->FadeOut(OverheatTime,0.f);
 	}
 
 	// Play start & loop of overheat animation montage.
@@ -153,6 +153,8 @@ void AWeaponBase::WeaponCooldown()
 {
 	GetWorldTimerManager().ClearTimer(OverheatTimerHandle); 
 	bIsOverheating = false;
+	TriggerEffect();
+	OverheatAudioComp->Stop();
 	bCanFire = true;
 	CurrentCharge = 0;
 	

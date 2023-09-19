@@ -60,6 +60,29 @@ public:
 	// Enemies Remaining Countdown
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UTextBlock* EnemiesRemainingTextBlock;
+	// Blood Splatter Image
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* BloodSplatterImage;
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* BloodSplatterAnimation;
+	// HUD Fade In Animation
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* HUDFadeInAnimation;
+
+	void FadeInHUD();
+	void FadeOutHUD();
+
+	void HideWaveTimer();
+	void ShowWaveTimer();
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* WaveTimerFadeInAnimation;
+
+	/**
+	 * @brief Play the blood splatter animation from 'BloodSplatterAnimationTime'.
+	 * @note This time is used to extend reverse timer and prevent blood splatter animation from
+	 * replaying when taking additional damage.
+	 */
+	void PlayBloodSplatterAnimation();
 	
 	// Sets the EquippedWeaponIcon and StashedWeaponIcons to show the given Texture2Ds.
 	void SetWeaponIcons(UTexture2D* EquippedWeaponTexture2D, UTexture2D* StashedWeaponTexture2D) const;
@@ -100,4 +123,20 @@ private:
 	UFUNCTION()
 	void SetWeaponIconFromCharacter() const;
 
+	/**
+	 * @brief Reverse blood splatter animation to fade out image.
+	 */
+	UFUNCTION()
+	void PlayerBloodSplatterBackwards();
+
+	// Timer used to call blood splatter fade out.
+	FTimerHandle BloodSplatterReverseTimerHandle;
+	// Time before blood splatter fade out is played.
+	const float TIME_BEFORE_BLOOD_SPLATTER_FADE_OUT = 1.0f;
+	/**
+	 * @brief Current time of the playing blood splatter animation.
+	 * @note Used to extend blood splatter animation when taking multiple hits.
+	 */
+	float BloodSplatterAnimationTime;
+	
 };

@@ -58,10 +58,15 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 	UPROPERTY(EditAnywhere, Category = "Waves")
 	float TimeBeforeNextRoundStart = 0.1;
 
+	UPROPERTY(EditAnywhere, Category = "Waves")
+	float TimeBeforeOpeningUpgradeMenu = 2.5;
+
 	FTimerHandle TimeBeforeNextRoundStartTimerHandle;
-	FTimerHandle TimeBeforeUpgradeMenuTimerHandle;
+	FTimerHandle TimeBeforeUpgradeMenuTimerHandle; // Unsure on this usage
+	FTimerHandle OpenUpgradeMenuTimerHandle; // Used to handle opening the upgrade menu after a delay.
 	FTimerHandle TimeBeforeWaveStartVoiceLine;
 	FTimerHandle TimeBeforeClearDeadEnemiesTimerHandle;
+	FTimerHandle TimeStopSoundDelay;
 
 	// Used to open the player's upgrade menu through a timer.
 	UFUNCTION()
@@ -127,8 +132,9 @@ public:
 	// Used to call checks for accolades and start the next round after a delay.
 	void StartNextRound();
 
-	//Sound Voice
+	//Sound 
 	void PlayWaveStartVoiceLine() const;
+	void FadeOutMusic();
 	
 	// Called every Tick
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

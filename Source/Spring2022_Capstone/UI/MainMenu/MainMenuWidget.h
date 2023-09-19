@@ -25,6 +25,10 @@ protected:
 public:
 	AMainMenuManager *Manager;
 
+	//Sounds
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
+	USoundCue* MainMenuMusicSC;
+
 	// Root Panel
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UPanelWidget *RootPanel;
@@ -82,6 +86,8 @@ public:
 	UButton *NoButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock *NoButtonText;
+
+	
 
 
 private:
