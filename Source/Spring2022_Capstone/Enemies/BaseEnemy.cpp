@@ -48,6 +48,7 @@ void ABaseEnemy::BeginPlay()
 	const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 	WeaponMesh->AttachToComponent(GetMesh(), AttachmentRules, WeaponSocket);
 	GunShotComp->AttachToComponent(WeaponMesh, AttachmentRules);
+	GunShotComp->SetAutoActivate(false);
 	
 	CurrentAttackSystemComponent = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetAttackSystemComponent();
 
@@ -57,6 +58,8 @@ void ABaseEnemy::BeginPlay()
 
 	bIsFiring = false;
 
+	PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+	
 	if (!EnemyColors.IsEmpty())
 		GetMesh()->SetMaterial(0, EnemyColors[FMath::RandRange(0, EnemyColors.Num() - 1)]);
 

@@ -32,9 +32,21 @@ protected:
 	void StartCharge();
 	UFUNCTION(BlueprintCallable)
 	void StopCharge();
+	UFUNCTION(BlueprintCallable)
+	void LockOn();
+	UFUNCTION(BlueprintCallable)
+	void Reload();
 
+	FTimerHandle TimeBeforeShotTimerHandler;
+	FTimerHandle ReloadTimerHandler;
+
+	float Range = 10000.0f;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
 	bool bIsCharging;
+	
+	float chargeTime;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = true))
 	UNiagaraComponent* LaserComponent;
     UPROPERTY(EditDefaultsOnly, Category = "Projectile", meta = (AllowPrivateAccess = true))

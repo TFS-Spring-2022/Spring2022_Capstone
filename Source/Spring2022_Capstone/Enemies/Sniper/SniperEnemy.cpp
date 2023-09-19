@@ -11,13 +11,37 @@ ASniperEnemy::ASniperEnemy()
     LaserComponent->SetupAttachment(WeaponMesh);
 }
 
+void ASniperEnemy::BeginPlay()
+{
+    Super::BeginPlay();
+    SoundManagerSubSystem = GetGameInstance()->GetSubsystem<USoundManagerSubSystem>();
+    LaserComponent->SetAutoActivate(false);
+
+    EnableSniperEnemy();
+}
+
 void ASniperEnemy::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+        
+    
+    if(bIsCharging)
     {
-    if (bIsCharging && LaserComponent->IsActive())
         LaserComponent->SetVectorParameter("Laser_End", UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->GetActorLocation());
+        chargeTime += DeltaTime;
+        LaserComponent->SetFloatParameter("Laser_Width", chargeTime);
+        if(chargeTime >= 5.f)
+            LockOn();
     }
+
+    
+}
+
+void ASniperEnemy::LockOn()
+{
+    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, "LockedOn");
+    bIsCharging = false;
+    GetWorld()->GetTimerManager().SetTimer(TimeBeforeShotTimerHandler, this, &ASniperEnemy::Attack, 1.5f, false);
 }
 
 void ASniperEnemy::Attack()
@@ -26,14 +50,35 @@ void ASniperEnemy::Attack()
     {
         if(PlayerCharacter->GetHasSniperDisableObject())
             SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,5);
+
+        LaserComponent->Deactivate();
+        //Shoots to see if the player is hit
         
-        if (APlayerCharacter *Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+        FHitResult HitResult;
+        FVector StartTrace = this->GetActorLocation();
+        StartTrace.Z -= 10; // TEMP: Offset to make debug draw lines visible without moving.
+        FVector ForwardVector = this->GetActorForwardVector();
+        FVector EndTrace = ((ForwardVector * Range) + StartTrace);
+        FCollisionQueryParams *TraceParams = new FCollisionQueryParams();
+        TraceParams->AddIgnoredComponent(this->GetMesh());
+
+        if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
         {
-            Player->DamageActor(this, Damage);
+            if (Cast<APlayerCharacter>(HitResult.GetActor()))
+            {
+                Cast<APlayerCharacter>(HitResult.GetActor())->DamageActor(this, Damage);
+            }
         }
-        
+        Reload();
     }
 }
+
+void ASniperEnemy::Reload()
+{
+    StopCharge();
+    GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandler, this, &ASniperEnemy::StartCharge, 5.f, false);
+}
+
 
 void ASniperEnemy::SpecialAttack()
 {
@@ -52,14 +97,6 @@ void ASniperEnemy::SpecialAttack()
     }
 }
 
-void ASniperEnemy::BeginPlay()
-{
-    Super::BeginPlay();
-    SoundManagerSubSystem = GetGameInstance()->GetSubsystem<USoundManagerSubSystem>();
-
-    EnableSniperEnemy();
-}
-
 void ASniperEnemy::DisableSniperEnemy()
 {
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Disabled");
@@ -67,7 +104,7 @@ void ASniperEnemy::DisableSniperEnemy()
     if(SoundManagerSubSystem)
         SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,6);
     StopCharge();
-    LaserComponent->Deactivate();
+    
     // ToDo: Disable laser effect (when implemented).
 }
 
@@ -75,6 +112,7 @@ void ASniperEnemy::EnableSniperEnemy()
 {
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Enabled");
     bCanAttack = true;
+    bIsCharging = true;
     LaserComponent->Activate();
 }
 
@@ -90,5 +128,11 @@ void ASniperEnemy::StartCharge()
 void ASniperEnemy::StopCharge()
 {
     bIsCharging = false;
-    LaserComponent->Deactivate();
+    chargeTime = 0;
+    LaserComponent->SetActive(false);
 }
+
+
+
+
+
