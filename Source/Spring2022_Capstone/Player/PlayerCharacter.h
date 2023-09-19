@@ -496,5 +496,7 @@ public:
     	UWaveAnnouncerWidget* AccoladeAnnouncerWidgetInstance;
 
 		void AnnounceAccolade(FText Accolade);
+
+	bool bIsDead = false;
 	
 };

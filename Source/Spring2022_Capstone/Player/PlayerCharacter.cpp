@@ -161,6 +161,8 @@ void APlayerCharacter::BeginPlay()
     		AccoladeAnnouncerWidgetInstance = Cast<UWaveAnnouncerWidget>(CreateWidget(GetWorld(), AccoladeAnnouncerWidgetBP));
     		AccoladeAnnouncerWidgetInstance->AddToViewport(1);
     	}
+
+	bIsDead = false;
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -571,6 +573,9 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 
 	IDamageableActor::DamageActor(DamagingActor, DamageAmount);
 
+	if(bIsDead)
+		return true;
+
 	if (!HealthComponent) { return false; }
 
 	if (ScoreManagerTimerSubSystem && ScoreManagerTimerSubSystem->IsAccoladeTimerRunning(CloseCallCorsair) == false) 
@@ -772,6 +777,7 @@ void APlayerCharacter::SetXSensitivity(float Value)
 
 void APlayerCharacter::Death()
 {
+	bIsDead = true;
 	DisableInput(PlayerController);
 	if(PlayerHUDWidgetInstance)
 		PlayerHUDWidgetInstance->PlayFadeToBlackAnim();
