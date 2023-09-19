@@ -92,6 +92,12 @@ void UHUDWidget::ShowWaveTimer()
         PlayAnimation(WaveTimerFadeInAnimation);
 }
 
+void UHUDWidget::PlayFadeToBlackAnim()
+{
+    if(FadeToBlackAnim)
+        PlayAnimation(FadeToBlackAnim);
+}
+
 void UHUDWidget::PlayBloodSplatterAnimation()
 {
     if(BloodSplatterAnimation)

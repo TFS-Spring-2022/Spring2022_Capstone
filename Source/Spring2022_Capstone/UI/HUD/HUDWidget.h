@@ -77,6 +77,16 @@ public:
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	UWidgetAnimation* WaveTimerFadeInAnimation;
 
+	// All black image for fading out player vision on death.
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* FadeToBlackImage;
+	// Black image fade in and stay animatino
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* FadeToBlackAnim;
+
+	void PlayFadeToBlackAnim();
+	
+
 	/**
 	 * @brief Play the blood splatter animation from 'BloodSplatterAnimationTime'.
 	 * @note This time is used to extend reverse timer and prevent blood splatter animation from

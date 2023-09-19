@@ -764,5 +764,7 @@ void APlayerCharacter::SetXSensitivity(float Value)
 void APlayerCharacter::Death()
 {
 	DisableInput(PlayerController);
+	if(PlayerHUDWidgetInstance)
+		PlayerHUDWidgetInstance->PlayFadeToBlackAnim();
 	CurrentGameMode->EndRun(false);
 }

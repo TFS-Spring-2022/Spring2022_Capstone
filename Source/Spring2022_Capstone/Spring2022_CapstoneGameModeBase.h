@@ -67,6 +67,6 @@ private:
 	void ChangeToEndScreen();
 
 	FTimerHandle RunEndTransferTimerHandle;
-	float TimeBeforeChangeToEndScreen = 5.0f;
+	float TimeBeforeChangeToEndScreen = 3.0f;
 	
 };
