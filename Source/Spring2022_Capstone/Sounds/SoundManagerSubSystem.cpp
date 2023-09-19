@@ -14,6 +14,9 @@ USoundManagerSubSystem::USoundManagerSubSystem()
     if (WaveStartSoundLoaded.Succeeded())
         WaveStartSound = WaveStartSoundLoaded.Object;
 
+    static ConstructorHelpers::FObjectFinder<USoundCue>MainMusicLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/Music/SC_MenuMusic.SC_MenuMusic'"));
+    if (WaveStartSoundLoaded.Succeeded())
+        MainMenuMusicSC = MainMusicLoaded.Object;
     
 #pragma region Player Voice Lines
     
@@ -148,6 +151,14 @@ USoundManagerSubSystem::USoundManagerSubSystem()
     static ConstructorHelpers::FObjectFinder<USoundCue>RangerLockOnLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerLockOn.SC_RangerLockOn'"));
     if (RangerLockOnLoaded.Succeeded())
         RangerLockOnSC = RangerLockOnLoaded.Object;
+
+    static ConstructorHelpers::FObjectFinder<USoundCue>RangerDisabledLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Sniper/SC_SniperDisabled.SC_SniperDisabled'"));
+    if (RangerLockOnLoaded.Succeeded())
+        RangerDisabledSC = RangerDisabledLoaded.Object;
+
+    static ConstructorHelpers::FObjectFinder<USoundCue>RangerFearLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Sniper/SC_SniperFear.SC_SniperFear'"));
+    if (RangerLockOnLoaded.Succeeded())
+        RangerFearSC = RangerFearLoaded.Object;
     
 #pragma endregion
 #pragma region Grunt Voice Lines
@@ -212,14 +223,14 @@ void USoundManagerSubSystem::PlaySniperSoundEvent(UAudioComponent* OwnerAC, int 
         switch(eventID)
         {
             case 0 :
-                SniperSoundEventToken += 50;
-                if(SniperSoundEventToken >= 100)
+                SniperSoundEventToken += 25;
+                if(SniperSoundEventToken >= 150)
                     if(RangerLockOnSC)
                         if(!OwnerAC->IsPlaying())
                         {
                             OwnerAC->SetSound(RangerLockOnSC);
                             OwnerAC->Play();
-                            SniperSoundEventToken -= 100;
+                            SniperSoundEventToken -= 150;
                         }
                 break;
             case 1 :
@@ -737,20 +748,44 @@ void USoundManagerSubSystem::ToggleMusicOn(UAudioComponent* MusicAudioComp)
 {
     if(MusicAudioComp->GetSound())
     {
-        MusicAudioComp->Stop();
-        MusicAudioComp->FadeIn(3.f,1.f,0.f,EAudioFaderCurve::Linear);
+        if(MusicAudioComp->IsPlaying()== false)
+        {
+            GEngine->AddOnScreenDebugMessage(-1,1.f,FColor::Purple,"MusicPlaying");
+            PlayMenuMusic(false);
+            MusicAudioComp->FadeIn(3.f,1.f,0.f,EAudioFaderCurve::Linear);
+        }
+    }
+}
+
+void USoundManagerSubSystem::PlayMenuMusic(bool bActivated)
+{
+    if(bActivated)
+    {
+        
+       
+    }
+    else
+    {
+        
     }
 }
 
 void USoundManagerSubSystem::ToggleMusicOff(UAudioComponent* MusicAudioComp)
 {
+    
     if(MusicAudioComp->GetSound())
         MusicAudioComp->FadeOut(3.f,0.0f,EAudioFaderCurve::Linear);
+    
 }
 
 void USoundManagerSubSystem::WaveStart(AActor* Actor)
 {
     UGameplayStatics::PlaySound2D(Actor->GetWorld(),WaveStartSound);
+}
+
+void USoundManagerSubSystem::StopMusic(UAudioComponent* Comp)
+{
+    Comp->Stop();
 }
 
 

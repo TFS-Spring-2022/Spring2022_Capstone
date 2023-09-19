@@ -105,6 +105,8 @@ public:
 	float PiratesFortitudeTimeInRange = 0.0f;
 	float PlunderersProwessTimeInRange = 0.0f;
 
+	FTimerHandle EndMusicHandler;
+
 private:
 
 	// ToDo: Remove after changing parent.
