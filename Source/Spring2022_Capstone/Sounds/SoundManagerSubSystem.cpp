@@ -148,6 +148,14 @@ USoundManagerSubSystem::USoundManagerSubSystem()
     static ConstructorHelpers::FObjectFinder<USoundCue>RangerLockOnLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Ranger/SC_RangerLockOn.SC_RangerLockOn'"));
     if (RangerLockOnLoaded.Succeeded())
         RangerLockOnSC = RangerLockOnLoaded.Object;
+
+    static ConstructorHelpers::FObjectFinder<USoundCue>RangerDisabledLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Sniper/SC_SniperDisabled.SC_SniperDisabled'"));
+    if (RangerLockOnLoaded.Succeeded())
+        RangerDisabledSC = RangerDisabledLoaded.Object;
+
+    static ConstructorHelpers::FObjectFinder<USoundCue>RangerFearLoaded(TEXT("/Script/Engine.SoundCue'/Game/Blueprints/Audio/SoundCues/VoiceLines/Sniper/SC_SniperFear.SC_SniperFear'"));
+    if (RangerLockOnLoaded.Succeeded())
+        RangerFearSC = RangerFearLoaded.Object;
     
 #pragma endregion
 #pragma region Grunt Voice Lines
@@ -212,14 +220,14 @@ void USoundManagerSubSystem::PlaySniperSoundEvent(UAudioComponent* OwnerAC, int 
         switch(eventID)
         {
             case 0 :
-                SniperSoundEventToken += 50;
-                if(SniperSoundEventToken >= 100)
+                SniperSoundEventToken += 25;
+                if(SniperSoundEventToken >= 150)
                     if(RangerLockOnSC)
                         if(!OwnerAC->IsPlaying())
                         {
                             OwnerAC->SetSound(RangerLockOnSC);
                             OwnerAC->Play();
-                            SniperSoundEventToken -= 100;
+                            SniperSoundEventToken -= 150;
                         }
                 break;
             case 1 :
