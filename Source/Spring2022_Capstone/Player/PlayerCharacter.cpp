@@ -635,6 +635,8 @@ void APlayerCharacter::HealByPercentage(int Percentage)
 		return;
 	HealthComponent->SetHealth(HealthComponent->GetHealth() + HealthComponent->GetMaxHealth() * Percentage / 100);
 	UpdateHealthBar();
+	if(SoundManagerSubSystem)
+		SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerVoiceAudioComp,10);
 }
 
 float APlayerCharacter::GetMaxHealth() const
