@@ -115,7 +115,7 @@ private:
 	void ResetScoreSystemTimerSubSystem();
 
 	// Accolade Time Requirements:
-	const float SKY_PIRATE_TIME_REQUIREMENT = 20.0f;			// Player must stay in the air for this amount of time(s). 
+	const float SKY_PIRATE_TIME_REQUIREMENT = 15.0f;			// Player must stay in the air for this amount of time(s). 
 	const float LAND_LUBBER_TIME_REQUIREMENT = 15.0f;			// Player must remain on the ground for this amount of time(s).
 	const float PIRATE_BLITZ_TIME_REQUIREMENT = 100.0f;			// Player must clear the wave before this time(s) elapses.
 	const float CAPTAINS_COUP_TIME_REQUIREMENT = 6.0f;			// Player must kill an enemy elite in under this time(s) after their first hit.
