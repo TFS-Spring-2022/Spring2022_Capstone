@@ -125,7 +125,7 @@ void AWeaponBase::ChargeCooldown()
 
 void AWeaponBase::Overheat()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("OVERHEATING"));
+	// GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("OVERHEATING"));
 	bIsOverheating = true;
 	TriggerEffect();
 	bCanFire = false;
@@ -163,7 +163,7 @@ void AWeaponBase::WeaponCooldown()
 
 	// Play end of overheat montage.
 	PlayerCharacter->PlayOverheatMontage(true);
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("WEAPON COOLED"));
+	// GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("WEAPON COOLED"));
 }
 
 void AWeaponBase::ShowHitMarker()

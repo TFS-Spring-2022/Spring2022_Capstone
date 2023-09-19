@@ -18,9 +18,7 @@ AShotgunWeapon::AShotgunWeapon()
 
 bool AShotgunWeapon::Shoot()
 {
-	if (!bIsOverheating && CurrentCharge > MaxChargeAmount)
-		Overheat();
-
+	
 	if (bCanFire)
 	{
 		// Enemies killed from a single attack.
@@ -43,11 +41,7 @@ bool AShotgunWeapon::Shoot()
 			float HalfAngle = 10;
 			HalfAngle = UKismetMathLibrary::DegreesToRadians(HalfAngle);
 			//															//
-
-			if (MuzzleFlashParticleSystem)
-				UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, SkeletalMesh, ShootingStartSocket,
-													   SkeletalMesh->GetSocketLocation(ShootingStartSocket), SkeletalMesh->GetSocketRotation(ShootingStartSocket));
-
+			
 			bool bHeadshotHit = false; // Used to ensure shotgun headshots don't call for every pellet.
 
 			for (int i = 0; i < PelletCount; i++)
@@ -62,6 +56,14 @@ bool AShotgunWeapon::Shoot()
 
 				if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, *TraceParams))
 				{
+					// Play muzzle flash
+					if (MuzzleFlashParticleSystem)
+						UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFlashParticleSystem, GetSkeletalMesh()->GetSocketLocation(ShootingStartSocket), GetSkeletalMesh()->GetSocketRotation(ShootingStartSocket));
+					
+					// Bullet impact niagara
+					if(BulletImpactNiagaraSystem)
+						UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BulletImpactNiagaraSystem, HitResult.Location, HitResult.ImpactNormal.Rotation());
+					
 					// Get Surface Type to check for headshot and impact material.
 					EPhysicalSurface HitSurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 
@@ -192,6 +194,9 @@ bool AShotgunWeapon::Shoot()
 
 			ActorsKilledWhilePlayerGroundedIDs.Empty();
 			ActorsKilledWhilePlayerAirborneIDs.Empty();
+
+			if (!bIsOverheating && CurrentCharge >= MaxChargeAmount)
+				Overheat();
 
 			return true;
 		}

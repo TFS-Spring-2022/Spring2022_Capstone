@@ -75,73 +75,90 @@ void UScoreSystemManagerSubSystem::IncrementAccoladeCount(const EAccolades Accol
 	{
 	case SkullNCrosshair:
 		Accolade_SkullNCrosshairCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKULL N CROSSHAIR!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("SKULL N' CROSSHAIR!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKULL N CROSSHAIR!");
 		break;
 	case CaptainOfWar:
 		Accolade_CaptainOfWarCount++;
 		if(SoundManagerSubSystem)
 			SoundManagerSubSystem->PlayPlayerSoundEvent(PlayerCharacter->PlayerVoiceAudioComp, 13);
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "CAPTAIN OF WAR!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("CAPTAIN OF WAR!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "CAPTAIN OF WAR!");
 		break;
 	case SkyPirate:
 		Accolade_SkyPirateCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKY PIRATE!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("SKY PIRATE!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKY PIRATE!");
 		break;
 	case LandLubber:
 		Accolade_LandLubberCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "LANDLUBBER!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("LANDLUBBER!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "LANDLUBBER!" );
 		break;
 	case CloseCallCorsair:
 		Accolade_CloseCallCorsairCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "CLOSE CALL CORSAIR!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("CLOSE CALL CORSAIR!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "CLOSE CALL CORSAIR!");
 		break;
 	case Opportunist:
 		Accolade_OpportunistCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "OPPORTUNIST!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("OPPORTUNIST!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "OPPORTUNIST!");
 		break;
 	case CaptainsCoup:
 		Accolade_CaptainsCoupCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "CAPTAINS COUP");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("CAPTAINS COUP!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "CAPTAINS COUP");
 		break;
 	case DoubleAerialPlunder:
 		Accolade_DoubleAerialPlunderCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "DOUBLE AERIAL PLUNDER!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("DOUBLE AERIAL PLUNDER!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "DOUBLE AERIAL PLUNDER!");
 		break;
 	case BlunderBlast:
 		Accolade_BlunderBlastCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "BLUNDER BLAST!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("BLUNDER BLAST!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "BLUNDER BLAST!");
 		break;
 	case SkyBuccaneer:
 		Accolade_SkyBuccaneerCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKY BUCCANEER!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("SKY BUCCANEER!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "SKY BUCCANEER!");
 		break;
 	case HotHeaded:
 		Accolade_HotHeadedCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "HOT HEADED!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("HOT HEADED!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "HOT HEADED!");
 		break;
 	case NimbleBones:
 		Accolade_NimbleBonesCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "NIMBLE BONES!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("NIMBLE BONES!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "NIMBLE BONES!");
 		break;
 	case DeathDodger:
 		Accolade_DeathDodgerCount++;
-		GEngine->AddOnScreenDebugMessage(-1 ,2.f, FColor::Green, "DEATH DODGER!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("DEATH DODGER!"));
+		//GEngine->AddOnScreenDebugMessage(-1 ,2.f, FColor::Green, "DEATH DODGER!");
 		break;
 	case PiratesFortitude:
 		Accolade_PiratesFortitudeCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "PIRATES FORTITUDE!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("PIRATES FORTITUDE!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "PIRATES FORTITUDE!");
 		break;
 	case PlunderersProwess:
 		Accolade_PlunderersProwessCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "PLUNDERERS PROWESS!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("PLUNDERERS PROWESS!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "PLUNDERERS PROWESS!");
 		break;
 	case IPreferTreasure:
 		Accolade_IPreferTreasureCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "I PREFER TREASURE!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("I PREFER TREASURE!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "I PREFER TREASURE!");
 		break;
 	case PirateBlitz:
 		Accolade_PirateBlitz++;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "PIRATE BLITZ!");
+		PlayerCharacter->AnnounceAccolade(FText::FromString("PIRATE BLITZ!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "PIRATE BLITZ!");
 		break;
 	default:;
 	}

@@ -1,6 +1,8 @@
 // Created by Spring2022_Capstone team
 
 #include "EndScreenUserWidget.h"
+
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
@@ -18,6 +20,7 @@ void UEndScreenUserWidget::NativeConstruct()
 		PC->bShowMouseCursor = true;
 		PC->bEnableClickEvents = true;
 		PC->bEnableMouseOverEvents = true;
+		UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PC, this);
 	}
 
 	ScoreSystemManager = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();

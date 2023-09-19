@@ -20,9 +20,5 @@ void ASniperDisableTrigger::OnOverlapBegin(AActor* OverlappedActor, AActor* Othe
 			SniperToDisable->DisableSniperEnemy();
 			Player->SetHasSniperDisableObject(false);
 		}
-		else
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Player doesn't not have disable device");
-		}
 	}
 }

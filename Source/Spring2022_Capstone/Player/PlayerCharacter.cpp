@@ -154,6 +154,13 @@ void APlayerCharacter::BeginPlay()
 	// Load Settings
 	YSensitivity = UCustomGameUserSettings::GetCustomGameUserSettings()->YSensitivity;
 	XSensitivity = UCustomGameUserSettings::GetCustomGameUserSettings()->XSensitivity;
+	
+	// Repurposing wave announcer for accolade announcements
+	if(AccoladeAnnouncerWidgetBP)
+    	{
+    		AccoladeAnnouncerWidgetInstance = Cast<UWaveAnnouncerWidget>(CreateWidget(GetWorld(), AccoladeAnnouncerWidgetBP));
+    		AccoladeAnnouncerWidgetInstance->AddToViewport(1);
+    	}
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -513,7 +520,7 @@ void APlayerCharacter::SwitchWeapon()
 		if (ActiveWeapon->GunChangeAudioComp)
 			ActiveWeapon->GunChangeAudioComp->Play();
 
-		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .2f, false); // Backup incase problem with swap animation not finishing.
+		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .4f, false); // Backup incase problem with swap animation not finishing.
 		ActiveWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 		StashedWeapon = (ActiveWeapon == Weapon1) ? Weapon2 : Weapon1;
 		StashedWeapon->SetActorHiddenInGame(true);
@@ -525,7 +532,11 @@ void APlayerCharacter::SwitchWeapon()
 void APlayerCharacter::PlaySwitchWeaponAnimation(const FInputActionValue &Value)
 {
 	if (Weapon1 && Weapon2 && bIsSwappingWeapon != true)
+	{
+		GetWorld()->GetTimerManager().SetTimer(IsSwappingTimerHandle, this, &APlayerCharacter::ToggleIsSwappingOff, .4f, false); // Backup incase problem with swap animation not finishing.
 		bIsSwappingWeapon = true;
+	}
+		
 }
 
 void APlayerCharacter::SetWeapon1(AWeaponBase *Weapon)
@@ -595,8 +606,8 @@ bool APlayerCharacter::DamageActor(AActor *DamagingActor, const float DamageAmou
 		}
 		else
 			SoundManagerSubSystem->PlaysMusic(SoundManagerSubSystem->NarratorLoseSC);
-		
-		CurrentGameMode->EndRun(false);
+
+		Death();
 		return true;
 	}
 	return false;
@@ -757,4 +768,18 @@ void APlayerCharacter::SetYSensitivity(float Value)
 void APlayerCharacter::SetXSensitivity(float Value) 
 {
 	XSensitivity = Value;
+}
+
+void APlayerCharacter::Death()
+{
+	DisableInput(PlayerController);
+	if(PlayerHUDWidgetInstance)
+		PlayerHUDWidgetInstance->PlayFadeToBlackAnim();
+	CurrentGameMode->EndRun(false);
+}
+
+void APlayerCharacter::AnnounceAccolade(FText Accolade)
+{
+	if(AccoladeAnnouncerWidgetInstance)
+		AccoladeAnnouncerWidgetInstance->SetAnnouncementTextBlock(Accolade);
 }

@@ -54,7 +54,7 @@ void UUpgradeSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	if(bUpgradeTimerAFKStarted)
 	{
 		UpgradeTimerAFK += (DeltaTime * 20);
-		GEngine->AddOnScreenDebugMessage(5,5.f,FColor::Red,FString::Printf(TEXT("%f"),UpgradeTimerAFK));
+		//GEngine->AddOnScreenDebugMessage(5,5.f,FColor::Red,FString::Printf(TEXT("%f"),UpgradeTimerAFK));
 	}
 
 	if(UpgradeTimerAFK >= AFK_TIME_TRIGGER)
@@ -64,7 +64,7 @@ void UUpgradeSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		else
 			SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerToUpgrade->PlayerVoiceAudioComp,1);
 
-		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Emerald,"AfkSoundCue");
+		//GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Emerald,"AfkSoundCue");
 
 		UpgradeTimerAFK = 0;
 	}
@@ -75,7 +75,7 @@ void UUpgradeSystemComponent::IncreaseMaxChargeAmount(AWeaponBase* WeaponToUpgra
 	if(WeaponToUpgrade)
 	{
 		WeaponToUpgrade->MaxChargeAmount += Amount;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Max Charge Amount Increased"), *WeaponToUpgrade->GetName()));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Max Charge Amount Increased"), *WeaponToUpgrade->GetName()));
 	}
 }
 
@@ -85,7 +85,7 @@ void UUpgradeSystemComponent::IncreaseMaxHealthByAmount(float Amount)
 	{
 		PlayerToUpgrade->HealthComponent->SetMaxHealth(PlayerToUpgrade->HealthComponent->GetMaxHealth() + Amount);
 		PlayerToUpgrade->HealthComponent->SetHealth(PlayerToUpgrade->HealthComponent->GetHealth() + Amount);
-		GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), PlayerToUpgrade->HealthComponent->GetMaxHealth()));
+		//GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), PlayerToUpgrade->HealthComponent->GetMaxHealth()));
 	}
 }
 
@@ -94,14 +94,14 @@ void UUpgradeSystemComponent::IncreaseMaxHealthByPercentage(float PercentageAmou
 	float HealthIncrease = PlayerToUpgrade->HealthComponent->GetMaxHealth() * PercentageAmount / 100;
 	PlayerToUpgrade->HealthComponent->SetMaxHealth(PlayerToUpgrade->HealthComponent->GetMaxHealth() + HealthIncrease);
 	PlayerToUpgrade->HealthComponent->SetHealth(PlayerToUpgrade->HealthComponent->GetHealth() + HealthIncrease);
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), PlayerToUpgrade->HealthComponent->GetMaxHealth()));
+	//GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new max health is: %f"), PlayerToUpgrade->HealthComponent->GetMaxHealth()));
 }
 
 void UUpgradeSystemComponent::IncreaseMovementSpeedByAmount(int Amount)
 {
 	PlayerToUpgrade->Speed += Amount;
 	SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerToUpgrade->PlayerVoiceAudioComp, 4);
-	GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Movement Speed is: %f"), PlayerToUpgrade->Speed));
+	//GEngine->AddOnScreenDebugMessage(0, 4.f, FColor::Red, FString::Printf(TEXT("Your new Movement Speed is: %f"), PlayerToUpgrade->Speed));
 }
 
 void UUpgradeSystemComponent::IncreaseWeaponDamageByAmount(AWeaponBase* WeaponToUpgrade, float Amount)
@@ -109,14 +109,14 @@ void UUpgradeSystemComponent::IncreaseWeaponDamageByAmount(AWeaponBase* WeaponTo
 	if(WeaponToUpgrade)
 	{
 		WeaponToUpgrade->SetDamage(WeaponToUpgrade->GetDamage() + Amount);
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Damage is now: %f"), *WeaponToUpgrade->GetName(), WeaponToUpgrade->GetDamage()));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%s Damage is now: %f"), *WeaponToUpgrade->GetName(), WeaponToUpgrade->GetDamage()));
 	}
 }
 
 void UUpgradeSystemComponent::UnlockDoubleJump()
 {
 	PlayerToUpgrade->JumpMaxCount = PlayerToUpgrade->JumpMaxCount == 1 ? 2 : 1;
-	GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, FString::Printf(TEXT("Your max jumps are: %i"), PlayerToUpgrade->JumpMaxCount));
+	//GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, FString::Printf(TEXT("Your max jumps are: %i"), PlayerToUpgrade->JumpMaxCount));
 	SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerToUpgrade->PlayerVoiceAudioComp, 0);
 }
 
@@ -125,13 +125,13 @@ void UUpgradeSystemComponent::DecreaseGrappleCooldownBySeconds(const float Secon
 	PlayerToUpgrade->GrappleComponent->DecrementGrappleCooldown(Seconds);
 	if(PlayerToUpgrade->GrappleComponent->GetCooldown() <= PlayerToUpgrade->GrappleComponent->GetMinCooldown())
 		SoundManagerSubSystem->PlayNarratorSoundEvent(PlayerToUpgrade->PlayerVoiceAudioComp, 3);
-	GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, FString::Printf(TEXT("Your grapple cooldown is: %f"), PlayerToUpgrade->GrappleComponent->GetCooldown()));
+	//GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, FString::Printf(TEXT("Your grapple cooldown is: %f"), PlayerToUpgrade->GrappleComponent->GetCooldown()));
 }
 
 void UUpgradeSystemComponent::IncreaseChargeCooldownRate(AWeaponBase* WeaponToUpgrade, float Amount)
 {
 	WeaponToUpgrade->ChargeCooldownRate += Amount;
-	GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, FString::Printf(TEXT("%s Charge cooldown rate is: %f"), *WeaponToUpgrade->GetName(), WeaponToUpgrade->ChargeCooldownRate));
+	//GEngine->AddOnScreenDebugMessage(0, 2.f, FColor::Green, FString::Printf(TEXT("%s Charge cooldown rate is: %f"), *WeaponToUpgrade->GetName(), WeaponToUpgrade->ChargeCooldownRate));
 }
 
 void UUpgradeSystemComponent::OpenUpgradeMenu()

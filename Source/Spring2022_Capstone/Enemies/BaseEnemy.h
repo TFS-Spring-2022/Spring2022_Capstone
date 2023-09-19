@@ -136,6 +136,14 @@ public:
 	UPROPERTY()
 	UNiagaraComponent* EliteParticleInstance;
 
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UNiagaraSystem* BulletTracerNiagaraSystem;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UNiagaraSystem* BulletImpactNiagaraSystem;
+
+	const FName FireSocketName = "Grunt_FireLocationSocket";
+
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool GetIsDying() const {return bIsDying;}
 

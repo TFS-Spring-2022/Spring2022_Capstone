@@ -11,6 +11,7 @@
 #include "Spring2022_Capstone/GameplaySystems/ScoreSystemTimerSubSystem.h"
 #include "Spring2022_Capstone/UI/HUD/DirectionalDamageIndicatorWidget.h"
 #include "Spring2022_Capstone/UI/HUD/HUDWidget.h"
+#include "Spring2022_Capstone/UI/HUD/WaveAnnouncerWidget.h"
 #include "Spring2022_Capstone/UI/PauseMenu/PauseMenuWidget.h"
 #include "PlayerCharacter.generated.h"
 
@@ -483,4 +484,17 @@ public:
 	UFUNCTION()
 	void SetXSensitivity(float Value);
 
+	void Death();
+	
+	// Repurposed wave announcer, accolade announcer.
+		// Wave Announcer Widget to be created
+    	UPROPERTY(EditAnywhere, Category = "Components")
+    	TSubclassOf<UWaveAnnouncerWidget> AccoladeAnnouncerWidgetBP;
+    
+    	// Announcer Widget Instance
+    	UPROPERTY()
+    	UWaveAnnouncerWidget* AccoladeAnnouncerWidgetInstance;
+
+		void AnnounceAccolade(FText Accolade);
+	
 };

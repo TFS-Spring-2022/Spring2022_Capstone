@@ -369,11 +369,11 @@ void USoundManagerSubSystem::PlayGruntSoundEvent(UAudioComponent* OwnerAC, int e
                     if(GruntWaveStartSC)
                         if(!OwnerAC->IsPlaying())
                         {
-                            GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,FString::FromInt(GruntSoundEventToken));
+                            //GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,FString::FromInt(GruntSoundEventToken));
                             OwnerAC->SetSound(GruntWaveStartSC);
                             OwnerAC->Play();
                             GruntSoundEventToken -= 60;
-                            GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,FString::FromInt(GruntSoundEventToken));
+                            //GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,FString::FromInt(GruntSoundEventToken));
                         }
                 break;
             case 5 :
@@ -663,7 +663,7 @@ void USoundManagerSubSystem::PlayPlayerSoundEvent(UAudioComponent* OwnerAC, int 
                 break;
             case 9 :
                 PlayerSoundEventToken += 70;
-                GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Cyan, "Arial kill");
+                //GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Cyan, "Arial kill");
                 if(PlayerSoundEventToken >= 80)
                     if(PlayerArialSC)
                         if(!OwnerAC->IsPlaying())
@@ -750,7 +750,7 @@ void USoundManagerSubSystem::ToggleMusicOn(UAudioComponent* MusicAudioComp)
     {
         if(MusicAudioComp->IsPlaying()== false)
         {
-            GEngine->AddOnScreenDebugMessage(-1,1.f,FColor::Purple,"MusicPlaying");
+            // GEngine->AddOnScreenDebugMessage(-1,1.f,FColor::Purple,"MusicPlaying");
             PlayMenuMusic(false);
             MusicAudioComp->FadeIn(3.f,1.f,0.f,EAudioFaderCurve::Linear);
         }
