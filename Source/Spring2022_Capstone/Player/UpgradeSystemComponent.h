@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Components/Image.h"
 #include "Spring2022_Capstone/UI/UpgradeMenu/UpgradeMenuWidget.h"
 #include "Spring2022_Capstone/Weapon/WeaponBase.h"
 #include "UpgradeSystemComponent.generated.h"
@@ -34,13 +35,15 @@ struct FUpgradeChoice
 		UniqueID = FMath::RandRange(0, 1024);
 		TypeOfUpgrade = EUpgradeType::None;
 		UpgradeValue = 0;
+		UpgradeImage = nullptr;
 	}
 
-	FUpgradeChoice(const int Identifier, const EUpgradeType Type, const float Value)
+	FUpgradeChoice(const int Identifier, const EUpgradeType Type, const float Value,UTexture* Image)
 	{
 		UniqueID = Identifier;
 		TypeOfUpgrade = Type;
 		UpgradeValue = Value;
+		UpgradeImage = Image;
 	}
 	
 	UPROPERTY(EditAnywhere)
@@ -52,6 +55,9 @@ struct FUpgradeChoice
 	// Used to remove upgrade from UpgradeChoices 
 	UPROPERTY(EditAnywhere)
 	int UniqueID;
+
+	UPROPERTY(EditAnywhere)
+	UTexture* UpgradeImage;
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Within=(PlayerCharacter))
@@ -188,42 +194,65 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsMenuOpen;
 
+	//Button Images
+
+	UPROPERTY()
+	UTexture* MovementSpeedImage;
+
+	UPROPERTY()
+	UTexture* MaxHealthImage;
+
+	UPROPERTY()
+	UTexture* WeaponDamageImage;
+
+	UPROPERTY()
+	UTexture* ChargeCooldownImage;
+
+	UPROPERTY()
+	UTexture* GrappleCooldownImage;
+
+	UPROPERTY()
+	UTexture* DoubleJumpUpgradeImage;
+
+	UPROPERTY()
+	UTexture* MaxChargeImage;
+
 // Upgrade Selection Functionality
 	
 	// Available upgrades for the player.
-	UPROPERTY(VisibleAnywhere, Category = "AvailableUpgrades")
+	UPROPERTY(EditAnywhere, Category = "AvailableUpgrades")
 	TArray<FUpgradeChoice> UpgradeChoices =
 		{
 			// Health
-			FUpgradeChoice(0, EUpgradeType::MaxHealth, 5),
-			FUpgradeChoice(1, EUpgradeType::MaxHealth, 5),
-			FUpgradeChoice(2, EUpgradeType::MaxHealth, 5),
-			FUpgradeChoice(3, EUpgradeType::MaxHealth, 5),
-			FUpgradeChoice(4, EUpgradeType::MaxHealth, 5),
+			FUpgradeChoice(0, EUpgradeType::MaxHealth, 5, MaxHealthImage),
+			FUpgradeChoice(1, EUpgradeType::MaxHealth, 5, MaxHealthImage),
+			FUpgradeChoice(2, EUpgradeType::MaxHealth, 5, MaxHealthImage),
+			FUpgradeChoice(3, EUpgradeType::MaxHealth, 5, MaxHealthImage),
+			FUpgradeChoice(4, EUpgradeType::MaxHealth, 5, MaxHealthImage),
 			// Weapon Damage (ToDo: Specific Weapon (Currently effects active weapon)
-			FUpgradeChoice(5, EUpgradeType::WeaponDamage, 5),
-			FUpgradeChoice(6, EUpgradeType::WeaponDamage, 5),
-			FUpgradeChoice(7, EUpgradeType::WeaponDamage, 5),
-			FUpgradeChoice(8, EUpgradeType::WeaponDamage, 5),
-			FUpgradeChoice(9, EUpgradeType::WeaponDamage, 5),
+			FUpgradeChoice(5, EUpgradeType::WeaponDamage, 5, WeaponDamageImage),
+			FUpgradeChoice(6, EUpgradeType::WeaponDamage, 5, WeaponDamageImage),
+			FUpgradeChoice(7, EUpgradeType::WeaponDamage, 5, WeaponDamageImage),
+			FUpgradeChoice(8, EUpgradeType::WeaponDamage, 5, WeaponDamageImage),
+			FUpgradeChoice(9, EUpgradeType::WeaponDamage, 5, WeaponDamageImage),
 			// Move Speed
-			FUpgradeChoice(10, EUpgradeType::MovementSpeed, 5),
-			FUpgradeChoice(11, EUpgradeType::MovementSpeed, 5),
-			FUpgradeChoice(12, EUpgradeType::MovementSpeed, 5),
+			FUpgradeChoice(10, EUpgradeType::MovementSpeed, 5, MovementSpeedImage),
+			FUpgradeChoice(11, EUpgradeType::MovementSpeed, 5, MovementSpeedImage),
+			FUpgradeChoice(12, EUpgradeType::MovementSpeed, 5, MovementSpeedImage),
 			// Double Jump
-			FUpgradeChoice(13, EUpgradeType::UnlockDoubleJump, 0),
+			FUpgradeChoice(13, EUpgradeType::UnlockDoubleJump, 0, DoubleJumpUpgradeImage),
 			// Max Weapon Charge (ToDo: Specific Weapon (Currently effects active weapon)
-			FUpgradeChoice(14, EUpgradeType::ChargeCooldown, 5),
-			FUpgradeChoice(15, EUpgradeType::ChargeCooldown, 5),
-			FUpgradeChoice(16, EUpgradeType::ChargeCooldown, 5),
+			FUpgradeChoice(14, EUpgradeType::MaxChargeAmount, 5, MaxChargeImage),
+			FUpgradeChoice(15, EUpgradeType::MaxChargeAmount, 5, MaxChargeImage),
+			FUpgradeChoice(16, EUpgradeType::MaxChargeAmount, 5, MaxChargeImage),
 			// Weapon Cooldown (ToDo: Specific Weapon (Currently effects active weapon)
-			FUpgradeChoice(17, EUpgradeType::ChargeCooldown, 5),
-			FUpgradeChoice(18, EUpgradeType::ChargeCooldown, 5),
-			FUpgradeChoice(19, EUpgradeType::ChargeCooldown, 5),
+			FUpgradeChoice(17, EUpgradeType::ChargeCooldown, 5, ChargeCooldownImage),
+			FUpgradeChoice(18, EUpgradeType::ChargeCooldown, 5, ChargeCooldownImage),
+			FUpgradeChoice(19, EUpgradeType::ChargeCooldown, 5, ChargeCooldownImage),
 			// Grapple Cooldown
-			FUpgradeChoice(20, EUpgradeType::GrappleCooldown, 1),
-			FUpgradeChoice(21, EUpgradeType::GrappleCooldown, 1),
-			FUpgradeChoice(22, EUpgradeType::GrappleCooldown, 1),
+			FUpgradeChoice(20, EUpgradeType::GrappleCooldown, 1, GrappleCooldownImage),
+			FUpgradeChoice(21, EUpgradeType::GrappleCooldown, 1, GrappleCooldownImage),
+			FUpgradeChoice(22, EUpgradeType::GrappleCooldown, 1, GrappleCooldownImage),
 			// ToDo: Ability Cooldown
 			// ToDo: Grapple Range
 			// ToDo: Dash Distance
