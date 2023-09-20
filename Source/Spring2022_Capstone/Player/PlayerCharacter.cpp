@@ -171,7 +171,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 	float CrouchInterpTime = FMath::Min(1.f, CrouchSpeed * DeltaTime);
 	CrouchEyeOffset = (1.f - CrouchInterpTime) * CrouchEyeOffset;
 	CheckGround();
-
+	
+	// Health fix?
+	UpdateHealthBar();
+	
 	if (ScoreManagerTimerSubSystem)
 	{
 		if (GetMovementComponent()->IsFalling())
