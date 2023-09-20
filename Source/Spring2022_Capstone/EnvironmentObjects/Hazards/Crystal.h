@@ -6,6 +6,7 @@
 #include "NiagaraSystem.h"
 #include "GameFramework/Actor.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
+#include "Spring2022_Capstone/GameplaySystems/ScoreSystemManagerSubSystem.h"
 #include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "Crystal.generated.h"
 
@@ -20,8 +21,10 @@ class SPRING2022_CAPSTONE_API ACrystal : public AActor, public IDamageableActor
 public:
 	ACrystal();
 
-	
-	
+	virtual void BeginPlay() override;
+
+	UPROPERTY()
+	UScoreSystemManagerSubSystem* ScoreManagerSubsystem;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = true))

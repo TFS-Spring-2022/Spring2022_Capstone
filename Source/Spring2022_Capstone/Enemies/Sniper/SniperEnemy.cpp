@@ -16,7 +16,7 @@ void ASniperEnemy::BeginPlay()
     Super::BeginPlay();
     SoundManagerSubSystem = GetGameInstance()->GetSubsystem<USoundManagerSubSystem>();
     LaserComponent->SetAutoActivate(false);
-
+    
     EnableSniperEnemy();
 }
 
@@ -32,6 +32,12 @@ void ASniperEnemy::Tick(float DeltaTime)
         LaserComponent->SetFloatParameter("Laser_Width", chargeTime);
         if(chargeTime >= 5.f)
             LockOn();
+        // Rotate sniper to face towards enemy
+        FRotator Rot = FRotationMatrix::MakeFromX(PlayerCharacter->GetActorLocation() - GetActorLocation()).Rotator();
+        // Set other angles to 0.
+        Rot.Roll = 0;
+        Rot.Pitch = 0;
+        SetActorRotation(Rot);
     }
 
     
@@ -55,7 +61,7 @@ void ASniperEnemy::Attack()
         //Shoots to see if the player is hit
         
         FHitResult HitResult;
-        FVector StartTrace = this->GetActorLocation();
+        FVector StartTrace = GetMesh()->GetSocketLocation("SniperStartLocation");
         StartTrace.Z -= 10; // TEMP: Offset to make debug draw lines visible without moving.
         FVector ForwardVector = this->GetActorForwardVector();
         FVector EndTrace = ((ForwardVector * Range) + StartTrace);
@@ -100,20 +106,28 @@ void ASniperEnemy::SpecialAttack()
 void ASniperEnemy::DisableSniperEnemy()
 {
    // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Disabled");
+    bIsDisabled = true;
     bCanAttack = false;
     if(SoundManagerSubSystem)
         SoundManagerSubSystem->PlaySniperSoundEvent(VoiceAudioComponent,6);
     StopCharge();
-    
+
+    GetWorld()->GetTimerManager().SetTimer(RagdollTimerHandle, this, &ASniperEnemy::DelayRagdoll, TimeBeforeRagdoll);
     // ToDo: Disable laser effect (when implemented).
 }
 
 void ASniperEnemy::EnableSniperEnemy()
 {
-   // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Enabled");
+    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Enabled");
+    bIsDisabled = false;
     bCanAttack = true;
     bIsCharging = true;
     LaserComponent->Activate();
+}
+
+void ASniperEnemy::DelayRagdoll()
+{
+    GetMesh()->SetSimulatePhysics(true);
 }
 
 void ASniperEnemy::StartCharge()

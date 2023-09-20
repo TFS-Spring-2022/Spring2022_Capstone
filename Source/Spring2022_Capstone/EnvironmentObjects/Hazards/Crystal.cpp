@@ -23,6 +23,14 @@ ACrystal::ACrystal()
 	PulseSoundAudioComponent->SetupAttachment(RootComponent);
 }
 
+void ACrystal::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Super::BeginPlay();
+	ScoreManagerSubsystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
+}
+
 bool ACrystal::DamageActor(AActor *DamagingActor, const float DamageAmount, FName HitBoneName)
 {
 	if (bIsPulsing)
@@ -73,7 +81,11 @@ void ACrystal::Explode()
 	{
 		if(OverlappingActor->Implements<UDamageableActor>() && !OverlappingActor->IsA(ACrystal::StaticClass()))
 		{
-			Cast<IDamageableActor>(OverlappingActor)->DamageActor(this, Damage);
+			if(Cast<IDamageableActor>(OverlappingActor)->DamageActor(this, Damage))
+			{
+				if(ScoreManagerSubsystem)
+					ScoreManagerSubsystem->IncrementScoreCounter(EScoreCounters::EnemiesKilledWithHazards);
+			}
 		}
 	}
 }
