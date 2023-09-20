@@ -105,7 +105,7 @@ void ASniperEnemy::SpecialAttack()
 
 void ASniperEnemy::DisableSniperEnemy()
 {
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Disabled");
+   // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Disabled");
     bIsDisabled = true;
     bCanAttack = false;
     if(SoundManagerSubSystem)
@@ -118,7 +118,7 @@ void ASniperEnemy::DisableSniperEnemy()
 
 void ASniperEnemy::EnableSniperEnemy()
 {
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Enabled");
+    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, GetName() + "Enabled");
     bIsDisabled = false;
     bCanAttack = true;
     bIsCharging = true;
