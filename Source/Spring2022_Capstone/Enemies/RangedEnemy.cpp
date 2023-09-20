@@ -10,8 +10,6 @@ void ARangedEnemy::SpecialAttack()
 {
     if(GetIsDying())
         return;
-
-    GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "RANGED SPECIAL ATTACK");
     
     if (!Projectile) { return; }
     GetWorld()->SpawnActor<ABaseEnemyProjectile>(Projectile, ProjectileSpawnPoint->GetComponentLocation(), GetActorRotation());
