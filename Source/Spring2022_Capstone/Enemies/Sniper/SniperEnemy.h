@@ -58,5 +58,17 @@ public:
 
 	void EnableSniperEnemy();
 
+	UPROPERTY()
+	bool bIsDisabled = false;
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetIsDisabled() {return bIsDisabled;}
+
+	FTimerHandle RagdollTimerHandle;
+	float TimeBeforeRagdoll = 6.0f;
+	
+	UFUNCTION()
+	void DelayRagdoll();
+
 
 };
