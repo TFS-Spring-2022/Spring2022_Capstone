@@ -360,6 +360,8 @@ void ABaseEnemy::Death()
 		if(bIsElite)
 			ScoreManagerSubSystem->IncrementScoreCounter(EScoreCounters::ElitesKilled);
 	}
+
+	AIControllerClass = nullptr;
 	
 	// Note: Enemies are destroyed in EnemyWaveManagementSystem.
 }
