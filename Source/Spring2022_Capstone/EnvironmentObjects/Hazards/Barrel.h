@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Spring2022_Capstone/GameplaySystems/DamageableActor.h"
+#include "Spring2022_Capstone/GameplaySystems/ScoreSystemManagerSubSystem.h"
 #include "Spring2022_Capstone/Sounds/SoundManagerSubSystem.h"
 #include "Barrel.generated.h"
 
@@ -27,6 +28,11 @@ public:
 	void Explode();
 	UFUNCTION(BlueprintCallable)
 	void SpawnDamageArea();
+
+	virtual void BeginPlay() override;
+
+	UPROPERTY()
+	UScoreSystemManagerSubSystem* ScoreManagerSubsystem;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components", meta = (AllowPrivateAccess = true))

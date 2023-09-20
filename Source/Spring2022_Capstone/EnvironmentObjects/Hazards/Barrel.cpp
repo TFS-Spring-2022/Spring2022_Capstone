@@ -53,7 +53,11 @@ void ABarrel::Explode()
 	{
 		if(OverlappingActor->Implements<UDamageableActor>() && OverlappingActor != this)
 		{
-			Cast<IDamageableActor>(OverlappingActor)->DamageActor(this, Damage);
+			if(Cast<IDamageableActor>(OverlappingActor)->DamageActor(this, Damage))
+			{
+				if(ScoreManagerSubsystem)
+					ScoreManagerSubsystem->IncrementScoreCounter(EScoreCounters::EnemiesKilledWithHazards);
+			}
 		}
 	}
 
@@ -72,4 +76,10 @@ void ABarrel::SpawnDamageArea()
 		return;
 
 	GetWorld()->SpawnActor<ADamageArea>(DamageArea, GetActorLocation(), GetActorRotation());
+}
+
+void ABarrel::BeginPlay()
+{
+	Super::BeginPlay();
+	ScoreManagerSubsystem = GetGameInstance()->GetSubsystem<UScoreSystemManagerSubSystem>();
 }
