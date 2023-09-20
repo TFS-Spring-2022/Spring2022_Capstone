@@ -3,18 +3,23 @@
 
 #include "UpgradeMenuWidget.h"
 
-void UUpgradeMenuWidget::SetUpgradeTextBox(int UpgradeChoiceNumber, FText UpgradeText)
+#include "Components/Image.h"
+
+void UUpgradeMenuWidget::SetUpgradeTextBox(int UpgradeChoiceNumber, FText UpgradeText, UTexture* Image)
 {
 	switch (UpgradeChoiceNumber)
 	{
 	case 1:
 		Upgrade1Text->SetText(UpgradeText);
+		Upgrade1Button->WidgetStyle.Normal.SetResourceObject(Image);
 		break;
 	case 2:
 		Upgrade2Text->SetText(UpgradeText);
+		Upgrade2Button->WidgetStyle.Normal.SetResourceObject(Image);
 		break;
 	case 3:
 		Upgrade3Text->SetText(UpgradeText);
+		Upgrade3Button->WidgetStyle.Normal.SetResourceObject(Image);
 		break;
 	default:
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Error - Upgrade box to update doesn't exist");
