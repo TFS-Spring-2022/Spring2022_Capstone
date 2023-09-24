@@ -44,7 +44,8 @@ class SPRING2022_CAPSTONE_API UEnemyWaveManagementSystem : public UActorComponen
 	// All Snipers in the current level
 	UPROPERTY(VisibleAnywhere, Category = "Waves")
 	TArray<AActor*> SniperEnemies;
-	
+
+	UPROPERTY()
 	int CurrentWave;
 
 	// Enemies in the current wave
@@ -107,15 +108,18 @@ public:
 	void SpawnEnemy(TSubclassOf<ABaseEnemy> SpawningEnemy);
 
 	// Has an elite enemy been spawned this round?
+	UPROPERTY()
 	bool bEliteEnemySpawnedThisWave = false;
 
 	// The last element of EnemySpawnLocations an enemy was created at.
+	UPROPERTY()
 	int LastSpawnLocationElement;
 	
 	const float MINIMUM_TIME_BETWEEN_SPAWNS = 3.0f; // Minimum time between each enemy spawn.
 	const float SPAWN_DELAY_MINIMUM_BUFFER = 3.0f;	// Bottom of the random range added to MINIMUM_TIME_BETWEEN_SPAWNS for SpawnDelay calculation.
 	const float SPAWN_DELAY_MAXIMUM_BUFFER = 7.5f;	// Top of the random range added to MINIMUM_TIME_BETWEEN_SPAWNS for SpawnDelay calculation.
 
+	UPROPERTY()
 	int EnemiesKilledThisWave = 0;
 
 	// Remove an ActiveEnemy from ActiveEnemies array.

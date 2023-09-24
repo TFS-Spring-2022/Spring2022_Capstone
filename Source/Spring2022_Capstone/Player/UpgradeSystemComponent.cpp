@@ -44,6 +44,9 @@ void UUpgradeSystemComponent::BeginPlay()
 
 void UUpgradeSystemComponent::CallStartNextRound()
 {
+	// BeginPlay does not set this properly.
+	EnemyWaveManager = Cast<ASpring2022_CapstoneGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->GetWaveManager();
+	
 	if(EnemyWaveManager)
 		EnemyWaveManager->StartNextRound();
 }
